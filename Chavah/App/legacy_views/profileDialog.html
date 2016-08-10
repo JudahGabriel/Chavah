@@ -1,0 +1,56 @@
+﻿<div id="profileDialog" class="messageBox" tabindex="-1">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" data-bind="click: close" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">
+            Your Profile
+        </h4>
+    </div>
+    <div class="modal-body">
+        <span data-bind="visible: isLoadingUser">
+            <i class="fa fa-circle-o-notch fa-spin"></i>
+        </span>
+        <div data-bind="with: userProfile">
+            <div class="page-header" style="margin-top: -5px;">
+                <h2>Shalom, <span data-bind="text: EmailAddress"></span> <br /><small>Chavah plays Messianic music specifically tailored to your tastes. Here's what she knows about you.</small></h2>
+            </div>
+            <h3 data-bind="visible: Rank === 0">Your rank is: <strong>Yelid ילד (level 1)</strong> <small><br /> You're new to Chavah. Maybe you're new to Messianic music? You're just getting your bearings with Messiah's music. Welcome!</small></h3>
+            <h3 data-bind="visible: Rank === 1">Your rank is: <strong>Servant עבד (level 2)</strong> <small><br /> You've sampled some of Messiah's music, and you're drinking freely from the well without cost. Enjoy, and we hope you stick around.</small></h3>
+            <h3 data-bind="visible: Rank === 2">Your rank is: <strong>Sojourner גר (level 3)</strong> <small><br /> You've got a basic working knowledge of Messiah's music. You've sampled both classic psalms and new songs for the Lord. You're absorbing Messiah's music into your life more and more each day.</small></h3>
+            <h3 data-bind="visible: Rank === 3">Your rank is: <strong>Citizen עירו (level 4)</strong> <small><br /> Messianic music is your faithful friend. Your knowledge of Messiah's music goes beyond the average Messianic listener. You know the original members of Israel's Hope, the entire discography of LAMB. Yeshua-honoring music characterizes your dialy routine.</small></h3>
+            <h3 data-bind="visible: Rank === 4">Your rank is: <strong>Zealot קנאי (level 5)</strong> <small><br /> Messiah's music characterizes who you are. You're continually humming hymns and songs to the Lord. Praises are always on your lips. You enjoy the classics, like LAMB, Israel's Hope, Liberating Wailing Wall, as well as new songs for the Lord from the upcoming Messianic artists. You have a favorite psalm, and you know it by heart.</small></h3>
+            <h3 data-bind="visible: Rank === 5">Your rank is: <strong>Leader נגיד (level 6)</strong> <small><br /> Yeshua's music saturates your home, car, workplace, and your congregation. You have absorbed nearly every Messianic song in existence, and you're seeking more. You're blessing the Lord at all times, his praises are continually in your mouth, you are praying, praising God with singing, worshiping Yeshua the Lord at all times. You know most of the psalms by heart.</small></h3>
+            <h3 data-bind="visible: Rank === 6">Your rank is: <strong>Melech מלך (level 7)</strong> <small><br /> Music for the Lord is an integral part of your life. You're one of Chavah's most faithful listeners. You're an evangelist for Messiah's music, sharing the psalms and songs for the Lord everywhere you go online and in the real world. You absorb Messiah's music daily. You know every LAMB song in existence. At work, you're whistling Micha'el Ben David's latest psalms for Messiah. In the car, you're humming Joel Chernoff's praises for the Lord. At home, you're singing out loud the praises of the Most High! The words of Scripture are in your engraved in your mind, Messiah's music ushers the Scriptures into your soul, etching them on your heart. From those of us at Chavah Messianic Radio, todah rabbah for all you do!</small></h3>
+
+            <div class="page-header">
+                <h2>Your Messianic music tastes</h2>
+            </div>
+            <ul>
+                <li>You've been a registered user since <strong data-bind="text: $root.totalRegisteredDaysText"></strong></li>
+                <li>You've listened to <strong><span data-bind="text: TotalPlays"></span> songs</strong>. That's approximately <strong><span data-bind="text: $root.hoursMinutesListened"></span></strong> of Messiah's music.</li>
+                <li>You've <strong>liked <span data-bind="text: LikedSongCount"></span> songs</strong> and <strong>disliked <span data-bind="text: DislikedSongCount"></span></strong>.</li>
+                <li>
+                    Some of your favorite artists are
+                    <ul data-bind="foreach: FavoriteArtists">
+                        <li><strong data-bind="text: Name"></strong> - (<span data-bind="text: LikeCount"></span> liked songs from this artist and <span data-bind="text: DislikeCount"></span> disliked)</li>
+                    </ul>
+                </li>
+                <li>
+                    Some of your favorite albums are
+                    <ul data-bind="foreach: FavoriteAlbums">
+                        <li><strong data-bind="text: Name"></strong> - (<span data-bind="text: LikeCount"></span> songs liked on this album and <span data-bind="text: DislikeCount"></span> disliked)</li>
+                    </ul>
+                </li>
+                <li>
+                    You like songs similar to
+                    <ul data-bind="foreach: FavoriteSongs">
+                        <li><strong data-bind="text: $data"></strong></li>
+                    </ul>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" data-bind="click: close">Close</button>
+    </div>
+</div>

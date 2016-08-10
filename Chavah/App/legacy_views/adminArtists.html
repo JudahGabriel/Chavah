@@ -1,0 +1,43 @@
+﻿<div>
+    <div class="btn-toolbar">
+        <div class="btn-group">
+            <button class="btn btn-primary" data-bind="click: newArtist"><i class="fa fa-plus"></i> New Artist</button>
+        </div>
+
+        <form class="navbar-form navbar-left" style="margin-top: 0;" role="search">
+            <div class="form-group">
+                <div class="input-group" style="max-width: 300px">
+                    <input type="text" class="form-control input-lg" placeholder="Find a song" data-bind="value: searchText, valueUpdate: 'afterkeydown'">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Images</th>
+                <th>Bio</th>
+                <td>&nbsp;</td>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: artists">
+            <tr>
+                <td>
+                    <button class="btn btn-link" data-bind="text: Name, click: $root.editArtist.bind($root, $data)"></button>
+                </td>
+                <td>
+                    <span data-bind="text: $root.getArtistImageCountText($data)"></span>
+                </td>
+                <td class="text-overflow" data-bind="text: Bio"></td>
+                <td>
+                    <button class="btn btn-danger" data-bind="click: $root.confirmDeleteArtist.bind($root, $data)">
+                        <i class="fa fa-trash-o"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

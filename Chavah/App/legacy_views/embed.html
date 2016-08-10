@@ -1,0 +1,68 @@
+﻿<div style="padding-top: 10px; padding-left: 5px;">
+
+    <div class="current-song" data-bind="with: player.song">
+        <div class="album-art" style="overflow:hidden;" data-bind="css: { 'album-art': $root.showEmbeddedSongEnded() == false }">
+            <div style="width: 300px; height: 300px;">
+                <img id="album-art-img" data-bind="visible: !$root.showEmbeddedSongEnded(), attr: { src: albumArtOrArtistImage, title: artist + ' - ' + album + ' - ' + name }, click: $root.playPause.bind($root)" />
+                <div class="embedded-song-credits" data-bind="visible: $root.showEmbeddedSongEnded">
+                    <div class="section">
+                        <a href="#" data-bind="attr: { href: purchaseUri }" target="_blank">Support Messiah's musicians <br />purchase this song</a>
+                    </div>
+                    <div class="section">
+                        <a href="#" data-bind="attr: { href: $root.songFromArtistUrl }" target="_blank">More from <br /><span data-bind="text: artist"></span></a>
+                    </div>
+                    <div class="section">
+                        <a href="#" data-bind="attr: { href: $root.songFromAlbumUrl }" target="_blank">More songs on <br /><span data-bind="text: album"></span></a>
+                    </div>
+                    <div class="section">
+                        <span>Share this song:</span>
+                        <br />
+                        <a href="#" class="use-bootstrap-tooltip" target="_blank" data-bind="attr: { href: $root.facebookShareLink }" title="Share this song on Facebook"><i class="fa fa-fw fa-facebook" style="color: rgb(59, 89, 153);"></i></a>
+                        <span> | </span>
+                        <a href="#" class="use-bootstrap-tooltip" target="_blank" data-bind="attr: { href: $root.twitterShareLink }" title="Share this song on Twitter"><i class="fa fa-fw fa-twitter" style="color: rgb(0, 172, 237);"></i></a>
+                        <span> | </span>
+                        <a href="#" class="use-bootstrap-tooltip" target="_blank" data-bind="attr: { href: $root.googlePlusShareLink }" title="Share this song on Google+"><i class="fa fa-fw fa-google-plus" style="color: rgb(212, 67, 50);"></i></a>
+                        <span> | </span>
+                        <a href="#" class="use-bootstrap-tooltip" data-bind="click: $root.showShareDialog.bind($root, 0)" title="Get a link to this song"><i class="fa fa-fw fa-link"></i></a>
+                        <span> | </span>
+                        <a href="#" class="use-bootstrap-tooltip" data-bind="click: $root.showShareDialog.bind($root, 1)" title="Embed this song on your blog or other web page"><i class="fa fa-fw fa-code"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div id="embedded-pause-overlay" data-bind="visible: $root.isPaused, click: $root.playPause.bind($root)" title="Click to play">
+                <div class="play-icon">
+                    <img src="../../content/images/embeddedPause.png" />
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <table class="rating">
+                <tr>
+                    <td><img data-bind="attr: { src: thumbUpImage, title: likeHoverText }, click: like, event: { touchstart: like }" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="rating-text" style="cursor: pointer;" data-bind="click: showIndividualRank, visible: isCumulativeRank, text: communityRank, css: colorClass" title="View upvote and downvote totals"></span>
+                        <span class="rating-text" data-bind="text: totalUpVoteText, visible: !isCumulativeRank()" style="color: green; display:inline;" title="This is how many up-votes this song has received"></span>
+                        <span class="rating-text" data-bind="visible: !isCumulativeRank()" style="display:inline;">/</span>
+                        <span class="rating-text" data-bind="text: totalDownVoteText, visible: !isCumulativeRank()" title="The number of down-votes this song has received" style="color: maroon; display:inline;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><img data-bind="attr: { src: thumbDownImage, title: dislikeHoverText }, click: dislike, event: { touchstart: dislike }" style="margin-bottom: -5px;" /></td>
+                </tr>
+            </table>
+            <span class="name" data-bind="text: name, attr: { title: name }"></span>
+            <div class="artist">
+                <span>By</span>
+                <a class="artist use-bootstrap-tooltip" href="#" target="_blank" data-bind="text: artist, attr: { href: $root.songFromArtistUrl, title: artist + ' - click to play another song from this artist' }"></a>
+            </div>
+            <div class="artist">
+                <span class="artist">On</span>
+                <a class="album use-bootstrap-tooltip" href="#" target="_blank" data-bind="text: album, attr: { href: $root.songFromAlbumUrl, title: album + ' - click to play another song from this album' }"></a>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audioElement" preload="auto"></audio>
+</div>

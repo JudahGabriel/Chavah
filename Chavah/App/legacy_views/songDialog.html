@@ -1,0 +1,48 @@
+﻿<div id="songDialog" class="messageBox" tabindex="-1">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" data-bind="click: close" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">
+            &nbsp;
+        </h4>
+    </div>
+
+    <div class="modal-body" data-bind="with: song">
+        <div class="row">
+            <img class="pull-left img-circle" data-bind="attr: { src: albumArtUri }" />
+            <h3><span data-bind="text: name"></span> <br /><small class="text-muted">by</small> <small data-bind="text: artist"></small></h3>
+            <p>
+                has been <strong>played <span data-bind="text: totalPlays"></span> times</strong>.
+                It's received <strong class="text-success"><span data-bind="text: totalUpVotes"></span> <i class="fa fa-thumbs-up"></i></strong>
+                and <strong class="text-danger"><span data-bind="text: totalDownVotes"></span> <i class="fa fa-thumbs-down"></i></strong>
+                for a net <strong>community ranking of <span data-bind="text: communityRank() > 0 ? ('+' + communityRank()) : communityRank(), css: { 'text-success': communityRank() > 0, 'text-danger': communityRank() < 0 }"></span></strong>.
+                Amongst all the music on Chavah, this song has a <strong><span data-bind="text: getCommunityRankTitle()"></span> ranking</strong>.
+                <br />
+                You <i data-bind="visible: isLiked" class="fa fa-thumbs-up text-success"></i><i data-bind="visible: isDisliked" class="fa fa-thumbs-down text-danger"></i><span class="text-muted" data-bind="visible: !isLiked() && !isDisliked()">neither like nor dislike</span> this song.
+            </p>
+            <div class="clearfix"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5 col-xs-12">
+                <p><span data-bind="text: name"></span> appears as the <span data-bind="text: getNthSongText()"></span> song on the <span data-bind="text: album"></span> album.</p>
+                <p>
+                    This <strong data-bind="text: genresCsv"></strong> song
+                    <span data-bind="visible: tags.length === 0">hasn't been tagged yet. <a data-bind="attr: { href: 'mailto:judahgabriel@gmail.com?subject=Tags for ' + artist + ' - ' + name }" target="_blank">Submit tags for this song</a>.</span>
+                    <span data-bind="visible: tags.length > 0">has been tagged as <strong data-bind="text: tagsCsv"></strong>.</span>
+                    <span data-bind="visible: genres.length === 0">This song doesn't have any genres. <a data-bind="attr: { href: 'mailto:judahgabriel@gmail.com?subject=Genres for ' + artist + ' - ' + name }" target="_blank">Submit genres for this song</a></span>
+                </p>
+            </div>
+            <div class="col-sm-7 col-xs-12">
+                <p>Lyrics:</p>
+                <pre data-bind="text: lyrics, visible: !!lyrics"></pre>
+                <p data-bind="visible: !lyrics">No lyrics yet. <a data-bind="attr: { href: 'mailto:judahgabriel@gmail.com?subject=Lyrics for ' + artist + ' - ' + name }" target="_blank">Submit lyrics for this song</a>.</p>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-default" data-bind="click: close">Close</button>
+    </div>
+</div>

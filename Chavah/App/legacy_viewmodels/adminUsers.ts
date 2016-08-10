@@ -1,0 +1,4 @@
+class adminUsers {
+}
+
+export = adminUsers;

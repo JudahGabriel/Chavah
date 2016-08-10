@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "Content/app.css",
+    "inputFile": "Content/app.less"
+  },
+  {
+    "outputFile": "Content/bootstrap.flatly.css",
+    "inputFile": "Content/bootstrap.flatly.less"
+  }
+]

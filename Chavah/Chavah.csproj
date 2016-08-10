@@ -1,0 +1,497 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{54F84C3D-133A-457B-9F4F-61555DA0AF10}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BitShuva</RootNamespace>
+    <AssemblyName>BitShuva</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TypeScriptToolsVersion>1.9</TypeScriptToolsVersion>
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+    <TargetFrameworkProfile />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+    </Reference>
+    <Reference Include="FlagFtp">
+      <HintPath>..\packages\FlagFtp.0.1.3\lib\FlagFtp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Raven.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <HintPath>..\packages\RavenDB.Client.3.0.30143\lib\net45\Raven.Abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <HintPath>..\packages\RavenDB.Client.3.0.30143\lib\net45\Raven.Client.Lightweight.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Interactive, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ix-Main.1.2.5\lib\net45\System.Interactive.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="WebActivator">
+      <Private>True</Private>
+      <HintPath>..\packages\WebActivator.1.5.3\lib\net40\WebActivator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RavenDataStore.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Common\CdnManager.cs" />
+    <Compile Include="Common\ElmahUnhandledExceptionFilter.cs" />
+    <Compile Include="Common\Extensions.cs" />
+    <Compile Include="Common\IEnumerableExtensions.cs" />
+    <Compile Include="Common\Match.cs" />
+    <Compile Include="Common\Range.cs" />
+    <Compile Include="Common\RssActionResult.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AlbumsController.cs" />
+    <Compile Include="Controllers\ArtistsController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LegacyController.cs" />
+    <Compile Include="Controllers\LikesController.cs" />
+    <Compile Include="Controllers\PlaylistsController.cs" />
+    <Compile Include="Controllers\RavenApiController.cs" />
+    <Compile Include="Controllers\RavenController.cs" />
+    <Compile Include="Controllers\SongRequestsController.cs" />
+    <Compile Include="Controllers\SongsController.cs" />
+    <Compile Include="Controllers\StationsController.cs" />
+    <Compile Include="Controllers\UserContextController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Activity.cs" />
+    <Compile Include="Models\Album.cs" />
+    <Compile Include="Models\AlbumUpload.cs" />
+    <Compile Include="Models\Artist.cs" />
+    <Compile Include="Models\CommunityRankStanding.cs" />
+    <Compile Include="Models\Indexes\Songs_AverageCommunityRank.cs" />
+    <Compile Include="Models\Indexes\Songs_RankStandings.cs" />
+    <Compile Include="Models\Indexes\Songs_Search.cs" />
+    <Compile Include="Models\Like.cs" />
+    <Compile Include="Models\LikeDislikeCount.cs" />
+    <Compile Include="Models\LikeStatus.cs" />
+    <Compile Include="Models\ChavahLog.cs" />
+    <Compile Include="Models\PagedList.cs" />
+    <Compile Include="Models\Playlist.cs" />
+    <Compile Include="Models\RecentUserSummary.cs" />
+    <Compile Include="Models\Song.cs" />
+    <Compile Include="Models\SongPick.cs" />
+    <Compile Include="Models\SongRequest.cs" />
+    <Compile Include="Models\SongUpload.cs" />
+    <Compile Include="Models\Station.cs" />
+    <Compile Include="Models\StationSongChoice.cs" />
+    <Compile Include="Models\Transformers\SongNameTransformer.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserProfile.cs" />
+    <Compile Include="Models\UserSongPreferences.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App\Views\Footer.html" />
+    <Content Include="App\Views\Header.html" />
+    <Content Include="App\Views\NowPlaying.html" />
+    <Content Include="App\Views\RequestSong.html" />
+    <Content Include="App\Views\Templates\ArtistList.html" />
+    <Content Include="App\Views\Trending.html" />
+    <Content Include="App\Views\UploadAlbum.html" />
+    <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Content\app.css">
+      <DependentUpon>app.less</DependentUpon>
+    </Content>
+    <Content Include="Content\app.min.css">
+      <DependentUpon>app.css</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.flatly.css">
+      <DependentUpon>bootstrap.flatly.less</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap.flatly.min.css">
+      <DependentUpon>bootstrap.flatly.css</DependentUpon>
+    </Content>
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\images\About.jpg" />
+    <Content Include="Content\images\backgroundFlowers.png" />
+    <Content Include="Content\images\backgroundTrees.png" />
+    <Content Include="Content\images\Buy.png" />
+    <Content Include="Content\images\chavah.png" />
+    <Content Include="Content\images\chavahLogoTwitterCard.png" />
+    <Content Include="Content\images\chavahLogoWindows8Tile.png" />
+    <Content Include="Content\images\Close.png" />
+    <Content Include="Content\images\Down.png" />
+    <Content Include="Content\images\DownChecked.png" />
+    <Content Include="Content\images\Embed.png" />
+    <Content Include="Content\images\EmbeddedPause.png" />
+    <Content Include="Content\images\Facebook.png" />
+    <Content Include="Content\images\fadeToWhite.png" />
+    <Content Include="Content\images\FavIcon.ico" />
+    <Content Include="Content\images\FavIcon128.png" />
+    <Content Include="Content\images\FavIcon256.png" />
+    <Content Include="Content\images\FavIcon32.png" />
+    <Content Include="Content\images\FavIcon64.png" />
+    <Content Include="Content\images\FavIconAppleTile.png" />
+    <Content Include="Content\images\GooglePlus.png" />
+    <Content Include="Content\images\Hanukah1.png" />
+    <Content Include="Content\images\Hanukah2.png" />
+    <Content Include="Content\images\Hanukah4.png" />
+    <Content Include="Content\images\Hanukah5.png" />
+    <Content Include="Content\images\hanukah7.png" />
+    <Content Include="Content\images\hanukah8.png" />
+    <Content Include="Content\images\jumplist_facebook.ico" />
+    <Content Include="Content\images\jumplist_twitter.ico" />
+    <Content Include="Content\images\LeftDecor.jpg" />
+    <Content Include="Content\images\LeftDecor.png" />
+    <Content Include="Content\images\Magen.png" />
+    <Content Include="Content\images\MessianicChords.png" />
+    <Content Include="Content\images\paused.png" />
+    <Content Include="Content\images\Pesach.png" />
+    <Content Include="Content\images\Twitter.png" />
+    <Content Include="Content\images\unimpressed.png" />
+    <Content Include="Content\images\Up.png" />
+    <Content Include="Content\images\UpChecked.png" />
+    <Content Include="Content\images\Windows81Tile\large.png" />
+    <Content Include="Content\images\Windows81Tile\square.png" />
+    <Content Include="Content\images\Windows81Tile\tiny.png" />
+    <Content Include="Content\images\Windows81Tile\wide.png" />
+    <Content Include="Content\nprogress.css" />
+    <Content Include="Content\soundEffects\promo1.mp3" />
+    <Content Include="Content\soundEffects\shabbatAnnouncement1.mp3" />
+    <Content Include="Content\soundEffects\shabbatAnnouncement2.mp3" />
+    <Content Include="Content\soundEffects\shabbatAnnouncement3.mp3" />
+    <Content Include="Content\soundEffects\shabbatAnnouncement4.mp3" />
+    <Content Include="Content\soundEffects\shabbatAnnouncement5.mp3" />
+    <Content Include="Content\soundEffects\SongRequest1.mp3" />
+    <Content Include="Content\soundEffects\SongRequest2.mp3" />
+    <Content Include="Content\soundEffects\SongRequest3.mp3" />
+    <Content Include="Content\soundEffects\SongRequest4.mp3" />
+    <Content Include="Content\soundEffects\SongRequest5.mp3" />
+    <Content Include="Content\soundEffects\SongRequest6.mp3" />
+    <Content Include="Content\soundEffects\SongRequest7.mp3" />
+    <Content Include="Content\soundEffects\StationId1.mp3" />
+    <Content Include="Content\soundEffects\StationId2.mp3" />
+    <Content Include="Content\ui-bootstrap-csp.css" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="Heavenly70.html" />
+    <Content Include="package.json" />
+    <Content Include="Content\app.less" />
+    <Content Include="App_Readme\NProgressjs_README.md" />
+    <Content Include="App_Readme\NProgressjs_LICENSE" />
+    <Content Include="Content\functions.less" />
+    <Content Include="Content\variables.less" />
+    <None Include="compilerconfig.json" />
+    <Content Include="Content\bootstrap.flatly.less" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
+    <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />
+    <Content Include="Scripts\angular-animate.js" />
+    <Content Include="Scripts\angular-animate.min.js" />
+    <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular-route.js" />
+    <Content Include="Scripts\angular-route.min.js" />
+    <Content Include="Scripts\angular-touch.js" />
+    <Content Include="Scripts\angular-touch.min.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap-tpls.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap-tpls.min.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap.min.js" />
+    <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
+    <None Include="Scripts\jquery-3.1.0.intellisense.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\fastclick.js" />
+    <Content Include="Scripts\jquery-3.1.0.js" />
+    <Content Include="Scripts\jquery-3.1.0.min.js" />
+    <Content Include="Scripts\jquery-3.1.0.slim.js" />
+    <Content Include="Scripts\jquery-3.1.0.slim.min.js" />
+    <Content Include="Scripts\jquery-transit-0.9.9.js" />
+    <Content Include="Scripts\modernizr-production.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\nprogress.js" />
+    <Content Include="Scripts\nprogress.min.js" />
+    <Content Include="Scripts\rx.lite.js" />
+    <Content Include="Scripts\vibrant.min.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\ThanksForSharing.cshtml" />
+    <Content Include="Scripts\angular.min.js.map" />
+    <Content Include="Scripts\angular-animate.min.js.map" />
+    <Content Include="Scripts\angular-route.min.js.map" />
+    <Content Include="Scripts\angular-touch.min.js.map" />
+    <Content Include="Scripts\jquery-3.1.0.slim.min.map" />
+    <Content Include="Scripts\jquery-3.1.0.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App\Common\" />
+    <Folder Include="App\Directives\" />
+    <Folder Include="App_Data\" />
+    <Folder Include="Views\Account\" />
+    <Folder Include="Views\Admin\" />
+    <Folder Include="Views\Legacy\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="App\App.ts" />
+    <TypeScriptCompile Include="App\Controllers\HeaderController.ts" />
+    <TypeScriptCompile Include="App\Controllers\NowPlayingController.ts" />
+    <TypeScriptCompile Include="App\Controllers\RequestSongController.ts" />
+    <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />
+    <TypeScriptCompile Include="App\Controllers\UploadAlbumController.ts" />
+    <TypeScriptCompile Include="App\Models\AudioStatus.ts" />
+    <TypeScriptCompile Include="App\Models\HeaderRoute.ts" />
+    <TypeScriptCompile Include="App\Models\IAlbumSwatch.ts" />
+    <TypeScriptCompile Include="App\Models\ServerInterfaces.ts" />
+    <TypeScriptCompile Include="App\Models\Song.ts" />
+    <TypeScriptCompile Include="App\Models\SongLike.ts" />
+    <TypeScriptCompile Include="App\Services\AlbumApiService.ts" />
+    <TypeScriptCompile Include="App\Services\ArtistApiService.ts" />
+    <TypeScriptCompile Include="App\Services\AudioPlayerService.ts" />
+    <TypeScriptCompile Include="App\Services\HttpApiService.ts" />
+    <TypeScriptCompile Include="App\Services\SignInService.ts" />
+    <TypeScriptCompile Include="App\Services\SongBatchService.ts" />
+    <TypeScriptCompile Include="App\Services\SongRequestService.ts" />
+    <TypeScriptCompile Include="App\Services\SongApiService.ts" />
+    <TypeScriptCompile Include="App\Services\StationIdentifierService.ts" />
+    <TypeScriptCompile Include="Models\Album.cs.d.ts">
+      <DependentUpon>Album.cs</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Models\Artist.cs.d.ts">
+      <DependentUpon>Artist.cs</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Models\LikeDislikeCount.cs.d.ts">
+      <DependentUpon>LikeDislikeCount.cs</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Models\PagedList.cs.d.ts">
+      <DependentUpon>PagedList.cs</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Models\User.cs.d.ts">
+      <DependentUpon>User.cs</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Models\UserProfile.cs.d.ts">
+      <DependentUpon>UserProfile.cs</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Models\UserSongPreferences.cs.d.ts">
+      <DependentUpon>UserSongPreferences.cs</DependentUpon>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="Scripts\typings\angular-ui-bootstrap\angular-ui-bootstrap.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-component-router.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-mocks.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-resource.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-route.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-sanitize.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\bootstrap\bootstrap.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\fastclick\fastclick.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\modernizr\modernizr.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\moment\moment-node.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\moment\moment.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\nprogress\NProgress.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\rx\rx.lite.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angular-ui\angular-ui-router.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angular-ui\angular-ui-sortable.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\filepicker\filepicker.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\vibrantjs\vibrant.d.ts" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptModuleKind>amd</TypeScriptModuleKind>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>52926</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:52926/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.                                                                                      
+       Other similar extension points exist, see Microsoft.Common.targets.                                                                                                                
+  <Target Name="BeforeBuild">                                                                                                                                                             
+  </Target>                                                                                                                                                                               
+  <Target Name="AfterBuild">                                                                                                                                                              
+  </Target> -->
+</Project>

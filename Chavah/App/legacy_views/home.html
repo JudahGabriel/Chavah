@@ -1,0 +1,114 @@
+﻿<div class="container">
+    <div class="song-control-panel">
+        <button class="btn btn-default btn-lg song-control use-bootstrap-tooltip" title="Got a song request? Chavah will play whatever tune's on your mind." data-bind="click: showSongRequestDialog">
+            <i class="fa fa-bullhorn fa-2x"></i>
+        </button>
+        <button class="btn btn-default btn-lg song-control" data-bind="event: { click: playPause, touchstart: playPause }">
+            <i class="fa fa-2x" data-bind="css: { 'fa-pause': !isPaused(), 'fa-play': isPaused }"></i>
+        </button>
+        <button class="btn btn-default btn-lg song-control use-bootstrap-tooltip" data-bind="event: { click: playNextSong, touchstart: playNextSong }" title="Skip this song, play something else">
+            <i class="fa fa-fast-forward fa-2x"></i>
+        </button>
+    </div>
+    <table id="songs-table">
+        <thead>
+            <tr>
+                <th class="song-table-header hidden-xs">Recent</th>
+                <th class="hidden-xs"><button class="btn btn-link song-table-header use-bootstrap-tooltip" style="text-decoration: underline;" data-bind="click: showMyLikes" title="See all your thumbed-up songs">My Likes</button></th>
+                <th>
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-1 hidden-xs">
+                            <span class="song-table-header">
+                                Now playing
+                            </span>
+                        </div>
+                        <div class="col-md-3 col-xs-offset-1">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-link share-button dropdown-toggle use-bootstrap-tooltip" data-toggle="dropdown" title="Share this song">
+                                    <i class="fa fa-2x fa-share-alt-square"></i>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li class="use-bootstrap-tooltip" title="Share this song on Facebook" data-placement="right"><a href="#" target="_blank" data-bind="attr: { href: facebookShareLink }"><i class="fa fa-fw fa-facebook fa-2x" style="color: rgb(59, 89, 153); width: 30px;"></i> Facebook</a></li>
+                                    <li class="use-bootstrap-tooltip" title="Share this song on Twitter" data-placement="right"><a href="#" target="_blank" data-bind="attr: { href: twitterShareLink }"><i class="fa fa-fw fa-twitter fa-2x" style="color: rgb(0, 172, 237); width: 30px;"></i> Twitter</a></li>
+                                    <li class="use-bootstrap-tooltip" title="Share this song on Google+" data-placement="right"><a href="#" target="_blank" data-bind="attr: { href: googlePlusShareLink }"><i class="fa fa-fw fa-google-plus fa-2x" style="color: rgb(212, 67, 50); border-radius: 10px; background-color: white; width: 30px;"></i> Google+</a></li>
+                                    <li class="divider"></li>
+                                    <li class="use-bootstrap-tooltip" title="Get the link for this song" data-placement="right"><a href="#" data-bind="click: showShareDialog.bind($root, 0)"><i class="fa fa-fw fa-link fa-2x" style="width: 30px;"></i> Link</a></li>
+                                    <li class="use-bootstrap-tooltip" title="Embed this song in your blog or other HTML page" data-placement="right"><a href="#" data-bind="click: showShareDialog.bind($root, 1)"><i class="fa fa-fw fa-code fa-2x" style="width: 30px"></i> Embed</a></li>
+                                </ul>
+                            </div>
+                            <a class="btn btn-link share-button use-bootstrap-tooltip" href="#" target="_blank" title="Support Messiah's musicians - purchase this song" data-bind="attr: { href: purchaseSongUrl }">
+                                <i class="fa fa-gittip fa-2x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </th>
+                <th class="song-table-header use-bootstrap-tooltip hidden-xs" title="Songs that have been recently thumbed-up by the Messianic community">Trending</th>
+                <th class="song-table-header use-bootstrap-tooltip hidden-xs" title="Songs that have been highly ranked by the Messianic community">Popular tunes</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td class="column hidden-xs" data-bind="template: { foreach: recentSongs, name: 'song-tile-template', afterAdd: fadeIn }"></td>
+                <td id="myLikedSongsColumn" class="column hidden-xs" data-bind="template: { foreach: likedSongs, name: 'song-tile-template', afterAdd: fadeIn }"></td>
+                <td class="current-song-column">
+
+                    <div class="current-song" data-bind="with: player.song">
+                        <div class="album-art" style="overflow:hidden;">
+                            <div style="width: 300px; height: 300px;">
+                                <img id="album-art-img" class="use-bootstrap-tooltip" data-bind="attr: { src: albumArtOrArtistImage, title: artist + ' - ' + album + ' - ' + name }, click: $root.player.playSongFromArtistAndAlbum.bind($root.player, $data.artist, $data.album)" />
+                            </div>
+                            <img id="pause-overlay" data-bind="visible: $root.isPaused, click: $root.playPause.bind($root)" src="content/images/paused.png" />
+                        </div>
+                        <div class="info">
+                            <table class="rating">
+                                <tr>
+                                    <td><img class="use-bootstrap-tooltip" data-bind="attr: { src: thumbUpImage, title: likeHoverText }, click: $root.likeCurrentSong.bind($root), event: { touchstart: $root.likeCurrentSong.bind($root) }" /></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="rating-text use-bootstrap-tooltip" style="cursor: pointer;" data-bind="click: showIndividualRank, visible: isCumulativeRank, text: communityRank, css: colorClass" title="View upvote and downvote totals"></span>
+                                        <span class="rating-text use-bootstrap-tooltip" data-bind="text: totalUpVoteText, visible: !isCumulativeRank()" style="color: green; display:inline;" title="This is how many up-votes this song has received"></span>
+                                        <span class="rating-text" data-bind="visible: !isCumulativeRank()" style="display:inline;">/</span>
+                                        <span class="rating-text use-bootstrap-tooltip" data-bind="text: totalDownVoteText, visible: !isCumulativeRank()" title="The number of down-votes this song has received" style="color: maroon; display:inline;"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><img class="use-bootstrap-tooltip" data-bind="attr: { src: thumbDownImage, title: dislikeHoverText }, click: $root.dislikeCurrentSong.bind($root), event: { touchstart: $root.dislikeCurrentSong.bind($root) }" style="margin-bottom: -5px;" /></td>
+                                </tr>
+                            </table>
+                            <a href="#" class="name use-bootstrap-tooltip" data-placement="left" data-bind="text: name, click: $root.showSongInfo.bind($root), attr: { title: name + ' - click to see song info ' }"></a>
+                            <div class="artist">
+                                <span>By</span>
+                                <a class="artist use-bootstrap-tooltip" href="#" data-bind="text: artist, click: $root.player.playSongFromArtist.bind($root.player, $data.artist), attr: { title: artist + ' - click to play another song from this artist' }"></a>
+                            </div>
+                            <div class="artist">
+                                <span class="artist">On</span>
+                                <a class="album use-bootstrap-tooltip" href="#" data-bind="text: album, click: $root.player.playSongFromArtistAndAlbum.bind($root.player, $data.artist, $data.album), attr: { title: album + ' - click to play another song from this album' }"></a>
+                            </div>
+                        </div>
+                        <div id="current-track-position" data-bind="style: { width: $root.currentTrackPositionPercentage }" />
+                    </div>
+
+                </td>
+                <td class="column hidden-xs" data-bind="template: { foreach: trendingSongs, name: 'song-tile-template', afterAdd: fadeIn }"></td>
+                <td class="column hidden-xs" data-bind="template: { foreach: topSongs, name: 'song-tile-template', afterAdd: fadeIn }"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<audio id="audioElement"></audio>
+
+<script id="song-tile-template" type="text/html">
+    <div class="song use-bootstrap-tooltip" data-bind="
+			style: { visibility: hasSong() ? 'visible' : 'hidden' },
+            event: { click: $root.player.playSongById.bind($root.player, $data.song() ? $data.song().id : null), mouseenter: mouseEnter, mouseout: mouseLeave },
+            fadeInOnSongChange: true,
+            attr: { 'data-original-title': title }">
+        <img data-bind="attr: { src: albumArtUri }" />
+        <div class="info">
+            <span data-bind="text: name"></span>
+        </div>
+    </div>
+</script>

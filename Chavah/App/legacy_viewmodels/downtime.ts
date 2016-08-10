@@ -1,0 +1,4 @@
+class downtime {
+}
+
+export =downtime;

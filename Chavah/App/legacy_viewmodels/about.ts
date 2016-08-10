@@ -1,0 +1,4 @@
+﻿class About {
+}
+
+export = About;

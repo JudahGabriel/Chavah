@@ -1,0 +1,45 @@
+﻿<div>
+    <div class="btn-toolbar">
+        <div class="btn-group">
+            <button class="btn btn-primary" data-bind="click: uploadSong"><i class="fa fa-upload"></i> Upload New Song</button>
+        </div>
+
+        <form class="navbar-form navbar-left" style="margin-top: 0;" role="search">
+            <div class="form-group">
+                <div class="input-group" style="max-width: 300px">
+                    <input type="text" class="form-control input-lg" placeholder="Find a song" data-bind="value: searchText, valueUpdate: 'afterkeydown'">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Album</th>
+                <th>Name</th>
+                <th>Artist</th>
+                <th>Rank</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: songs">
+            <tr>
+                <td>
+                    <img style="max-width: 80px;" data-bind="attr: { src: albumArtUri }" />
+                </td>
+                <td>
+                    <button class="btn btn-link" data-bind="text: name, click: $root.editSong.bind($root, $data)"></button>
+                </td>
+                <td data-bind="text: artist"></td>
+                <td data-bind="text: communityRank"></td>
+                <td>
+                    <button class="btn btn-danger" data-bind="click: $root.confirmDeleteSong.bind($root, $data)">
+                        <i class="fa fa-trash-o"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

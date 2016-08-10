@@ -89,6 +89,13 @@ ipch/
 *.vspx
 *.sap
 
+# Web config
+Web.config
+Web.Release.config
+Web.Debug.config
+/Chavah/App/*/*.js
+/Chavah/App/*/*.js.map
+
 # TFS 2012 Local Workspace
 $tf/
 
@@ -250,3 +257,4 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+/Chavah/App/App.js

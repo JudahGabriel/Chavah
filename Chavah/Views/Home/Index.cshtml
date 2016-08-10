@@ -1,0 +1,123 @@
+﻿@using System.Web.Optimization
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>@ViewBag.Title</title>
+
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="The very best Messianic Jewish and Hebrew Roots radio on the web" />
+        <meta name="keywords" content="messianic, jewish, radio, hebrew, roots, radio, chavah" />
+
+        @* Fav icons *@
+        <!--[if IE]>
+        <link rel="shortcut icon" type="image/ico" href="@Url.Content("~/content/images/FavIcon.ico")">
+        <!--<![endif]-->
+        <!--[if !IE]>-->
+        <link rel="icon" type="image/png" href="@Url.Content("~/content/images/FavIcon32.png")" sizes="32x32">
+        <link rel="icon" type="image/png" href="@Url.Content("~/content/images/FavIcon64.png")" sizes="64x64">
+        <link rel="icon" type="image/png" href="@Url.Content("~/content/images/FavIcon128.png")" sizes="128x128">
+        <link rel="icon" type="image/png" href="@Url.Content("~/content/images/FavIcon256.png")" sizes="256x256">
+        <!--<![endif]-->
+        @* Apple iOS shortcut *@
+        <link rel="apple-touch-icon" href="@Url.Content("~/content/images/FavIconAppleTile.png")" />
+        @*<link rel="apple-touch-startup-image" href="~/Content/images/ios-startup-image-landscape.png" media="(orientation:landscape)" />
+        <link rel="apple-touch-startup-image" href="~/Content/images/ios-startup-image-portrait.png" media="(orientation:portrait)" />
+        <link rel="apple-touch-icon" href="~/Content/images/icon.png" />*@
+
+        @*IE9, IE10 pinned site / jumplist*@
+        <meta name="msapplication-task" content="name=Chavah on Facebook;action-uri=http://www.facebook.com/pages/Chavah-Messianic-Radio/134887069882254;icon-uri=/content/images/jumplist_facebook.ico" />
+        <meta name="msapplication-task" content="name=Chavah on Twitter;action-uri=http://twitter.com/chavahradio;icon-uri=/content/images/jumplist_twitter.ico" />
+        <meta name="msapplication-navbutton-color" content="brown" />
+        <meta name="msapplication-starturl" content="http://messianicradio.com" />
+        <meta name="msapplication-tooltip" content="Chavah Messianic Radio" />
+
+        @*Windows 8 tile*@
+        <meta name="application-name" content="Chavah Messianic Radio" />
+        <meta name="msapplication-TileColor" content="#080f24" />
+        <meta name="msapplication-TileImage" content="@Url.Content("~/content/images/chavahLogoWindows8Tile.png")" />
+
+        @*Windows 8.1 tiles with notifications*@
+        <meta name="application-name" content="Chavah Messianic Radio" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <meta name="msapplication-square70x70logo" content="@Url.Content("~/content/images/Windows81Tile/tiny.png")" />
+        <meta name="msapplication-square150x150logo" content="@Url.Content("~/content/images/Windows81Tile/square.png")" />
+        <meta name="msapplication-wide310x150logo" content="@Url.Content("~/content/images/Windows81Tile/wide.png")" />
+        <meta name="msapplication-square310x310logo" content="@Url.Content("~/content/images/Windows81Tile/large.png")" />
+        <meta name="msapplication-notification" content="frequency=30;polling-uri=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=1;polling-uri2=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=2;polling-uri3=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=3;polling-uri4=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=4;polling-uri5=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=5; cycle=1" />
+
+        @* Twitter card *@
+        <meta name="twitter:creator" content="&#64;chavahradio">
+        <meta name="twitter:site" content="&#64;chavahradio">
+        <meta name="twitter:card" content="summary" />
+        @if (ViewBag.QueriedSong != null)
+        {
+            <meta name="twitter:url" content="http://messianicradio.com@(ViewBag.QueriedSong.GetSongShareLink())" />
+            <meta name="twitter:title" content="@ViewBag.QueriedSong.Name by @ViewBag.QueriedSong.Artist" />
+            <meta name="twitter:description" content='"@ViewBag.QueriedSong.Name" by @ViewBag.QueriedSong.Artist appears as the @ViewBag.QueriedSongNth song on the @ViewBag.QueriedSong.Album album. @ViewBag.QueriedSong.Name is now ranked @(ViewBag.QueriedSong.CommunityRank >= 0 ? '+' : '-')@ViewBag.QueriedSong.CommunityRank by the international Messianic community.' />
+            <meta name="twitter:image" content="http://messianicradio.com@(ViewBag.QueriedSong.AlbumArtUri)" />
+        }
+        else
+        {
+            <meta name="twitter:url" content="http://messianicradio.com" />
+            <meta name="twitter:title" content="Chavah Messianic Radio" />
+            <meta name="twitter:description" content="Messiah's music. Internet radio for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
+            <meta name="twitter:image" content="http://messianicradio.com/content/images/chavahLogoTwitterCard.png" />
+        }
+
+        <link href='http://fonts.googleapis.com/css?family=EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css'>
+        <script type="text/javascript">
+            if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+                var msViewportStyle = document.createElement("style");
+                var mq = "@@-ms-viewport{width:auto!important}";
+                msViewportStyle.appendChild(document.createTextNode(mq));
+                document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
+            }
+        </script>
+
+        <!-- BEGIN TRACKJS -->
+        <script type="text/javascript">window._trackJs = { token: '3f47a41e023149458b76ae8aa70bab84' };</script>
+        <script type="text/javascript" src="//d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" crossorigin="anonymous"></script>
+        <!-- END TRACKJS -->
+
+        @Styles.Render("~/styles/app")
+        @Styles.Render("~/styles/fontawesome")
+        @Scripts.Render("~/scripts/jquery")
+        @Scripts.Render("~/scripts/reactive")
+    </head>
+
+<body class="@ViewBag.EmbeddedClass">
+    @if (!string.IsNullOrEmpty(ViewBag.DescriptiveImageUrl))
+    {
+        <img src="@ViewBag.DescriptiveImageUrl" style="display:none;" />
+    }
+
+    <div id="appContainer" data-ng-app="ChavahApp">
+        <div ng-include="'../../app/views/header.html'"></div>
+        <div id="currentPageContainer" data-ng-view></div>
+        <footer ng-include="'../../app/views/footer.html'"></footer>
+    </div>
+
+    @Scripts.Render("~/scripts/app")
+
+    @*Google analytics*@
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-58465409-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+</body>
+
+</html>

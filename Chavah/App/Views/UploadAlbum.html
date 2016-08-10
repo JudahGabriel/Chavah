@@ -1,0 +1,138 @@
+﻿<section class="upload-album-page" ng-controller="UploadAlbumController as vm">
+    <div class="row">
+        <div class="col-sm-offset-3 col-sm-6">
+            <h2>Upload an album</h2>
+            <form>
+                <div class="form-group">
+                    <label>Album name</label>
+                    <input class="form-control" placeholder="Album name" ng-model="vm.albumName">
+                </div>
+                <div class="form-group">
+                    <label>Album art</label>
+                    <br ng-show="vm.albumArt" />
+                    <img class="album-art" ng-show="vm.albumArt" ng-src="{{vm.albumArt.url}}" />
+                    <div ng-show="vm.albumArt" style="width: 300px; padding: 10px;" ng-style="{ 'background-color': vm.backColor, 'color': vm.foreColor }">
+                        <div ng-show="vm.albumArt" ng-style="{ 'text-shadow': '0 0 5px ' + vm.textShadowColor }">
+                            {{vm.songs[0].name || 'Song Name Here'}}
+                            <br />
+                            <span ng-style="{ 'color': vm.mutedColor }">By</span>
+                            {{vm.artist.Name || 'Joseph A. Artist'}}
+                            <br />
+                            <span ng-style="{ 'color': vm.mutedColor }">on</span>
+                            {{vm.albumName || 'Some New Album'}}
+                        </div>
+                    </div>
+                    <br />
+                    <button class="btn btn-default" ng-click="vm.chooseAlbumArt()">Choose album art...</button>
+                    <div ng-show="vm.albumArt">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h5>Album colors</h5>
+                                <table class="table table-bordered table-hover">
+                                    <tbody>
+                                        <tr>
+                                            <td><label>Fore</label></td>
+                                            <td><input class="form-control" type="color" ng-model="vm.foreColor" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Background</label></td>
+                                            <td><input class="form-control" type="color" ng-model="vm.backColor" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Muted</label></td>
+                                            <td><input class="form-control" type="color" ng-model="vm.mutedColor" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Text shadow</label></td>
+                                            <td><input class="form-control" type="color" ng-model="vm.textShadowColor" /></td>
+                                        </tr>
+                                    </tbody>
+                                </table>                                
+                                <div>
+                                    <button class="btn btn-default" ng-click="vm.albumArtChosen(vm.albumArt)">Reset album colors</button>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <h5>Suggested swatches</h5>
+                                <div class="panel-group" id="swatchPanelGroup">
+                                    <div class="panel panel-default" ng-repeat="swatch in vm.allAlbumSwatches">
+                                        <div class="panel-heading" ng-style="{ 'background-color': swatch.color, color: swatch.bodyTextColor }">
+                                            <h3 class="panel-title">
+                                                <a data-parent="#swatchPanelGroup" data-toggle="collapse" ng-href="'#swatchCollapse{{swatch.name}}">
+                                                    <span ng-style="{ color: swatch.titleTextColor }">{{swatch.name}}</span>
+                                                    <small ng-style="{ color: swatch.bodyTextColor }">...sample body text color</small>
+                                                </a>
+                                            </h3>
+                                        </div>
+                                        <div class="panel-collapse collapse" ng-attr-id="{{'swatchCollapse' + swatch.name}}">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-sm-4 text-center">
+                                                        <div class="swatch-sample" ng-style="{ 'background-color': swatch.color }">
+                                                            <h3 ng-style="{ color: swatch.titleTextColor }">Title text sample</h3>
+                                                            <p ng-style="{ color: swatch.bodyTextColor }">Body text sample</p>
+                                                        </div>
+                                                        <p>
+                                                            Color
+                                                            <br />
+                                                            {{swatch.color}} {{vm.hexToRgbString(swatch.color)}}
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-sm-4 text-center">
+                                                        <div class="swatch-sample" ng-style="{ 'background-color': swatch.titleTextColor }"></div>
+                                                        <p>
+                                                            Title Text
+                                                            <br />
+                                                            {{swatch.titleTextColor}} {{vm.hexToRgbString(swatch.titleTextColor)}}
+                                                        </p>
+
+                                                    </div>
+                                                    <div class="col-sm-4 text-center">
+                                                        <div class="swatch-sample" ng-style="{ 'background-color': swatch.bodyTextColor }"></div>
+                                                        <p>
+                                                            Body Text
+                                                            <br />
+                                                            {{swatch.bodyTextColor}} {{vm.hexToRgbString(swatch.bodyTextColor)}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Songs</label>
+                    <div class="list-group">
+                        <a class="list-group-item" href="javascript:void(0)" ng-repeat="song in vm.songs">
+                            <input type="text" class="form-control" ng-model="song.friendlyName" />
+                            <br />
+                            <audio preload="none" controls ng-src="{{song.trustedUrl}}" />
+                        </a>
+                    </div>
+                    <button class="btn btn-default" ng-click="vm.chooseSongs()">Choose songs...</button>
+                </div>
+                <div class="form-group">
+                    <label>Artist</label>
+                    <input type="text" class="form-control" ng-model="vm.artist.Name" uib-popover-template="'App/Views/Templates/ArtistList.html'" popover-trigger="focus" popover-placement="bottom" />
+                </div>
+                <div class="form-group">
+                    <label>Purchase URL</label>
+                    <input class="form-control" placeholder="Purchase URL" ng-model="vm.purchaseUrl">
+                </div>
+                <div class="form-group">
+                    <label>Genre</label>
+                    <select class="form-control" ng-model="vm.genre" ng-options="genre for genre in vm.allGenres">
+                        <option value="">Select a genre...</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" ng-click="vm.upload()" ng-disabled="vm.isUploading">Upload</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript" async src="http://api.filepicker.io/v1/filepicker.js"></script>
