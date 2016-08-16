@@ -1,4 +1,7 @@
-﻿using BitShuva.Controllers;
+﻿using BitShuva.Common;
+using BitShuva.Controllers;
+using NLog;
+using NLog.Config;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Indexes;
@@ -9,31 +12,24 @@ using System.Web;
 
 namespace BitShuva
 {
-    public static class RavenDataStore
+    public static class RavenContext
     {
-        public static IDocumentStore Store
-        {
-            get;
-            private set;
-        }
+        public static IDocumentStore Db { get; private set; }
 
         public static void Initialize()
         {
             var docStore = new DocumentStore { ConnectionStringName = "RavenDB" };
+            docStore.Initialize();
+            Db = docStore;
 
-            try
-            {
-                docStore.Initialize();
-            }
-            catch (System.TimeoutException)
-            {
-                // Raven is just booting up (possibly after a system restart). Pause for 30 seconds, then try again.
-                System.Threading.Thread.Sleep(30000);
-                docStore.Initialize();
-            }
+            // Direct NLog to store logs in Raven.
+            var loggingConfig = new LoggingConfiguration();
+            var ravenNLogTarget = new RavenNLogTarget(Db);
+            loggingConfig.AddTarget("RavenNLog", ravenNLogTarget);
+            loggingConfig.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, ravenNLogTarget));
+            LogManager.Configuration = loggingConfig;
 
-            IndexCreation.CreateIndexes(typeof(RavenDataStore).Assembly, docStore);
-            Store = docStore;
+            IndexCreation.CreateIndexes(typeof(RavenContext).Assembly, Db);
         }
     }
 }

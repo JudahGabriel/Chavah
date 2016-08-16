@@ -15,13 +15,13 @@ namespace BitShuva.Controllers
 {
     public abstract class RavenApiController : ApiController
     {
-        public IAsyncDocumentSession Session { get; set; } 
+        public IAsyncDocumentSession Session { get; private set; } 
 
         public async override Task<HttpResponseMessage> ExecuteAsync(
             HttpControllerContext controllerContext,
             CancellationToken cancellationToken)
         {
-            using (Session = RavenDataStore.Store.OpenAsyncSession())
+            using (Session = RavenContext.Db.OpenAsyncSession())
             {
                 var result = await base.ExecuteAsync(controllerContext, cancellationToken);
                 await Session.SaveChangesAsync();

@@ -22,7 +22,7 @@ namespace BitShuva
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            RavenDataStore.Initialize();
+            RavenContext.Initialize();
         }
     }
 }
