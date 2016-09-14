@@ -4,6 +4,7 @@ using Chavah.Common;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
@@ -32,6 +33,58 @@ namespace BitShuva.Controllers
             Response.SetCookie(cookie);
 
             return View();
+        }
+
+        public async Task<ActionResult> Migrate(string artist)
+        {
+            var songsByArtist = await Session.Query<Song>().Where(s => s.Artist == artist).Take(1000).ToListAsync();
+            var urls = new List<Song>();
+            foreach (var song in songsByArtist)
+            {
+                var escapedSongName = song.Name.Replace(":", "_");
+                if (song.Number > 0)
+                {
+                    var songNumberWithZero = song.Number <= 9 ? $"0{song.Number}" : song.Number.ToString();
+                    song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{song.Artist}/{song.Artist} - {song.Album} - {songNumberWithZero} - {escapedSongName}.mp3");
+                }
+                else
+                {
+                    song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{song.Artist}/{song.Artist} - {song.Album} - {escapedSongName}.mp3");
+                }
+                
+                urls.Add(song.ToDto());
+            }
+
+            return View(urls);
+        }
+
+        public async Task<ActionResult> FindMissingSongs()
+        {
+            var allSongs = new List<Song>(5000);
+            using (var stream = await Session.Advanced.StreamAsync<Song>("Songs/"))
+            {
+                while(await stream.MoveNextAsync())
+                {
+                    var song = stream.Current.Document;
+                    allSongs.Add(song);
+                }
+            }
+
+            foreach (var song in allSongs)
+            {
+                var escapedSongName = song.Name.Replace(":", "_");
+                if (song.Number > 0)
+                {
+                    var songNumberWithZero = song.Number <= 9 ? $"0{song.Number}" : song.Number.ToString();
+                    song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{song.Artist}/{song.Artist} - {song.Album} - {songNumberWithZero} - {escapedSongName}.mp3");
+                }
+                else
+                {
+                    song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{song.Artist}/{song.Artist} - {song.Album} - {escapedSongName}.mp3");
+                }
+
+
+            }
         }
 
         [Route("home/embed")]

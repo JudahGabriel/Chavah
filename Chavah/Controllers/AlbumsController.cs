@@ -32,7 +32,7 @@ namespace BitShuva.Controllers
             var unescapedFileName = Uri.UnescapeDataString(artist) + " - " + Uri.UnescapeDataString(album) + Path.GetExtension(fileName);
 
             var albumArtUri = await CdnManager.UploadAlbumArtToCdn(new Uri(address), artist, album, Path.GetExtension(fileName));
-            var existingAlbum = await this.Session
+            var existingAlbum = await this.DbSession
                 .Query<Album>()
                 .FirstOrDefaultAsync(a => a.Artist == artist && a.Name == album);
             if (existingAlbum != null)
@@ -47,11 +47,11 @@ namespace BitShuva.Controllers
                     Artist = artist,
                     AlbumArtUri = albumArtUri
                 };
-                await this.Session.StoreAsync(existingAlbum);
+                await this.DbSession.StoreAsync(existingAlbum);
             }
 
             // Update the songs on this album.
-            var songsOnAlbum = await this.Session
+            var songsOnAlbum = await this.DbSession
                 .Query<Song>()
                 .Where(s => s.Artist == artist && s.Album == album)
                 .ToListAsync();
@@ -70,7 +70,7 @@ namespace BitShuva.Controllers
         [Route("art/{songId}/{artist}/{album}")]
         public async Task<dynamic> GetAlbumArt(string songId, string artist, string album)
         {
-            var existingAlbum = await this.Session
+            var existingAlbum = await this.DbSession
                 .Query<Album>()
                 .FirstOrDefaultAsync(a => a.Artist == artist && a.Name == album);
             return new
@@ -86,7 +86,7 @@ namespace BitShuva.Controllers
         [Route("art/test")]
         public async Task<HttpResponseMessage> Test(string songId)
         {
-            var existingSong = await this.Session
+            var existingSong = await this.DbSession
                 .LoadAsync<Song>(songId);
             var response = new HttpResponseMessage();
             using (var webClient = new WebClient())
@@ -145,12 +145,12 @@ namespace BitShuva.Controllers
                     UploadDate = DateTime.UtcNow,
                     Uri = songUriCdn
                 };
-                await this.Session.StoreAsync(song);
+                await this.DbSession.StoreAsync(song);
                 songNumber++;
             }
 
             // Store the new album if it doesn't exist already.
-            var existingAlbum = await Session.Query<Album>()
+            var existingAlbum = await DbSession.Query<Album>()
                 .FirstOrDefaultAsync(a => a.Artist == album.Artist && a.Name == album.Name);
             if (existingAlbum == null)
             {
@@ -167,10 +167,10 @@ namespace BitShuva.Controllers
 
             if (string.IsNullOrEmpty(existingAlbum.Id))
             {
-                await this.Session.StoreAsync(existingAlbum);
+                await this.DbSession.StoreAsync(existingAlbum);
             }
 
-            await this.Session.SaveChangesAsync();
+            await this.DbSession.SaveChangesAsync();
             return existingAlbum.Id;
         }
 
@@ -179,7 +179,7 @@ namespace BitShuva.Controllers
         public async Task<HttpResponseMessage> GetAlbumArt(string artist, string album)
         {
             var redirectUri = default(Uri);
-            var existingAlbum = await this.Session.Query<Album>()
+            var existingAlbum = await this.DbSession.Query<Album>()
                 .FirstOrDefaultAsync(a => a.Artist == artist && a.Name == album);
             if (existingAlbum != null && existingAlbum.AlbumArtUri != null)
             {
@@ -188,7 +188,7 @@ namespace BitShuva.Controllers
             else
             {
                 // We don't have an album for this. See if we have a matching song.
-                var matchingSong = await this.Session.Query<Song>().FirstOrDefaultAsync(s => s.Album == album && s.Artist == artist);
+                var matchingSong = await this.DbSession.Query<Song>().FirstOrDefaultAsync(s => s.Album == album && s.Artist == artist);
                 if (matchingSong != null && matchingSong.AlbumArtUri != null)
                 {
                     redirectUri = matchingSong.AlbumArtUri;
@@ -209,7 +209,7 @@ namespace BitShuva.Controllers
         [Route("songlisting")]
         public async Task<List<string>> SongListing(string artist, string album)
         {
-            var songs = await Session.Query<Song>()
+            var songs = await DbSession.Query<Song>()
                 .Where(s => s.Artist == artist && s.Album == album)
                 .ToListAsync();
             return songs

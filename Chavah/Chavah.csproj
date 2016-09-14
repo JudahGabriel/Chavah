@@ -21,7 +21,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <TypeScriptToolsVersion>1.9</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.0</TypeScriptToolsVersion>
     <TypeScriptSourceMap>False</TypeScriptSourceMap>
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
     <TargetFrameworkProfile />
@@ -106,7 +106,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.3.7\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.3.8\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog.RavenDb, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -129,8 +129,8 @@
       <HintPath>..\packages\RavenDB.AspNet.Identity.1.0.1\lib\net45\RavenDB.AspNet.Identity.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SendGrid, Version=8.0.2.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
-      <HintPath>..\packages\Sendgrid.8.0.2\lib\SendGrid.dll</HintPath>
+    <Reference Include="SendGrid, Version=8.0.4.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sendgrid.8.0.4\lib\SendGrid.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SendGrid.CSharp.HTTP.Client, Version=3.0.0.0, Culture=neutral, PublicKeyToken=79219bf4e5ecaaca, processorArchitecture=MSIL">
@@ -358,7 +358,6 @@
     <Content Include="Content\images\Windows81Tile\tiny.png" />
     <Content Include="Content\images\Windows81Tile\wide.png" />
     <Content Include="Content\nprogress.css" />
-    <Content Include="Content\soundEffects\promo1.mp3" />
     <Content Include="Content\soundEffects\shabbatAnnouncement1.mp3" />
     <Content Include="Content\soundEffects\shabbatAnnouncement2.mp3" />
     <Content Include="Content\soundEffects\shabbatAnnouncement3.mp3" />
@@ -455,6 +454,8 @@
     <Content Include="Scripts\angular-touch.min.js.map" />
     <Content Include="Scripts\jquery-3.1.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.0.min.map" />
+    <Content Include="Views\Home\Migrate.cshtml" />
+    <Content Include="Views\Home\AlbumArtMigrate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App\Common\" />
@@ -526,7 +527,6 @@
     <TypeScriptCompile Include="Scripts\typings\fastclick\fastclick.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\modernizr\modernizr.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\moment\moment-node.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\moment\moment.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\nprogress\NProgress.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\rx\rx.lite.d.ts" />

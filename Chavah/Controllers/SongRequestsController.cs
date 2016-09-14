@@ -25,7 +25,7 @@ namespace BitShuva.Controllers
                 return null;
             }
 
-            var recentSongRequests = await this.Session
+            var recentSongRequests = await this.DbSession
                  .Query<SongRequest>()
                  .Customize(x => x.WaitForNonStaleResultsAsOfNow(TimeSpan.FromSeconds(5)))
                  .OrderByDescending(d => d.DateTime)
@@ -39,14 +39,14 @@ namespace BitShuva.Controllers
             if (validSongRequest != null)
             {
                 validSongRequest.PlayedForUserIds.Add(user.Id);
-                await this.Session.StoreAsync(validSongRequest);
-                await this.Session.SaveChangesAsync();
+                await this.DbSession.StoreAsync(validSongRequest);
+                await this.DbSession.SaveChangesAsync();
             }
 
             // We've got a valid song request. Verify the user hasn't disliked this song.
             if (validSongRequest != null)
             {
-                var userDislikesSong = await this.Session
+                var userDislikesSong = await this.DbSession
                     .Query<Like>()
                     .Where(l => l.UserId == user.Id && l.Status == LikeStatus.Dislike && l.SongId == validSongRequest.SongId)
                     .AnyAsync();
@@ -65,7 +65,7 @@ namespace BitShuva.Controllers
         public async Task RequestSong(string songId)
         {
             var user = await this.GetLoggedInUserOrNull();
-            var song = await this.Session.LoadAsync<Song>(songId);
+            var song = await this.DbSession.LoadAsync<Song>(songId);
             if (song != null && user != null)
             {
                 var requestExpiration = DateTime.UtcNow.AddDays(2);
@@ -84,8 +84,8 @@ namespace BitShuva.Controllers
                         Name = song.Name,
                         UserId = user.Id
                     };
-                    await this.Session.StoreAsync(songRequest);
-                    this.Session.AddRavenExpiration(songRequest, requestExpiration);
+                    await this.DbSession.StoreAsync(songRequest);
+                    this.DbSession.AddRavenExpiration(songRequest, requestExpiration);
                 }
 
                 var songArtist = song.Artist;
@@ -96,15 +96,15 @@ namespace BitShuva.Controllers
                     Description = string.Format("\"{0}\" by {1} was requested by one of our listeners on Chavah Messianic Radio.", song.Name, songArtist),
                     MoreInfoUri = song.GetSongShareLink()
                 };
-                await this.Session.StoreAsync(activity);
-                this.Session.AddRavenExpiration(activity, requestExpiration);
+                await this.DbSession.StoreAsync(activity);
+                this.DbSession.AddRavenExpiration(activity, requestExpiration);
             }
         }
 
         private async Task<bool> HasRecentPendingSongRequest(string songId)
         {
             var recent = DateTime.Now.Subtract(TimeSpan.FromMinutes(120));
-            return await this.Session
+            return await this.DbSession
                 .Query<SongRequest>()
                 .AnyAsync(s => s.SongId == songId && s.DateTime >= recent);
         }
@@ -113,7 +113,7 @@ namespace BitShuva.Controllers
         {
             var recent = DateTime.Now.Subtract(TimeSpan.FromMinutes(60));
             var many = 1;
-            return await this.Session
+            return await this.DbSession
                 .Query<SongRequest>()
                 .CountAsync(s => s.Artist == artist && s.DateTime >= recent) >= many;
         }
@@ -122,7 +122,7 @@ namespace BitShuva.Controllers
         {
             var recent = DateTime.Now.Subtract(TimeSpan.FromMinutes(60));
             var many = 2;
-            var recentSongRequestsFromUser = await this.Session
+            var recentSongRequestsFromUser = await this.DbSession
                 .Query<SongRequest>()
                 .CountAsync(s => s.UserId == userId && s.DateTime >= recent);
             return recentSongRequestsFromUser >= many;

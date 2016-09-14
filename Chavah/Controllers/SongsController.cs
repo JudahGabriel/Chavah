@@ -27,8 +27,8 @@ namespace BitShuva.Controllers
         {
             await this.EnsureIsAdminUser();
 
-            var totalCount = await this.Session.Query<Song>().CountAsync();
-            var results = await this.Session
+            var totalCount = await this.DbSession.Query<Song>().CountAsync();
+            var results = await this.DbSession
                 .Query<Song>()
                 //.Customize(x => x.WaitForNonStaleResultsAsOfNow(TimeSpan.FromSeconds(5)))
                 .Skip(skip)
@@ -52,10 +52,10 @@ namespace BitShuva.Controllers
         {
             await this.EnsureIsAdminUser();
 
-            var song = await this.Session.LoadAsync<Song>(songId);
+            var song = await this.DbSession.LoadAsync<Song>(songId);
             if (song != null)
             {
-                this.Session.Delete(song);
+                this.DbSession.Delete(song);
                 var errorLog = default(ChavahLog);
                 try
                 {
@@ -73,11 +73,11 @@ namespace BitShuva.Controllers
 
                 if (errorLog != null)
                 {
-                    await this.Session.StoreAsync(errorLog);
-                    this.Session.AddRavenExpiration(errorLog, DateTime.Now.AddDays(30));
+                    await this.DbSession.StoreAsync(errorLog);
+                    this.DbSession.AddRavenExpiration(errorLog, DateTime.Now.AddDays(30));
                 }
 
-                await this.Session.SaveChangesAsync();
+                await this.DbSession.SaveChangesAsync();
             }
         }
 
@@ -88,7 +88,7 @@ namespace BitShuva.Controllers
         {
             await this.EnsureIsAdminUser();
 
-            var dbSong = await this.Session.LoadAsync<Song>(song.Id);
+            var dbSong = await this.DbSession.LoadAsync<Song>(song.Id);
             dbSong.Artist = song.Artist;
             dbSong.Album = song.Album;
             dbSong.CommunityRank = song.CommunityRank;
@@ -100,8 +100,8 @@ namespace BitShuva.Controllers
             dbSong.Tags = song.Tags;
             dbSong.Lyrics = song.Lyrics;
 
-            await this.Session.StoreAsync(dbSong);
-            await this.Session.SaveChangesAsync();
+            await this.DbSession.StoreAsync(dbSong);
+            await this.DbSession.SaveChangesAsync();
 
             return dbSong;
         }
@@ -111,7 +111,7 @@ namespace BitShuva.Controllers
         {
             var makeQuery = new Func<Func<string, IQueryable<Song>>>(() =>
             {
-                return q => this.Session
+                return q => this.DbSession
                     .Query<Song, Songs_Search>()
                     .Search(s => s.Name, q, 2, SearchOptions.Guess, EscapeQueryOptions.AllowPostfixWildcard)
                     .Search(s => s.Album, q, 1, SearchOptions.Guess, EscapeQueryOptions.AllowPostfixWildcard)
@@ -142,7 +142,7 @@ namespace BitShuva.Controllers
         {            
             // This is NOT an unbounded result set:
             // This queries the Songs_RankStandings index, which will reduce the results. Max number of results will be the number of CommunityRankStanding enum constants.
-            var songRankStandings = await this.Session
+            var songRankStandings = await this.DbSession
                 .Query<Song, Songs_RankStandings>()
                 .As<Songs_RankStandings.Results>()
                 .ToListAsync();
@@ -194,7 +194,7 @@ namespace BitShuva.Controllers
 
         private async Task<Song> PickRankedSongForAnonymousUser(CommunityRankStanding rank)
         {
-            return await this.Session.Query<Song>()
+            return await this.DbSession.Query<Song>()
                 .Customize(x => x.RandomOrdering())
                 .Where(s => s.CommunityRankStanding == rank)
                 .FirstOrDefaultAsync();
@@ -206,7 +206,7 @@ namespace BitShuva.Controllers
             const int songsInBatch = 15;
             var user = await this.GetLoggedInUserOrNull();
             
-            var songRankStandings = await this.Session
+            var songRankStandings = await this.DbSession
                 .Query<Song, Songs_RankStandings>()
                 .As<Songs_RankStandings.Results>()
                 .ToListAsync();
@@ -233,7 +233,7 @@ namespace BitShuva.Controllers
         [Route("id/{*songId}")]
         public async Task<Song> GetSongById(string songId)
         {
-            var song = await this.Session.LoadAsync<Song>(songId);
+            var song = await this.DbSession.LoadAsync<Song>(songId);
             return await this.GetSongDto(song);
         }
 
@@ -248,7 +248,7 @@ namespace BitShuva.Controllers
                 user.LastSeen = DateTime.UtcNow;
             }
 
-            var song = await this.Session.LoadAsync<Song>(songId);
+            var song = await this.DbSession.LoadAsync<Song>(songId);
             if (song != null)
             {
                 song.TotalPlays++;
@@ -257,7 +257,7 @@ namespace BitShuva.Controllers
 
         public async Task<Song> GetSongByArtistAndAlbum(string artist, string album)
         {
-            var song = await this.Session
+            var song = await this.DbSession
                     .Query<Song>()
                     .Customize(c => c.RandomOrdering())
                     .FirstAsync(s => s.Album == album && s.Artist == artist);
@@ -268,7 +268,7 @@ namespace BitShuva.Controllers
         [Route("album/{album}")]
         public async Task<Song> GetSongByAlbum(string album)
         {
-            var song = await this.Session
+            var song = await this.DbSession
                     .Query<Song>()
                     .Customize(c => c.RandomOrdering())
                     .FirstAsync(s => s.Album == album);
@@ -279,7 +279,7 @@ namespace BitShuva.Controllers
         [Route("artist/{artist}")]
         public async Task<Song> GetSongByArtist(string artist)
         {
-            var song = await this.Session
+            var song = await this.DbSession
                 .Query<Song>()
                 .Customize(c => c.RandomOrdering())
                 .FirstAsync(s => s.Artist == artist);
@@ -290,7 +290,7 @@ namespace BitShuva.Controllers
         [Route("trending/{count}")]
         public async Task<IEnumerable<Song>> GetTrendingSongs(int count)
         {
-            var recentLikedSongIds = await this.Session
+            var recentLikedSongIds = await this.DbSession
                 .Query<Like>()
                 .Customize(c => c.Include<Like>(l => l.SongId))
                 .Where(l => l.Status == LikeStatus.Like)
@@ -300,7 +300,7 @@ namespace BitShuva.Controllers
                 .ToListAsync();
             var distinctSongIds = recentLikedSongIds.Distinct();
 
-            var matchingSongs = await this.Session.LoadAsync<Song>(distinctSongIds);
+            var matchingSongs = await this.DbSession.LoadAsync<Song>(distinctSongIds);
             return matchingSongs
                 .Where(s => s != null)
                 .Select(s => s.ToDto());
@@ -310,7 +310,7 @@ namespace BitShuva.Controllers
         public async Task<IEnumerable<Song>> GetTopSongs(int count)
         {
             var randomSpotInTop70 = new Random().Next(0, 70);
-            var songs = await this.Session
+            var songs = await this.DbSession
                 .Query<Song>()
                 .Customize(x => x.RandomOrdering())
                 .OrderByDescending(s => s.CommunityRank)
@@ -324,7 +324,7 @@ namespace BitShuva.Controllers
         [Route("heavenly70")]
         public async Task<IEnumerable<Song>> GetHeavenly70()
         {
-            return await this.Session
+            return await this.DbSession
                 .Query<Song>()
                 .OrderByDescending(s => s.CommunityRank)
                 .Take(70)
@@ -350,7 +350,7 @@ namespace BitShuva.Controllers
         //    song.Uri = mp3Uri;
         //    song.UploadDate = DateTime.Now;
         //}
-
+        
         private async Task<Song> PickSongForUser(User user, IList<Songs_RankStandings.Results> songRankStandings)
         {
             var veryPoorRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.VeryPoor).Select(s => s.Count).FirstOrDefault();
@@ -385,7 +385,7 @@ namespace BitShuva.Controllers
 
         private async Task<Song> PickRandomSong()
         {
-            return await this.Session
+            return await this.DbSession
                 .Query<Song>()
                 .Customize(c => c.RandomOrdering())
                 .FirstAsync();
@@ -396,7 +396,7 @@ namespace BitShuva.Controllers
             var randomLikedSong = user.Preferences.Songs.Where(s => s.LikeCount == 1).RandomElement();
             if (randomLikedSong != null)
             {
-                return await this.Session.LoadAsync<Song>(randomLikedSong.Name);
+                return await this.DbSession.LoadAsync<Song>(randomLikedSong.Name);
             }
 
             return null;
@@ -407,7 +407,7 @@ namespace BitShuva.Controllers
             var randomLikedArtist = user.Preferences.GetLikedArtists().RandomElement();
             if (randomLikedArtist != null)
             {
-                return await this.Session
+                return await this.DbSession
                     .Query<Song>()
                     .Customize(c => c.RandomOrdering())
                     .Where(s => s.Artist == randomLikedArtist.Name)
@@ -422,7 +422,7 @@ namespace BitShuva.Controllers
             var randomLikedAlbum = user.Preferences.GetLikedAlbums().RandomElement();
             if (randomLikedAlbum != null)
             {
-                return await this.Session
+                return await this.DbSession
                     .Query<Song>()
                     .Where(s => s.Album == randomLikedAlbum.Name)
                     .Customize(c => c.RandomOrdering())
@@ -440,7 +440,7 @@ namespace BitShuva.Controllers
                 .Select(s => s.Name)
                 .ToArray();
 
-            return await this.Session
+            return await this.DbSession
                 .Query<Song>()
                 .Customize(x => x.RandomOrdering(Guid.NewGuid().ToString()))
                 .Where(s => s.CommunityRankStanding == rank && !s.Id.In(dislikedSongIds))
@@ -452,7 +452,7 @@ namespace BitShuva.Controllers
             var user = await this.GetLoggedInUserOrNull();
             if (user != null)
             {
-                var songLike = await this.Session
+                var songLike = await this.DbSession
                     .Query<Like>()
                     .Customize(c => c.Include<Like>(l => l.SongId))
                     .FirstOrDefaultAsync(s => s.UserId == user.Id && s.SongId == song.Id);

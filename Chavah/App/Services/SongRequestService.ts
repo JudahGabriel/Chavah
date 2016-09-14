@@ -8,18 +8,18 @@
             "httpApi",
             "audioPlayer",
             "songApi",
-            "$modal"
+            "$uibModal"
         ];
 
         constructor(
             private httpApi: HttpApiService,
             private audioPlayer: AudioPlayerService,
             private songApi: SongApiService,
-            private $modal: ng.ui.bootstrap.IModalService) {
+            private $uibModal: ng.ui.bootstrap.IModalService) { 
         }
 
         showSongRequestDialog(): ng.ui.bootstrap.IModalServiceInstance {
-            var requestSongDialog = this.$modal.open({
+            var requestSongDialog = this.$uibModal.open({
                 controller: "RequestController as vm",
                 templateUrl: "../Views/RequestSong.html"
             });

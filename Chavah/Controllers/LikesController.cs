@@ -25,7 +25,7 @@ namespace BitShuva.Controllers
                 return new Song[0]; 
             }
 
-            var likedSongIds = await this.Session
+            var likedSongIds = await this.DbSession
                 .Query<Like>()
                 .Customize(x => x.RandomOrdering())
                 .Customize(x => x.Include<Like>(l => l.SongId))
@@ -34,7 +34,7 @@ namespace BitShuva.Controllers
                 .Take(count)
                 .ToListAsync();
 
-            var loadedSongs = await this.Session.LoadAsync<Song>(likedSongIds);
+            var loadedSongs = await this.DbSession.LoadAsync<Song>(likedSongIds);
             return loadedSongs
                 .Where(s => s != null)
                 .Select(s => s.ToDto());
@@ -50,7 +50,7 @@ namespace BitShuva.Controllers
             }
 
             var stats = default(RavenQueryStatistics);
-            var likedSongIds = await this.Session
+            var likedSongIds = await this.DbSession
                 .Query<Like>()
                 .Customize(x => x.Include<Like>(l => l.SongId))
                 .Statistics(out stats)
@@ -61,7 +61,7 @@ namespace BitShuva.Controllers
                 .Take(take)
                 .ToListAsync();
 
-            var songs = await this.Session.LoadAsync<Song>(likedSongIds);
+            var songs = await this.DbSession.LoadAsync<Song>(likedSongIds);
             return new PagedList<Song>
             {
                 Items = songs.Where(s => s != null).ToArray(),
@@ -90,8 +90,8 @@ namespace BitShuva.Controllers
         [Route("upDownVotes/{*songId}")]
         public async Task<dynamic> GetUpDownVotes(string songId)
         {
-            var upVoteCount = await this.Session.Query<Like>().CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Like);
-            var downVoteCount = await this.Session.Query<Like>().CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Dislike);
+            var upVoteCount = await this.DbSession.Query<Like>().CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Like);
+            var downVoteCount = await this.DbSession.Query<Like>().CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Dislike);
             return new
             {
                 UpVotes = upVoteCount,
@@ -103,21 +103,21 @@ namespace BitShuva.Controllers
         private async Task<int> UpdateLikeStatus(string songId, LikeStatus likeStatus)
         {
             var user = await this.GetLoggedInUserOrNull();
-            var song = await this.Session.LoadAsync<Song>(songId);
+            var song = await this.DbSession.LoadAsync<Song>(songId);
             if (user == null || song == null)
             {
                 var errorLog = new ChavahLog
                 {
                     Message = "User updated like status, even though user or song wasn't found. UserID = " + (user == null ? "[null]" : user.Id) + ", SongID = " + (song == null ? "[null]" : song.Id)
                 };
-                await this.Session.StoreAsync(errorLog);
-                this.Session.AddRavenExpiration(errorLog, DateTime.UtcNow.AddDays(30));
+                await this.DbSession.StoreAsync(errorLog);
+                this.DbSession.AddRavenExpiration(errorLog, DateTime.UtcNow.AddDays(30));
                 throw new Exception("Couldn't find user or song. Check server log.");
             }
 
             var isReversal = false;
             var isNoChange = false;
-            var existingLike = await this.Session
+            var existingLike = await this.DbSession
                 .Query<Like>()
                 .Customize(x => x.WaitForNonStaleResultsAsOfLastWrite(TimeSpan.FromSeconds(10)))
                 .FirstOrDefaultAsync(l => l.SongId == songId && l.UserId == user.Id);
@@ -126,7 +126,7 @@ namespace BitShuva.Controllers
                 isReversal = existingLike.Status != likeStatus;
                 isNoChange = existingLike.Status == likeStatus;
                 existingLike.Status = likeStatus;
-                await this.Session.StoreAsync(existingLike);
+                await this.DbSession.StoreAsync(existingLike);
             }
             else
             {
@@ -137,7 +137,7 @@ namespace BitShuva.Controllers
                     UserId = user.Id,
                     Date = DateTime.Now
                 };
-                await this.Session.StoreAsync(newLikeStatus);
+                await this.DbSession.StoreAsync(newLikeStatus);
                 
                 if (likeStatus == LikeStatus.Like)
                 {
@@ -155,8 +155,8 @@ namespace BitShuva.Controllers
                         MoreInfoUri = song.GetSongShareLink()
                     };
 
-                    await this.Session.StoreAsync(activity);
-                    this.Session.AddRavenExpiration(activity, DateTime.UtcNow.AddDays(7));
+                    await this.DbSession.StoreAsync(activity);
+                    this.DbSession.AddRavenExpiration(activity, DateTime.UtcNow.AddDays(7));
                 }
             }
 
@@ -168,7 +168,7 @@ namespace BitShuva.Controllers
                 song.CommunityRank = song.CommunityRank + (multiplier * changePositiveOrNegative);
                 user.Preferences.Update(song, likeStatus);
 
-                var communityRankStats = await this.Session
+                var communityRankStats = await this.DbSession
                     .Query<Song, Songs_AverageCommunityRank>()
                     .As<Songs_AverageCommunityRank.Results>()
                     .FirstOrDefaultAsync();

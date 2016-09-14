@@ -20,7 +20,7 @@ namespace BitShuva.Controllers
             var emailAddress = User.Identity.Name;
             if (!string.IsNullOrEmpty(emailAddress))
             {
-                return await this.Session
+                return await this.DbSession
                     .Query<User>()
                     .FirstOrDefaultAsync(u => u.EmailAddress == User.Identity.Name);
             }

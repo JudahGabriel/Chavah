@@ -57,7 +57,7 @@ namespace BitShuva.Common
             }
             catch (Exception error)
             {
-                log.ErrorException("Unable to upload MP3 to CDN.", error);
+                log.Error(error, "Unable to upload MP3 to CDN.");
                 throw;
             }
             finally

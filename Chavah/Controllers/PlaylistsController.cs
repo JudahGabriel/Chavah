@@ -22,7 +22,7 @@ namespace BitShuva.Controllers
                 return new Playlist[0];
             }
 
-            return await this.Session
+            return await this.DbSession
                 .Query<Playlist>()
                 .Where(s => s.OwnerId == user.Id)
                 .ToListAsync();
@@ -35,8 +35,8 @@ namespace BitShuva.Controllers
         {
             var user = await this.GetLoggedInUserOrNull();
             playlist.OwnerId = user.Id;
-            await this.Session.StoreAsync(playlist);
-            await this.Session.SaveChangesAsync();
+            await this.DbSession.StoreAsync(playlist);
+            await this.DbSession.SaveChangesAsync();
             
             return playlist;
         }

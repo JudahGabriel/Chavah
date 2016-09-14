@@ -88,7 +88,7 @@ namespace BitShuva.Controllers
         [Route("clearjudah")]
         public async Task<string> ClearJudah()
         {
-            var user = await this.Session.LoadAsync<User>("users/38055");
+            var user = await this.DbSession.LoadAsync<User>("users/38055");
             user.Preferences.Songs = new System.Collections.Generic.List<LikeDislikeCount>();
             return "OK!";
         }
@@ -97,8 +97,8 @@ namespace BitShuva.Controllers
         [Route("fixupjudah")]
         public async Task<string> FixUpJudah()
         {
-            var user = await this.Session.LoadAsync<User>("users/38055");
-            var likes = await this.Session.Query<Like>().Skip(user.Preferences.Songs.Count).Where(l => l.UserId == user.Id).ToListAsync();
+            var user = await this.DbSession.LoadAsync<User>("users/38055");
+            var likes = await this.DbSession.Query<Like>().Skip(user.Preferences.Songs.Count).Where(l => l.UserId == user.Id).ToListAsync();
             user.Preferences.Songs.AddRange(likes.Select(l => new LikeDislikeCount
                 {
                     Name = l.SongId,
@@ -116,7 +116,7 @@ namespace BitShuva.Controllers
             if (user != null)
             {
                 // So that we don't inadvertently change the user in the DB.
-                Session.Advanced.Evict(user); 
+                DbSession.Advanced.Evict(user); 
 
                 var likedSongIds = user
                     .Preferences
@@ -127,7 +127,7 @@ namespace BitShuva.Controllers
                     .Select(s => s.Name)
                     .ToList();
 
-                var likedSongNames = await this.Session.LoadAsync<SongNameTransformer, SongNameTransformer.SongName>(likedSongIds);
+                var likedSongNames = await this.DbSession.LoadAsync<SongNameTransformer, SongNameTransformer.SongName>(likedSongIds);
                 return new UserProfile(user, likedSongNames.Where(s => s != null).Select(s => s.Name).ToList());
             }
 

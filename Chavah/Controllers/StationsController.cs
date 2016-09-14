@@ -20,7 +20,7 @@ namespace BitShuva.Controllers
             var user = await this.GetLoggedInUserOrNull();
             if (user != null)
             {
-                return await this.Session
+                return await this.DbSession
                     .Query<Station>()
                     .Where(s => s.OwnerId == user.Id)
                     .ToListAsync();
@@ -32,7 +32,7 @@ namespace BitShuva.Controllers
         [Route("{stationId}/song")]
         public async Task<Song> GetSong(string stationId)
         {
-            var station = await this.Session.LoadAsync<Station>(stationId);
+            var station = await this.DbSession.LoadAsync<Station>(stationId);
             var seed = station.PickRandomSeed();
             var songsController = new SongsController() { Request = this.Request };
             var seedType = seed.Item1;
@@ -48,8 +48,8 @@ namespace BitShuva.Controllers
         {
             var user = await this.GetLoggedInUserOrNull();
             station.OwnerId = user.Id;
-            await this.Session.StoreAsync(station);
-            await this.Session.SaveChangesAsync();
+            await this.DbSession.StoreAsync(station);
+            await this.DbSession.SaveChangesAsync();
             return station;
         }
     }

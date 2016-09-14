@@ -6,13 +6,13 @@
 
         static $inject = [
             "songApi",
-            "$modalInstance",
+            "$uibModal",
             "$scope"
         ];
 
         constructor(
             private songApi: SongApiService,
-            private $modalInstance: ng.ui.bootstrap.IModalServiceInstance,
+            private $uibModal: ng.ui.bootstrap.IModalServiceInstance,
             $scope: ng.IScope) {
 
             $scope.$watch(() => this.songRequestText, newVal => this.getSongMatches(newVal));
@@ -32,7 +32,7 @@
 
         requestSelectedSong() {
             var selectedSong = this.selectedSongRequest;
-            this.$modalInstance.close(selectedSong);
+            this.$uibModal.close(selectedSong);
         }
 
         songRequestMatchClicked(song: Song) {
@@ -46,7 +46,7 @@
         }
 
         close() {
-            this.$modalInstance.close();
+            this.$uibModal.close();
         }
     }
 

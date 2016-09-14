@@ -18,7 +18,7 @@ namespace BitShuva.Controllers
         [Route("byname")]
         public async Task<Artist> GetByNameNew(string artistName)
         {
-            var artist = await this.Session
+            var artist = await this.DbSession
                 .Query<Artist>()
                 .FirstOrDefaultAsync(a => a.Name == artistName);
             return artist;
@@ -28,7 +28,7 @@ namespace BitShuva.Controllers
         public async Task<PagedList<Artist>> GetAll(string search, int skip, int take)
         {
             var stats = default(RavenQueryStatistics);
-            var query = this.Session.Query<Artist>().Statistics(out stats);
+            var query = this.DbSession.Query<Artist>().Statistics(out stats);
             if (!string.IsNullOrWhiteSpace(search))
             {
                 query = query.Where(a => a.Name.StartsWith(search.ToLower()));
@@ -52,10 +52,10 @@ namespace BitShuva.Controllers
         [Route("rank")]
         public async Task<dynamic> Rank(string artistName)
         {
-            var songsByArtist = await this.Session.Query<Song>().Where(s => s.Artist == artistName).ToListAsync();
+            var songsByArtist = await this.DbSession.Query<Song>().Where(s => s.Artist == artistName).ToListAsync();
             if (songsByArtist.Count == 128)
             {
-                var additionalSongs = await this.Session.Query<Song>().Where(s => s.Artist == artistName).Skip(128).ToListAsync();
+                var additionalSongs = await this.DbSession.Query<Song>().Where(s => s.Artist == artistName).Skip(128).ToListAsync();
                 additionalSongs.ForEach(s => songsByArtist.Add(s));
             }            
             
@@ -77,7 +77,7 @@ namespace BitShuva.Controllers
             artist.Images = await this.EnsureArtistImagesOnCdn(artist.Images);
             if (!string.IsNullOrEmpty(artist.Id))
             {
-                var existingArtist = await this.Session.LoadAsync<Artist>(artist.Id);
+                var existingArtist = await this.DbSession.LoadAsync<Artist>(artist.Id);
                 existingArtist.Bio = artist.Bio;
                 existingArtist.Images = artist.Images;
                 existingArtist.Name = artist.Name;
@@ -85,7 +85,7 @@ namespace BitShuva.Controllers
             }
             else
             {
-                await this.Session.StoreAsync(artist);
+                await this.DbSession.StoreAsync(artist);
                 return artist;
             }
         }
@@ -97,10 +97,10 @@ namespace BitShuva.Controllers
         public async Task Delete(string artistId)
         {
             await this.EnsureIsAdminUser();
-            var artist = await this.Session.LoadAsync<Artist>(artistId);
+            var artist = await this.DbSession.LoadAsync<Artist>(artistId);
             if (artist != null)
             {
-                this.Session.Delete(artist);
+                this.DbSession.Delete(artist);
             }
         }
 
