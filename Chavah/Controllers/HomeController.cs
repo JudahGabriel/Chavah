@@ -35,55 +35,56 @@ namespace BitShuva.Controllers
             return View();
         }
 
-        public async Task<ActionResult> Migrate(string artist)
-        {
-            var songsByArtist = await Session.Query<Song>().Where(s => s.Artist == artist).Take(1000).ToListAsync();
-            var urls = new List<Song>();
-            foreach (var song in songsByArtist)
-            {
-                var escapedSongName = song.Name.Replace(":", "_");
-                if (song.Number > 0)
-                {
-                    var songNumberWithZero = song.Number <= 9 ? $"0{song.Number}" : song.Number.ToString();
-                    song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{song.Artist}/{song.Artist} - {song.Album} - {songNumberWithZero} - {escapedSongName}.mp3");
-                }
-                else
-                {
-                    song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{song.Artist}/{song.Artist} - {song.Album} - {escapedSongName}.mp3");
-                }
-                
-                urls.Add(song.ToDto());
-            }
+        //public async Task<ActionResult> Migrate(int skip, int take)
+        //{
+        //    var songsByArtist = await Session.Query<Song>()
+        //        .OrderBy(s => s.Id)
+        //        .Skip(skip)
+        //        .Take(take)
+        //        .ToListAsync();
+        //    var urls = new List<Song>();
+        //    foreach (var song in songsByArtist)
+        //    {
+        //        var isOnOldServer = song.Uri.ToString().StartsWith("http://199.204.46.80");
+        //        if (isOnOldServer)
+        //        {
+        //            var escapedSongName = EscapeName(song.Name);
+        //            var escapedAlbum = EscapeName(song.Album);
+        //            var escapedArtist = EscapeName(song.Artist);
+        //            if (song.Number > 0)
+        //            {
+        //                var songNumberWithZero = song.Number <= 9 ? $"0{song.Number}" : song.Number.ToString();
+        //                song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{escapedArtist}/{escapedArtist} - {escapedAlbum} - {songNumberWithZero} - {escapedSongName}.mp3");
+        //            }
+        //            else
+        //            {
+        //                song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{escapedArtist}/{escapedArtist} - {escapedAlbum} - {escapedSongName}.mp3");
+        //            }
 
-            return View(urls);
+        //            urls.Add(song.ToDto());
+        //        }
+        //    }
+
+        //    return View(urls);
+        //}
+
+        public async Task<ActionResult> GetSongs(string artist)
+        {
+            var songs = await Session.Query<Song>().Where(s => s.Artist == artist).Take(1000).ToListAsync();
+            return View("Migrate", songs);
         }
 
-        public async Task<ActionResult> FindMissingSongs()
+        class MyClient : System.Net.WebClient
         {
-            var allSongs = new List<Song>(5000);
-            using (var stream = await Session.Advanced.StreamAsync<Song>("Songs/"))
+            public bool HeadOnly { get; set; }
+            protected override System.Net.WebRequest GetWebRequest(Uri address)
             {
-                while(await stream.MoveNextAsync())
+                System.Net.WebRequest req = base.GetWebRequest(address);
+                if (HeadOnly && req.Method == "GET")
                 {
-                    var song = stream.Current.Document;
-                    allSongs.Add(song);
+                    req.Method = "HEAD";
                 }
-            }
-
-            foreach (var song in allSongs)
-            {
-                var escapedSongName = song.Name.Replace(":", "_");
-                if (song.Number > 0)
-                {
-                    var songNumberWithZero = song.Number <= 9 ? $"0{song.Number}" : song.Number.ToString();
-                    song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{song.Artist}/{song.Artist} - {song.Album} - {songNumberWithZero} - {escapedSongName}.mp3");
-                }
-                else
-                {
-                    song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{song.Artist}/{song.Artist} - {song.Album} - {escapedSongName}.mp3");
-                }
-
-
+                return req;
             }
         }
 

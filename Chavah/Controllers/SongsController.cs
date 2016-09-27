@@ -59,7 +59,7 @@ namespace BitShuva.Controllers
                 var errorLog = default(ChavahLog);
                 try
                 {
-                    await Task.Run(() => song.DeleteFromCdn());
+                    await Task.Run(() => CdnManager.DeleteFromCdn(song));
                 }
                 catch (Exception error)
                 {

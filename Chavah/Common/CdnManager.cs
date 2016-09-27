@@ -41,7 +41,7 @@ namespace BitShuva.Common
             var tempDownloadedFile = default(string);
             try
             {
-                tempDownloadedFile = await CdnManager.DownloadFileLocally(tempHttpAddress);
+                tempDownloadedFile = await DownloadFileLocally(tempHttpAddress);
                 var ftpConnection = CreateFtpConnection();
                 var fileName = GetCdnSafeSongFileName(artist, album, songName);
                 var fileMp3Uri = ftpMusicDirectory.Combine(fileName);
@@ -180,39 +180,13 @@ namespace BitShuva.Common
         /// Deletes the song's MP3 file on the CDN.
         /// </summary>
         /// <param name="song"></param>
-        public static void DeleteFromCdn(this Song song)
+        public static void DeleteFromCdn(Song song)
         {
             var connection = CreateFtpConnection();
-            var songUri = ftpMusicDirectory.Combine(song.GetCdnSafeFileName());
+            var artistFolder = GetLowerAlphaNumericEnglish(song.Artist);
+            var songFileName = GetCdnSafeSongFileName(song.Artist, song.Album, song.Name);
+            var songUri = ftpMusicDirectory.Combine(artistFolder, songFileName);
             connection.DeleteFile(songUri);
-        }
-
-        /// <summary>
-        /// Gets the file name used on the CDN for this song.
-        /// </summary>
-        /// <param name="song"></param>
-        /// <returns></returns>
-        public static string GetCdnSafeFileName(this Song song)
-        {
-            // Expected ID is standard Raven ID: "songs/4321"
-            const string expectedIdPrefix = "songs/";
-            if (!song.Id.StartsWith(expectedIdPrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new ArgumentException("ID wasn't in the expected format.");
-            }
-
-            var idNumberIndex = expectedIdPrefix.Length;
-            return song.Id.Substring(idNumberIndex) + ".mp3";
-        }
-
-        /// <summary>
-        /// Gets the HTTP address of the song MP3 on the content delivery network (CDN).
-        /// </summary>
-        /// <param name="song">The song whose URI to get.</param>
-        /// <returns></returns>
-        public static Uri GetMp3Uri(this Song song)
-        {
-            return musicUri.Combine(song.GetCdnSafeFileName());
         }
 
         public static Uri DefaultAlbumArtUri
@@ -238,15 +212,15 @@ namespace BitShuva.Common
         {
             if (string.IsNullOrWhiteSpace(artist))
             {
-                artist = "unspecified artist";
+                artist = "Unspecified Artist";
             }
             if (string.IsNullOrWhiteSpace(album))
             {
-                album = "unspecified album";
+                album = "Unspecified Album";
             }
             if (string.IsNullOrWhiteSpace(songName))
             {
-                songName = "unspecified song name";
+                songName = "Unspecified Song Name";
             }
             
             return $"{GetLowerAlphaNumericEnglish(artist)} - {GetLowerAlphaNumericEnglish(album)} - {GetLowerAlphaNumericEnglish(songName)}.mp3";
@@ -254,9 +228,17 @@ namespace BitShuva.Common
 
         private static string GetLowerAlphaNumericEnglish(string input)
         {
-            var lower = input.ToLower();
+            var lower = input
+                .Replace(":", "_")
+                .Replace("/", "+")
+                .Replace("é", "e")
+                .Replace("ú", "u")
+                .Replace("?", "")
+                .Replace("ó", "o")
+                .Replace("í", "i")
+                .Replace("á", "a");
             var isLowerAscii = new Func<char, bool>(c => c >= 'a' && c <= 'z');
-            if (lower.All(c => isLowerAscii(c) || char.IsNumber(c) || c == ' '))
+            if (lower.All(c => isLowerAscii(c) || char.IsNumber(c) || c == ' ' || c == '_' || c == '+'))
             {
                 return lower;
             }
