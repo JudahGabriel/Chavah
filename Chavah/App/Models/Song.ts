@@ -20,8 +20,8 @@ namespace BitShuva.Chavah {
         albumArtOrArtistImage = "";
         isCumulativeRank = true;
         totalPlays: number;
-        totalUpVotes: number;
-        totalDownVotes: number;
+        totalUpVotes: number | null;
+        totalDownVotes: number | null;
         artistInfo: Server.IArtist;
         tags: string[];
         purchaseUri: string;
@@ -43,25 +43,25 @@ namespace BitShuva.Chavah {
         }
 
         constructor(song: Server.ISong) {
-            this.name = song.Name;
-            this.albumSongNumber = song.Number;
-            this.album = song.Album;
-            this.artist = song.Artist;
-            this.albumArtUri = song.AlbumArtUri;
-            this.uri = song.Uri;
-            this.likeStatus = song.SongLike;
-            this.communityRank = song.CommunityRank;
-            this.communityRankStanding = song.CommunityRankStanding;
-            this.id = song.Id;
-            this.lyrics = song.Lyrics;
-            this.genres = song.Genres;
-            this.artistImages = song.ArtistImages;
-            this.albumArtOrArtistImage = song.AlbumArtUri;
-            this.totalPlays = song.TotalPlays;
-            this.tags = song.Tags;
+            this.name = song.name;
+            this.albumSongNumber = song.number;
+            this.album = song.album;
+            this.artist = song.artist;
+            this.albumArtUri = song.albumArtUri;
+            this.uri = song.uri;
+            this.likeStatus = song.songLike;
+            this.communityRank = song.communityRank;
+            this.communityRankStanding = song.communityRankStanding;
+            this.id = song.id;
+            this.lyrics = song.lyrics;
+            this.genres = song.genres;
+            this.artistImages = song.artistImages;
+            this.albumArtOrArtistImage = song.albumArtUri;
+            this.totalPlays = song.totalPlays;
+            this.tags = song.tags;
 
-            this.purchaseUri = song.PurchaseUri ? song.PurchaseUri : 'http://lmgtfy.com/?q=' + encodeURIComponent(this.artist + " " + this.album + " purchase");
-            this.clientId = `${song.Id}_${new Date().getTime() + Math.random()}`;
+            this.purchaseUri = song.purchaseUri ? song.purchaseUri : 'http://lmgtfy.com/?q=' + encodeURIComponent(this.artist + " " + this.album + " purchase");
+            this.clientId = `${song.id}_${new Date().getTime() + Math.random()}`;
         }
 
         calculateAlbumColors(q: ng.IQService): ng.IPromise<any> {
@@ -136,11 +136,11 @@ namespace BitShuva.Chavah {
             return this.getColorClass();
         }
 
-        totalUpVoteText(): string {
+        totalUpVoteText(): string | null {
             return this.totalUpVotes ? '+' + this.totalUpVotes : null;
         }
 
-        totalDownVoteText(): string {
+        totalDownVoteText(): string | null {
             return this.totalDownVotes ? '-' + this.totalDownVotes : null;
         }
 
@@ -185,22 +185,22 @@ namespace BitShuva.Chavah {
         
         toDto(): Server.ISong {
             return {
-                Album: this.album,
-                AlbumArtUri: this.albumArtUri,
-                Artist: this.artist,
-                ArtistImages: this.artistImages,
-                CommunityRank: this.communityRank,
-                CommunityRankStanding: this.communityRankStanding,
-                Genres: this.genres,
-                Id: this.id,
-                Lyrics: this.lyrics,
-                Name: this.name,
-                Number: this.albumSongNumber,
-                PurchaseUri: this.purchaseUri,
-                SongLike: this.likeStatus,
-                Tags: this.tags,
-                TotalPlays: this.totalPlays,
-                Uri: this.uri
+                album: this.album,
+                albumArtUri: this.albumArtUri,
+                artist: this.artist,
+                artistImages: this.artistImages,
+                communityRank: this.communityRank,
+                communityRankStanding: this.communityRankStanding,
+                genres: this.genres,
+                id: this.id,
+                lyrics: this.lyrics,
+                name: this.name,
+                number: this.albumSongNumber,
+                purchaseUri: this.purchaseUri,
+                songLike: this.likeStatus,
+                tags: this.tags,
+                totalPlays: this.totalPlays,
+                uri: this.uri
             };
         }
 
@@ -209,12 +209,12 @@ namespace BitShuva.Chavah {
             this.albumArtUri = other.albumArtUri;
             this.albumSongNumber = other.albumSongNumber;
             this.artist = other.artist;
-            this.artistImages = [].concat(other.artistImages);
+            this.artistImages = ([] as string[]).concat(other.artistImages);
             this.artistInfo = other.artistInfo;
             this.communityRank = other.communityRank;
             this.communityRankStanding = other.communityRankStanding;
-            this.genres = [].concat(other.genres);
-            this.tags = [].concat(other.tags);
+            this.genres = ([] as string[]).concat(other.genres);
+            this.tags = ([] as string[]).concat(other.tags);
             this.id = other.id;
             this.likeStatus = other.likeStatus;
             this.lyrics = other.lyrics;
@@ -226,22 +226,22 @@ namespace BitShuva.Chavah {
 
         static empty(): Song {
             return new Song({
-                Album: "",
-                AlbumArtUri: "",
-                Artist: "",
-                CommunityRank: 0,
-                CommunityRankStanding: 0,
-                Id: "songs/0",
-                ArtistImages: [],
-                Genres: [],
-                Lyrics: "",
-                Name: "",
-                Number: 0,
-                PurchaseUri: "",
-                SongLike: 0,
-                Tags: [],
-                TotalPlays: 0,
-                Uri: ""
+                album: "",
+                albumArtUri: "",
+                artist: "",
+                communityRank: 0,
+                communityRankStanding: 0,
+                id: "songs/0",
+                artistImages: [],
+                genres: [],
+                lyrics: "",
+                name: "",
+                number: 0,
+                purchaseUri: "",
+                songLike: 0,
+                tags: [],
+                totalPlays: 0,
+                uri: ""
             });
         }
 

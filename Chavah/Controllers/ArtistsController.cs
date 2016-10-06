@@ -9,14 +9,15 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Collections.ObjectModel;
 
 namespace BitShuva.Controllers
 {
     [RoutePrefix("api/artists")]
     public class ArtistsController : UserContextController
     {
-        [Route("byname")]
-        public async Task<Artist> GetByNameNew(string artistName)
+        [Route("getByName")]
+        public async Task<Artist> GetByName(string artistName)
         {
             var artist = await this.DbSession
                 .Query<Artist>()
@@ -69,15 +70,15 @@ namespace BitShuva.Controllers
             };
         }
 
-        [Route("admin/save")]
+        [Route("save")]
         [HttpPost]
-        [Authorize]
+        //[Authorize] TODO: authorize this
         public async Task<Artist> Save(Artist artist)
         {
-            artist.Images = await this.EnsureArtistImagesOnCdn(artist.Images);
+            artist.Images = await this.EnsureArtistImagesOnCdn(artist.Name, artist.Images);
             if (!string.IsNullOrEmpty(artist.Id))
             {
-                var existingArtist = await this.DbSession.LoadAsync<Artist>(artist.Id);
+                var existingArtist = await DbSession.LoadAsync<Artist>(artist.Id);
                 existingArtist.Bio = artist.Bio;
                 existingArtist.Images = artist.Images;
                 existingArtist.Name = artist.Name;
@@ -85,7 +86,7 @@ namespace BitShuva.Controllers
             }
             else
             {
-                await this.DbSession.StoreAsync(artist);
+                await DbSession.StoreAsync(artist);
                 return artist;
             }
         }
@@ -104,24 +105,48 @@ namespace BitShuva.Controllers
             }
         }
 
-        private async Task<List<string>> EnsureArtistImagesOnCdn(IEnumerable<string> artistImages)
+        private async Task<List<string>> EnsureArtistImagesOnCdn(string artistName, IList<string> artistImages)
         {
             // Go through each of the images and make sure they're on the CDN.
             var cdnHost = CdnManager.cdnAddress.Host;
-            var putOnCdnTasks = artistImages.Select(async imageUri =>
+            var imageUris = new List<string>();
+            for (var i = 0; i < artistImages.Count; i++)
             {
-                var isOnCdn = imageUri.Contains(cdnHost, StringComparison.InvariantCultureIgnoreCase);
+                var image = artistImages[i];
+                var isOnCdn = image.Contains(CdnManager.artistImagesUri.ToString(), StringComparison.InvariantCultureIgnoreCase);
                 if (!isOnCdn)
                 {
-                    var newUri = await CdnManager.UploadArtistImage(new Uri(imageUri));
-                    return newUri.ToString();
+                    var oneBasedIndex = i + 1;
+                    var fileName = FindUnusedArtistImageFileName(artistName, oneBasedIndex, artistImages);
+                    var newUri = await CdnManager.UploadArtistImage(new Uri(image), fileName);
+                    imageUris.Add(newUri.ToString());
+                }
+                else
+                {
+                    imageUris.Add(image);
+                }
+            }
+
+            return imageUris;
+        }
+
+        static string FindUnusedArtistImageFileName(string artist, int index, IList<string> allFileNames)
+        {
+            const int maxArtistImages = 10000;
+            var artistCdnSafe = CdnManager.GetLowerAlphaNumericEnglish(artist);
+            while (index < maxArtistImages)
+            {
+                var desiredFileName = $"{artistCdnSafe} {index}.jpg";
+                var isUnique = !allFileNames.Any(f => f.EndsWith(desiredFileName, StringComparison.InvariantCultureIgnoreCase));
+                if (isUnique)
+                {
+                    return desiredFileName;
                 }
 
-                return imageUri;
-            });
+                index++;
+            }
 
-            var imageUris = await Task.WhenAll(putOnCdnTasks.ToArray());
-            return new List<string>(imageUris);
+            throw new InvalidOperationException("Programming bug. Couldn't find a valid artist image name.");
         }
     }
 }

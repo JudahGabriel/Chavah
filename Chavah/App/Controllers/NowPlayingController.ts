@@ -31,7 +31,7 @@
                 this.getSongOrPlaceholder(this.songBatch.songsBatch.getValue()[2]), // next song, 3rd in line
                 this.getSongOrPlaceholder(this.songBatch.songsBatch.getValue()[1]), // next song, 2nd in line
                 this.getSongOrPlaceholder(this.songBatch.songsBatch.getValue()[0]), // next song, 1st in line
-                this.getSongOrPlaceholder(this.audioPlayer.song.getValue()), // the currently playing song
+                this.getSongOrPlaceholder(this.audioPlayer.song.getValue()!), // the currently playing song
                 this.getSongOrPlaceholder(this.audioPlayer.playedSongs[0]), // the last played song
                 this.getSongOrPlaceholder(this.audioPlayer.playedSongs[1]), // the 2nd to last played song
                 this.getSongOrPlaceholder(this.audioPlayer.playedSongs[2]) // the 3rd to last played song

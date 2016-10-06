@@ -85,13 +85,13 @@
         <script type="text/javascript" src="//d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" crossorigin="anonymous"></script>
         <!-- END TRACKJS -->
 
-        @Styles.Render("~/styles/app")
-        @Styles.Render("~/styles/fontawesome")
-        @Scripts.Render("~/scripts/jquery")
-        @Scripts.Render("~/scripts/reactive")
+        @Styles.Render("~/bundles/bootstrap-theme")
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+        @Styles.Render("~/bundles/app-styles")
     </head>
 
 <body class="@ViewBag.EmbeddedClass">
+
     @if (!string.IsNullOrEmpty(ViewBag.DescriptiveImageUrl))
     {
         <img src="@ViewBag.DescriptiveImageUrl" style="display:none;" />
@@ -103,7 +103,19 @@
         <footer ng-include="'../../app/views/footer.html'"></footer>
     </div>
 
-    @Scripts.Render("~/scripts/app")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/angular")
+    @Scripts.Render("~/bundles/angular-animate")
+    @Scripts.Render("~/bundles/angular-route")
+    @Scripts.Render("~/bundles/angular-bootstrap")
+    @Scripts.Render("~/bundles/angular-bootstrap-templates")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/nprogress")
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/fastclick")
+    @Scripts.Render("~/bundles/rx-lite")
+    @Scripts.Render("~/bundles/app")
 
     @*Google analytics*@
     <script>

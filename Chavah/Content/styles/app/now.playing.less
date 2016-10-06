@@ -1,0 +1,91 @@
+﻿.now-playing-page {
+    .wheel {
+        overflow: hidden;
+        white-space: nowrap;
+        height: 700px;
+        margin: 0;
+        text-align: center;
+        position: relative;
+
+        .song {
+		    min-width: 300px;
+		    min-height: 50px;
+		    display: inline-block;
+            /*border: 1px solid gray;*/
+            background-color: white;
+            padding: 5px;
+            box-shadow: 0 0 20px 0 rgba(0,0,0, .5);
+            -webkit-box-reflect: below 18px -webkit-gradient( linear, left bottom, left top, from(rgba(255,255,255,0.25)), color-stop(0.3, transparent) );
+            position: absolute;
+            transition: all ease-in-out .5s;
+
+            img {
+                max-height: 300px;
+            }
+
+            .song-info {
+                padding-top: 10px;
+                max-width: 300px;
+                white-space: normal;
+            }
+
+            @nowPlayingTop: 5%;
+            @nowPlayingLeft: 42%;
+
+            // Next song, 3rd to the right of Now Playing. Off screen.
+            &:nth-child(1) {
+                left: @nowPlayingLeft + 45;
+                z-index: 5;
+                transform: rotateZ(90deg);
+                top: @nowPlayingTop + 90;
+	        }
+
+            // Next song, 2nd to the right of Now Playing.
+	        &:nth-child(2) {
+                left: @nowPlayingLeft + 40;
+                z-index: 6;
+                transform: rotateZ(50deg);
+                top: @nowPlayingTop + 50;
+	        }
+
+            // Next song, 1st on the right of Now Playing.
+	        &:nth-child(3) {
+                left: @nowPlayingLeft + 23;
+                z-index: 7;
+                transform: rotateZ(30deg);
+                top: @nowPlayingTop + 15;
+            }
+
+            // Now playing. Centered.
+            &:nth-child(4) {
+                left: @nowPlayingLeft;
+                z-index: 10;
+                top: @nowPlayingTop;
+            }
+
+            // Last played, 1st on the left of Now Playing.
+            &:nth-child(5) {
+                left: @nowPlayingLeft - 24;
+                z-index: 9;
+                transform: rotateZ(-30deg);
+                top: @nowPlayingTop + 15;
+            }
+
+            // Last played, 2nd on left of Now Playing.
+            &:nth-child(6) {
+                left: @nowPlayingLeft - 40;
+                z-index: 8;
+                transform: rotateZ(-50deg);
+                top: @nowPlayingTop + 50;
+            }
+
+            // Last played, 3rd on the left of Now Playing. Off screen.
+            &:nth-child(7) {
+                left: @nowPlayingLeft - 45;
+                z-index: 7;
+                transform: rotateZ(-90deg);
+                top: @nowPlayingTop + 90;
+            }
+	    }
+	}
+}

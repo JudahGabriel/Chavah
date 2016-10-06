@@ -106,7 +106,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.3.8\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.3.9\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog.RavenDb, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -118,19 +118,19 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Raven.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RavenDB.Client.3.0.30153\lib\net45\Raven.Abstractions.dll</HintPath>
+      <HintPath>..\packages\RavenDB.Client.3.0.30155\lib\net45\Raven.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RavenDB.Client.3.0.30153\lib\net45\Raven.Client.Lightweight.dll</HintPath>
+      <HintPath>..\packages\RavenDB.Client.3.0.30155\lib\net45\Raven.Client.Lightweight.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RavenDB.AspNet.Identity, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RavenDB.AspNet.Identity.1.0.1\lib\net45\RavenDB.AspNet.Identity.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SendGrid, Version=8.0.4.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
-      <HintPath>..\packages\Sendgrid.8.0.4\lib\SendGrid.dll</HintPath>
+    <Reference Include="SendGrid, Version=8.0.5.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sendgrid.8.0.5\lib\SendGrid.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SendGrid.CSharp.HTTP.Client, Version=3.0.0.0, Culture=neutral, PublicKeyToken=79219bf4e5ecaaca, processorArchitecture=MSIL">
@@ -288,6 +288,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\Views\EditArtist.html" />
     <Content Include="App\Views\Footer.html" />
     <Content Include="App\Views\Header.html" />
     <Content Include="App\Views\NowPlaying.html" />
@@ -296,24 +297,36 @@
     <Content Include="App\Views\Trending.html" />
     <Content Include="App\Views\UploadAlbum.html" />
     <Content Include="App_Readme\Elmah.txt" />
-    <Content Include="Content\app.css">
-      <DependentUpon>app.less</DependentUpon>
+    <Content Include="Content\styles\app\app.css">
+      <DependentUpon>shared.less</DependentUpon>
     </Content>
-    <Content Include="Content\app.min.css">
+    <Content Include="Content\styles\app\app.min.css">
       <DependentUpon>app.css</DependentUpon>
     </Content>
-    <Content Include="Content\bootstrap-theme.css" />
-    <Content Include="Content\bootstrap-theme.min.css" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.flatly.css">
+    <Content Include="Content\styles\app\edit.artist.css">
+      <DependentUpon>edit.artist.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\edit.artist.min.css">
+      <DependentUpon>edit.artist.css</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\now.playing.css">
+      <DependentUpon>now.playing.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\now.playing.min.css">
+      <DependentUpon>now.playing.css</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\upload.album.css">
+      <DependentUpon>upload.album.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\upload.album.min.css">
+      <DependentUpon>upload.album.css</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\bootstrap.flatly.css">
       <DependentUpon>bootstrap.flatly.less</DependentUpon>
     </Content>
-    <Content Include="Content\bootstrap.flatly.min.css">
+    <Content Include="Content\styles\bootstrap.flatly.min.css">
       <DependentUpon>bootstrap.flatly.css</DependentUpon>
     </Content>
-    <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\font-awesome.css" />
-    <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\images\About.jpg" />
     <Content Include="Content\images\backgroundFlowers.png" />
     <Content Include="Content\images\backgroundTrees.png" />
@@ -357,7 +370,7 @@
     <Content Include="Content\images\Windows81Tile\square.png" />
     <Content Include="Content\images\Windows81Tile\tiny.png" />
     <Content Include="Content\images\Windows81Tile\wide.png" />
-    <Content Include="Content\nprogress.css" />
+    <Content Include="Content\styles\nprogress.css" />
     <Content Include="Content\soundEffects\shabbatAnnouncement1.mp3" />
     <Content Include="Content\soundEffects\shabbatAnnouncement2.mp3" />
     <Content Include="Content\soundEffects\shabbatAnnouncement3.mp3" />
@@ -372,19 +385,18 @@
     <Content Include="Content\soundEffects\SongRequest7.mp3" />
     <Content Include="Content\soundEffects\StationId1.mp3" />
     <Content Include="Content\soundEffects\StationId2.mp3" />
-    <Content Include="Content\ui-bootstrap-csp.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Heavenly70.html" />
     <Content Include="package.json" />
-    <Content Include="Content\app.less" />
+    <Content Include="Content\styles\app\shared.less" />
     <Content Include="App_Readme\NProgressjs_README.md" />
     <Content Include="App_Readme\NProgressjs_LICENSE" />
-    <Content Include="Content\functions.less" />
-    <Content Include="Content\variables.less" />
+    <Content Include="Content\styles\functions.less" />
+    <Content Include="Content\styles\variables.less" />
     <None Include="compilerconfig.json" />
-    <Content Include="Content\bootstrap.flatly.less" />
+    <Content Include="Content\styles\bootstrap.flatly.less" />
     <Content Include="fonts\FontAwesome.otf" />
     <Content Include="fonts\fontawesome-webfont.woff2" />
     <Content Include="fonts\fontawesome-webfont.woff" />
@@ -394,13 +406,15 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Content\bootstrap-theme.min.css.map" />
-    <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\styles\app\now.playing.less" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
+    <Content Include="Content\styles\app\upload.album.less" />
+    <Content Include="Content\styles\app\edit.artist.less" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />
     <Content Include="ReadMe.txt" />
@@ -417,14 +431,14 @@
     <Content Include="Scripts\angular-ui\ui-bootstrap.min.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
-    <None Include="Scripts\jquery-3.1.0.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\fastclick.js" />
-    <Content Include="Scripts\jquery-3.1.0.js" />
-    <Content Include="Scripts\jquery-3.1.0.min.js" />
-    <Content Include="Scripts\jquery-3.1.0.slim.js" />
-    <Content Include="Scripts\jquery-3.1.0.slim.min.js" />
+    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.1.1.js" />
+    <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <Content Include="Scripts\jquery-transit-0.9.9.js" />
     <Content Include="Scripts\modernizr-production.js" />
     <Content Include="Scripts\moment-with-locales.js" />
@@ -452,10 +466,10 @@
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Scripts\angular-route.min.js.map" />
     <Content Include="Scripts\angular-touch.min.js.map" />
-    <Content Include="Scripts\jquery-3.1.0.slim.min.map" />
-    <Content Include="Scripts\jquery-3.1.0.min.map" />
     <Content Include="Views\Home\Migrate.cshtml" />
     <Content Include="Views\Home\AlbumArtMigrate.cshtml" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.1.1.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App\Common\" />
@@ -472,22 +486,28 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="App\App.ts" />
+    <TypeScriptCompile Include="App\Controllers\EditArtistController.ts" />
     <TypeScriptCompile Include="App\Controllers\HeaderController.ts" />
     <TypeScriptCompile Include="App\Controllers\NowPlayingController.ts" />
     <TypeScriptCompile Include="App\Controllers\RequestSongController.ts" />
     <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />
     <TypeScriptCompile Include="App\Controllers\UploadAlbumController.ts" />
     <TypeScriptCompile Include="App\Directives\AudioStatusChanged.ts" />
+    <TypeScriptCompile Include="App\Models\AppRoute.ts" />
+    <TypeScriptCompile Include="App\Models\Artist.ts" />
     <TypeScriptCompile Include="App\Models\AudioStatus.ts" />
     <TypeScriptCompile Include="App\Models\HeaderRoute.ts" />
     <TypeScriptCompile Include="App\Models\IAlbumSwatch.ts" />
     <TypeScriptCompile Include="App\Models\ServerInterfaces.ts" />
     <TypeScriptCompile Include="App\Models\Song.ts" />
     <TypeScriptCompile Include="App\Models\SongLike.ts" />
+    <TypeScriptCompile Include="App\Polyfills\Array.ts" />
+    <TypeScriptCompile Include="App\Polyfills\String.ts" />
     <TypeScriptCompile Include="App\Services\AlbumApiService.ts" />
     <TypeScriptCompile Include="App\Services\ArtistApiService.ts" />
     <TypeScriptCompile Include="App\Services\AudioPlayerService.ts" />
     <TypeScriptCompile Include="App\Services\HttpApiService.ts" />
+    <TypeScriptCompile Include="App\Services\LoadingProgressService.ts" />
     <TypeScriptCompile Include="App\Services\SignInService.ts" />
     <TypeScriptCompile Include="App\Services\SongBatchService.ts" />
     <TypeScriptCompile Include="App\Services\SongRequestService.ts" />
@@ -541,7 +561,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <TypeScriptModuleKind>amd</TypeScriptModuleKind>
+    <TypeScriptStrictNullChecks>True</TypeScriptStrictNullChecks>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

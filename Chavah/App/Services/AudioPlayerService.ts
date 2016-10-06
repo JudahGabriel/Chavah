@@ -1,7 +1,7 @@
 ﻿namespace BitShuva.Chavah {
     export class AudioPlayerService {
         status = new Rx.BehaviorSubject(AudioStatus.Paused);
-        song = new Rx.BehaviorSubject<Song>(null);
+        song = new Rx.BehaviorSubject<Song | null>(null);
         audio: HTMLAudioElement;
         playedTimeText: string;
         remainingTimeText: string;
@@ -94,8 +94,9 @@
 
             this.songApi.getSongById(songId)
                 .then(song => {
-                    if (this.song.getValue()) {
-                        this.playedSongs.unshift(this.song.getValue());
+                    var unwrappedSong = this.song.getValue();
+                    if (unwrappedSong) {
+                        this.playedSongs.unshift(unwrappedSong);
                     }
 
                     // Set the current song and URI. But don't play it.

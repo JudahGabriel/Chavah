@@ -1,6 +1,6 @@
 ﻿namespace BitShuva.Chavah {
     export class RequestSongController {
-        selectedSongRequest: Song;
+        selectedSongRequest: Song | null;
         songRequestMatches: Song[] = [];
         songRequestText = "";
 

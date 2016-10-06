@@ -1,57 +1,57 @@
 ﻿module BitShuva.Chavah.Server {
     export interface ISong {
-        Name: string;
-        Number: number;
-        Album: string;
-        Artist: string;
-        CommunityRank: number;
-        CommunityRankStanding: number;
-        Id: string;
-        AlbumArtUri: string;
-        TotalPlays: number;
-        Uri: string;
-        SongLike: number;
-        Lyrics: string;
-        Genres: string[];
-        Tags: string[];
-        ArtistImages: string[];
-        PurchaseUri: string;
+        name: string;
+        number: number;
+        album: string;
+        artist: string;
+        communityRank: number;
+        communityRankStanding: number;
+        id: string;
+        albumArtUri: string;
+        totalPlays: number;
+        uri: string;
+        songLike: number;
+        lyrics: string;
+        genres: string[];
+        tags: string[];
+        artistImages: string[];
+        purchaseUri: string;
     }
 
     export interface IUpDownVotes {
-        UpVotes: number;
-        DownVotes: number;
-        SongId: string;
+        upVotes: number;
+        downVotes: number;
+        songId: string;
     }
 
     export interface IArtist {
-        Name: string;
-        Images: string[];
-        Bio: string;
+        name: string;
+        images: string[];
+        bio: string;
     }
 
     export interface IPagedList<T> {
-        Items: T[];
-        Total: number;
-        Skip: number;
-        Take: number;
+        items: T[];
+        total: number;
+        skip: number;
+        take: number;
     }
 
     export interface ISongUpload {
-        Address: string;
-        FileName: string;
+        address: string;
+        fileName: string;
     }
 
     export interface IAlbumUpload {
-        Name: string,
-        Artist: string,
-        AlbumArtUri: string,
-        Songs: Server.ISongUpload[],
-        PurchaseUrl: string,
-        Genres: string,
-        ForeColor: string,
-        BackColor: string,
-        MutedColor: string,
-        TextShadowColor: string
+        name: string,
+        artist: string,
+        albumArtUri: string,
+        songs: Server.ISongUpload[],
+        purchaseUrl: string,
+        genres: string,
+        foreColor: string,
+        backColor: string,
+        mutedColor: string,
+        textShadowColor: string
     }
 }

@@ -93,6 +93,22 @@
   max-height: 300px;
   overflow-y: auto;
 }
+.edit-artist-page {
+  padding: 15px;
+  margin-bottom: 30px;
+}
+.edit-artist-page .photos-container {
+  overflow: auto;
+  max-height: 500px;
+}
+.edit-artist-page .photos-container .img-container {
+  display: inline-block;
+  margin: 5px;
+  position: relative;
+}
+.edit-artist-page .photos-container .img-container .img-thumbnail {
+  max-width: 100px;
+}
 #songs-table {
   margin-top: 20px;
   text-align: center;

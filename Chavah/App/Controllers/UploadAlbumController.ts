@@ -4,11 +4,11 @@
         albumName = "";
         songs: FilepickerInkBlob[] = [];
         isUploading = false;
-        albumArt: FilepickerInkBlob = null;
+        albumArt: FilepickerInkBlob | null = null;
         purchaseUrl = "";
         genre = "";
         allGenres = ["Messianic Jewish", "Hebrew Roots", "Jewish Christian", "Jewish", "Christian"];
-        artist: Server.IArtist = null;
+        artist: Server.IArtist | null = null;
         allArtists: Server.IArtist[] = [];
         foreColor = Song.defaultSwatch.getBodyTextColor();
         backColor = Song.defaultSwatch.getHex();
@@ -25,7 +25,7 @@
             private albumApi: AlbumApiService,
             private $scope: ng.IScope,
             private $sce: ng.ISCEService) {
-            artistApi.getAll().then(results => this.allArtists = results.Items);
+            artistApi.getAll().then(results => this.allArtists = results.items);
         }
 
         chooseSongs() {
@@ -104,8 +104,8 @@
 
         static filePickerSongToAlbumSong(file: FilepickerInkBlob): Server.ISongUpload {
             return {
-                FileName: file["friendlyName"],
-                Address: file.url
+                fileName: file["friendlyName"],
+                address: file.url
             };
         }
 
@@ -138,7 +138,7 @@
         }
 
         upload() {
-            if (!this.albumArt && !this.albumArt.url) {
+            if (!this.albumArt || !this.albumArt.url) {
                 throw new Error("Must have album art.");
             }
 
@@ -146,18 +146,22 @@
                 throw new Error("Must have album name.");
             }
 
+            if (!this.artist) {
+                throw new Error("Must have an artist");
+            }
+
             if (!this.isUploading) {             
                 var album: Server.IAlbumUpload = {
-                    AlbumArtUri: this.albumArt.url,
-                    Artist: this.artist.Name,
-                    BackColor: this.backColor,
-                    ForeColor: this.foreColor,
-                    Genres: this.genre,
-                    MutedColor: this.mutedColor,
-                    Name: this.albumName,
-                    PurchaseUrl: this.purchaseUrl,
-                    Songs: this.songs ? this.songs.map(UploadAlbumController.filePickerSongToAlbumSong) : [],
-                    TextShadowColor: this.textShadowColor
+                    albumArtUri: this.albumArt.url,
+                    artist: this.artist.name,
+                    backColor: this.backColor,
+                    foreColor: this.foreColor,
+                    genres: this.genre,
+                    mutedColor: this.mutedColor,
+                    name: this.albumName,
+                    purchaseUrl: this.purchaseUrl,
+                    songs: this.songs ? this.songs.map(UploadAlbumController.filePickerSongToAlbumSong) : [],
+                    textShadowColor: this.textShadowColor
                 };
                 this.isUploading = true;
                 this.albumApi.upload(album)

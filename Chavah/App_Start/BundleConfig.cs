@@ -8,51 +8,62 @@ namespace BitShuva
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.IgnoreList.Clear();
-            bundles.UseCdn = true;
             AddDefaultIgnorePatterns(bundles.IgnoreList);
+            
+            var cdns = new
+            {
+                JQuery = "https://code.jquery.com/jquery-2.2.4.min.js",
+                Bootstrap = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js",
+                Moment = "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js",
+                Angular = "https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js",
+                AngularAnimate = "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular-animate.min.js",
+                AngularRoute = "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular-route.min.js",
+                FastClick = "https://cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js",
+                AngularBootstrap = "https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap.min.js",
+                AngularBootstrapTemplates = "https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap-tpls.min.js",
+                NProgress = "https://cdn.jsdelivr.net/nprogress/0.1.6/js/nprogress.min.js",
+                RxLite = "https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.lite.js",
+                //Lodash = "https://cdn.jsdelivr.net/lodash/4.13.1/lodash.min.js"
+            };
 
-            bundles.Add(new ScriptBundle("~/scripts/jquery", "https://code.jquery.com/jquery-2.1.4.min.js")
-                .Include("~/Scripts/jquery-{version}.js"));
-            bundles.Add(new ScriptBundle("~/scripts/reactive", "https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.0.7/rx.lite.js")
-                .Include("~/Scripts/rx.lite.js"));
+            bundles.Add(new ScriptBundle("~/bundles/jquery", cdns.JQuery).Include("~/Scripts/jquery-{version}.js"));
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap", cdns.Bootstrap).Include("~/Scripts/bootstrap.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/moment", cdns.Moment).Include("~/Scripts/moment.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/angular", cdns.Angular).Include("~/Scripts/angular.js"));
+            bundles.Add(new ScriptBundle("~/bundles/angular-animate", cdns.AngularAnimate).Include("~/Scripts/angular-animate.js"));
+            bundles.Add(new ScriptBundle("~/bundles/angular-route", cdns.AngularRoute).Include("~/Scripts/angular-route.js"));
+            bundles.Add(new ScriptBundle("~/bundles/angular-bootstrap", cdns.AngularBootstrap).Include("~/Scripts/angular-ui/ui-bootstrap.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/angular-bootstrap-templates", cdns.AngularBootstrapTemplates).Include("~/Scripts/angular-ui/ui-bootstrap-tpls.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/fastclick", cdns.FastClick).Include("~/Scripts/fastclick.js"));
+            bundles.Add(new ScriptBundle("~/bundles/nprogress", cdns.NProgress).Include("~/Scripts/nprogress.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/rx-lite", cdns.RxLite).Include("~/Scripts/rx.lite.js"));
+            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include("~/Scripts/modernizr-production.js"));
+            //bundles.Add(new ScriptBundle("~/bundles/lodash", cdns.Lodash).Include("~/Scripts/lodash.min.js"));
 
-            bundles.Add(new ScriptBundle("~/scripts/app").Include(
-                  new[]
-                  {
-                      "~/Scripts/angular.js",
-                      "~/Scripts/angular-route.js",
-                      "~/Scripts/angular-touch.js",
-                      "~/Scripts/angular-animate.js",
-                      "~/Scripts/angular-ui/ui-bootstrap.js",
-                      "~/Scripts/angular-ui/ui-bootstrap-tpls.js",
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/moment.js",
-                      "~/Scripts/nprogress.js",
-                      "~/Scripts/rx.lite.min.js",
-                      "~/Scripts/vibrant.min.js",
-                      "~/Scripts/modernizr-production.js",
-                      "~/App/App.js",
-                      "~/App/Models/*.js",
-                      "~/App/Services/*.js",
-                      "~/App/Controllers/*.js"
-                  }));
+            bundles.Add(new ScriptBundle("~/bundles/app")
+                .Include("~/App/Polyfills/*.js", "~/App/Common/*.js", "~/App/Models/*.js") // Include polyfills, common, and models before any other app code.
+                .Include("~/App/App.js", new AngularViewCacheBuster()) // Cache bust the references to our Angular views listed inside App.ts
+                .Include(new[]
+                {
+                    "~/App/Controllers/*.js",
+                    "~/App/Directives/*.js",
+                    "~/App/Services/*.js"
+                }));
 
-            bundles.Add(new StyleBundle("~/styles/fontawesome", "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
-                .Include("~/Content/font-awesome.css"));
+            bundles.Add(new StyleBundle("~/bundles/bootstrap-theme").Include("~/Content/styles/bootstrap.flatly.min.css"));
+            bundles.Add(new StyleBundle("~/bundles/app-styles")
+                .Include(new[]
+                {
+                    "~/Content/styles/app/*.css",
+                    "~/Content/styles/nprogress.css"
+                }));
 
-            bundles.Add(
-              new StyleBundle("~/styles/app")
-                .Include("~/Content/nprogress.css")
-                .Include("~/Content/bootstrap.flatly.css") // Don't use CDN, because this is a customized theme
-                .Include("~/Content/app.css")
-              );
-
-#if DEBUG
-            bundles.UseCdn = false;
+#if DEBUGz
             BundleTable.EnableOptimizations = false;
+            bundles.UseCdn = false;
 #else
-            bundles.UseCdn = true;
             BundleTable.EnableOptimizations = true;
+            bundles.UseCdn = true;
 #endif
         }
 

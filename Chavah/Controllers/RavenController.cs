@@ -31,7 +31,7 @@ namespace BitShuva.Controllers
             {
                 using (Session)
                 {
-                    if (filterContext.Exception == null && Session != null)
+                    if (filterContext.Exception == null && Session != null && Session.Advanced.HasChanges)
                     {
                         var saveTask = Session.SaveChangesAsync();
 

@@ -1,4 +1,7 @@
-﻿using System.Web.Http;
+﻿using Newtonsoft.Json.Serialization;
+using System.Net.Http.Formatting;
+using System.Web.Http;
+using System.Linq;
 
 namespace BitShuva
 {
@@ -14,6 +17,9 @@ namespace BitShuva
               );
 
             config.Filters.Add(new BitShuva.Common.ElmahUnhandledExceptionFilter());
+
+            // Use camelCasing when returning results from the API.
+            config.Formatters.OfType<JsonMediaTypeFormatter>().First().SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
     }
 }

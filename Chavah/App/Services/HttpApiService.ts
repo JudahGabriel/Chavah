@@ -1,45 +1,80 @@
 ﻿namespace BitShuva.Chavah {
     export class HttpApiService {
 
+        apiBaseUrl = ""
+
         static $inject = [
+            "loadingProgress",
             "$http",
             "$q"
         ];
 
-        constructor(private $http: ng.IHttpService, private $q: ng.IQService) {
+        constructor(
+            private loadingProgress: LoadingProgressService,
+            private $http: ng.IHttpService,
+            private $q: ng.IQService) {
         }
 
-        public query<T>(url: string, args?: any, resultsSelector?: (raw: any) => T): ng.IPromise<T> {
-            //var task = this.$http.get(url, {
-            //    params: args ? $.param(args) : null
-            //});
-
+        query<T>(relativeUrl: string, args: any = null, selector?: (rawResult: any) => T, showProgress = true): ng.IPromise<T> {
+            var progress: ng.IDeferred<T>;
+            if (showProgress) {
+                progress = this.loadingProgress.start<T>();
+            } else {
+                progress = this.$q.defer<T>();
+            }
+            
             var config: ng.IRequestConfig = {
-                url: url,
+                url: this.apiBaseUrl + relativeUrl,
                 method: "GET",
                 params: args
             };
-            var task = this.$http(config);
 
-            var result = this.$q.defer<T>();
-            if (resultsSelector) {
-                task.success(raw => result.resolve(resultsSelector(raw)));
-            } else {
-                task.success((raw: T) => result.resolve(raw));
-            }
+            this.$http(config)
+                .then(result => {
+                    var preppedResult: T = selector ? selector(result.data) : <T>result.data;
+                    progress.resolve(preppedResult);
+                }, failed => {
+                    progress.reject(failed);
+                    this.onAjaxError(failed, `Error loading ${relativeUrl}.`);
+                });
 
-            task.error(error => result.reject(error));
-            return result.promise;
+            return progress.promise;
         }
 
-        public post<T>(url: string, args?: any, resultsSelector?: (raw: any) => T): ng.IPromise<T> {
-            var task = this.$http.post(url, args);
-
-            if (resultsSelector) {
-                return task.then(raw => resultsSelector(raw));
+        post<T>(relativeUrl: string, args: any, selector?: (rawResult: any) => T, showProgress = true): ng.IPromise<T> {
+            var deferred: ng.IDeferred<T>;
+            if (showProgress) {
+                deferred = this.loadingProgress.start<T>();
+            } else {
+                deferred = this.$q.defer<T>();
             }
+            
+            var absoluteUrl = `${this.apiBaseUrl}${relativeUrl}`;
+            var postTask = this.$http.post(absoluteUrl, args);
+            postTask.then((result: any) => {
+                var preppedResult = selector ? selector(result.data) : result.data;
+                deferred.resolve(preppedResult);
+            });
+            postTask.catch(error => {
+                this.onAjaxError(error, `Error saving ${relativeUrl}.`);
+                deferred.reject(error);
+            });
 
-            return task;
+            return deferred.promise;
+        }
+
+        private onAjaxError(errorDetails: any, errorMessage: string) {
+            // If we got 401 unauthorized, the token is probably stale or invalid. Go to sign in.
+            //if (errorDetails && errorDetails.status === 401) {
+            //    this.appNav.signIn();
+            //} else {
+            //    this.errors.push({
+            //        error: errorDetails,
+            //        message: errorMessage
+            //    });
+
+            //    this.isShowingApiError = true;
+            //}
         }
     }
 

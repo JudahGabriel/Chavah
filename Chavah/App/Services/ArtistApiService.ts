@@ -14,6 +14,21 @@
             };
             return this.httpApi.query("/api/artists/all", args);
         }
+
+        getByName(artistName: string): ng.IPromise<Artist> {
+            var args = {
+                artistName: artistName
+            };
+            return this.httpApi.query("/api/artists/getByName", args, ArtistApiService.artistSelector);
+        }
+
+        save(artist: Server.IArtist): ng.IPromise<Artist> {
+            return this.httpApi.post("/api/artists/save", artist, ArtistApiService.artistSelector);
+        }
+
+        static artistSelector(serverObj: Server.IArtist): Artist {
+            return new Artist(serverObj);
+        }
     }
 
     App.service("artistApi", ArtistApiService);

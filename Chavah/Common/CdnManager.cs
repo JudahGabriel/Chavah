@@ -21,12 +21,12 @@ namespace BitShuva.Common
     {
         public static readonly Uri ftpAddress = new Uri(ConfigurationManager.AppSettings["CdnFtpAddress"]);
         public static readonly Uri ftpMusicDirectory = ftpAddress.Combine("music");
-        public static readonly Uri ftpAlbumArtDirectory = ftpAddress.Combine("albumart");
-        public static readonly Uri ftpArtistImagesDirectory = ftpAddress.Combine("artistimages");
+        public static readonly Uri ftpAlbumArtDirectory = ftpAddress.Combine("album-art");
+        public static readonly Uri ftpArtistImagesDirectory = ftpAddress.Combine("artist-images");
         public static readonly Uri cdnAddress = new Uri(ConfigurationManager.AppSettings["CdnPath"]);
         public static readonly Uri musicUri = cdnAddress.Combine("music");
-        public static readonly Uri albumArtUri = cdnAddress.Combine("albumart");
-        public static readonly Uri artistImagesUri = cdnAddress.Combine("artistimages");
+        public static readonly Uri albumArtUri = cdnAddress.Combine("album-art");
+        public static readonly Uri artistImagesUri = cdnAddress.Combine("artist-images");
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
@@ -141,10 +141,9 @@ namespace BitShuva.Common
         /// </summary>
         /// <param name="tempHttpPath">The temporary HTTP path where the image currently resides. This file will be donwloaded and moved to the CDN.</param>
         /// <returns>The new HTTP URI to the image on the CDN.</returns>
-        public static async Task<Uri> UploadArtistImage(Uri tempHttpPath)
+        public static async Task<Uri> UploadArtistImage(Uri tempHttpPath, string fileName)
         {
             var ftpConnection = CreateFtpConnection();
-            var fileName = Guid.NewGuid().ToString() + ".jpg";
             var ftpFileUri = ftpArtistImagesDirectory.Combine(fileName);
             using (var destinationStream = ftpConnection.OpenWrite(ftpFileUri))
             using (var webClient = new WebClient())
@@ -226,9 +225,10 @@ namespace BitShuva.Common
             return $"{GetLowerAlphaNumericEnglish(artist)} - {GetLowerAlphaNumericEnglish(album)} - {GetLowerAlphaNumericEnglish(songName)}.mp3";
         }
 
-        private static string GetLowerAlphaNumericEnglish(string input)
+        public static string GetLowerAlphaNumericEnglish(string input)
         {
             var lower = input
+                .ToLowerInvariant()
                 .Replace(":", "_")
                 .Replace("/", "+")
                 .Replace("é", "e")

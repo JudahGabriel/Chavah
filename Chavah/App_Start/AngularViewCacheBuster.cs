@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace BitShuva.App_Start
+namespace BitShuva
 {
     /// <summary>
     /// MVC bundle transformer that searches a file for paths to our Angular views, e.g. "/App/Views/Blah.html"

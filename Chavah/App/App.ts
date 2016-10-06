@@ -3,29 +3,33 @@
 
     var modules = [
         "ngRoute",
-        "ngTouch",
+        "ngAnimate",
         "ui.bootstrap",
-        "ui.bootstrap.tpls"
+        "ui.bootstrap.tpls",
     ];
 
     export var App = angular.module("ChavahApp", modules);
+
+    function createRoute(htmlPage: string, isAdmin = false): AppRoute {
+        return {
+            templateUrl: htmlPage,
+            isAdmin: isAdmin
+        };
+    }
     
     App.config(["$routeProvider", ($routeProvider: ng.route.IRouteProvider) => {
+        $routeProvider.caseInsensitiveMatch = true;
         $routeProvider
-            .when("/nowplaying", {
-                templateUrl: "App/Views/NowPlaying.html",
-                controller: "NowPlayingController as vm",
-                caseInsensitiveMatch: true
-            }).when("/admin/albums/upload", {
-                templateUrl: "App/Views/UploadAlbum.html",
-                caseInsensitiveMatch: true
-            }).when("/trending", {
-                templateUrl: "App/Views/Trending.html",
-                controller: "TrendingController as vm",
-                caseInsensitiveMatch: true
-            }).otherwise({
+            .when("/nowplaying", createRoute("/App/Views/NowPlaying.html"))
+            .when("/trending", createRoute("/App/Views/Trending.html"))
+            .when("/admin/albums/upload", createRoute("/App/Views/UploadAlbum.html", true))
+            .when("/admin/artists/:artistName?", createRoute("/App/Views/EditArtist.html", true))
+            .otherwise({
                 redirectTo: "/nowplaying"
             });
     }]);
+
+    // Setup Fastclick to remove the 300ms click delay on mobile browsers.
+    document.addEventListener("DOMContentLoaded", () => FastClick.attach(document.body), false);
 }
   
