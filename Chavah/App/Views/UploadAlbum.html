@@ -4,6 +4,10 @@
             <h2>Upload an album</h2>
             <form>
                 <div class="form-group">
+                    <label>Artist</label>
+                    <input type="text" class="form-control" ng-model="vm.artist.name" uib-popover-template="'App/Views/Templates/ArtistList.html'" popover-trigger="focus" popover-placement="bottom" />
+                </div>
+                <div class="form-group">
                     <label>Album name</label>
                     <input class="form-control" placeholder="Album name" ng-model="vm.albumName">
                 </div>
@@ -16,7 +20,7 @@
                             {{vm.songs[0].name || 'Song Name Here'}}
                             <br />
                             <span ng-style="{ 'color': vm.mutedColor }">By</span>
-                            {{vm.artist.Name || 'Joseph A. Artist'}}
+                            {{vm.artist.name || 'Joseph A. Artist'}}
                             <br />
                             <span ng-style="{ 'color': vm.mutedColor }">on</span>
                             {{vm.albumName || 'Some New Album'}}
@@ -75,7 +79,15 @@
                                                         <p>
                                                             Color
                                                             <br />
-                                                            {{swatch.color}} {{vm.hexToRgbString(swatch.color)}}
+                                                            {{swatch.color}} 
+                                                            <br />
+                                                            {{vm.hexToRgbString(swatch.color)}}
+                                                            <div class="btn-group" role="group" aria-label="...">
+                                                                <button type="button" class="btn btn-default" ng-click="vm.foreColor = swatch.color">Fore</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.backColor = swatch.color">Bg</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.mutedColor = swatch.color">Muted</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.textShadowColor = swatch.color">Shadow</button>
+                                                            </div>
                                                         </p>
                                                     </div>
                                                     <div class="col-sm-4 text-center">
@@ -84,6 +96,12 @@
                                                             Title Text
                                                             <br />
                                                             {{swatch.titleTextColor}} {{vm.hexToRgbString(swatch.titleTextColor)}}
+                                                            <div class="btn-group" role="group" aria-label="...">
+                                                                <button type="button" class="btn btn-default" ng-click="vm.foreColor = swatch.titleTextColor">Fore</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.backColor = swatch.titleTextColor">Bg</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.mutedColor = swatch.titleTextColor">Muted</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.textShadowColor = swatch.titleTextColor">Shadow</button>
+                                                            </div>
                                                         </p>
 
                                                     </div>
@@ -93,6 +111,12 @@
                                                             Body Text
                                                             <br />
                                                             {{swatch.bodyTextColor}} {{vm.hexToRgbString(swatch.bodyTextColor)}}
+                                                            <div class="btn-group" role="group" aria-label="...">
+                                                                <button type="button" class="btn btn-default" ng-click="vm.foreColor = swatch.bodyTextColor">Fore</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.backColor = swatch.bodyTextColor">Bg</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.mutedColor = swatch.bodyTextColor">Muted</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.textShadowColor = swatch.bodyTextColor">Shadow</button>
+                                                            </div>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -106,18 +130,24 @@
                 </div>
                 <div class="form-group">
                     <label>Songs</label>
-                    <div class="list-group">
-                        <a class="list-group-item" href="javascript:void(0)" ng-repeat="song in vm.songs">
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="song in vm.songs">
                             <input type="text" class="form-control" ng-model="song.friendlyName" />
-                            <br />
+                            <div class="btn-group" role="group" aria-label="...">
+                                <button type="button" class="btn btn-default" title="Move song up" ng-click="vm.moveSongUp(song)">
+                                    <i class="fa fa-arrow-up"></i>
+                                </button>
+                                <button type="button" class="btn btn-default" title="Move song down" ng-click="vm.moveSongDown(song)">
+                                    <i class="fa fa-arrow-down"></i>
+                                </button>
+                                <button type="button" class="btn btn-default" title="Remove song" ng-click="vm.removeSong(song)">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                            </div>
                             <audio preload="none" controls ng-src="{{song.trustedUrl}}" />
-                        </a>
-                    </div>
+                        </li>
+                    </ul>
                     <button class="btn btn-default" ng-click="vm.chooseSongs()">Choose songs...</button>
-                </div>
-                <div class="form-group">
-                    <label>Artist</label>
-                    <input type="text" class="form-control" ng-model="vm.artist.Name" uib-popover-template="'App/Views/Templates/ArtistList.html'" popover-trigger="focus" popover-placement="bottom" />
                 </div>
                 <div class="form-group">
                     <label>Purchase URL</label>
@@ -134,6 +164,3 @@
         </div>
     </div>
 </section>
-
-<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/1.0.0/Vibrant.min.js"></script>
-<script type="text/javascript" async src="http://api.filepicker.io/v1/filepicker.js"></script>

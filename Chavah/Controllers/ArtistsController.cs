@@ -133,7 +133,7 @@ namespace BitShuva.Controllers
         static string FindUnusedArtistImageFileName(string artist, int index, IList<string> allFileNames)
         {
             const int maxArtistImages = 10000;
-            var artistCdnSafe = CdnManager.GetLowerAlphaNumericEnglish(artist);
+            var artistCdnSafe = CdnManager.GetAlphaNumericEnglish(artist);
             while (index < maxArtistImages)
             {
                 var desiredFileName = $"{artistCdnSafe} {index}.jpg";

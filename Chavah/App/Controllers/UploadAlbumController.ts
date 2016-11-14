@@ -44,6 +44,10 @@
                 s["trustedUrl"] = this.$sce.trustAsResourceUrl(s.url);
                 s["friendlyName"] = UploadAlbumController.songNameFromFileName(s.filename);
             });
+
+            // Order the songs according to file name. If named right, it should order them correctly.
+            songs.sort((a, b) => a.filename < b.filename ? -1 : a.filename > b.filename ? 1 : 0);
+
             this.songs = this.songs.concat(songs);
             this.$scope.$applyAsync();
         }
@@ -81,6 +85,31 @@
                         this.$scope.$applyAsync();
                     }
                 });
+            }
+        }
+
+        moveSongUp(song: FilepickerInkBlob) {
+            var currentIndex = this.songs.indexOf(song);
+            if (currentIndex > 0) {
+                var newIndex = currentIndex - 1;
+                this.songs.splice(currentIndex, 1);
+                this.songs.splice(newIndex, 0, song);
+            }
+        }
+
+        moveSongDown(song: FilepickerInkBlob) {
+            var currentIndex = this.songs.indexOf(song);
+            if (currentIndex < (this.songs.length - 1)) {
+                var newIndex = currentIndex + 1;
+                this.songs.splice(currentIndex, 1);
+                this.songs.splice(newIndex, 0, song);
+            }
+        }
+
+        removeSong(song: FilepickerInkBlob) {
+            var index = this.songs.indexOf(song);
+            if (index >= 0) {
+                this.songs.splice(index, 1);
             }
         }
 

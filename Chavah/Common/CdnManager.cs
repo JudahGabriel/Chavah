@@ -39,26 +39,35 @@ namespace BitShuva.Common
         public static async Task<Uri> UploadMp3ToCdn(Uri tempHttpAddress, string artist, string album, string songName)
         {
             var tempDownloadedFile = default(string);
+            var fileName = GetCdnSafeSongFileName(artist, album, songName);
+            var fileMp3Uri = ftpMusicDirectory.Combine(artist, fileName);
             try
             {
                 tempDownloadedFile = await DownloadFileLocally(tempHttpAddress);
                 var ftpConnection = CreateFtpConnection();
-                var fileName = GetCdnSafeSongFileName(artist, album, songName);
-                var fileMp3Uri = ftpMusicDirectory.Combine(fileName);
-                using (var destinationStream = ftpConnection.OpenWrite(fileMp3Uri))
+
+                // Create the artist directory as needed.
+                var artistDirectory = ftpMusicDirectory.Combine(artist);
+                var artistDirExists = ftpConnection.DirectoryExists(artistDirectory);
+                if (!artistDirExists)
                 {
-                    using (var sourceStream = File.OpenRead(tempDownloadedFile))
-                    {
-                        await sourceStream.CopyToAsync(destinationStream);
-                    }
+                    ftpConnection.CreateDirectory(artistDirectory);
                 }
+                
+                using (var destinationStream = ftpConnection.OpenWrite(fileMp3Uri))
+                using (var sourceStream = File.OpenRead(tempDownloadedFile))
+                {
+                    await sourceStream.CopyToAsync(destinationStream);
+                }                
 
                 return musicUri.Combine(fileName);
             }
             catch (Exception error)
             {
-                log.Error(error, "Unable to upload MP3 to CDN.");
-                throw;
+                var errorMessage = $"Unable to upload MP3 to CDN. Attempted to upload \"{fileName}\" to {fileMp3Uri}. See inner exception for details.";
+                log.Error(error, errorMessage);
+
+                throw new Exception(errorMessage, error);
             }
             finally
             {
@@ -182,7 +191,7 @@ namespace BitShuva.Common
         public static void DeleteFromCdn(Song song)
         {
             var connection = CreateFtpConnection();
-            var artistFolder = GetLowerAlphaNumericEnglish(song.Artist);
+            var artistFolder = GetAlphaNumericEnglish(song.Artist);
             var songFileName = GetCdnSafeSongFileName(song.Artist, song.Album, song.Name);
             var songUri = ftpMusicDirectory.Combine(artistFolder, songFileName);
             connection.DeleteFile(songUri);
@@ -222,29 +231,28 @@ namespace BitShuva.Common
                 songName = "Unspecified Song Name";
             }
             
-            return $"{GetLowerAlphaNumericEnglish(artist)} - {GetLowerAlphaNumericEnglish(album)} - {GetLowerAlphaNumericEnglish(songName)}.mp3";
+            return $"{GetAlphaNumericEnglish(artist)} - {GetAlphaNumericEnglish(album)} - {GetAlphaNumericEnglish(songName)}.mp3";
         }
 
-        public static string GetLowerAlphaNumericEnglish(string input)
+        public static string GetAlphaNumericEnglish(string input)
         {
             var lower = input
-                .ToLowerInvariant()
-                .Replace(":", "_")
-                .Replace("/", "+")
-                .Replace("é", "e")
-                .Replace("ú", "u")
+                .Replace(':', '_')
+                .Replace('/', '+')
+                .Replace('é', 'e')
+                .Replace('ú', 'u')
                 .Replace("?", "")
-                .Replace("ó", "o")
-                .Replace("í", "i")
-                .Replace("á", "a");
-            var isLowerAscii = new Func<char, bool>(c => c >= 'a' && c <= 'z');
-            if (lower.All(c => isLowerAscii(c) || char.IsNumber(c) || c == ' ' || c == '_' || c == '+'))
+                .Replace('ó', 'o')
+                .Replace('í', 'i')
+                .Replace('á', 'a');
+            var isAscii = new Func<char, bool>(c => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+            if (lower.All(c => isAscii(c) || char.IsNumber(c) || c == ' ' || c == '_' || c == '+'))
             {
                 return lower;
             }
             else
             {
-                return new string(lower.Select(c => isLowerAscii(c) || char.IsNumber(c) || c == ' ' ? c : '_').ToArray());
+                return new string(lower.Select(c => isAscii(c) || char.IsNumber(c) || c == ' ' ? c : '_').ToArray());
             }
         }
     }
