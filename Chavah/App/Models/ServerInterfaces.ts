@@ -1,4 +1,27 @@
 ﻿module BitShuva.Chavah.Server {
+    export interface IApplicationUser {
+        totalPlays: number;
+        preferences: any;
+        registrationDate: string;
+        lastSeen: string;
+        totalSongRequests: number;
+        requiresPasswordReset: boolean;
+        accessFailedCount: number;
+        claims: any[];
+        email: string;
+        id: string;
+        isEmailConfirmed: boolean;
+        isPhoneNumberConfirmed: boolean;
+        lockoutEnabled: boolean;
+        lockoutEndDate: string;
+        logins: any[];
+        passwordHash: string;
+        phoneNumber: string;
+        roles: string[];
+        securityStamp: string;
+        twoFactorAuthEnabled: boolean;
+    }
+
     export interface ISong {
         name: string;
         number: number;

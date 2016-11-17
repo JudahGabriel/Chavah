@@ -1,7 +1,7 @@
 ﻿using BitShuva.Common;
 using BitShuva.Controllers;
-using NLog;
-using NLog.Config;
+////using NLog;
+////using NLog.Config;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Indexes;
@@ -22,12 +22,12 @@ namespace BitShuva
             docStore.Initialize();
             Db = docStore;
 
-            // Direct NLog to store logs in Raven.
-            var loggingConfig = new LoggingConfiguration();
-            var ravenNLogTarget = new RavenNLogTarget(Db);
-            loggingConfig.AddTarget("RavenNLog", ravenNLogTarget);
-            loggingConfig.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, ravenNLogTarget));
-            LogManager.Configuration = loggingConfig;
+            //// Direct NLog to store logs in Raven.
+            ////var loggingConfig = new LoggingConfiguration();
+            ////var ravenNLogTarget = new RavenNLogTarget(Db);
+            ////loggingConfig.AddTarget("RavenNLog", ravenNLogTarget);
+            ////loggingConfig.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, ravenNLogTarget));
+            ////LogManager.Configuration = loggingConfig;
 
             IndexCreation.CreateIndexes(typeof(RavenContext).Assembly, Db);
         }

@@ -18,6 +18,7 @@ namespace BitShuva
                 Angular = "https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js",
                 AngularAnimate = "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular-animate.min.js",
                 AngularRoute = "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular-route.min.js",
+                AngularLocalStorage = "https://cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.5.0/angular-local-storage.js",
                 FastClick = "https://cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js",
                 AngularBootstrap = "https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap.min.js",
                 AngularBootstrapTemplates = "https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap-tpls.min.js",
@@ -35,6 +36,7 @@ namespace BitShuva
             bundles.Add(new ScriptBundle("~/bundles/angular-route", cdns.AngularRoute).Include("~/Scripts/angular-route.js"));
             bundles.Add(new ScriptBundle("~/bundles/angular-bootstrap", cdns.AngularBootstrap).Include("~/Scripts/angular-ui/ui-bootstrap.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/angular-bootstrap-templates", cdns.AngularBootstrapTemplates).Include("~/Scripts/angular-ui/ui-bootstrap-tpls.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/angular-local-storage", cdns.AngularLocalStorage).Include("~/Scripts/angular-local-storage.js"));
             bundles.Add(new ScriptBundle("~/bundles/fastclick", cdns.FastClick).Include("~/Scripts/fastclick.js"));
             bundles.Add(new ScriptBundle("~/bundles/nprogress", cdns.NProgress).Include("~/Scripts/nprogress.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/rx-lite", cdns.RxLite).Include("~/Scripts/rx.lite.js"));

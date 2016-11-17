@@ -18,5 +18,17 @@
   {
     "outputFile": "Content/styles/app/upload.album.css",
     "inputFile": "Content/styles/app/upload.album.less"
+  },
+  {
+    "outputFile": "Content/styles/app/header.css",
+    "inputFile": "Content/styles/app/header.less"
+  },
+  {
+    "outputFile": "Content/styles/app/shared.css",
+    "inputFile": "Content/styles/app/shared.less"
+  },
+  {
+    "outputFile": "Content/styles/app/signIn.css",
+    "inputFile": "Content/styles/app/signIn.less"
   }
 ]

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Optional;
 
 namespace BitShuva.Controllers
 {
@@ -83,31 +84,7 @@ namespace BitShuva.Controllers
         {
             return this.User.Identity.Name;
         }
-
-        [HttpGet]
-        [Route("clearjudah")]
-        public async Task<string> ClearJudah()
-        {
-            var user = await this.DbSession.LoadAsync<User>("users/38055");
-            user.Preferences.Songs = new System.Collections.Generic.List<LikeDislikeCount>();
-            return "OK!";
-        }
-
-        [HttpGet]
-        [Route("fixupjudah")]
-        public async Task<string> FixUpJudah()
-        {
-            var user = await this.DbSession.LoadAsync<User>("users/38055");
-            var likes = await this.DbSession.Query<Like>().Skip(user.Preferences.Songs.Count).Where(l => l.UserId == user.Id).ToListAsync();
-            user.Preferences.Songs.AddRange(likes.Select(l => new LikeDislikeCount
-                {
-                    Name = l.SongId,
-                    LikeCount = l.Status == LikeStatus.Like ? 1 : 0,
-                    DislikeCount = l.Status == LikeStatus.Dislike ? 1 : 0,
-                }));
-            return string.Format("Update successful. Total updated: {0}", likes.Count);
-        }
-
+        
         [HttpGet]
         [Authorize]
         public async Task<UserProfile> GetUserProfile()
@@ -132,6 +109,22 @@ namespace BitShuva.Controllers
             }
 
             return null;
+        }
+
+        [HttpGet]
+        [Route("GetUserWithEmail")]
+        public async Task<ApplicationUser> GetUserWithEmail(string email)
+        {
+            var user = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + email);
+            if (user != null)
+            {
+                // Remove the user from the session, as we're going to clear out the password hash for security reasons before sending it to the user.
+                DbSession.Advanced.Evict(user);
+                user.PasswordHash = "";
+                user.SecurityStamp = "";
+            }
+
+            return user;
         }
     }
 }

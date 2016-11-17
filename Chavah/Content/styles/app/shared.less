@@ -1,11 +1,30 @@
-﻿@import "functions";
-@import "variables";
+﻿@import "../functions";
+@import "../variables.less";
+
+@-ms-viewport {
+    width: device-width;
+}
+
+html {
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    background: radial-gradient(closest-side at 50% 50%, fadeOut(gold, 85%), fadeOut(goldenrod, 90%), fadeOut(@brand-color, 90%));
+    background-repeat: no-repeat;
+    height: 100%;
+}
+
+.blue-link, .blue-link:hover, .blue-link:active, .blue-link:focus {
+    color: #0066c0;
+}
+
+#currentPageContainer {
+    padding: 10px;
+}
 
 .artist-list {
     max-height: 300px;
     overflow-y: auto;
-}
-
-@-ms-viewport {
-    width: device-width;
 }

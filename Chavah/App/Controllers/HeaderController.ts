@@ -6,7 +6,7 @@
 
         static $inject = [
             "audioPlayer",
-            "signInService",
+            "signInApi",
             "songRequestApi",
             "stationIdentifier",
             "songBatch",
@@ -17,7 +17,7 @@
 
         constructor(
             private audioPlayer: AudioPlayerService,
-            private signInService: SignInService,
+            private signInApi: SignInService,
             private songRequestApi: SongRequestApiService,
             private stationIdentifier: StationIdentifierService,
             private songBatch: SongBatchService,
@@ -54,11 +54,11 @@
         }
 
         requestSong() {
-            if (this.signInService.isSignedIn()) {
+            if (this.signInApi.isSignedIn()) {
                 this.songRequestApi.showSongRequestDialog()
                     .result.then((songOrNull: Song) => this.songRequestDialogCompleted(songOrNull));
             } else {
-                this.signInService.promptForSignIn();
+                this.signInApi.promptForSignIn();
             }
         }
         

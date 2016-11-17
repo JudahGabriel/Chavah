@@ -5,6 +5,7 @@ using System.Web;
 
 namespace BitShuva.Models
 {
+    [Obsolete("Use the new ApplicationUser class")]
     public class User
     {
         public User()

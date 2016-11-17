@@ -1,7 +1,7 @@
 ﻿using BitShuva.Common;
 using BitShuva.Models;
 using FlagFtp;
-using NLog;
+////using NLog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -28,7 +28,7 @@ namespace BitShuva.Common
         public static readonly Uri albumArtUri = cdnAddress.Combine("album-art");
         public static readonly Uri artistImagesUri = cdnAddress.Combine("artist-images");
 
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        ////private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Uploads the song to the CDN.
@@ -65,7 +65,7 @@ namespace BitShuva.Common
             catch (Exception error)
             {
                 var errorMessage = $"Unable to upload MP3 to CDN. Attempted to upload \"{fileName}\" to {fileMp3Uri}. See inner exception for details.";
-                log.Error(error, errorMessage);
+                ////log.Error(error, errorMessage);
 
                 throw new Exception(errorMessage, error);
             }

@@ -1,4 +1,5 @@
 ﻿using BitShuva.Models;
+using BitShuva.Models.Indexes;
 using Chavah.Common;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -21,6 +22,10 @@ namespace BitShuva.Controllers
     {
         private ApplicationSignInManager signInManager;
         private ApplicationUserManager userManager;
+
+        public AccountController()
+        {
+        }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
@@ -443,7 +448,7 @@ namespace BitShuva.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
         }
-
+        
         //
         // POST: /Account/LogOff
         [HttpPost]
@@ -460,6 +465,113 @@ namespace BitShuva.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+
+        static List<User> oldUsers = null;
+        static List<string> failedEmailAddresses = new List<string>(100);
+
+        [AllowAnonymous]
+        public async Task<ActionResult> UpdateOldDupes(int skip = 0)
+        {
+            var results = await Session.Query<UserDupe, Users_Dupes>()
+                .Include(u => u.UserIds)
+                .OrderByDescending(u => u.LastSeen)
+                .Where(u => u.Count > 1)
+                .Skip(skip)
+                .Take(10)
+                .ToListAsync();
+            foreach (var result in results)
+            {
+                var newUser = await Session.LoadAsync<ApplicationUser>("ApplicationUsers/" + result.EmailAddress.ToLower());
+                if (newUser == null)
+                {
+                    throw new Exception("Couldn't find user ApplicationUsers/" + result.EmailAddress.ToLower());
+                }
+
+                var oldUsers = await Session.LoadAsync<User>(result.UserIds);
+                var obsoleteOldUser = oldUsers.OrderByDescending(o => o.LastSeen).Last();
+                var mostRecentOldUser = oldUsers.OrderByDescending(o => o.LastSeen).First();
+                if (newUser.LastSeen != mostRecentOldUser.LastSeen)
+                {
+                    newUser.LastSeen = mostRecentOldUser.LastSeen;
+                    newUser.Preferences = mostRecentOldUser.Preferences;
+                    newUser.RegistrationDate = mostRecentOldUser.RegistrationDate;
+                    newUser.TotalPlays = obsoleteOldUser.TotalPlays + mostRecentOldUser.TotalPlays;
+                    newUser.TotalSongRequests = obsoleteOldUser.TotalSongRequests + mostRecentOldUser.TotalSongRequests;
+                }
+
+            }
+
+            return Json("Updated from dupes " + results.Count.ToString(), JsonRequestBehavior.AllowGet);
+        }
+
+        [AllowAnonymous]
+        public async Task<ActionResult> Migrate()
+        {
+            var oldUsers = AccountController.oldUsers;
+            var existingUsers = new List<ApplicationUser>(4000);
+            using (var ravenSession = RavenContext.Db.OpenSession())
+            {
+                if (oldUsers == null)
+                {
+                    oldUsers = new List<Models.User>(4000);
+                    using (var stream = ravenSession.Advanced.Stream<User>("Users/"))
+                    {
+                        while (stream.MoveNext())
+                        {
+                            oldUsers.Add(stream.Current.Document);
+                        }
+                    }
+                    AccountController.oldUsers = oldUsers;
+                }
+                
+                using (var stream = ravenSession.Advanced.Stream<ApplicationUser>("ApplicationUsers/"))
+                {
+                    while (stream.MoveNext())
+                    {
+                        existingUsers.Add(stream.Current.Document);
+                    }
+                }
+            }
+
+            var usersNeedingMigration = oldUsers
+                .Where(u => !existingUsers.Any(n => n.Email.ToLower() == u.EmailAddress.ToLower()))
+                .Where(u => !failedEmailAddresses.Any(n => n.ToLower() == u.EmailAddress.ToLower()))
+                .Distinct(u => u.EmailAddress)
+                .Take(10)
+                .ToList();
+            var errors = new List<string>(20);
+            var newUsers = usersNeedingMigration.Select(user => new ApplicationUser
+            {
+                Email = user.EmailAddress.ToLower(),
+                Id = "ApplicationUsers/" + user.EmailAddress.ToLower(),
+                LastSeen = user.LastSeen,
+                RegistrationDate = user.RegistrationDate,
+                Preferences = user.Preferences,
+                RequiresPasswordReset = true,
+                TotalPlays = user.TotalPlays,
+                TotalSongRequests = user.TotalSongRequests,
+                UserName = user.EmailAddress
+            }).ToList();
+            
+            foreach (var user in newUsers)
+            {
+                var createUserResult = await UserManager.CreateAsync(user, "IWillGlorifyTheLord613!" + Guid.NewGuid().ToString());
+                if (!createUserResult.Succeeded)
+                {
+                    errors.AddRange(createUserResult.Errors);
+                    failedEmailAddresses.Add(user.Email.ToLower());
+                    await Session.StoreAsync(new ChavahLog
+                    {
+                        DateTime = DateTime.UtcNow,
+                        Exception = string.Join(Environment.NewLine, createUserResult.Errors),
+                        Level = "Error",
+                        Message = $"Unable to migrate user {user.Email.ToLower()}"
+                    });
+                }
+            }
+            await Session.SaveChangesAsync();
+            return Json(usersNeedingMigration.Count, JsonRequestBehavior.AllowGet);
         }
         
         // Used for XSRF protection when adding external logins

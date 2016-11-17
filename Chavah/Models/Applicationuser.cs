@@ -22,22 +22,24 @@ namespace BitShuva.Models
         public int TotalPlays { get; set; }
         public UserSongPreferences Preferences { get; set; }
         public DateTime RegistrationDate { get; set; }
-        public string EmailAddress { get; set; }
-        public bool IsAdmin { get; set; }
         public DateTime LastSeen { get; set; }
         public int TotalSongRequests { get; set; }
+        public bool RequiresPasswordReset { get; set; }
 
         public ApplicationUser Clone()
         {
             return new ApplicationUser
             {
                 Id = this.Id,
-                EmailAddress = this.EmailAddress,
-                IsAdmin = this.IsAdmin,
                 LastSeen = this.LastSeen,
                 Preferences = this.Preferences,
+                TotalSongRequests = this.TotalSongRequests,
                 RegistrationDate = this.RegistrationDate,
-                TotalPlays = this.TotalPlays
+                RequiresPasswordReset = this.RequiresPasswordReset,
+                TotalPlays = this.TotalPlays,
+                Email = this.Email,
+                UserName = this.UserName,
+                LockoutEnabled = this.LockoutEnabled
             };
         }
 
