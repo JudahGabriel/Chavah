@@ -35,59 +35,6 @@ namespace BitShuva.Controllers
             return View();
         }
 
-        //public async Task<ActionResult> Migrate(int skip, int take)
-        //{
-        //    var songsByArtist = await Session.Query<Song>()
-        //        .OrderBy(s => s.Id)
-        //        .Skip(skip)
-        //        .Take(take)
-        //        .ToListAsync();
-        //    var urls = new List<Song>();
-        //    foreach (var song in songsByArtist)
-        //    {
-        //        var isOnOldServer = song.Uri.ToString().StartsWith("http://199.204.46.80");
-        //        if (isOnOldServer)
-        //        {
-        //            var escapedSongName = EscapeName(song.Name);
-        //            var escapedAlbum = EscapeName(song.Album);
-        //            var escapedArtist = EscapeName(song.Artist);
-        //            if (song.Number > 0)
-        //            {
-        //                var songNumberWithZero = song.Number <= 9 ? $"0{song.Number}" : song.Number.ToString();
-        //                song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{escapedArtist}/{escapedArtist} - {escapedAlbum} - {songNumberWithZero} - {escapedSongName}.mp3");
-        //            }
-        //            else
-        //            {
-        //                song.Uri = new Uri($"http://bitshuvafiles01.com/chavah/music/{escapedArtist}/{escapedArtist} - {escapedAlbum} - {escapedSongName}.mp3");
-        //            }
-
-        //            urls.Add(song.ToDto());
-        //        }
-        //    }
-
-        //    return View(urls);
-        //}
-
-        public async Task<ActionResult> GetSongs(string artist)
-        {
-            var songs = await Session.Query<Song>().Where(s => s.Artist == artist).Take(1000).ToListAsync();
-            return View("Migrate", songs);
-        }
-
-        class MyClient : System.Net.WebClient
-        {
-            public bool HeadOnly { get; set; }
-            protected override System.Net.WebRequest GetWebRequest(Uri address)
-            {
-                System.Net.WebRequest req = base.GetWebRequest(address);
-                if (HeadOnly && req.Method == "GET")
-                {
-                    req.Method = "HEAD";
-                }
-                return req;
-            }
-        }
-
         [Route("home/embed")]
         [Route("durandal/embed")]
         public async Task<ActionResult> Embed()
