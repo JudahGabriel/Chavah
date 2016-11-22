@@ -15,6 +15,7 @@ using System.Web.Security;
 
 namespace BitShuva.Controllers
 {
+    [RequireHttps]
     public class AdminController : RavenController
     {
         public JsonResult IsAdmin()

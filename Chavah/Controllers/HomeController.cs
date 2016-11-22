@@ -14,6 +14,7 @@ using System.Xml;
 
 namespace BitShuva.Controllers
 {
+    [RequireHttps]
     public class HomeController : RavenController
     {
         public HomeController()

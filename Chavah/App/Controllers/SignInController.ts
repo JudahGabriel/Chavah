@@ -1,7 +1,6 @@
 ﻿namespace BitShuva.Chavah {
     export class SignInController {
-
-        showPassword = false;
+        
         email = "";
         showEmailError = false;
         isBusy = false;
@@ -14,21 +13,6 @@
         constructor(
             private signInApi: SignInService,
             private appNav: AppNavService) {
-
-            this.scheduleMigrationZanz();
-        }
-
-        scheduleMigrationZanz() {
-            $.get("/account/migrate")
-                .then((result: number) => {
-                    if (result > 0) {
-                        this.scheduleMigrationZanz();
-                    }
-                })
-                .fail(error => {
-                    console.log("failed to migrate ", error);
-                    setTimeout(() => this.scheduleMigrationZanz(), 5000);
-                });
         }
 
         checkEmail() {

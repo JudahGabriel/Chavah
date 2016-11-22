@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>44372</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -506,6 +506,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="App\App.ts" />
+    <TypeScriptCompile Include="App\Controllers\CreatePasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\EditArtistController.ts" />
     <TypeScriptCompile Include="App\Controllers\HeaderController.ts" />
     <TypeScriptCompile Include="App\Controllers\NowPlayingController.ts" />
@@ -600,7 +601,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52926</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:52926/</IISUrl>
+          <IISUrl>https://localhost:44372/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

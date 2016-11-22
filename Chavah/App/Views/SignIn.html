@@ -1,8 +1,8 @@
 ﻿<section class="sign-in-page" ng-controller="SignInController as vm">
     <div class="row">
         <div class="sign-in-form col-xs-12 col-sm-6 col-lg-4 col-sm-offset-3 col-lg-offset-4">
-            <h1>Sign in</h1>
-            <p><i class="fa fa-info-circle text-info"></i> Signing in lets you thumb up songs, do song requests, chat with other Chavah listeners, and more.</p>
+            <h1><i class="fa fa-sign-in"></i> Sign in</h1>
+            <p class="help-block"><i class="fa fa-info-circle text-info"></i> Signing in lets you thumb-up songs, request songs, chat with other Chavah listeners, and more.</p>
             <form>
                 <div class="form-group" ng-class="{ 'has-error': vm.showEmailError && !vm.email }">
                     <label for="emailInput">Email</label>
@@ -12,15 +12,17 @@
                         Please enter your email address.
                     </span>
                 </div>
-                <div class="form-group" ng-show="vm.showPassword">
+                <!--<div class="form-group" ng-show="vm.showPassword">
                     <label for="passwordInput">Password</label>
                     <a href="#/forgotpassword" class="pull-right blue-link">Forgot your password?</a>
                     <input type="password" class="form-control" id="passwordInput" ng-model="vm.password">
-                </div>
+                </div>-->
                 <button type="submit" class="btn btn-primary" ng-hide="vm.showPassword" ng-click="vm.checkEmail()">
                     <i class="fa fa-arrow-right"></i> 
                     Next
                 </button>
+                <br />
+                <br />
                 <hr />
                 <h4>New to Chavah?</h4>
                 <button class="btn btn-default">Create your Chavah account</button>

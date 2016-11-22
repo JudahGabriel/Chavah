@@ -18,6 +18,7 @@ using System.Web.Security;
 
 namespace BitShuva.Controllers
 {
+    [RequireHttps]
     public class AccountController : RavenController
     {
         private ApplicationSignInManager signInManager;
