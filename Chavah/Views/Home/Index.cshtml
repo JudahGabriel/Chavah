@@ -54,22 +54,15 @@
         @* Twitter card *@
         <meta name="twitter:creator" content="&#64;chavahradio">
         <meta name="twitter:site" content="&#64;chavahradio">
-        @if (!string.IsNullOrEmpty(ViewBag.DescriptiveImageUrl) && ViewBag.QueriedSong != null)
+        @if (ViewBag.QueriedSong != null)
         {
-            // Show a Twitter image card.
-            <meta name="twitter:card" content="summary_large_image" />
+            // Show a Twitter summary card with the song info.
+            <meta name="twitter:card" content="summary" />
+            @*<meta name="twitter:card" content="summary_large_image" />*@ 
             <meta name="twitter:url" content="http://messianicradio.com@(ViewBag.QueriedSong.GetSongShareLink())" />
             <meta name="twitter:title" content="@ViewBag.QueriedSong.Name by @ViewBag.QueriedSong.Artist" />
             <meta name="twitter:description" content='"@ViewBag.QueriedSong.Name" by @ViewBag.QueriedSong.Artist appears as the @ViewBag.QueriedSongNth song on the @ViewBag.QueriedSong.Album album. @ViewBag.QueriedSong.Name is now ranked @(ViewBag.QueriedSong.CommunityRank >= 0 ? '+' : '-')@ViewBag.QueriedSong.CommunityRank by the international Messianic community.' />
             <meta name="twitter:image" content="@ViewBag.QueriedSong.AlbumArtUri" />
-        }
-        else if (ViewBag.QueriedSong != null)
-        {
-            // Show a Twitter summary card with the song info.
-            <meta name="twitter:card" content="summary" />
-            <meta name="twitter:url" content="http://messianicradio.com@(ViewBag.QueriedSong.GetSongShareLink())" />
-            <meta name="twitter:title" content="@ViewBag.QueriedSong.Name by @ViewBag.QueriedSong.Artist" />
-            <meta name="twitter:description" content='"@ViewBag.QueriedSong.Name" by @ViewBag.QueriedSong.Artist appears as the @ViewBag.QueriedSongNth song on the @ViewBag.QueriedSong.Album album. @ViewBag.QueriedSong.Name is now ranked @(ViewBag.QueriedSong.CommunityRank >= 0 ? '+' : '-')@ViewBag.QueriedSong.CommunityRank by the international Messianic community.' />
         }
         else
         {
