@@ -260,6 +260,7 @@
     <Compile Include="Models\Artist.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\CommunityRankStanding.cs" />
+    <Compile Include="Models\HomeViewModel.cs" />
     <Compile Include="Models\Indexes\Songs_AverageCommunityRank.cs" />
     <Compile Include="Models\Indexes\Songs_RankStandings.cs" />
     <Compile Include="Models\Indexes\Songs_Search.cs" />
@@ -271,6 +272,7 @@
     <Compile Include="Models\PagedList.cs" />
     <Compile Include="Models\Playlist.cs" />
     <Compile Include="Models\RecentUserSummary.cs" />
+    <Compile Include="Models\SignInResult.cs" />
     <Compile Include="Models\Song.cs" />
     <Compile Include="Models\SongPick.cs" />
     <Compile Include="Models\SongRequest.cs" />
@@ -341,9 +343,6 @@
     <Content Include="Content\styles\bootstrap.flatly.css">
       <DependentUpon>bootstrap.flatly.less</DependentUpon>
     </Content>
-    <Content Include="Content\styles\bootstrap.flatly.min.css">
-      <DependentUpon>bootstrap.flatly.css</DependentUpon>
-    </Content>
     <Content Include="Content\images\About.jpg" />
     <Content Include="Content\images\backgroundFlowers.png" />
     <Content Include="Content\images\backgroundTrees.png" />
@@ -387,6 +386,16 @@
     <Content Include="Content\images\Windows81Tile\square.png" />
     <Content Include="Content\images\Windows81Tile\tiny.png" />
     <Content Include="Content\images\Windows81Tile\wide.png" />
+    <Content Include="Content\styles\bootstrap.flatly.min.css">
+      <DependentUpon>bootstrap.flatly.css</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\bootstrap.flatly.tweaks.css">
+      <DependentUpon>bootstrap.flatly.tweaks.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\bootstrap.flatly.tweaks.min.css">
+      <DependentUpon>bootstrap.flatly.tweaks.css</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\bootswatch.css" />
     <Content Include="Content\styles\nprogress.css" />
     <Content Include="Content\soundEffects\shabbatAnnouncement1.mp3" />
     <Content Include="Content\soundEffects\shabbatAnnouncement2.mp3" />
@@ -435,6 +444,7 @@
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="Content\styles\app\header.less" />
     <Content Include="Content\styles\app\signIn.less" />
+    <Content Include="Content\styles\bootstrap.flatly.tweaks.less" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />
     <Content Include="ReadMe.txt" />
@@ -510,6 +520,7 @@
     <TypeScriptCompile Include="App\Controllers\EditArtistController.ts" />
     <TypeScriptCompile Include="App\Controllers\HeaderController.ts" />
     <TypeScriptCompile Include="App\Controllers\NowPlayingController.ts" />
+    <TypeScriptCompile Include="App\Controllers\PasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\RequestSongController.ts" />
     <TypeScriptCompile Include="App\Controllers\SignInController.ts" />
     <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />
@@ -520,7 +531,10 @@
     <TypeScriptCompile Include="App\Models\AudioStatus.ts" />
     <TypeScriptCompile Include="App\Models\HeaderRoute.ts" />
     <TypeScriptCompile Include="App\Models\IAlbumSwatch.ts" />
+    <TypeScriptCompile Include="App\Models\InitConfig.ts" />
     <TypeScriptCompile Include="App\Models\ServerInterfaces.ts" />
+    <TypeScriptCompile Include="App\Models\SignInResult.ts" />
+    <TypeScriptCompile Include="App\Models\SignInStatus.ts" />
     <TypeScriptCompile Include="App\Models\Song.ts" />
     <TypeScriptCompile Include="App\Models\SongLike.ts" />
     <TypeScriptCompile Include="App\Polyfills\Array.ts" />

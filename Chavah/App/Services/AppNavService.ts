@@ -13,6 +13,10 @@
             this.$location.url("/signin");
         }
 
+        nowPlaying() {
+            this.$location.url("/nowplaying");
+        }
+
         register(attemptedEmail?: string) {
             if (attemptedEmail) {
                 this.$location.url(`/register/${encodeURIComponent(attemptedEmail)}`)

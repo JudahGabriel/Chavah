@@ -1,10 +1,14 @@
 ﻿namespace BitShuva.Chavah {
     export class CreatePasswordController {
 
-        email: string;
+        readonly email: string;
+        readonly emailWithoutDomain: string;
         password = "";
         showPasswordError = false;
-        emailWithoutDomain: string;
+        isSaving = false;
+        hasCreatedPassword = false;
+
+        static readonly minPasswordLength = 6;
 
         static $inject = [
             "signInApi",
@@ -21,7 +25,22 @@
             this.emailWithoutDomain = this.email.substr(0, this.email.indexOf('@'));
         }
 
+        get isPasswordValid(): boolean {
+            return this.password.length >= 6;
+        }
+
         createPassword() {
+            if (!this.isPasswordValid) {
+                this.showPasswordError = true;
+                return;
+            }
+
+            if (!this.isSaving) {
+                this.isSaving = true;
+                this.signInApi.createPassword(this.email, this.password)
+                    .then(() => this.hasCreatedPassword = true)
+                    .finally(() => this.isSaving = false);
+            }
         }
     }
 

@@ -27,36 +27,39 @@ namespace BitShuva.Controllers
 
         public async Task<ActionResult> Index()
         {
-            await AppendViewBagQueryStringInfo();
+            var viewModel = new HomeViewModel();
+            viewModel.UserEmail = User.Identity.Name;
+            await PopulateViewModelFromQueryString(viewModel);
 
             // Set a session cookie. We use this to determine who's currently online.
-            var cookie = new HttpCookie("SessionId") { Value = Guid.NewGuid().ToString()};
+            var cookie = new HttpCookie("SessionId") { Value = Guid.NewGuid().ToString() };
             Response.SetCookie(cookie);
-
-            return View();
+            
+            return View(viewModel);
         }
 
         [Route("home/embed")]
         [Route("durandal/embed")]
         public async Task<ActionResult> Embed()
         {
-            await AppendViewBagQueryStringInfo();
-            ViewBag.EmbeddedClass = "embedded-ui";
-            return View("Index");
+            var viewModel = new HomeViewModel();
+            viewModel.UserEmail = User.Identity.Name;
+            await PopulateViewModelFromQueryString(viewModel);
+            return View("Index", viewModel);
         }
 
-        [Route("songs/getalbumart")]
-        public async Task<ActionResult> DeprecatedGetAlbumArt(string songId)
-        {
-            var isOldStyleSongFormat = !songId.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase);
-            if (isOldStyleSongFormat)
-            {
-                songId = "songs/" + songId;
-            }
+        //[Route("songs/getalbumart")]
+        //public async Task<ActionResult> DeprecatedGetAlbumArt(string songId)
+        //{
+        //    var isOldStyleSongFormat = !songId.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase);
+        //    if (isOldStyleSongFormat)
+        //    {
+        //        songId = "songs/" + songId;
+        //    }
 
-            var song = await this.Session.LoadAsync<Song>(songId);
-            return RedirectPermanent(song.AlbumArtUri.ToString());
-        }
+        //    var song = await this.DbSession.LoadAsync<Song>(songId);
+        //    return RedirectPermanent(song.AlbumArtUri.ToString());
+        //}
 
         public JsonResult GetLatestBlogPost()
         {
@@ -74,7 +77,7 @@ namespace BitShuva.Controllers
 
         public async Task<ActionResult> ActivityFeed(int take = 5)
         {
-            var recentActivities = await this.Session
+            var recentActivities = await this.DbSession
                 .Query<Activity>()
                 .OrderByDescending(a => a.DateTime)
                 .Take(take)
@@ -89,7 +92,13 @@ namespace BitShuva.Controllers
             return new RssActionResult { Feed = feed };
         }
 
-        private async Task AppendViewBagQueryStringInfo()
+        /// <summary>
+        /// Urls like "http://messianicradio.com?song=songs/32" need to load the server-rendered Razor page with info about that song.
+        /// This is used for social media sites like Facebook and Twitter which show images, title, and description from the loaded page.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task PopulateViewModelFromQueryString(HomeViewModel viewModel)
         {
             var artistQuery = Request.QueryString["artist"];
             var albumQuery = Request.QueryString["album"];
@@ -108,11 +117,11 @@ namespace BitShuva.Controllers
                     var songForQuery = await taskOrNull;
                     if (songForQuery != null)
                     {
-                        var album = await this.Session.Query<Album>().FirstOrDefaultAsync(a => a.Name == songForQuery.Album && a.Artist == songForQuery.Artist);
-                        ViewBag.Title = songForQuery.Name + " by " + songForQuery.Artist + " on Chavah Messianic Radio";
-                        ViewBag.DescriptiveImageUrl = album != null ? album.AlbumArtUri.ToString() : null;
-                        ViewBag.QueriedSong = songForQuery;
-                        ViewBag.QueriedSongNth = songForQuery.Number.ToNumberWord();
+                        var album = await this.DbSession.Query<Album>().FirstOrDefaultAsync(a => a.Name == songForQuery.Album && a.Artist == songForQuery.Artist);
+                        viewModel.PageTitle = songForQuery.Name + " by " + songForQuery.Artist + " on Chavah Messianic Radio";
+                        viewModel.DescriptiveImageUrl = album != null ? album.AlbumArtUri.ToString() : null;
+                        viewModel.Song = songForQuery;
+                        viewModel.SongNth = songForQuery.Number.ToNumberWord();
                     }
                 }
             }
@@ -134,12 +143,12 @@ namespace BitShuva.Controllers
                 songQuery :
                 "songs/" + songQuery;
             
-            return await this.Session.LoadAsync<Song>(properlyFormattedSongId);
+            return await this.DbSession.LoadAsync<Song>(properlyFormattedSongId);
         }
 
         private async Task<Song> GetMatchingSong(System.Linq.Expressions.Expression<Func<Song, bool>> predicate)
         {
-            return await this.Session
+            return await this.DbSession
                 .Query<Song>()
                 .Customize(x => x.RandomOrdering())
                 .Where(predicate)

@@ -101,7 +101,7 @@ namespace BitShuva.Controllers
             if (result.status.Value == "okay")
             {
                 string email = result.email;
-                var isUserAdmin = await this.Session.Query<User>().AnyAsync(u => u.EmailAddress == email && u.IsAdmin);
+                var isUserAdmin = await this.DbSession.Query<User>().AnyAsync(u => u.EmailAddress == email && u.IsAdmin);
                 if (isUserAdmin)
                 {
                     FormsAuthentication.SetAuthCookie(email, true);
@@ -114,7 +114,7 @@ namespace BitShuva.Controllers
 
         private async Task<bool> HasAdminUser()
         {
-            return await this.Session
+            return await this.DbSession
                 .Query<User>()
                 .Where(u => u.IsAdmin)
                 .Customize(c => c.WaitForNonStaleResultsAsOfNow())

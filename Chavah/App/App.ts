@@ -17,6 +17,9 @@
             isAdmin: isAdmin
         };
     }
+
+    var initConfig: InitConfig = window["BitShuva.Chavah.InitConfig"];
+    App.constant("initConfig", initConfig);
     
     App.config(["$routeProvider", ($routeProvider: ng.route.IRouteProvider) => {
         $routeProvider.caseInsensitiveMatch = true;
@@ -26,7 +29,7 @@
 
             // Sign in
             .when("/signin", createRoute("/App/Views/SignIn.html"))
-            .when("/password", createRoute("/App/Views/Password.html"))
+            .when("/password/:email", createRoute("/App/Views/Password.html"))
             .when("/forgotpassword", createRoute("/App/Views/ForgotPassword.html"))
             .when("/createpassword/:email", createRoute("/App/Views/CreatePassword.html"))
             .when("/register/:email?", createRoute("/App/Views/Register.html"))

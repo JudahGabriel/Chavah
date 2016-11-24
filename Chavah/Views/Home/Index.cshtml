@@ -1,9 +1,10 @@
 ﻿@using System.Web.Optimization
+@model BitShuva.Models.HomeViewModel
 
 <!DOCTYPE html>
 <html>
     <head>
-        <title>@ViewBag.Title</title>
+        <title>@Model.PageTitle</title>
 
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
@@ -54,15 +55,15 @@
         @* Twitter card *@
         <meta name="twitter:creator" content="&#64;chavahradio">
         <meta name="twitter:site" content="&#64;chavahradio">
-        @if (ViewBag.QueriedSong != null)
+        @if (Model.Song != null)
         {
             // Show a Twitter summary card with the song info.
             <meta name="twitter:card" content="summary" />
             @*<meta name="twitter:card" content="summary_large_image" />*@ 
-            <meta name="twitter:url" content="http://messianicradio.com@(ViewBag.QueriedSong.GetSongShareLink())" />
-            <meta name="twitter:title" content="@ViewBag.QueriedSong.Name by @ViewBag.QueriedSong.Artist" />
-            <meta name="twitter:description" content='"@ViewBag.QueriedSong.Name" by @ViewBag.QueriedSong.Artist appears as the @ViewBag.QueriedSongNth song on the @ViewBag.QueriedSong.Album album. @ViewBag.QueriedSong.Name is now ranked @(ViewBag.QueriedSong.CommunityRank >= 0 ? '+' : '-')@ViewBag.QueriedSong.CommunityRank by the international Messianic community.' />
-            <meta name="twitter:image" content="@ViewBag.QueriedSong.AlbumArtUri" />
+            <meta name="twitter:url" content="http://messianicradio.com@(Model.Song.GetSongShareLink())" />
+            <meta name="twitter:title" content="@Model.Song.Name by @Model.Song.Artist" />
+            <meta name="twitter:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
+            <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
         }
         else
         {
@@ -90,55 +91,65 @@
         <!-- END TRACKJS -->
 
         @Styles.Render("~/bundles/bootstrap-theme")
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         @Styles.Render("~/bundles/app-styles")
     </head>
 
-<body class="@ViewBag.EmbeddedClass">
+    <body>
+        <script type="text/javascript">
+            window["BitShuva.Chavah.InitConfig"] = {
+                debug: @(Model.Debug ? bool.TrueString.ToLower() : bool.FalseString.ToLower()),
+                songId: "@(Model.Song != null ? Model.Song.Id : "")",
+                redirect: "@Model.Redirect",
+                userEmail: "@Model.UserEmail",
+                embed: @(Model.Embed ? bool.TrueString.ToLower() : bool.FalseString.ToLower())
+            };
+        </script>
 
-    @if (!string.IsNullOrEmpty(ViewBag.DescriptiveImageUrl))
-    {
-        <img src="@ViewBag.DescriptiveImageUrl" style="display:none;" />
-    }
+        @* Attach an image that Facebook will use if someone links to a song. *@
+        @if (!string.IsNullOrEmpty(Model.DescriptiveImageUrl))
+        {
+            <img src="@Model.DescriptiveImageUrl" style="display:none;" />
+        }
 
-    <div id="appContainer" data-ng-app="ChavahApp">
-        <div ng-include="'../../app/views/header.html'"></div>
-        <div id="currentPageContainer" data-ng-view></div>
-        <footer ng-include="'../../app/views/footer.html'"></footer>
-    </div>
+        <div id="appContainer" data-ng-app="ChavahApp">
+            <div ng-include="'../../app/views/header.html'"></div>
+            <div id="currentPageContainer" data-ng-view></div>
+            <footer ng-include="'../../app/views/footer.html'"></footer>
+        </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/angular")
-    @Scripts.Render("~/bundles/angular-route")
-    @Scripts.Render("~/bundles/angular-animate")
-    @Scripts.Render("~/bundles/angular-bootstrap")
-    @Scripts.Render("~/bundles/angular-bootstrap-templates")
-    @Scripts.Render("~/bundles/angular-local-storage")
-    @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/nprogress")
-    @Scripts.Render("~/bundles/moment")
-    @Scripts.Render("~/bundles/fastclick")
-    @Scripts.Render("~/bundles/rx-lite")
-    @Scripts.Render("~/bundles/vibrant")
-    @Scripts.Render("~/bundles/app")
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @Scripts.Render("~/bundles/angular")
+        @Scripts.Render("~/bundles/angular-route")
+        @Scripts.Render("~/bundles/angular-animate")
+        @Scripts.Render("~/bundles/angular-bootstrap")
+        @Scripts.Render("~/bundles/angular-bootstrap-templates")
+        @Scripts.Render("~/bundles/angular-local-storage")
+        @Scripts.Render("~/bundles/modernizr")
+        @Scripts.Render("~/bundles/nprogress")
+        @Scripts.Render("~/bundles/moment")
+        @Scripts.Render("~/bundles/fastclick")
+        @Scripts.Render("~/bundles/rx-lite")
+        @Scripts.Render("~/bundles/vibrant")
+        @Scripts.Render("~/bundles/app")
 
-    @* Used only in the admin. Loaded async after all the other scripts. *@
-    <script type="text/javascript" async src="http://api.filepicker.io/v1/filepicker.js"></script>
+        @* Used only in the admin. Loaded async after all the other scripts. *@
+        <script type="text/javascript" async src="https://api.filepicker.io/v1/filepicker.js"></script>
 
-    @*Google analytics*@
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date(); a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        @*Google analytics*@
+        <script>
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-        ga('create', 'UA-58465409-1', 'auto');
-        ga('send', 'pageview');
+            ga('create', 'UA-58465409-1', 'auto');
+            ga('send', 'pageview');
 
-    </script>
-</body>
+        </script>
+    </body>
 
 </html>

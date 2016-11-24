@@ -54,7 +54,10 @@ namespace BitShuva
                     "~/App/Services/*.js"
                 }));
 
-            bundles.Add(new StyleBundle("~/bundles/bootstrap-theme").Include("~/Content/styles/bootstrap.flatly.min.css"));
+            bundles.Add(new StyleBundle("~/bundles/bootstrap-theme")
+                .Include("~/Content/styles/bootswatch.css")
+                .Include("~/Content/styles/bootstrap.flatly.min.css")
+                .Include("~/Content/styles/bootstrap.flatly.tweaks.css"));
             bundles.Add(new StyleBundle("~/bundles/app-styles")
                 .Include(new[]
                 {

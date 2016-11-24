@@ -30,5 +30,13 @@
   {
     "outputFile": "Content/styles/app/signIn.css",
     "inputFile": "Content/styles/app/signIn.less"
+  },
+  {
+    "outputFile": "Content/styles/bootstrap.flatly.tweaks.css",
+    "inputFile": "Content/styles/bootstrap.flatly.tweaks.less"
+  },
+  {
+    "outputFile": "Content/styles/bootstrap.flatly.css",
+    "inputFile": "Content/styles/bootstrap.flatly.less"
   }
 ]

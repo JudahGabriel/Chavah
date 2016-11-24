@@ -12,14 +12,14 @@ namespace BitShuva.Controllers
     /// </summary>
     public abstract class RavenController : Controller
     {
-        public new IAsyncDocumentSession Session { get; set; }
+        public new IAsyncDocumentSession DbSession { get; set; }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (!filterContext.IsChildAction)
             {
                 //Session = RavenContext.Db.OpenAsyncSession();
-                Session = HttpContext.GetOwinContext().Get<IAsyncDocumentSession>();
+                DbSession = HttpContext.GetOwinContext().Get<IAsyncDocumentSession>();
             }
 
             base.OnActionExecuting(filterContext);
@@ -29,11 +29,11 @@ namespace BitShuva.Controllers
         {
             if (!filterContext.IsChildAction)
             {
-                using (Session)
+                using (DbSession)
                 {
-                    if (filterContext.Exception == null && Session != null && Session.Advanced.HasChanges)
+                    if (filterContext.Exception == null && DbSession != null && DbSession.Advanced.HasChanges)
                     {
-                        var saveTask = Session.SaveChangesAsync();
+                        var saveTask = DbSession.SaveChangesAsync();
 
                         // Tell the task we don't need to invoke on MVC's SynchronizationContext. 
                         // Otherwise we can end up with deadlocks. See http://code.jonwagner.com/2012/09/04/deadlock-asyncawait-is-not-task-wait/
@@ -44,5 +44,10 @@ namespace BitShuva.Controllers
                 }
             }
         }
-	}
+
+        protected System.Web.Http.HttpResponseException NewUnauthorizedException()
+        {
+            return new System.Web.Http.HttpResponseException(System.Net.HttpStatusCode.Unauthorized);
+        }
+    }
 }

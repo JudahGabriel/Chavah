@@ -33,6 +33,23 @@
             };
             return this.httpApi.query<Server.IApplicationUser | null>("/api/Users/GetUserWithEmail", args);
         }
+
+        createPassword(email: string, password: string): ng.IPromise<any> {
+            var args = {
+                email: email,
+                password: password
+            };
+            return this.httpApi.post("/Account/CreatePassword", args);
+        }
+
+        signIn(email: string, password: string, staySignedIn: boolean): ng.IPromise<SignInResult> {
+            var args = {
+                email: email,
+                password: password,
+                staySignedIn: staySignedIn
+            };
+            return this.httpApi.post("/Account/SignIn", args);
+        }
     }
 
     App.service("signInApi", SignInService);

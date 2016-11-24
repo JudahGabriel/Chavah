@@ -58,7 +58,7 @@ namespace BitShuva.Controllers
         [HttpGet]
         public async Task<ActionResult> RegisteredUsers()
         {
-            var lastRegisteredUsers = await this.Session
+            var lastRegisteredUsers = await this.DbSession
                 .Query<User>()
                 .Where(u => u.EmailAddress != null)
                 .OrderByDescending(a => a.RegistrationDate)
@@ -79,49 +79,77 @@ namespace BitShuva.Controllers
 
         //
         // POST: /Account/Login
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(model);
+        //    }
+
+        //    // Require the user to have a confirmed email before they can log on.
+        //    // var user = await UserManager.FindByNameAsync(model.Email);
+        //    var user = UserManager.Find(model.Email, model.Password);
+        //    if (user != null)
+        //    {
+        //        if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+        //        {
+        //            string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
+
+        //            // Uncomment to debug locally  
+        //            ViewBag.Link = callbackUrl;
+        //            ViewBag.errorMessage = "You must have a confirmed email to log on. "
+        //                                 + "The confirmation token has been resent to your email account.";
+        //            return View("Error");
+        //        }
+        //    }
+
+        //    // This doesn't count login failures towards account lockout
+        //    // To enable password failures to trigger account lockout, change to shouldLockout: true
+        //    var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+        //    switch (result)
+        //    {
+        //        case SignInStatus.Success:
+        //            return RedirectToLocal(returnUrl);
+        //        case SignInStatus.LockedOut:
+        //            return View("Lockout");
+        //        case SignInStatus.RequiresVerification:
+        //            return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+        //        case SignInStatus.Failure:
+        //        default:
+        //            ModelState.AddModelError("", "Invalid login attempt.");
+        //            return View(model);
+        //    }
+        //}
+
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> SignIn(string email, string password, bool staySignedIn)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             // Require the user to have a confirmed email before they can log on.
-            // var user = await UserManager.FindByNameAsync(model.Email);
-            var user = UserManager.Find(model.Email, model.Password);
+            var user = await UserManager.FindAsync(email, password);
             if (user != null)
             {
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
                 {
                     string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
-
-                    // Uncomment to debug locally  
-                    ViewBag.Link = callbackUrl;
-                    ViewBag.errorMessage = "You must have a confirmed email to log on. "
-                                         + "The confirmation token has been resent to your email account.";
-                    return View("Error");
+                    return Json(new SignInResult
+                    {
+                        Status = SignInStatus.RequiresVerification
+                    });
                 }
             }
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
+            var signInStatus = await SignInManager.PasswordSignInAsync(email, password, staySignedIn, shouldLockout: true);
+            var result = new SignInResult
             {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
-            }
+                Status = signInStatus
+            };
+            return Json(result);
         }
 
         //
@@ -236,6 +264,40 @@ namespace BitShuva.Controllers
             var result = await UserManager.ConfirmEmailAsync(userId, code);
             ravenSession.SaveChanges();
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
+        }
+
+        /// <summary>
+        /// This is used for migrating old users into the new system. The old users were imported without passwords.
+        /// When such a user signs in, we prompt them to create a password.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public async Task<ActionResult> CreatePassword(string email, string password)
+        {
+            // Find the user with that email.
+            var user = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + email);
+            if (user == null || !user.RequiresPasswordReset || password.Length < 6)
+            {
+                throw NewUnauthorizedException();
+            }
+
+            var userId = "ApplicationUsers/" + email;
+            var removePasswordResult = await UserManager.RemovePasswordAsync(userId);
+            if (!removePasswordResult.Succeeded)
+            {
+                throw new Exception("Unable to remove password. " + string.Join(Environment.NewLine, removePasswordResult.Errors));
+            }
+
+            var addPasswordResult = await UserManager.AddPasswordAsync(userId, password);
+            if (!addPasswordResult.Succeeded)
+            {
+                throw new Exception("Unable to add password. " + string.Join(Environment.NewLine, addPasswordResult.Errors));
+            }
+            user.RequiresPasswordReset = false;
+            user.IsEmailConfirmed = true;
+
+            return Json("OK", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -474,7 +536,7 @@ namespace BitShuva.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> UpdateOldDupes(int skip = 0)
         {
-            var results = await Session.Query<UserDupe, Users_Dupes>()
+            var results = await DbSession.Query<UserDupe, Users_Dupes>()
                 .Include(u => u.UserIds)
                 .OrderByDescending(u => u.LastSeen)
                 .Where(u => u.Count > 1)
@@ -483,13 +545,13 @@ namespace BitShuva.Controllers
                 .ToListAsync();
             foreach (var result in results)
             {
-                var newUser = await Session.LoadAsync<ApplicationUser>("ApplicationUsers/" + result.EmailAddress.ToLower());
+                var newUser = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + result.EmailAddress.ToLower());
                 if (newUser == null)
                 {
                     throw new Exception("Couldn't find user ApplicationUsers/" + result.EmailAddress.ToLower());
                 }
 
-                var oldUsers = await Session.LoadAsync<User>(result.UserIds);
+                var oldUsers = await DbSession.LoadAsync<User>(result.UserIds);
                 var obsoleteOldUser = oldUsers.OrderByDescending(o => o.LastSeen).Last();
                 var mostRecentOldUser = oldUsers.OrderByDescending(o => o.LastSeen).First();
                 if (newUser.LastSeen != mostRecentOldUser.LastSeen)
@@ -562,7 +624,7 @@ namespace BitShuva.Controllers
                 {
                     errors.AddRange(createUserResult.Errors);
                     failedEmailAddresses.Add(user.Email.ToLower());
-                    await Session.StoreAsync(new ChavahLog
+                    await DbSession.StoreAsync(new ChavahLog
                     {
                         DateTime = DateTime.UtcNow,
                         Exception = string.Join(Environment.NewLine, createUserResult.Errors),
@@ -571,7 +633,7 @@ namespace BitShuva.Controllers
                     });
                 }
             }
-            await Session.SaveChangesAsync();
+            await DbSession.SaveChangesAsync();
             return Json(usersNeedingMigration.Count, JsonRequestBehavior.AllowGet);
         }
         

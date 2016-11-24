@@ -29,5 +29,10 @@ namespace BitShuva.Controllers
                 return result;
             }
         }
+
+        protected HttpResponseException NewUnauthorizedException()
+        {
+            return new HttpResponseException(HttpStatusCode.Unauthorized);
+        }
     }
 }
