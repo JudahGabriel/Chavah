@@ -1,8 +1,29 @@
 ﻿<header ng-controller="HeaderController as vm">
-    <!--<div class="magen">&#10017;</div>-->
     <img class="left-decor pull-left" src="../../Content/images/LeftDecor.jpg" />
     <div class="pull-right">
-        <a href="#/signin"><i class="fa fa-sign-in"></i> Sign in</a>
+        <!-- Single button -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{vm.currentUserName}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="#/profile">
+                        <h5><strong>{{vm.currentUserName}}</strong></h5>
+                        <small>View profile</small>
+                    </a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li><a href="javascript:void(0)" ng-click="vm.signOut()">Sign out</a></li>
+            </ul>
+        </div>
+        <a href="#/profile" ng-show="vm.currentUserName">
+            {{vm.currentUserName}}
+            <i class="fa fa-2x fa-user-circle"></i>
+        </a>
+        <a href="#/signin" ng-hide="vm.currentUserName">
+            <i class="fa fa-2x fa-sign-in"></i> Sign in
+        </a>
     </div>
     <div class="title">Chavah Messianic Radio <span class="hebrew">חוה רדיו</span></div>
     <div class="subtitle">

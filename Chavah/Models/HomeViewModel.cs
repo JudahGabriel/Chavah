@@ -15,6 +15,7 @@ namespace BitShuva.Models
         }
 
         public string UserEmail { get; set; }
+        public List<string> UserRoles { get; set; } = new List<string>();
         public bool Debug { get; set; }
         public string Redirect { get; set; }
         public bool Embed { get; set; }

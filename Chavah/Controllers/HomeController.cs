@@ -20,7 +20,7 @@ namespace BitShuva.Controllers
         public HomeController()
         {
             ViewBag.Title = "Chavah Messianic Radio";
-            ViewBag.Description = "internet radio for Yeshua's disciples";
+            ViewBag.Description = "iternet radio for Yeshua's disciples";
             ViewBag.DescriptiveImageUrl = null;
             ViewBag.QueriedSong = null;
         }
@@ -28,7 +28,9 @@ namespace BitShuva.Controllers
         public async Task<ActionResult> Index()
         {
             var viewModel = new HomeViewModel();
-            viewModel.UserEmail = User.Identity.Name;
+            var currentUser = await this.GetCurrentUser();
+            viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
+            viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
             await PopulateViewModelFromQueryString(viewModel);
 
             // Set a session cookie. We use this to determine who's currently online.
@@ -43,7 +45,9 @@ namespace BitShuva.Controllers
         public async Task<ActionResult> Embed()
         {
             var viewModel = new HomeViewModel();
-            viewModel.UserEmail = User.Identity.Name;
+            var currentUser = await this.GetCurrentUser();
+            viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
+            viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
             await PopulateViewModelFromQueryString(viewModel);
             return View("Index", viewModel);
         }
@@ -125,6 +129,20 @@ namespace BitShuva.Controllers
                     }
                 }
             }
+        }
+
+        private async Task<ApplicationUser> GetCurrentUser()
+        {
+            var userName = User.Identity.Name;
+            if (!string.IsNullOrEmpty(userName))
+            {
+                using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
+                {
+                    return await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + userName);
+                }
+            }
+
+            return null;
         }
 
         private async Task<Song> GetSongByAlbum(string albumQuery)

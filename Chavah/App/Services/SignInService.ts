@@ -2,25 +2,33 @@
     export class SignInService {
         
         private static readonly hasSignedInKey = "hasSignedInSuccessfully"
+        static readonly jwtKey = "jwt";
         static $inject = [
             "appNav",
+            "initConfig",
             "httpApi",
             "localStorageService"
         ];
 
+        currentUser: User | null;
+
         constructor(
             private appNav: AppNavService,
+            private initConfig: InitConfig,
             private httpApi: HttpApiService,
             private localStorageService: ng.local.storage.ILocalStorageService) {
+
+            if (this.initConfig.userEmail) {
+                this.currentUser = new User(this.initConfig.userEmail, this.initConfig.userRoles);
+            }
         }
 
-        hasSignedInOnThisDevice(): boolean {
+        get hasSignedInOnThisDevice(): boolean {
             return this.localStorageService.get<boolean>(SignInService.hasSignedInKey);
         }
 
-        isSignedIn(): boolean {
-            // UPGRADE TODO
-            return false;
+        get isSignedIn(): boolean {
+            return !!this.currentUser;
         }
         
         promptForSignIn() {
@@ -48,7 +56,20 @@
                 password: password,
                 staySignedIn: staySignedIn
             };
-            return this.httpApi.post("/Account/SignIn", args);
+            var signInTask = this.httpApi.post<SignInResult>("/Account/SignIn", args);
+            signInTask.then(result => {
+                if (result.status === SignInStatus.Success) {
+                    this.localStorageService.set(SignInService.jwtKey, result.jsonWebToken);
+                    this.localStorageService.set(SignInService.hasSignedInKey, true);
+                    this.currentUser = new User(result.email!, result.roles);
+                } else {
+                    this.localStorageService.set(SignInService.jwtKey, "");
+                    this.localStorageService.set(SignInService.hasSignedInKey, false);
+                    this.currentUser = null;
+                }
+            });
+
+            return signInTask;
         }
     }
 

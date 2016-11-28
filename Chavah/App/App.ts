@@ -17,10 +17,10 @@
             isAdmin: isAdmin
         };
     }
-
+    
     var initConfig: InitConfig = window["BitShuva.Chavah.InitConfig"];
     App.constant("initConfig", initConfig);
-    
+
     App.config(["$routeProvider", ($routeProvider: ng.route.IRouteProvider) => {
         $routeProvider.caseInsensitiveMatch = true;
         $routeProvider
@@ -42,6 +42,12 @@
                 redirectTo: "/nowplaying"
             });
     }]);
+
+    //App.run(["signInApi", "initConfig", (signInApi: SignInService, initConfig: InitConfig) => {
+    //    if (initConfig.userEmail) {
+
+    //    }
+    //}]);
 
     // Setup Fastclick to remove the 300ms click delay on mobile browsers.
     document.addEventListener("DOMContentLoaded", () => FastClick.attach(document.body), false);

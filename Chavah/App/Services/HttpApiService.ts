@@ -6,12 +6,14 @@
         static $inject = [
             "loadingProgress",
             "$http",
+            "localStorageService",
             "$q"
         ];
 
         constructor(
             private loadingProgress: LoadingProgressService,
             private $http: ng.IHttpService,
+            private localStorageService: ng.local.storage.ILocalStorageService,
             private $q: ng.IQService) {
         }
 
@@ -26,7 +28,8 @@
             var config: ng.IRequestConfig = {
                 url: this.apiBaseUrl + relativeUrl,
                 method: "GET",
-                params: args
+                params: args,
+                headers: this.createHeaders()
             };
 
             this.$http(config)
@@ -50,7 +53,11 @@
             }
             
             var absoluteUrl = `${this.apiBaseUrl}${relativeUrl}`;
-            var postTask = this.$http.post(absoluteUrl, args);
+            var config: ng.IRequestShortcutConfig = {
+                headers: this.createHeaders()
+            };
+
+            var postTask = this.$http.post(absoluteUrl, args, config);
             postTask.then((result: any) => {
                 var preppedResult = selector ? selector(result.data) : result.data;
                 deferred.resolve(preppedResult);
@@ -61,6 +68,24 @@
             });
 
             return deferred.promise;
+        }
+
+        private createHeaders(): {} {
+            var jwtAuthHeader = this.createJwtAuthHeader();
+            if (jwtAuthHeader) {
+                return { "Authorization": jwtAuthHeader };
+            }
+
+            return {};
+        }
+
+        private createJwtAuthHeader(): string {
+            var jwt = this.localStorageService.get<string>(SignInService.jwtKey);
+            if (jwt) {
+                return `Bearer ${jwt}`;
+            }
+
+            return "";
         }
 
         private onAjaxError(errorDetails: any, errorMessage: string) {

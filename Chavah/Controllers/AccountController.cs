@@ -3,18 +3,21 @@ using BitShuva.Models.Indexes;
 using Chavah.Common;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security;
 using Raven.Client;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.ServiceModel.Syndication;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 
 namespace BitShuva.Controllers
 {
@@ -130,24 +133,46 @@ namespace BitShuva.Controllers
         {
             // Require the user to have a confirmed email before they can log on.
             var user = await UserManager.FindAsync(email, password);
-            if (user != null)
+            if (user == null)
             {
-                if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+                return Json(new SignInResult
                 {
-                    string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
-                    return Json(new SignInResult
-                    {
-                        Status = SignInStatus.RequiresVerification
-                    });
-                }
+                    errorMessage = "Bad user name or password",
+                    status = SignInStatus.Failure
+                });
             }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var signInStatus = await SignInManager.PasswordSignInAsync(email, password, staySignedIn, shouldLockout: true);
+            var isEmailConfirmed = await UserManager.IsEmailConfirmedAsync(user.Id);
+            if (!isEmailConfirmed)
+            {
+                string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
+                return Json(new SignInResult
+                {
+                    status = SignInStatus.RequiresVerification
+                });
+            }
+
+            var now = DateTime.UtcNow;
+            var secretKey = ConfigurationManager.AppSettings["jwtSecureKey"];
+            var securityKey = new SymmetricSecurityKey(Encoding.Default.GetBytes(secretKey));
+            var signInCreds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+            var claims = new Claim[]
+            {
+                new Claim("Email", user.Email),
+                new Claim("IsAdmin", user.Roles.Contains("Admin") ? bool.TrueString : bool.FalseString)
+            };
+            var expirationTime = staySignedIn ? DateTime.UtcNow.AddDays(365) : DateTime.UtcNow.AddDays(1);
+            var secToken = new JwtSecurityToken("BitShuva.Chavah", "https://messianicradio.com", claims, DateTime.UtcNow, expirationTime, signInCreds);
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.WriteToken(secToken);
+            
+            var signInStatus = await SignInManager.PasswordSignInAsync(email, password, staySignedIn, shouldLockout: false);
             var result = new SignInResult
             {
-                Status = signInStatus
+                status = signInStatus,
+                jsonWebToken = signInStatus == SignInStatus.Success ? jwt : null,
+                email = user.Email,
+                roles = user.Roles
             };
             return Json(result);
         }

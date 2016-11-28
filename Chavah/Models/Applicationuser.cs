@@ -14,6 +14,8 @@ namespace BitShuva.Models
     /// </summary>
     public class ApplicationUser : IdentityUser
     {
+        public const string AdminRole = "Admin";
+
         public ApplicationUser()
         {
             this.Preferences = new UserSongPreferences();
@@ -42,6 +44,8 @@ namespace BitShuva.Models
                 LockoutEnabled = this.LockoutEnabled
             };
         }
+
+        public bool IsAdmin => this.Roles.Contains(ApplicationUser.AdminRole);
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

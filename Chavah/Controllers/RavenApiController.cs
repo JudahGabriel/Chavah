@@ -10,12 +10,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using BitShuva.Common;
+using BitShuva.Models;
 
 namespace BitShuva.Controllers
 {
     public abstract class RavenApiController : ApiController
     {
-        public IAsyncDocumentSession DbSession { get; private set; } 
+        public IAsyncDocumentSession DbSession { get; private set; }
+        public SessionToken SessionToken { get; set; }
+
+        private ApplicationUser currentUser;
 
         public async override Task<HttpResponseMessage> ExecuteAsync(
             HttpControllerContext controllerContext,
@@ -27,6 +32,33 @@ namespace BitShuva.Controllers
                 await DbSession.SaveChangesAsync();
 
                 return result;
+            }
+        }
+
+        public async Task<ApplicationUser> GetCurrentUser()
+        {
+            if (this.currentUser != null)
+            {
+                return this.currentUser;
+            }
+
+            if (this.SessionToken != null && !string.IsNullOrEmpty(this.SessionToken.Email))
+            {
+                using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
+                {
+                    this.currentUser = await DbSession.LoadAsync<ApplicationUser>(this.SessionToken.Email);
+                }
+            }
+
+            return currentUser;
+        }
+
+        public async Task RequireAdminUser()
+        {
+            var user = await this.GetCurrentUser();
+            if (user == null || !user.IsAdmin)
+            {
+                throw NewUnauthorizedException();
             }
         }
 

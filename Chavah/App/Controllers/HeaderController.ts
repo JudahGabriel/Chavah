@@ -37,6 +37,14 @@
             this.$rootScope.$on("$locationChangeStart", () => this.routeChanged());
         }
 
+        get isSignedIn(): boolean {
+            return this.signInApi.isSignedIn;
+        }
+
+        get currentUserName(): string {
+            return this.signInApi.currentUser ? this.signInApi.currentUser.email : "";
+        }
+
         toggleVolumnShown() {
             this.volumeShown = !this.volumeShown;
         }
@@ -54,7 +62,7 @@
         }
 
         requestSong() {
-            if (this.signInApi.isSignedIn()) {
+            if (this.signInApi.isSignedIn) {
                 this.songRequestApi.showSongRequestDialog()
                     .result.then((songOrNull: Song) => this.songRequestDialogCompleted(songOrNull));
             } else {

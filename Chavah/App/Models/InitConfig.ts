@@ -4,6 +4,7 @@
         songId: string | null;
         redirect: string | null;
         userEmail: string | null;
+        userRoles: string[];
         embed: Boolean;
     }
 }
