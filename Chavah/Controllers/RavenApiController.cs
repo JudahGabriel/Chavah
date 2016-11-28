@@ -46,13 +46,14 @@ namespace BitShuva.Controllers
             {
                 using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
                 {
-                    this.currentUser = await DbSession.LoadAsync<ApplicationUser>(this.SessionToken.Email);
+                    this.currentUser = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + this.SessionToken.Email);
                 }
             }
 
             return currentUser;
         }
 
+        // TODO: replace this method with the [Authorize] attribute. Need to implement JWT auth provider. http://bitoftech.net/2015/02/16/implement-oauth-json-web-tokens-authentication-in-asp-net-web-api-and-identity-2/
         public async Task RequireAdminUser()
         {
             var user = await this.GetCurrentUser();

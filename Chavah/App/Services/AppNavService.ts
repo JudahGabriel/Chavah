@@ -2,10 +2,13 @@
     export class AppNavService {
 
         static $inject = [
-            "$location"
+            "$location",
+            "$uibModal"
         ];
 
-        constructor(private $location: ng.ILocationService) {
+        constructor(
+            private $location: ng.ILocationService,
+            private $uibModal: ng.ui.bootstrap.IModalService) {
 
         }
 
@@ -31,6 +34,19 @@
 
         password(email: string) {
             this.$location.url(`/password/${encodeURIComponent(email)}`);
+        }
+
+        editAlbum(albumId: string) {
+            this.$location.url(`/admin/${albumId}`);
+        }
+
+        showSongRequestDialog(): ng.ui.bootstrap.IModalServiceInstance {
+            var requestSongDialog = this.$uibModal.open({
+                controller: "RequestController as vm",
+                templateUrl: "../Views/RequestSong.html"
+            });
+
+            return requestSongDialog;
         }
     }
 

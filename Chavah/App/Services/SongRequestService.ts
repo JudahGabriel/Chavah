@@ -7,24 +7,13 @@
         static $inject = [
             "httpApi",
             "audioPlayer",
-            "songApi",
-            "$uibModal"
+            "songApi"
         ];
 
         constructor(
             private httpApi: HttpApiService,
             private audioPlayer: AudioPlayerService,
-            private songApi: SongApiService,
-            private $uibModal: ng.ui.bootstrap.IModalService) { 
-        }
-
-        showSongRequestDialog(): ng.ui.bootstrap.IModalServiceInstance {
-            var requestSongDialog = this.$uibModal.open({
-                controller: "RequestController as vm",
-                templateUrl: "../Views/RequestSong.html"
-            });
-
-            return requestSongDialog;
+            private songApi: SongApiService) { 
         }
 
         hasPendingRequest() {

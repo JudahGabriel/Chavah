@@ -22,7 +22,6 @@ namespace BitShuva.Controllers
     public class SongsController : RavenApiController
     {
         [Route("admin/list/{skip}/{take}")]
-        [Authorize]
         [HttpGet]
         public async Task<PagedList<Song>> AdminSongs(int skip, int take)
         {
@@ -47,7 +46,6 @@ namespace BitShuva.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
         [Route("admin/delete/{*songId}")]
         public async Task Delete(string songId)
         {
@@ -83,7 +81,6 @@ namespace BitShuva.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [Route("admin/save")]
         public async Task<Song> Save(Song song)
         {

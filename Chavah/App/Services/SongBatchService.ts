@@ -45,11 +45,11 @@
             this.songApi
                 .getSongBatch()
                 .then(songs => {
-                var existingSongBatch = this.songsBatch.getValue();
-                    var freshSongs = songs
-                        .filter(s => existingSongBatch.map(s => s.id).indexOf(s.id) === -1)
-                        .filter(s => !this.songRequestApi.isSongPendingRequest(s.id));
-                    this.songsBatch.onNext(existingSongBatch.concat(freshSongs));
+                    var existingSongBatch = this.songsBatch.getValue();
+                        var freshSongs = songs
+                            .filter(s => existingSongBatch.map(s => s.id).indexOf(s.id) === -1)
+                            .filter(s => !this.songRequestApi.isSongPendingRequest(s.id));
+                        this.songsBatch.onNext(existingSongBatch.concat(freshSongs));
                 });
         }
     }

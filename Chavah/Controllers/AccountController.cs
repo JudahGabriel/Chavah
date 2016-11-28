@@ -127,6 +127,7 @@ namespace BitShuva.Controllers
         //    }
         //}
 
+        // TODO: move this to a WebApi controller so that SignInResult can be normal cased properties. Then delete AccountController.
         [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult> SignIn(string email, string password, bool staySignedIn)
@@ -175,6 +176,14 @@ namespace BitShuva.Controllers
                 roles = user.Roles
             };
             return Json(result);
+        }
+
+        // TODO: move this into a WebAPI controller.
+        [HttpPost]
+        public ActionResult SignOut()
+        {
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Index", "Home");
         }
 
         //
@@ -535,16 +544,6 @@ namespace BitShuva.Controllers
 
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
-        }
-        
-        //
-        // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
-        {
-            AuthenticationManager.SignOut();
-            return RedirectToAction("Index", "Home");
         }
 
         //

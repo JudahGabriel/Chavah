@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BitShuva</RootNamespace>
     <AssemblyName>BitShuva</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44372</IISExpressSSLPort>
@@ -249,7 +249,6 @@
     <Compile Include="Common\RssActionResult.cs" />
     <Compile Include="Common\SessionToken.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AlbumsController.cs" />
     <Compile Include="Controllers\ArtistsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -303,12 +302,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\Views\CreatePassword.html" />
+    <Content Include="App\Views\EditAlbum.html" />
     <Content Include="App\Views\EditArtist.html" />
     <Content Include="App\Views\Footer.html" />
     <Content Include="App\Views\ForgotPassword.html" />
     <Content Include="App\Views\Header.html" />
     <Content Include="App\Views\NowPlaying.html" />
     <Content Include="App\Views\Password.html" />
+    <Content Include="App\Views\Profile.html" />
     <Content Include="App\Views\Register.html" />
     <Content Include="App\Views\RequestSong.html" />
     <Content Include="App\Views\SignIn.html" />
@@ -531,7 +532,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="App\App.ts" />
     <TypeScriptCompile Include="App\Controllers\CreatePasswordController.ts" />
+    <TypeScriptCompile Include="App\Controllers\EditAlbumController.ts" />
     <TypeScriptCompile Include="App\Controllers\EditArtistController.ts" />
+    <TypeScriptCompile Include="App\Controllers\FooterController.ts" />
     <TypeScriptCompile Include="App\Controllers\HeaderController.ts" />
     <TypeScriptCompile Include="App\Controllers\NowPlayingController.ts" />
     <TypeScriptCompile Include="App\Controllers\PasswordController.ts" />
@@ -540,6 +543,7 @@
     <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />
     <TypeScriptCompile Include="App\Controllers\UploadAlbumController.ts" />
     <TypeScriptCompile Include="App\Directives\AudioStatusChanged.ts" />
+    <TypeScriptCompile Include="App\Models\Album.ts" />
     <TypeScriptCompile Include="App\Models\AppRoute.ts" />
     <TypeScriptCompile Include="App\Models\Artist.ts" />
     <TypeScriptCompile Include="App\Models\AudioStatus.ts" />

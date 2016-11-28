@@ -2,62 +2,37 @@
     <img class="left-decor pull-left" src="../../Content/images/LeftDecor.jpg" />
     <div class="pull-right">
         <!-- Single button -->
-        <div class="btn-group">
+        <div class="btn-group" ng-show="vm.currentUserName">
             <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{vm.currentUserName}} <span class="caret"></span>
+                <h4>
+                    <i class="fa fa-user-circle"></i> 
+                    {{vm.currentUserName}} 
+                    <span class="caret"></span>
+                </h4>
             </button>
             <ul class="dropdown-menu">
                 <li>
                     <a href="#/profile">
-                        <h5><strong>{{vm.currentUserName}}</strong></h5>
-                        <small>View profile</small>
+                        <h5>
+                            <strong>{{vm.currentUserName}}</strong>
+                        </h5>
+                        <small>
+                            View my profile
+                        </small>
                     </a>
                 </li>
                 <li role="separator" class="divider"></li>
                 <li><a href="javascript:void(0)" ng-click="vm.signOut()">Sign out</a></li>
             </ul>
         </div>
-        <a href="#/profile" ng-show="vm.currentUserName">
-            {{vm.currentUserName}}
-            <i class="fa fa-2x fa-user-circle"></i>
-        </a>
-        <a href="#/signin" ng-hide="vm.currentUserName">
-            <i class="fa fa-2x fa-sign-in"></i> Sign in
+        <a class="btn btn-link" href="#/signin" ng-hide="vm.currentUserName">
+            <h4>
+                <i class="fa fa-sign-in"></i> Sign in
+            </h4>
         </a>
     </div>
     <div class="title">Chavah Messianic Radio <span class="hebrew">חוה רדיו</span></div>
     <div class="subtitle">
         <span>internet radio for Yeshua's disciples</span> 
     </div>
-    
-    <div class="song-controls">
-        <button class="btn btn-primary btn-lg" ng-click="vm.playPause()">
-            <i class="fa" ng-class="{ 'fa-pause': !vm.isPaused(), 'fa-play': vm.isPaused() }"></i>
-        </button>
-        <button class="btn btn-primary btn-lg" ng-click="vm.playNextSong()" title="Skip this song, play something else">
-            <i class="fa fa-fast-forward"></i>
-        </button>
-        <button class="btn btn-primary btn-lg" title="Got a song request? Chavah will play whatever tune's on your mind." ng-click="vm.requestSong()">
-            <i class="fa fa-comment"></i>
-        </button>
-        <button class="btn btn-primary btn-lg" title="Like this song. Chavah will play this song, and others like it, less often.">
-            <i class="fa fa-thumbs-down"></i>
-        </button>
-        <button class="btn btn-primary btn-lg" title="Like this song. Chavah will play this song, and others like it, more often.">
-            <i class="fa fa-thumbs-up"></i>
-        </button>
-        <button class="btn btn-primary btn-lg" ng-click="vm.toggleVolumnShown()" data-toggle="button">
-            <i class="fa fa-volume-up"></i>
-        </button>
-        <input class="volume-slider" type="range" min="0" max="100" ng-show="vm.volumeShown" />
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        
-        <ul class="nav nav-pills">
-            <li role="presentation" ng-class="{ active: vm.currentRoute === 0 }"><a href="#/nowplaying">Now playing</a></li>
-            <li role="presentation" ng-class="{ active: vm.currentRoute === 1 }"><a href="#/trending">Trending</a></li>
-            <li role="presentation" ng-class="{ active: vm.currentRoute === 2 }"><a href="#">Top</a></li>
-            <li role="presentation" ng-class="{ active: vm.currentRoute === 3 }"><a href="#">My likes</a></li>
-        </ul>
-    </div>
 </header>
-<audio></audio>

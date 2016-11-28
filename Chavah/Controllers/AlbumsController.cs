@@ -14,8 +14,9 @@ using System.Web.Http;
 
 namespace BitShuva.Controllers
 {
+    [ParseJwtSession]
     [RoutePrefix("api/albums")]
-    public class AlbumsController : UserContextController
+    public class AlbumsController : RavenApiController
     {
         /// <summary>
         /// Uploads the album art for a song. The album art will be applied to all songs matching the artist and album.
@@ -28,6 +29,8 @@ namespace BitShuva.Controllers
         [Route("uploadArt")]
         public async Task<Album> UploadAlbumArt(string address, string fileName, string artist, string album)
         {
+            await this.RequireAdminUser();
+
             var downloader = new System.Net.WebClient();
             var unescapedFileName = Uri.UnescapeDataString(artist) + " - " + Uri.UnescapeDataString(album) + Path.GetExtension(fileName);
 
@@ -60,43 +63,30 @@ namespace BitShuva.Controllers
             return existingAlbum;
         }
 
-        /// <summary>
-        /// Find album art with the specified artist and album name.
-        /// </summary>
-        /// <param name="songId">The ID of the song we're checking for.</param>
-        /// <param name="artist">The artist name.</param>
-        /// <param name="album">The album.</param>
-        /// <returns>An Album-like object containing the ID of the song.</returns>
-        [Route("art/{songId}/{artist}/{album}")]
-        public async Task<dynamic> GetAlbumArt(string songId, string artist, string album)
+        [Route("Get")]
+        [HttpGet]
+        public Task<Album> Get(string id)
         {
-            var existingAlbum = await this.DbSession
-                .Query<Album>()
-                .FirstOrDefaultAsync(a => a.Artist == artist && a.Name == album);
-            return new
-            {
-                SongId = songId,
-                Artist = Match.Value(existingAlbum).PropertyOrDefault(a => a.Artist),
-                Name = Match.Value(existingAlbum).PropertyOrDefault(a => a.Name),
-                AlbumArtUri = Match.Value(existingAlbum).PropertyOrDefault(a => a.AlbumArtUri)
-            };
+            return DbSession.LoadAsync<Album>(id);
         }
 
-        [HttpGet]
-        [Route("art/test")]
-        public async Task<HttpResponseMessage> Test(string songId)
+        [Route("Save")]
+        [HttpPost]
+        public async Task<Album> Save(Album album)
         {
-            var existingSong = await this.DbSession
-                .LoadAsync<Song>(songId);
-            var response = new HttpResponseMessage();
-            using (var webClient = new WebClient())
-            {
-                var bytes = await webClient.DownloadDataTaskAsync(existingSong.AlbumArtUri);
-                response.Content = new StreamContent(new MemoryStream(bytes)); // this file stream will be closed by lower layers of web api for you once the response is completed.
-                response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            await RequireAdminUser();
+            await DbSession.StoreAsync(album);
+            return album;
+        }
 
-                return response;
-            }
+        [Route("NullColors")]
+        [HttpGet]
+        public async Task<Album> GetAlbumWithNullColors()
+        {
+            var album = await DbSession.Query<Album>()
+                .Customize(x => x.RandomOrdering())
+                .FirstOrDefaultAsync(a => a.BackgroundColor == null);
+            return album;
         }
 
         /// <summary>
@@ -120,10 +110,34 @@ namespace BitShuva.Controllers
             }
         }
 
+        /// <summary>
+        /// Find album art with the specified artist and album name.
+        /// </summary>
+        /// <param name="songId">The ID of the song we're checking for.</param>
+        /// <param name="artist">The artist name.</param>
+        /// <param name="album">The album.</param>
+        /// <returns>An Album-like object containing the ID of the song.</returns>
+        [Route("art/{songId}/{artist}/{album}")]
+        public async Task<dynamic> GetAlbumArt(string songId, string artist, string album)
+        {
+            var existingAlbum = await this.DbSession
+                .Query<Album>()
+                .FirstOrDefaultAsync(a => a.Artist == artist && a.Name == album);
+            return new
+            {
+                SongId = songId,
+                Artist = existingAlbum?.Artist,
+                Name = existingAlbum?.Name,
+                AlbumArtUri = existingAlbum?.AlbumArtUri
+            };
+        }
+        
         [HttpPost]
         [Route("upload")]
         public async Task<string> Upload(AlbumUpload album)
         {
+            await this.RequireAdminUser();
+
             // Put the album art on the CDN.
             var albumArtUriCdn = await CdnManager.UploadAlbumArtToCdn(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
 
@@ -174,6 +188,12 @@ namespace BitShuva.Controllers
             return existingAlbum.Id;
         }
 
+        /// <summary>
+        /// Gets the HTTP address for the album art image for the album with the specified name and artist.
+        /// </summary>
+        /// <param name="artist"></param>
+        /// <param name="album"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("art/get")]
         public async Task<HttpResponseMessage> GetAlbumArt(string artist, string album)

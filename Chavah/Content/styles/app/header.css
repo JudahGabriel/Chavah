@@ -2,19 +2,24 @@
 header {
   background-color: #2f3d58;
   box-shadow: 0 1px 3px 1px #646464;
-  height: 178px;
   white-space: nowrap;
 }
 header a,
+header .btn-link {
+  color: #e9dd9a;
+}
 header a:hover,
+header .btn-link:hover,
 header a:active,
-header a:focus {
+header .btn-link:active,
+header a:focus,
+header .btn-link:focus {
   color: #e9dd9a;
 }
 header .left-decor {
   margin-left: 30px;
   margin-right: 30px;
-  max-height: 176px;
+  max-height: 88px;
   box-shadow: -2px 0 8px 1px rgba(29, 38, 55, 0.9), 2px 0 8px 1px rgba(29, 38, 55, 0.9);
 }
 header .title {
@@ -26,7 +31,7 @@ header .title {
 header .title .hebrew {
   font-size: 32px;
 }
-header .title .hebrew .subtitle {
+header .subtitle {
   color: #d7c146;
   text-shadow: 0 0 #1d2637;
   padding: 5px;
@@ -36,21 +41,21 @@ header .title .hebrew .subtitle {
   font-style: italic;
   font-size: 22px;
 }
-header .title .hebrew .subtitle .btn-link {
+header .subtitle .btn-link {
   font-size: 20px;
   color: #646464;
   text-shadow: 1px 1px 2px #eeeeee, -1px -1px 2px #eeeeee, 1px -1px 2px #eeeeee, -1px 1px 2px #eeeeee;
   padding-left: 2px;
   padding-top: 3px;
 }
-header .title .hebrew .song-controls {
+header .song-controls {
   padding-top: 5px;
   padding-bottom: 5px;
   margin-top: 10px;
   background-color: #1d2637;
   border-top: 2px solid #e9dd9a;
 }
-header .title .hebrew .song-controls button {
+header .song-controls button {
   width: 60px;
   height: 60px;
   border: none;
@@ -60,41 +65,41 @@ header .title .hebrew .song-controls button {
   background-color: #1d2637;
   padding-left: 24px;
 }
-header .title .hebrew .song-controls button:hover {
+header .song-controls button:hover {
   background-color: #11161f;
 }
-header .title .hebrew .song-controls button .fa {
+header .song-controls button .fa {
   text-shadow: 2px 0 1px #0b0f16, 0 2px 1px #0b0f16, -2px 0 1px #0b0f16, 0 -2px 1px #0b0f16;
 }
-header .title .hebrew .song-controls .volume-slider {
+header .song-controls .volume-slider {
   width: 100px;
   display: inline-block;
 }
-header .title .hebrew .song-controls .nav-pills {
+header .song-controls .nav-pills {
   display: inline-block;
   margin-bottom: -28px;
   font-size: 26px;
   font-family: 'EB Garamond', serif;
 }
-header .title .hebrew .song-controls .nav-pills li {
+header .song-controls .nav-pills li {
   transition: all ease-in-out 0.2s;
 }
-header .title .hebrew .song-controls .nav-pills li.active {
+header .song-controls .nav-pills li.active {
   border-bottom: 2px solid #e9dd9a;
   background-color: #2f3d58;
 }
-header .title .hebrew .song-controls .nav-pills li.active a {
+header .song-controls .nav-pills li.active a {
   color: #e9dd9a;
 }
-header .title .hebrew .song-controls .nav-pills li:hover {
+header .song-controls .nav-pills li:hover {
   transition: all ease-in-out 0.2s;
   background-color: #2f3d58;
 }
-header .title .hebrew .song-controls .nav-pills li:hover a {
+header .song-controls .nav-pills li:hover a {
   transition: all ease-in-out 0.2s;
   color: #e9dd9a;
 }
-header .title .hebrew .song-controls .nav-pills li a {
+header .song-controls .nav-pills li a {
   transition: all ease-in-out 0.2s;
   color: #415479;
   background-color: transparent;

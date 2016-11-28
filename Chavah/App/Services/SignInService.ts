@@ -30,9 +30,13 @@
         get isSignedIn(): boolean {
             return !!this.currentUser;
         }
-        
-        promptForSignIn() {
-            this.appNav.signIn();
+
+        signOut(): ng.IPromise<any> {
+            var signOutTask = this.httpApi.post("/Account/SignOut", null);
+            signOutTask
+                .then(() => this.currentUser = null)
+                .then(() => this.setAuthLocalStorage(null))
+            return signOutTask;
         }
 
         getUserWithEmail(email: string): ng.IPromise<Server.IApplicationUser | null> {
@@ -59,17 +63,22 @@
             var signInTask = this.httpApi.post<SignInResult>("/Account/SignIn", args);
             signInTask.then(result => {
                 if (result.status === SignInStatus.Success) {
-                    this.localStorageService.set(SignInService.jwtKey, result.jsonWebToken);
-                    this.localStorageService.set(SignInService.hasSignedInKey, true);
+                    this.setAuthLocalStorage(result.jsonWebToken);
                     this.currentUser = new User(result.email!, result.roles);
                 } else {
-                    this.localStorageService.set(SignInService.jwtKey, "");
-                    this.localStorageService.set(SignInService.hasSignedInKey, false);
+                    this.setAuthLocalStorage(result.jsonWebToken);
                     this.currentUser = null;
                 }
             });
 
             return signInTask;
+        }
+
+        private setAuthLocalStorage(jwt: string | null) {
+            this.localStorageService.set(SignInService.jwtKey, jwt);
+            if (jwt) {
+                this.localStorageService.set(SignInService.hasSignedInKey, true);
+            }
         }
     }
 

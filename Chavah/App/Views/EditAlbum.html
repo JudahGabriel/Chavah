@@ -1,0 +1,147 @@
+﻿<section class="edit-album-page" ng-controller="EditAlbumController as vm">
+    <div class="row">
+        <div class="col-sm-6 col-xs-12 col-sm-offset-3">
+            <h2>Edit Album</h2>
+            <form>
+                <div class="form-group">
+                    <label>Album name</label>
+                    <input class="form-control" placeholder="Album name" ng-model="vm.album.name">
+                </div>
+                <div class="form-group">
+                    <label>Artist</label>
+                    <input type="text" class="form-control" ng-model="vm.album.artist" />
+                </div>
+                <div class="form-group">
+                    <label>Album art</label>
+                    <br ng-show="vm.album.albumArtUri" />
+                    <img class="album-art" ng-show="vm.album.albumArtUri" ng-src="{{vm.album.albumArtUri}}" />
+                    <div ng-show="vm.album.albumArtUri" style="width: 300px; padding: 10px;" ng-style="{ 'background-color': vm.album.backgroundColor }">
+                        <div ng-show="vm.album.albumArtUri" ng-style="{ 'text-shadow': '0 0 5px ' + vm.album.textShadowColor }">
+                            <span ng-style="{ 'color': vm.album.foregroundColor }">
+                                Song Name Here
+                            </span>
+                            <br />
+                            <span ng-style="{ 'color': vm.album.mutedColor }">
+                                By
+                            </span>
+                            <span ng-style="{ 'color': vm.album.foregroundColor }">
+                                {{vm.album.artist}}
+                            </span>
+                            <br />
+                            <span ng-style="{ 'color': vm.album.mutedColor }">
+                                on
+                            </span>
+                            <span ng-style="{ 'color': vm.album.foregroundColor }">
+                                {{vm.album.name}}
+                            </span>
+                        </div>
+                    </div>
+                    <br />
+                    <button class="btn btn-default" ng-click="vm.chooseAlbumArt()">Choose album art...</button>
+                    <div ng-show="vm.album.albumArtUri">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h5>Album colors</h5>
+                                <table class="table table-bordered table-hover">
+                                    <tbody>
+                                        <tr>
+                                            <td><label>Fore</label></td>
+                                            <td><input class="form-control" type="color" ng-model="vm.album.foregroundColor" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Background</label></td>
+                                            <td><input class="form-control" type="color" ng-model="vm.album.backgroundColor" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Muted</label></td>
+                                            <td><input class="form-control" type="color" ng-model="vm.album.mutedColor" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Text shadow</label></td>
+                                            <td><input class="form-control" type="color" ng-model="vm.album.textShadowColor" /></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div>
+                                    <button class="btn btn-default" ng-click="vm.resetColorSwatches()">Reset album colors</button>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <h5>Suggested swatches</h5>
+                                <div class="panel-group" id="swatchPanelGroup">
+                                    <div class="panel panel-default" ng-repeat="swatch in vm.allAlbumSwatches">
+                                        <div class="panel-heading" ng-style="{ 'background-color': swatch.color, color: swatch.bodyTextColor }">
+                                            <h3 class="panel-title">
+                                                <a data-parent="#swatchPanelGroup" data-toggle="collapse" ng-href="'#swatchCollapse{{swatch.name}}">
+                                                    <span ng-style="{ color: swatch.titleTextColor }">{{swatch.name}}</span>
+                                                    <small ng-style="{ color: swatch.bodyTextColor }">...sample body text color</small>
+                                                </a>
+                                            </h3>
+                                        </div>
+                                        <div class="panel-collapse collapse" ng-attr-id="{{'swatchCollapse' + swatch.name}}">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-sm-4 text-center">
+                                                        <div class="swatch-sample" ng-style="{ 'background-color': swatch.color }">
+                                                            <h3 ng-style="{ color: swatch.titleTextColor }">Title text sample</h3>
+                                                            <p ng-style="{ color: swatch.bodyTextColor }">Body text sample</p>
+                                                        </div>
+                                                        <p>
+                                                            Color
+                                                            <br />
+                                                            {{swatch.color}}
+                                                            <br />
+                                                            {{vm.hexToRgbString(swatch.color)}}
+                                                            <div class="btn-group" role="group" aria-label="...">
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.foregroundColor = swatch.color">Fore</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.backgroundColor = swatch.color">Bg</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.mutedColor = swatch.color">Muted</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.textShadowColor = swatch.color">Shadow</button>
+                                                            </div>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-sm-4 text-center">
+                                                        <div class="swatch-sample" ng-style="{ 'background-color': swatch.titleTextColor }"></div>
+                                                        <p>
+                                                            Title Text
+                                                            <br />
+                                                            {{swatch.titleTextColor}} {{vm.hexToRgbString(swatch.titleTextColor)}}
+                                                            <div class="btn-group" role="group" aria-label="...">
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.foregroundColor = swatch.titleTextColor">Fore</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.backgroundColor = swatch.titleTextColor">Bg</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.mutedColor = swatch.titleTextColor">Muted</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.textShadowColor = swatch.titleTextColor">Shadow</button>
+                                                            </div>
+                                                        </p>
+
+                                                    </div>
+                                                    <div class="col-sm-4 text-center">
+                                                        <div class="swatch-sample" ng-style="{ 'background-color': swatch.bodyTextColor }"></div>
+                                                        <p>
+                                                            Body Text
+                                                            <br />
+                                                            {{swatch.bodyTextColor}} {{vm.hexToRgbString(swatch.bodyTextColor)}}
+                                                            <div class="btn-group" role="group" aria-label="...">
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.foregroundColor = swatch.bodyTextColor">Fore</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.backgroundColor = swatch.bodyTextColor">Bg</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.mutedColor = swatch.bodyTextColor">Muted</button>
+                                                                <button type="button" class="btn btn-default" ng-click="vm.album.textShadowColor = swatch.bodyTextColor">Shadow</button>
+                                                            </div>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" ng-click="vm.save()" ng-disabled="vm.album.isSaving">
+                    <i class="fa fa-save"></i> Save
+                </button>
+            </form>
+        </div>
+    </div>
+</section>

@@ -1,4 +1,36 @@
-﻿<div style="width: 100%;">
+﻿<section class="footer" ng-controller="FooterController as vm">
+    <div class="song-controls">
+        <button class="btn btn-primary btn-lg" ng-click="vm.playPause()">
+            <i class="fa" ng-class="{ 'fa-pause': !vm.isPaused(), 'fa-play': vm.isPaused() }"></i>
+        </button>
+        <button class="btn btn-primary btn-lg" ng-click="vm.playNextSong()" title="Skip this song, play something else">
+            <i class="fa fa-fast-forward"></i>
+        </button>
+        <button class="btn btn-primary btn-lg" title="Got a song request? Chavah will play whatever tune's on your mind." ng-click="vm.requestSong()">
+            <i class="fa fa-comment"></i>
+        </button>
+        <button class="btn btn-primary btn-lg" title="Like this song. Chavah will play this song, and others like it, less often.">
+            <i class="fa fa-thumbs-down"></i>
+        </button>
+        <button class="btn btn-primary btn-lg" title="Like this song. Chavah will play this song, and others like it, more often.">
+            <i class="fa fa-thumbs-up"></i>
+        </button>
+        <button class="btn btn-primary btn-lg" ng-click="vm.toggleVolumnShown()" data-toggle="button">
+            <i class="fa fa-volume-up"></i>
+        </button>
+        <input class="volume-slider" type="range" min="0" max="100" ng-show="vm.volumeShown" />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <!--<ul class="nav nav-pills">
+            <li role="presentation" ng-class="{ active: vm.currentRoute === 0 }"><a href="#/nowplaying">Now playing</a></li>
+            <li role="presentation" ng-class="{ active: vm.currentRoute === 1 }"><a href="#/trending">Trending</a></li>
+            <li role="presentation" ng-class="{ active: vm.currentRoute === 2 }"><a href="#">Top</a></li>
+            <li role="presentation" ng-class="{ active: vm.currentRoute === 3 }"><a href="#">My likes</a></li>
+        </ul>-->
+    </div>
+</section>
+
+<!--<div style="width: 100%;">
     <a target="_blank" data-bind="text: latestBlogPostTitle, attr: { href: latestBlogPostHref }" href="http://blog.messianicradio.com/2015/07/please-help-rabbi-ed-rothman.html" title="Lastest news from the Chavah blog">Please help Rabbi Ed Rothman</a>
     <span>&nbsp;|&nbsp;</span>
     <a href="http://www.facebook.com/pages/Chavah-Messianic-Radio/134887069882254" target="_blank" title="Like us on Facebook">
@@ -22,4 +54,5 @@
     <a href="http://messianicchords.com" target="_blank" title="Messianic Jewish teaching from our friend Yisrael Avraham">YeshuaRadio</a>
     <span>&nbsp;|&nbsp;</span>
     <a href="http://www.tabernacleofdavidministries.com/" target="_blank" title="The Chavah family attends Tabernacle of David in Burnsville, Minnesota. Come worship with us!">In Minnesota? Join us for shabbat</a>
-</div>
+</div>-->
+<audio></audio>

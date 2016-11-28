@@ -26,6 +26,7 @@
         $routeProvider
             .when("/nowplaying", createRoute("/App/Views/NowPlaying.html"))
             .when("/trending", createRoute("/App/Views/Trending.html"))
+            .when("/profile", createRoute("/App/Views/Profile.html"))
 
             // Sign in
             .when("/signin", createRoute("/App/Views/SignIn.html"))
@@ -36,6 +37,7 @@
 
             // Admin
             .when("/admin/albums/upload", createRoute("/App/Views/UploadAlbum.html", true))
+            .when("/admin/albums/:id", createRoute("/App/Views/EditAlbum.html", true))
             .when("/admin/artists/:artistName?", createRoute("/App/Views/EditArtist.html", true))
 
             .otherwise({
