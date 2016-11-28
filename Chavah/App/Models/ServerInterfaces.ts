@@ -33,7 +33,7 @@
         albumArtUri: string;
         totalPlays: number;
         uri: string;
-        songLike: number;
+        songLike: SongLike;
         lyrics: string;
         genres: string[];
         tags: string[];
@@ -87,5 +87,6 @@
         foregroundColor: string;
         mutedColor: string;
         textShadowColor: string;
+        isVariousArtists: boolean;
     }
 }

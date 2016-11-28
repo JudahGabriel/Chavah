@@ -1,8 +1,12 @@
 ﻿/* Colors */
 header {
+  position: fixed;
+  left: 0;
+  right: 0;
   background-color: #2f3d58;
-  box-shadow: 0 1px 3px 1px #646464;
+  box-shadow: 0 1px 3px 1px gray;
   white-space: nowrap;
+  z-index: 1;
 }
 header a,
 header .btn-link {

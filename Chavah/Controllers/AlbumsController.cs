@@ -79,6 +79,23 @@ namespace BitShuva.Controllers
             return album;
         }
 
+        [Route("GetAlbumsForSongs")]
+        [HttpGet]
+        public async Task<IList<Album>> GetAlbumsForSongs(string songIdsCsv)
+        {
+            const int maxAlbumArtFetch = 15;
+            var songIds = songIdsCsv.Split(',').Take(maxAlbumArtFetch);
+            var songs = await DbSession.LoadAsync<Song>(songIds);
+            var albumNames = songs
+                .Where(s => s != null && !string.IsNullOrEmpty(s.Album))
+                .Select(s => s.Album)
+                .ToList();
+            var albums = await DbSession.Query<Album>()
+                .Where(a => a.Name.In(albumNames))
+                .ToListAsync();
+            return albums;
+        }
+
         [Route("NullColors")]
         [HttpGet]
         public async Task<Album> GetAlbumWithNullColors()

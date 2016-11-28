@@ -24,6 +24,13 @@
             return this.httpApi.post("/api/albums/save", album, AlbumApiService.albumSelector);
         }
 
+        getAlbumsForSongs(songIds: string[]): ng.IPromise<Album[]> {
+            var args = {
+                songIdsCsv: songIds.join(",")
+            };
+            return this.httpApi.query("/api/albums/GetAlbumsForSongs", args, AlbumApiService.albumArraySelector);
+        }
+
         zanzFetchNullArt(): ng.IPromise<Album | null> {
             return this.httpApi.query<Server.IAlbum | null>("/api/albums/NullColors", null, AlbumApiService.albumSelector);
         }
@@ -34,6 +41,10 @@
             } 
 
             return null;
+        }
+
+        static albumArraySelector(serverObjs: Server.IAlbum[]): Album[] {
+            return serverObjs.map(s => AlbumApiService.albumSelector(s)!);
         }
     }
 

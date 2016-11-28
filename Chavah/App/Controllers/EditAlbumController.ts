@@ -24,20 +24,9 @@
 
         albumLoaded(album: Album | null) {
             if (album) {
-                this.album = album;
-                var zanzHadNullBg = !this.album.backgroundColor;
-                console.log('zanz', zanzHadNullBg);
-
+                this.album = album;                
                 this.loadCanvasSafeAlbumArt()
-                    .then(img => this.populateColorSwatches(img))
-                    .then(() => {
-                        if (zanzHadNullBg) {
-                            var saveTask = this.save();
-                            if (saveTask) {
-                                saveTask.then(() => setTimeout(() => this.zanzFetchNullArt(), 10000));
-                            }
-                        }
-                    });
+                    .then(img => this.populateColorSwatches(img));
             }
         }
 
@@ -93,14 +82,11 @@
             img.addEventListener("load", () => {
                 deferred.resolve(img);
             });
+            img.addEventListener("error", () => deferred.reject());
 
             return deferred.promise;
         }
-
-
-
-
-
+        
         zanzFetchNullArt() {
             this.albumApi.zanzFetchNullArt()
                 .then(album => {

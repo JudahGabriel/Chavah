@@ -8,6 +8,7 @@
         foregroundColor: string;
         mutedColor: string;
         textShadowColor: string;
+        isVariousArtists: boolean;
 
         isSaving = false;
 

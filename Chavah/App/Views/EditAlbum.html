@@ -11,10 +11,15 @@
                     <label>Artist</label>
                     <input type="text" class="form-control" ng-model="vm.album.artist" />
                 </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="vm.album.isVariousArtists"> Contains many artists ("various artists")
+                    </label>
+                </div>
                 <div class="form-group">
                     <label>Album art</label>
                     <br ng-show="vm.album.albumArtUri" />
-                    <img class="album-art" ng-show="vm.album.albumArtUri" ng-src="{{vm.album.albumArtUri}}" />
+                    <img class="album-art" ng-show="vm.album.albumArtUri" ng-src="{{vm.album.albumArtUri}}" style="max-height: 300px; max-width: 300px;" />
                     <div ng-show="vm.album.albumArtUri" style="width: 300px; padding: 10px;" ng-style="{ 'background-color': vm.album.backgroundColor }">
                         <div ng-show="vm.album.albumArtUri" ng-style="{ 'text-shadow': '0 0 5px ' + vm.album.textShadowColor }">
                             <span ng-style="{ 'color': vm.album.foregroundColor }">
@@ -140,6 +145,9 @@
                 </div>
                 <button type="submit" class="btn btn-primary" ng-click="vm.save()" ng-disabled="vm.album.isSaving">
                     <i class="fa fa-save"></i> Save
+                </button>
+                <button ng-click="vm.zanzFetchNullArt()">
+                    Next without album art
                 </button>
             </form>
         </div>

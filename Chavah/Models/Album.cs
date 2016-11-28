@@ -18,5 +18,6 @@ namespace BitShuva.Models
         public string ForegroundColor { get; set; }
         public string MutedColor { get; set; }
         public string TextShadowColor { get; set; }
+        public bool IsVariousArtists { get; set; }
     }
 }

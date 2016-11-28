@@ -4,46 +4,58 @@
         static $inject = [
             "songBatch",
             "audioPlayer",
+            "albumApi",
             "$q"
         ];
 
         songs: Song[] = [];
+        isFetchingAlbums = false;
 
         constructor(
             private songBatch: SongBatchService,
             private audioPlayer: AudioPlayerService,
+            private albumApi: AlbumApiService,
             private $q: ng.IQService) {
 
-            this.audioPlayer.song.subscribeOnNext(() => this.songs = this.getSongs());
+            this.audioPlayer.song.subscribeOnNext(song => this.songs = this.getSongs());
             this.songBatch.songsBatch.subscribeOnNext(() => this.songs = this.getSongs());
         }
         
-        private getSongs() {
-            // This should return an array that is displayed in the UI like so:
-            // [0] - Next song, 3rd in line.
-            // [1] - Next song, 2nd in line.
-            // [2] - Next song, 1st in line.
-            // [3] - Currently playing song.
-            // [4] - Last played song, 1st in line.
-            // [5] - Last played song, 2nd in line.
-            // [6] - Last played song, 3rd in line.
-            return [
-                this.getSongOrPlaceholder(this.songBatch.songsBatch.getValue()[2]), // next song, 3rd in line
-                this.getSongOrPlaceholder(this.songBatch.songsBatch.getValue()[1]), // next song, 2nd in line
-                this.getSongOrPlaceholder(this.songBatch.songsBatch.getValue()[0]), // next song, 1st in line
-                this.getSongOrPlaceholder(this.audioPlayer.song.getValue()!), // the currently playing song
-                this.getSongOrPlaceholder(this.audioPlayer.playedSongs[0]), // the last played song
-                this.getSongOrPlaceholder(this.audioPlayer.playedSongs[1]), // the 2nd to last played song
-                this.getSongOrPlaceholder(this.audioPlayer.playedSongs[2]) // the 3rd to last played song
-            ] 
+        private getSongs(): Song[] {
+            var songs = [
+                this.audioPlayer.song.getValue()!,
+                this.songBatch.songsBatch.getValue()[0],
+                this.songBatch.songsBatch.getValue()[1],
+                this.songBatch.songsBatch.getValue()[2],
+                this.songBatch.songsBatch.getValue()[3]
+            ].filter(s => !!s && s.name);
+            this.fetchAlbumColors(songs);
+            return songs;
         }
 
-        getSongOrPlaceholder(songOrNull: Song): Song {
-            if (songOrNull) {
-                songOrNull.calculateAlbumColors(this.$q);
-            }
+        getSongOrPlaceholder(song: Song | null): Song {
+            return song || Song.empty();
+        }
 
-            return songOrNull || Song.empty();
+        fetchAlbumColors(songs: Song[]) {
+            if (!this.isFetchingAlbums) {
+                var songIdsNeedingAlbumSwatch = songs
+                    .filter(s => !s.hasSetAlbumArtColors && s.id !== "songs/0")
+                    .map(s => s.id);
+                if (songIdsNeedingAlbumSwatch.length > 0) {
+                    this.isFetchingAlbums = true;
+                    this.albumApi.getAlbumsForSongs(songIdsNeedingAlbumSwatch)
+                        .then(albums => this.populateSongsWithAlbumColors(albums))
+                        .finally(() => this.isFetchingAlbums = false);
+                }
+            }
+        }
+
+        populateSongsWithAlbumColors(albums: Album[]) {
+            albums.forEach(a => {
+                var songsForAlbum = this.songs.filter(s => s.albumArtUri === a.albumArtUri);
+                songsForAlbum.forEach(s => s.updateAlbumArtColors(a));
+            });
         }
     }
 

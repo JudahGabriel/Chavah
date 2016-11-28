@@ -1,69 +1,62 @@
-﻿.now-playing-page .wheel {
-  overflow: hidden;
-  white-space: nowrap;
-  height: 700px;
-  margin: 0;
-  text-align: center;
-  position: relative;
+﻿.now-playing-page .songs-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  margin: auto;
 }
-.now-playing-page .wheel .song {
+.now-playing-page .song {
   min-width: 300px;
-  min-height: 50px;
   display: inline-block;
   /*border: 1px solid gray;*/
   background-color: white;
   padding: 5px;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
-  -webkit-box-reflect: below 18px -webkit-gradient(linear, left bottom, left top, from(rgba(255, 255, 255, 0.25)), color-stop(0.3, transparent));
+  transition: all ease-in-out 0.2s;
   position: absolute;
-  transition: all ease-in-out 0.5s;
+  transform-style: preserve-3d;
+  perspective: 50em;
+  cursor: pointer;
 }
-.now-playing-page .wheel .song img {
-  max-height: 300px;
+.now-playing-page .song:nth-child(1) {
+  z-index: 5;
+  -webkit-box-reflect: below 18px -webkit-gradient(linear, left bottom, left top, from(rgba(255, 255, 255, 0.25)), color-stop(0.3, transparent));
 }
-.now-playing-page .wheel .song .song-info {
+.now-playing-page .song:nth-child(2) {
+  z-index: 4;
+  transform: scale(0.9) translateX(-50px) translateY(10px);
+}
+.now-playing-page .song:nth-child(3) {
+  z-index: 3;
+  transform: scale(0.8) translateX(-100px);
+}
+.now-playing-page .song:nth-child(4) {
+  z-index: 2;
+  transform: scale(0.7) translateX(-160px);
+}
+.now-playing-page .song:nth-child(5) {
+  z-index: 1;
+  transform: scale(0.6) translateX(-240px);
+}
+.now-playing-page .song:nth-child(6) {
+  z-index: 0;
+  transform: scale(0.5) translateX(-300px);
+}
+.now-playing-page .song.ng-leave-active {
+  transform: translateX(300px) translateY(-100px) rotateZ(-45deg);
+  opacity: 0;
+}
+.now-playing-page .song:hover:not(:first-child) {
+  margin-left: -150px;
+  transform: rotateZ(-5deg);
+}
+.now-playing-page .song img {
+  height: 300px;
+}
+.now-playing-page .song .song-info {
   padding-top: 10px;
   max-width: 300px;
   white-space: normal;
-}
-.now-playing-page .wheel .song:nth-child(1) {
-  left: 87%;
-  z-index: 5;
-  transform: rotateZ(90deg);
-  top: 95%;
-}
-.now-playing-page .wheel .song:nth-child(2) {
-  left: 82%;
-  z-index: 6;
-  transform: rotateZ(50deg);
-  top: 55%;
-}
-.now-playing-page .wheel .song:nth-child(3) {
-  left: 65%;
-  z-index: 7;
-  transform: rotateZ(30deg);
-  top: 20%;
-}
-.now-playing-page .wheel .song:nth-child(4) {
-  left: 42%;
-  z-index: 10;
-  top: 5%;
-}
-.now-playing-page .wheel .song:nth-child(5) {
-  left: 18%;
-  z-index: 9;
-  transform: rotateZ(-30deg);
-  top: 20%;
-}
-.now-playing-page .wheel .song:nth-child(6) {
-  left: 2%;
-  z-index: 8;
-  transform: rotateZ(-50deg);
-  top: 55%;
-}
-.now-playing-page .wheel .song:nth-child(7) {
-  left: -3%;
-  z-index: 7;
-  transform: rotateZ(-90deg);
-  top: 95%;
 }

@@ -61,7 +61,7 @@ namespace BitShuva
             bundles.Add(new StyleBundle("~/bundles/app-styles")
                 .Include(new[]
                 {
-                    "~/Content/styles/app/*.css",
+                    "~/Content/styles/app/*.min.css",
                     "~/Content/styles/nprogress.css"
                 }));
 

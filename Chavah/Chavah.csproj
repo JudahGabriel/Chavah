@@ -325,6 +325,12 @@
     <Content Include="Content\styles\app\edit.artist.min.css">
       <DependentUpon>edit.artist.css</DependentUpon>
     </Content>
+    <Content Include="Content\styles\app\footer.css">
+      <DependentUpon>footer.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\footer.min.css">
+      <DependentUpon>footer.css</DependentUpon>
+    </Content>
     <Content Include="Content\styles\app\header.css">
       <DependentUpon>header.less</DependentUpon>
     </Content>
@@ -460,6 +466,8 @@
     <Content Include="Content\styles\app\header.less" />
     <Content Include="Content\styles\app\signIn.less" />
     <Content Include="Content\styles\bootstrap.flatly.tweaks.less" />
+    <Content Include="Content\styles\app\footer.less" />
+    <None Include="Properties\PublishProfiles\bitshuva.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />
     <Content Include="ReadMe.txt" />

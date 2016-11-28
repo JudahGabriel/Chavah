@@ -38,5 +38,9 @@
   {
     "outputFile": "Content/styles/bootstrap.flatly.css",
     "inputFile": "Content/styles/bootstrap.flatly.less"
+  },
+  {
+    "outputFile": "Content/styles/app/footer.css",
+    "inputFile": "Content/styles/app/footer.less"
   }
 ]
