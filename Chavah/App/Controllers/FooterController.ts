@@ -20,7 +20,7 @@
             private signInApi: SignInService,
             private stationIdentifier: StationIdentifierService,
             private appNav: AppNavService,
-            $scope: ng.IScope) {
+            private $scope: ng.IScope) {
 
             var audio = <HTMLAudioElement>document.querySelector("audio");
             this.audioPlayer.initialize(audio);
@@ -28,7 +28,7 @@
 
             this.audioPlayer.status
                 .debounce(100)
-                .subscribe(() => $scope.$applyAsync()); // Notify the scope when the audio status changes.
+                .subscribe(status => this.audioStatusChanged(status)); // Notify the scope when the audio status changes.
         }
 
         toggleVolumnShown() {
@@ -56,7 +56,7 @@
             }
         }
 
-        private songRequestDialogCompleted(songOrNull: Song) {
+        songRequestDialogCompleted(songOrNull: Song) {
             if (songOrNull) {
                 this.audioPlayer.pause();
 
@@ -77,6 +77,14 @@
             } else {
                 this.songBatch.playNext();
             }
+        }
+
+        audioStatusChanged(status: AudioStatus) {
+            if (status === AudioStatus.Ended) {
+                this.playNextSong();
+            }
+
+            this.$scope.$applyAsync();
         }
     }
 
