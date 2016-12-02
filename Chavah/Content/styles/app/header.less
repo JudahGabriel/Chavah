@@ -7,7 +7,8 @@ header {
     background-color: @brand-primary;
     box-shadow: 0 1px 3px 1px @shadow-color;
     white-space: nowrap;
-    z-index: 1;
+    z-index: 10;
+    height: 100px;
 
     a, .btn-link {
         color: @text-color-light;
@@ -20,20 +21,29 @@ header {
     .left-decor {
         margin-left: 30px;
         margin-right: 30px;
-        max-height: 88px;
+        max-height: 97px;
         box-shadow: -2px 0 8px 1px rgba(29, 38, 55, 0.9), 2px 0 8px 1px rgba(29, 38, 55, 0.9);
+    }
+
+    .login {
+        @media (max-width: @screen-xs-max) {
+            position: absolute;
+        }
     }
 
     .title {
         color: @text-color-light;
         font-size: 42px;
         text-shadow: 0 2px 1px #1d2637, 2px 0 1px #1d2637, -2px 0 1px #1d2637, 0 -2px 1px #1d2637;
-        font-family: 'EB Garamond', serif;
+        font-family: @title-font;
+
+        @media (max-width: @screen-xs-max) {
+            padding-left: 15px;
+        }
     }
-
-
+    
     .title .hebrew {
-        font-size: 32px;
+        font-size: 48px;
     }
 
     .subtitle {
@@ -52,75 +62,6 @@ header {
             text-shadow: 1px 1px 2px #eeeeee, -1px -1px 2px #eeeeee, 1px -1px 2px #eeeeee, -1px 1px 2px #eeeeee;
             padding-left: 2px;
             padding-top: 3px;
-        }
-    }
-
-    .song-controls {
-        padding-top: 5px;
-        padding-bottom: 5px;
-        margin-top: 10px;
-        background-color: #1d2637;
-        border-top: 2px solid @text-color-light;
-
-        button {
-            width: 60px;
-            height: 60px;
-            border: none;
-            transition: all ease-in-out 0.2s;
-            color: white;
-            font-size: 18px;
-            background-color: #1d2637;
-            padding-left: 24px;
-
-            &:hover {
-                background-color: #11161f;
-            }
-
-            .fa {
-                text-shadow: 2px 0 1px #0b0f16, 0 2px 1px #0b0f16, -2px 0 1px #0b0f16, 0 -2px 1px #0b0f16;
-            }
-        }
-
-        .volume-slider {
-            width: 100px;
-            display: inline-block;
-        }
-
-        .nav-pills {
-            display: inline-block;
-            margin-bottom: -28px;
-            font-size: 26px;
-            font-family: 'EB Garamond', serif;
-
-            li {
-                transition: all ease-in-out 0.2s;
-
-                &.active {
-                    border-bottom: 2px solid @text-color-light;
-                    background-color: #2f3d58;
-
-                    a {
-                        color: @text-color-light;
-                    }
-                }
-
-                &:hover {
-                    transition: all ease-in-out 0.2s;
-                    background-color: #2f3d58;
-
-                    a {
-                        transition: all ease-in-out 0.2s;
-                        color: @text-color-light;
-                    }
-                }
-
-                a {
-                    transition: all ease-in-out 0.2s;
-                    color: #415479;
-                    background-color: transparent;
-                    height: 60px;
-                }
-            }
         }
     }
 }

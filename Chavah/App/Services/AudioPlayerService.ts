@@ -1,12 +1,14 @@
 ﻿namespace BitShuva.Chavah {
     export class AudioPlayerService {
-        status = new Rx.BehaviorSubject(AudioStatus.Paused);
-        song = new Rx.BehaviorSubject<Song | null>(null);
-        audio: HTMLAudioElement;
-        playedTimeText: string;
-        remainingTimeText: string;
-        playedTimePercentage: number;
+        readonly status = new Rx.BehaviorSubject(AudioStatus.Paused);
+        readonly song = new Rx.BehaviorSubject<Song | null>(null);
+        readonly songCompleted = new Rx.BehaviorSubject<Song | null>(null);
+        readonly playedTimeText = new Rx.BehaviorSubject<string>("");
+        readonly remainingTimeText = new Rx.BehaviorSubject<string>("");
+        readonly playedTimePercentage = new Rx.BehaviorSubject<number>(0);
+        readonly duration = new Rx.BehaviorSubject<number>(0);
         playedSongs: Song[] = [];
+        private audio: HTMLAudioElement;
 
         private lastPlayedTime = 0;
 
@@ -21,7 +23,7 @@
                 this.audio = audio;
                 
                 //this.audio.addEventListener("abort", (args) => this.aborted(args));
-                this.audio.addEventListener("ended", () => this.status.onNext(AudioStatus.Ended));
+                this.audio.addEventListener("ended", () => this.ended());
                 this.audio.addEventListener("error", (args) => this.erred(args));
                 this.audio.addEventListener("pause", () => this.status.onNext(AudioStatus.Paused));
                 this.audio.addEventListener("play", () => this.status.onNext(AudioStatus.Playing));
@@ -41,6 +43,9 @@
             var currentSong = this.song.getValue();
             if (currentSong) {
                 this.playedSongs.unshift(currentSong);
+                if (this.playedSongs.length > 3) {
+                    this.playedSongs.length = 3;
+                }
             }
 
             this.song.onNext(song);
@@ -49,7 +54,7 @@
 
         playNewUri(uri: string) {
             if (this.audio) {
-                this.audio.src = '';
+                this.audio.src = "";
                 if (uri) {
                     this.audio.src = uri;
                     this.audio.load();
@@ -132,6 +137,15 @@
             console.log("Audio erred", this.audio.currentSrc, args);
         }
 
+        private ended() {
+            var currentSong = this.song.getValue();
+            if (this.audio && currentSong && this.audio.src === encodeURI(currentSong.uri)) {
+                this.songCompleted.onNext(currentSong);
+            }
+
+            this.status.onNext(AudioStatus.Ended);
+        }
+
         private stalled(args: any) {
             this.status.onNext(AudioStatus.Stalled);
             console.log("Audio stalled, unable to stream in audio data.", this.audio.currentSrc, args);
@@ -144,15 +158,16 @@
             if (currentTimeHasChanged) {
                 this.lastPlayedTime = currentTimeFloored;
                 var duration = this.audio.duration;
+                this.duration.onNext(duration);
 
                 var currentPositionDate = new Date().setMinutes(0, currentTimeFloored);
                 var currentPosition = moment(<any>currentPositionDate);
                 var remainingTimeDate = new Date().setMinutes(0, duration - currentTimeFloored);
                 var remainingTime = moment(<any>remainingTimeDate);
 
-                this.playedTimeText = currentPosition.format("m:ss");
-                this.remainingTimeText = remainingTime.format("m:ss");
-                this.playedTimePercentage = Math.floor((100 / duration) * currentTimeFloored);
+                this.playedTimeText.onNext(currentPosition.format("m:ss"));
+                this.remainingTimeText.onNext(remainingTime.format("m:ss"));
+                this.playedTimePercentage.onNext((100 / duration) * currentTimeFloored);
             }
         }
     }

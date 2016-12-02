@@ -2,19 +2,19 @@
     export class HeaderController {
         
         static $inject = [
-            "signInApi"
+            "accountApi"
         ];
 
         constructor(            
-            private signInApi: SignInService) {
+            private accountApi: AccountService) {
         }
 
         get currentUserName(): string {
-            return this.signInApi.currentUser ? this.signInApi.currentUser.email : "";
+            return this.accountApi.currentUser ? this.accountApi.currentUser.email : "";
         }
 
         signOut() {
-            this.signInApi.signOut()
+            this.accountApi.signOut()
                 .then(() => window.location.reload());
         }
     }

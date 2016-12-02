@@ -8,15 +8,15 @@ namespace BitShuva.Models
 {
     public class SignInResult
     {
-        public SignInStatus status { get; set; }
-        public string errorMessage { get; set; }
+        public SignInStatus Status { get; set; }
+        public string ErrorMessage { get; set; }
 
         /// <summary>
         /// Gets the JSON web token generated upon successful sign in. This will be null otherwise.
         /// </summary>
-        public string jsonWebToken { get; set; }
+        public string JsonWebToken { get; set; }
 
-        public string email { get; set; }
-        public List<string> roles { get; set; } = new List<string>();
+        public string Email { get; set; }
+        public List<string> Roles { get; set; } = new List<string>();
     }
 }

@@ -12,10 +12,10 @@ namespace BitShuva.Models
         {
         }
 
-        public UserProfile(User user, List<string> favoriteSongNames)
+        public UserProfile(ApplicationUser user, List<string> favoriteSongNames)
 	    {
             this.DislikedSongCount = user.Preferences.Songs.Count(s => s.DislikeCount > 0);
-            this.EmailAddress = user.EmailAddress;
+            this.EmailAddress = user.Email;
             this.FavoriteAlbums = user.Preferences
                 .Albums
                 .OrderByDescending(a => a.LikeCount - a.DislikeCount)

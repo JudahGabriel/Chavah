@@ -2,11 +2,13 @@
     export class AppNavService {
 
         static $inject = [
+            "templatePaths",
             "$location",
             "$uibModal"
         ];
 
         constructor(
+            private templatePaths: TemplatePaths,
             private $location: ng.ILocationService,
             private $uibModal: ng.ui.bootstrap.IModalService) {
 
@@ -42,8 +44,9 @@
 
         showSongRequestDialog(): ng.ui.bootstrap.IModalServiceInstance {
             var requestSongDialog = this.$uibModal.open({
-                controller: "RequestController as vm",
-                templateUrl: "../Views/RequestSong.html"
+                controller: "RequestSongController as vm",
+                templateUrl: this.templatePaths.songRequestModal,
+                windowClass: "request-song-modal"
             });
 
             return requestSongDialog;

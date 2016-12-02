@@ -10,11 +10,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Optional;
+using Microsoft.AspNet.Identity.Owin;
+using BitShuva.Services;
 
 namespace BitShuva.Controllers
 {
     [RoutePrefix("api/users")]
-    public class UsersController : UserContextController
+    [JwtSession]
+    public class UsersController : RavenApiController
     {
         static DateTime startTime = DateTime.UtcNow;
         static ConcurrentDictionary<string, DateTime> allUsers = new ConcurrentDictionary<string, DateTime>();
@@ -52,11 +55,11 @@ namespace BitShuva.Controllers
         [Route("ping")]
         public async Task Ping()
         {
-            var user = await this.GetLoggedInUserOrNull();
+            var user = await this.GetCurrentUser();
             var sessionId = "";
-            if (user != null && !string.IsNullOrEmpty(user.EmailAddress))
+            if (user != null && !string.IsNullOrEmpty(user.Email))
             {
-                sessionId = user.EmailAddress;
+                sessionId = user.Email;
             }
             else
             {
@@ -86,10 +89,9 @@ namespace BitShuva.Controllers
         }
         
         [HttpGet]
-        [Authorize]
         public async Task<UserProfile> GetUserProfile()
         {
-            var user = await this.GetLoggedInUserOrNull();
+            var user = await this.GetCurrentUser();
             if (user != null)
             {
                 // So that we don't inadvertently change the user in the DB.
@@ -109,22 +111,6 @@ namespace BitShuva.Controllers
             }
 
             return null;
-        }
-
-        [HttpGet]
-        [Route("GetUserWithEmail")]
-        public async Task<ApplicationUser> GetUserWithEmail(string email)
-        {
-            var user = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + email);
-            if (user != null)
-            {
-                // Remove the user from the session, as we're going to clear out the password hash for security reasons before sending it to the user.
-                DbSession.Advanced.Evict(user);
-                user.PasswordHash = "";
-                user.SecurityStamp = "";
-            }
-
-            return user;
         }
     }
 }

@@ -28,7 +28,7 @@
         album: string;
         artist: string;
         communityRank: number;
-        communityRankStanding: number;
+        communityRankStanding: CommunityRankStanding;
         id: string;
         albumArtUri: string;
         totalPlays: number;
@@ -39,6 +39,7 @@
         tags: string[];
         artistImages: string[];
         purchaseUri: string;
+        reasonPlayed: SongPick;
     }
 
     export interface IUpDownVotes {
@@ -88,5 +89,23 @@
         mutedColor: string;
         textShadowColor: string;
         isVariousArtists: boolean;
+    }
+
+    export interface IRegisterResults {
+        success: boolean;
+        errorMessage: string | null;
+        isAlreadyRegistered: boolean;
+        needsConfirmation: boolean;
+    }
+
+    export interface IConfirmEmailResult {
+        success: boolean;
+        errorMessage: string;
+    }
+
+    export interface IResetPasswordResult {
+        success: boolean;
+        errorMessage: string;
+        invalidEmail: boolean;
     }
 }

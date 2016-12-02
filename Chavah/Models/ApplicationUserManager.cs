@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using BitShuva.Services;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
@@ -29,6 +30,7 @@ namespace BitShuva.Models
             var dbSession = context.Get<IAsyncDocumentSession>();
             var userStore = new UserStore<ApplicationUser>(dbSession);
             var manager = new ApplicationUserManager(userStore);
+            manager.EmailService = new SendGridEmailService();
             manager.DbSession = dbSession;
 
             // Configure validation logic for usernames

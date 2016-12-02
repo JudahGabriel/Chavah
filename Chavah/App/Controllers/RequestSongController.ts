@@ -1,52 +1,41 @@
 ﻿namespace BitShuva.Chavah {
     export class RequestSongController {
         selectedSongRequest: Song | null;
-        songRequestMatches: Song[] = [];
         songRequestText = "";
 
         static $inject = [
             "songApi",
-            "$uibModal",
-            "$scope"
+            "$uibModalInstance",
+            "$q"
         ];
 
         constructor(
             private songApi: SongApiService,
-            private $uibModal: ng.ui.bootstrap.IModalServiceInstance,
-            $scope: ng.IScope) {
-
-            $scope.$watch(() => this.songRequestText, newVal => this.getSongMatches(newVal));
+            private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
+            private $q: ng.IQService) {
         }
 
-        getSongMatches(searchText: string) {
-            if (searchText && searchText.length > 2) {
-                this.songApi.getSongMatches(searchText)
-                    .then(songs => {
-                        var isWaitingOnThisQuery = this.songRequestText === searchText;
-                        if (isWaitingOnThisQuery) {
-                            this.songRequestMatches = songs;
-                        }
-                    });
-            }
+        getSongMatches(searchText: string): ng.IPromise<Song[]> {
+            var maxSongResults = 10;
+            var deferred = this.$q.defer<Song[]>();
+            this.songApi.getSongMatches(searchText)
+                .then(results => deferred.resolve(results.slice(0, maxSongResults)))
+                .catch(error => deferred.reject(error));
+            return deferred.promise;
+        }
+
+        songChosen(song: Song) {
+            this.selectedSongRequest = song;
         }
 
         requestSelectedSong() {
-            var selectedSong = this.selectedSongRequest;
-            this.$uibModal.close(selectedSong);
-        }
-
-        songRequestMatchClicked(song: Song) {
-            this.selectedSongRequest = song;
-            this.songRequestText = `${song.artist} - ${song.name}`;
-            this.songRequestMatches.length = 0;
-        }
-
-        resetSelectedSongRequest() {
-            this.selectedSongRequest = null;
+            if (this.selectedSongRequest) {
+                this.$uibModalInstance.close(this.selectedSongRequest);
+            }
         }
 
         close() {
-            this.$uibModal.close();
+            this.$uibModalInstance.close(null);
         }
     }
 

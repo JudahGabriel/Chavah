@@ -1,13 +1,21 @@
-﻿.now-playing-page {
+﻿@import "../variables.less";
+
+.now-playing-page {
     
     .songs-container {
-        position: absolute;
+        /*position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        bottom: 0;
+        bottom: 0;*/
         width: 50%;
         margin: auto;
+        height: 370px;
+
+        @media (max-width: @screen-xs-max) {
+            height: 290px;
+            width: 75%;
+        }
     }
 
     .song {
@@ -22,6 +30,12 @@
         transform-style: preserve-3d;
         perspective: 50em;
         cursor: pointer;
+
+        @widthOnXs: 250px;
+        @media (max-width: @screen-xs-max) {
+            top: 20px;
+            min-width: @widthOnXs;
+        }
         
         &:nth-child(1) {
             z-index: 5;
@@ -31,26 +45,43 @@
 	    &:nth-child(2) {
             z-index: 4;
             transform: scale(.9) translateX(-50px) translateY(10px);
+            opacity: .9;
 	    }
 
 	    &:nth-child(3) {
             z-index: 3;
             transform: scale(.8) translateX(-100px);
+            opacity: .7;
         }
 
         &:nth-child(4) {
             z-index: 2;
             transform: scale(.7) translateX(-160px);
+            opacity: .5;
+
+            @media (max-width: @screen-xs-max) {
+                display: none;
+            }
         }
 
         &:nth-child(5) {
             z-index: 1;
             transform: scale(.6) translateX(-240px);
+            opacity: .3;
+
+            @media (max-width: @screen-xs-max) {
+                display: none;
+            }
         }
         
         &:nth-child(6) {
             z-index: 0;
             transform: scale(.5) translateX(-300px);
+            opacity: .1;
+
+            @media (max-width: @screen-xs-max) {
+                display: none;
+            }
         }
 
         &.ng-leave-active {
@@ -61,16 +92,92 @@
         &:hover:not(:first-child) {
             margin-left: -150px;
             transform: rotateZ(-5deg);
+            opacity: 1;
+
+            .song-info {
+                display: block;
+                opacity: .8;
+            }
+        }
+
+        &.ng-enter-active {
+            opacity: 0;
+        }
+
+        &.ng-enter {
+            opacity: 1;
         }
 
         img {
-            height: 300px;
+            width: 300px;
+
+            @media (max-width: @screen-xs-max) {
+                width: @widthOnXs;
+            }
         }
 
         .song-info {
+            position: absolute;
+            bottom: 0;
+            padding: 5px;
+            transition: all .2s linear;
+            opacity: 0;
             padding-top: 10px;
-            max-width: 300px;
+            width: 100%;
             white-space: normal;
         }
 	}
+
+    .left-pane, .right-pane {
+        padding: 20px;
+    }
+
+    .right-pane {
+        transform: translateX(-40px);
+    }
+
+    .song-list-title {
+        text-transform: lowercase;
+        text-align: center;
+        opacity: .7;
+    }
+
+    .expander {
+        opacity: .9;
+
+        .panel-heading {
+            cursor: pointer;
+            transition: all .2s linear;
+            min-height: 60px;
+            background-color: @brand-background;
+            color: @text-color-light;
+            padding-top: 15px;
+
+            .panel-title {
+                font-size: 24px;
+
+                .fa {
+                    font-size: 36px;
+                    margin-top: -2px;
+                }
+            }
+        }
+
+        .panel-body {
+            background-color: @brand-background;
+            color: @text-color-light;
+        }
+    }
+
+    .lyrics-expander {
+        pre {
+            font-family: @title-font;
+            font-size: 20px;
+        }
+
+        .submit-lyrics {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    }
 }

@@ -58,10 +58,9 @@ namespace BitShuva.Controllers
 
             return null;
         }
-
-        [Authorize]
+        
         [HttpPost]
-        [Route("request/{*songId}")]
+        [Route("requestsong")]
         public async Task RequestSong(string songId)
         {
             var user = await this.GetLoggedInUserOrNull();

@@ -2,12 +2,14 @@
     export class FooterController {
 
         volumeShown = false;
+        volume = 1;
 
         static $inject = [
             "audioPlayer",
             "songBatch",
+            "likeApi",
             "songRequestApi",
-            "signInApi",
+            "accountApi",
             "stationIdentifier",
             "appNav",
             "$scope"
@@ -16,19 +18,79 @@
         constructor(
             private audioPlayer: AudioPlayerService,
             private songBatch: SongBatchService,
+            private likeApi: LikeApiService,
             private songRequestApi: SongRequestApiService,
-            private signInApi: SignInService,
+            private accountApi: AccountService,
             private stationIdentifier: StationIdentifierService,
             private appNav: AppNavService,
             private $scope: ng.IScope) {
 
             var audio = <HTMLAudioElement>document.querySelector("audio");
             this.audioPlayer.initialize(audio);
-            this.playNextSong();
+            this.volume = audio.volume;
 
             this.audioPlayer.status
                 .debounce(100)
                 .subscribe(status => this.audioStatusChanged(status)); // Notify the scope when the audio status changes.
+
+            // Update the track time. We don't use angular for this, because of the constant (per second) update.
+            this.audioPlayer.playedTimeText
+                .distinctUntilChanged()
+                .subscribe(result => $(".footer .track-time").text(result));
+            this.audioPlayer.duration
+                .distinctUntilChanged()
+                .subscribe(result => $(".footer .track-duration").text(this.getFormattedTime(result)));            
+            this.audioPlayer.status
+                .distinctUntilChanged()
+                .subscribe(status => $(".footer .audio-status").text(this.getAudioStatusText(status)));
+            this.audioPlayer.playedTimePercentage
+                .distinctUntilChanged()
+                .subscribe(percent => $(".footer .trackbar").width(percent + "%"));
+
+            $scope.$watch(() => this.volume, () => audio.volume = this.volume);
+        }
+
+        get likesCurrentSong(): boolean {
+            var currentSong = this.audioPlayer.song.getValue();
+            if (currentSong) {
+                return currentSong.songLike === SongLike.Liked;
+            }
+
+            return false;
+        }
+
+        get dislikesCurrentSong(): boolean {
+            var currentSong = this.audioPlayer.song.getValue();
+            if (currentSong) {
+                return currentSong.songLike === SongLike.Disliked;
+            }
+
+            return false;
+        }
+
+        get likeText(): string {
+            if (this.dislikesCurrentSong) {
+                return "You have already liked this song. Chavah is playing it more often."
+            }
+            return "Like this song. Chavah will play this song, and others like it, less often.";
+        }
+
+        get dislikeText(): string {
+            if (this.dislikesCurrentSong) {
+                return "You have already disliked this song. Chavah is playing it less often."
+            }
+            return "Dislike this song. Chavah will play this song, and others like it, less often.";
+        }
+
+        get volumeIconClass(): string {
+            if (this.volume > .95) {
+                return "fa-volume-up";
+            } 
+            if (this.volume < .05) {
+                return "fa-volume-off";
+            }
+
+            return "fa-volume-down";
         }
 
         toggleVolumnShown() {
@@ -47,20 +109,38 @@
             }
         }
 
+        dislikeSong() {
+            var currentSong = this.audioPlayer.song.getValue();
+            if (currentSong && currentSong.songLike !== SongLike.Disliked) {
+                currentSong.songLike = SongLike.Disliked;
+                this.likeApi.dislikeSong(currentSong.id)
+                    .then(rank => currentSong!.communityRank = rank);
+                this.songBatch.playNext();
+            }
+        }
+
+        likeSong() {
+            var currentSong = this.audioPlayer.song.getValue();
+            if (currentSong && currentSong.songLike !== SongLike.Liked) {
+                currentSong.songLike = SongLike.Liked;
+                this.likeApi.likeSong(currentSong.id)
+                    .then(rank => currentSong!.communityRank = rank);
+            }
+        }
+
         requestSong() {
-            if (this.signInApi.isSignedIn) {
+            if (this.accountApi.isSignedIn) {
                 this.appNav.showSongRequestDialog()
-                    .result.then((songOrNull: Song) => this.songRequestDialogCompleted(songOrNull));
+                    .result.then((song: Song | null) => this.songRequestDialogCompleted(song));
             } else {
                 this.appNav.signIn();
             }
         }
 
-        songRequestDialogCompleted(songOrNull: Song) {
-            if (songOrNull) {
+        songRequestDialogCompleted(song: Song | null) {
+            if (song) {
                 this.audioPlayer.pause();
-
-                this.songRequestApi.requestSong(songOrNull)
+                this.songRequestApi.requestSong(song)
                     .then(() => this.playNextSong());
             }
         }
@@ -85,6 +165,25 @@
             }
 
             this.$scope.$applyAsync();
+        }
+
+        getFormattedTime(totalSeconds: number): string {
+            var minutes = Math.floor(totalSeconds / 60);
+            var seconds = Math.floor(totalSeconds - (minutes * 60));
+            var zeroPaddedSeconds = seconds < 10 ? "0" : "";
+            return `${minutes}:${zeroPaddedSeconds}${seconds}`;
+        }
+
+        getAudioStatusText(status: AudioStatus): string {
+            switch (status) {
+                case AudioStatus.Aborted: return "Unable to play";
+                case AudioStatus.Buffering: return "Buffering...";
+                case AudioStatus.Ended: return "Ended...";
+                case AudioStatus.Erred: return "Encountered an error";
+                case AudioStatus.Paused: return "Paused";
+                case AudioStatus.Playing: return "";
+                case AudioStatus.Stalled: return "Stalled...";
+            }
         }
     }
 

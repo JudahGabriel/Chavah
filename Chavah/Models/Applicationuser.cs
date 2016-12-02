@@ -27,6 +27,8 @@ namespace BitShuva.Models
         public DateTime LastSeen { get; set; }
         public int TotalSongRequests { get; set; }
         public bool RequiresPasswordReset { get; set; }
+        public List<string> RecentSongIds { get; set; } = new List<string>();
+        public string Jwt { get; set; }
 
         public ApplicationUser Clone()
         {

@@ -14,8 +14,12 @@
             return this.httpApi.query("/api/songs/batch", null, SongApiService.songListConverter);
         }
 
-        getSongById(id: string): ng.IPromise<Song> {
-            return this.httpApi.query("/api/songs/id", { songId: id }, SongApiService.songConverter);
+        getSongById(id: string, songPickReason?: SongPick): ng.IPromise<Song> {
+            var task = this.httpApi.query("/api/songs/id", { songId: id }, SongApiService.songConverter);
+            if (songPickReason != null) {
+                task.then(song => song.reasonPlayed = songPickReason);
+            }
+            return task;
         }
 
         getSongByArtistAndAlbum(artist: string, album: string): ng.IPromise<Song> {
@@ -53,6 +57,40 @@
             };
 
             return this.httpApi.query(url, args, SongApiService.songListConverter);
+        }
+
+        getTrendingSongs(count: number): ng.IPromise<Song[]> {
+            var args = {
+                count: count
+            };
+            return this.httpApi.query("/api/songs/trending", args, SongApiService.songListConverter);
+        }
+
+        getPopularSongs(count: number): ng.IPromise<Song[]> {
+            var args = {
+                count: count
+            };
+            return this.httpApi.query("/api/songs/top", args, SongApiService.songListConverter);
+        }
+
+        getLikes(count: number): ng.IPromise<Song[]> {
+            var args = {
+                count: count
+            };
+
+            return this.httpApi.query("/api/songs/getRandomLikedSongs", args, SongApiService.songListConverter);
+        }
+
+        getRecentPlays(count: number): ng.IPromise<Song[]> {
+            var args = {
+                count: count
+            };
+
+            return this.httpApi.query("/api/songs/getRecentPlays", args, SongApiService.songListConverter);
+        }
+
+        songCompleted(songId: string): ng.IPromise<any> {
+            return this.httpApi.post(`/api/songs/completed?songId=${songId}`, null);
         }
 
         private static songListConverter(songs: Server.ISong[]): Song[] {

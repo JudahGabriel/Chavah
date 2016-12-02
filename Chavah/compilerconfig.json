@@ -42,5 +42,13 @@
   {
     "outputFile": "Content/styles/app/footer.css",
     "inputFile": "Content/styles/app/footer.less"
+  },
+  {
+    "outputFile": "Content/styles/app/songList.css",
+    "inputFile": "Content/styles/app/songList.less"
+  },
+  {
+    "outputFile": "Content/styles/app/requestSongModal.css",
+    "inputFile": "Content/styles/app/requestSongModal.less"
   }
 ]

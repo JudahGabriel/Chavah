@@ -14,7 +14,7 @@ using System.Web.Http;
 
 namespace BitShuva.Controllers
 {
-    [ParseJwtSession]
+    [JwtSession]
     [RoutePrefix("api/albums")]
     public class AlbumsController : RavenApiController
     {
@@ -83,7 +83,7 @@ namespace BitShuva.Controllers
         [HttpGet]
         public async Task<IList<Album>> GetAlbumsForSongs(string songIdsCsv)
         {
-            const int maxAlbumArtFetch = 15;
+            const int maxAlbumArtFetch = 30;
             var songIds = songIdsCsv.Split(',').Take(maxAlbumArtFetch);
             var songs = await DbSession.LoadAsync<Song>(songIds);
             var albumNames = songs

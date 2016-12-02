@@ -10,13 +10,21 @@
         static $inject = [
             "audioPlayer",
             "songApi",
-            "songRequestApi"
+            "songRequestApi",
+            "accountApi"
         ];
 
         constructor(
             private audioPlayer: AudioPlayerService,
             private songApi: SongApiService,
-            private songRequestApi: SongRequestApiService) {
+            private songRequestApi: SongRequestApiService,
+            private accountApi: AccountService) {
+
+            // Listen for when we sign in. When that happens, we want to refresh our song batch.
+            // Refreshing the batch is needed to update the song like statuses, etc. of the songs in the batch.
+            accountApi.signedIn
+                .distinctUntilChanged()
+                .subscribe(signedIn => this.signedInChanged(signedIn));
         }
 
         playNext() {
@@ -51,6 +59,15 @@
                             .filter(s => !this.songRequestApi.isSongPendingRequest(s.id));
                         this.songsBatch.onNext(existingSongBatch.concat(freshSongs));
                 });
+        }
+
+        private signedInChanged(isSignedIn: boolean) {
+            var hasBatchSongs = this.songsBatch.getValue().length > 0;
+            if (isSignedIn && hasBatchSongs) {
+                // Discard the current batch and fetch a fresh batch.
+                this.songsBatch.onNext([]);
+                this.fetchSongBatch();
+            }
         }
     }
 

@@ -1,7 +1,8 @@
 ﻿<header ng-controller="HeaderController as vm">
-    <img class="left-decor pull-left" src="../../Content/images/LeftDecor.jpg" />
-    <div class="pull-right">
-        <!-- Single button -->
+    <img class="left-decor pull-left hidden-xs" src="../../Content/images/LeftDecor.jpg" />
+    <div class="pull-right login">
+        <br class="visible-xs-block visible-sm-block" />
+        <br class="visible-xs-block visible-sm-block" />
         <div class="btn-group" ng-show="vm.currentUserName">
             <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <h4>
@@ -31,8 +32,13 @@
             </h4>
         </a>
     </div>
-    <div class="title">Chavah Messianic Radio <span class="hebrew">חוה רדיו</span></div>
-    <div class="subtitle">
+    <div class="title">
+        <a href="#/">
+            Chavah <span class="hidden-xs">Messianic</span> Radio
+        </a> 
+        <span class="hebrew">חוה</span>
+    </div>
+    <div class="subtitle hidden-xs">
         <span>internet radio for Yeshua's disciples</span> 
     </div>
 </header>

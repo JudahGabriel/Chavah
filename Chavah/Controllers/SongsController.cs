@@ -18,9 +18,84 @@ using BitShuva.Models.Indexes;
 namespace BitShuva.Controllers
 {
     [RoutePrefix("api/songs")]
-    [ParseJwtSession]
+    [JwtSession]
     public class SongsController : RavenApiController
     {
+        [HttpGet]
+        [Route("GetRecentPlays")]
+        public async Task<IEnumerable<Song>> GetRecentPlays(int count)
+        {
+            var user = await this.GetCurrentUser();
+            if (user == null)
+            {
+                return new Song[0];
+            }
+
+            var songs = await DbSession.LoadAsync<Song>(user.RecentSongIds.Take(count * 2));
+            return songs
+                .Where(s => s != null)
+                .Distinct(s => s.Id)
+                .Take(count)
+                .ToList();
+        }
+
+        [HttpGet]
+        [Route("GetRandomLikedSongs")]
+        public async Task<IEnumerable<Song>> GetRandomLikedSongs(int count)
+        {
+            var user = await this.GetCurrentUser();
+            if (user == null)
+            {
+                return new Song[0];
+            }
+
+            var likedSongIds = await this.DbSession
+                .Query<Like>()
+                .Customize(x => x.RandomOrdering())
+                .Customize(x => x.Include<Like>(l => l.SongId))
+                .Where(l => l.Status == LikeStatus.Like && l.UserId == user.Id)
+                .Select(l => l.SongId)
+                .Take(count)
+                .ToListAsync();
+
+            var loadedSongs = await this.DbSession.LoadAsync<Song>(likedSongIds);
+            return loadedSongs
+                .Where(s => s != null)
+                .Select(s => s.ToDto());
+        }
+
+        [HttpGet]
+        [Route("GetLikedSongs")]
+        public async Task<PagedList<Song>> GetLikedSongs(int skip, int take)
+        {
+            var user = await this.GetCurrentUser();
+            if (user == null)
+            {
+                return new PagedList<Song>();
+            }
+
+            var stats = default(RavenQueryStatistics);
+            var likedSongIds = await this.DbSession
+                .Query<Like>()
+                .Customize(x => x.Include<Like>(l => l.SongId))
+                .Statistics(out stats)
+                .Where(l => l.Status == LikeStatus.Like && l.UserId == user.Id)
+                .OrderByDescending(l => l.Date)
+                .Select(l => l.SongId)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            var songs = await this.DbSession.LoadAsync<Song>(likedSongIds);
+            return new PagedList<Song>
+            {
+                Items = songs.Where(s => s != null).ToArray(),
+                Skip = skip,
+                Take = take,
+                Total = stats.TotalResults
+            };
+        }
+
         [Route("admin/list/{skip}/{take}")]
         [HttpGet]
         public async Task<PagedList<Song>> AdminSongs(int skip, int take)
@@ -187,7 +262,7 @@ namespace BitShuva.Controllers
                 song = await PickRandomSong();
             }
 
-            return song.ToDto();
+            return song.ToDto(LikeStatus.None, songPick);
         }
 
         private async Task<Song> PickRankedSongForAnonymousUser(CommunityRankStanding rank)
@@ -198,7 +273,7 @@ namespace BitShuva.Controllers
                 .FirstOrDefaultAsync();
         }
 
-        [ParseJwtSession]
+        [JwtSession]
         [Route("batch")]
         public async Task<IEnumerable<Song>> GetBatch()
         {
@@ -233,11 +308,11 @@ namespace BitShuva.Controllers
         public async Task<Song> GetSongById(string songId)
         {
             var song = await this.DbSession.LoadAsync<Song>(songId);
-            return await this.GetSongDto(song);
+            return await this.GetSongDto(song, SongPick.YouRequestedSong);
         }
 
         [HttpPost]
-        [Route("completed/{*songId}")]
+        [Route("completed")]
         public async Task SongCompleted(string songId)
         {
             var user = await this.GetCurrentUser();
@@ -245,6 +320,13 @@ namespace BitShuva.Controllers
             {
                 user.TotalPlays++;
                 user.LastSeen = DateTime.UtcNow;
+                user.RecentSongIds.Insert(0, songId);
+                if (user.RecentSongIds.Count > 10)
+                {
+                    user.RecentSongIds = user.RecentSongIds
+                        .Take(10)
+                        .ToList();
+                }
             }
 
             var song = await this.DbSession.LoadAsync<Song>(songId);
@@ -261,7 +343,7 @@ namespace BitShuva.Controllers
                     .Customize(c => c.RandomOrdering())
                     .FirstAsync(s => s.Album == album && s.Artist == artist);
 
-            return await GetSongById(song.Id);
+            return await this.GetSongDto(song, SongPick.SongFromAlbumRequested);
         }
         
         [Route("album/{album}")]
@@ -272,7 +354,7 @@ namespace BitShuva.Controllers
                     .Customize(c => c.RandomOrdering())
                     .FirstAsync(s => s.Album == album);
 
-            return await GetSongById(song.Id);
+            return await GetSongDto(song, SongPick.SongFromAlbumRequested);
         }
 
         [Route("artist/{artist}")]
@@ -283,10 +365,10 @@ namespace BitShuva.Controllers
                 .Customize(c => c.RandomOrdering())
                 .FirstAsync(s => s.Artist == artist);
 
-            return await GetSongById(song.Id);
+            return await GetSongDto(song, SongPick.SongFromArtistRequested);
         }
 
-        [Route("trending/{count}")]
+        [Route("trending")]
         public async Task<IEnumerable<Song>> GetTrendingSongs(int count)
         {
             var recentLikedSongIds = await this.DbSession
@@ -297,7 +379,9 @@ namespace BitShuva.Controllers
                 .Select(l => l.SongId)
                 .Take(count + 10)
                 .ToListAsync();
-            var distinctSongIds = recentLikedSongIds.Distinct();
+            var distinctSongIds = recentLikedSongIds
+                .Distinct()
+                .Take(count);
 
             var matchingSongs = await this.DbSession.LoadAsync<Song>(distinctSongIds);
             return matchingSongs
@@ -305,7 +389,7 @@ namespace BitShuva.Controllers
                 .Select(s => s.ToDto());
         }
         
-        [Route("top/{count}")]
+        [Route("top")]
         public async Task<IEnumerable<Song>> GetTopSongs(int count)
         {
             var randomSpotInTop70 = new Random().Next(0, 70);
@@ -317,7 +401,7 @@ namespace BitShuva.Controllers
                 .Take(count)
                 .ToListAsync();
 
-            return songs.Select(s => s.ToDto(LikeStatus.None));
+            return songs.Select(s => s.ToDto(LikeStatus.None, SongPick.RandomSong));
         }
 
         [Route("heavenly70")]
@@ -328,6 +412,42 @@ namespace BitShuva.Controllers
                 .OrderByDescending(s => s.CommunityRank)
                 .Take(70)
                 .ToListAsync();
+        }
+
+        [HttpGet]
+        [Route("patchupsongranks")]
+        public async Task<string> PatchUpSongRanks(int skip = 0, int take = 500)
+        {
+            var communityRankStats = await this.DbSession
+                    .Query<Song, Songs_AverageCommunityRank>()
+                    .As<Songs_AverageCommunityRank.Results>()
+                    .FirstOrDefaultAsync();
+
+            var songs = await this.DbSession.Query<Song>()
+                .OrderBy(s => s.Name)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+            int patchedCount = 0;
+            foreach (var song in songs)
+            {
+                var averageSongRank = communityRankStats != null ? communityRankStats.RankAverage : 0;
+                var newStanding = Match.Value(song.CommunityRank)
+                    .With(v => v <= -5, CommunityRankStanding.VeryPoor)
+                    .With(v => v <= -1, CommunityRankStanding.Poor)
+                    .With(v => v <= averageSongRank * 2, CommunityRankStanding.Normal)
+                    .With(v => v <= averageSongRank * 4, CommunityRankStanding.Good)
+                    .With(v => v <= averageSongRank * 6, CommunityRankStanding.Great)
+                    .DefaultTo(CommunityRankStanding.Best)
+                    .Evaluate();
+                if (song.CommunityRankStanding != newStanding)
+                {
+                    patchedCount++;
+                    song.CommunityRankStanding = newStanding;
+                }
+            }
+
+            return $"Looked at {songs.Count}, patched {patchedCount}";
         }
 
         //[HttpPost]
@@ -379,7 +499,7 @@ namespace BitShuva.Controllers
                 song = await PickRandomSong();
             }
 
-            return song.ToDto(user.Preferences.GetLikeStatus(song));
+            return song.ToDto(user.Preferences.GetLikeStatus(song), songPick);
         }
 
         private async Task<Song> PickRandomSong()
@@ -438,7 +558,7 @@ namespace BitShuva.Controllers
                 .GetDislikedSongs()
                 .Select(s => s.Name)
                 .ToArray();
-
+            
             return await this.DbSession
                 .Query<Song>()
                 .Customize(x => x.RandomOrdering(Guid.NewGuid().ToString()))
@@ -446,7 +566,7 @@ namespace BitShuva.Controllers
                 .FirstOrDefaultAsync();
         }
 
-        private async Task<Song> GetSongDto(Song song)
+        private async Task<Song> GetSongDto(Song song, SongPick pickReason)
         {
             var user = await this.GetCurrentUser();
             if (user != null)
@@ -456,7 +576,7 @@ namespace BitShuva.Controllers
                     .Customize(c => c.Include<Like>(l => l.SongId))
                     .FirstOrDefaultAsync(s => s.UserId == user.Id && s.SongId == song.Id);
 
-                return song.ToDto(songLike.StatusOrNone());
+                return song.ToDto(songLike.StatusOrNone(), pickReason);
             }
 
             return song.ToDto();

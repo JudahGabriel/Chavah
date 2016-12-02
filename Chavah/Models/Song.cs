@@ -36,6 +36,9 @@ namespace BitShuva.Models
         public string Lyrics { get; set; }
         public int TotalPlays { get; set; }
 
+        [Raven.Imports.Newtonsoft.Json.JsonIgnore]
+        public SongPick ReasonPlayed { get; set; }
+
         public static Song FromFileName(string fileName)
         {
             Contract.Requires(fileName != null);
@@ -100,7 +103,7 @@ namespace BitShuva.Models
         /// </summary>
         /// <param name="likeStatus">The like status for the song.</param>
         /// <returns></returns>
-        public Song ToDto(LikeStatus likeStatus)
+        public Song ToDto(LikeStatus likeStatus, SongPick playedReason)
         {
             return new Song
             {
@@ -118,7 +121,8 @@ namespace BitShuva.Models
                 Genres = this.Genres,
                 Tags = this.Tags,
                 Lyrics = this.Lyrics,
-                TotalPlays = this.TotalPlays
+                TotalPlays = this.TotalPlays,
+                ReasonPlayed = playedReason
             };
         }
 
@@ -129,7 +133,7 @@ namespace BitShuva.Models
         /// <returns></returns>
         public Song ToDto()
         {
-            return ToDto(LikeStatus.None);
+            return ToDto(LikeStatus.None, SongPick.RandomSong);
         }
 
         public Uri GetSongShareLink()

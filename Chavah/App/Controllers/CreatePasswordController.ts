@@ -11,13 +11,13 @@
         static readonly minPasswordLength = 6;
 
         static $inject = [
-            "signInApi",
+            "accountApi",
             "appNav",
             "$routeParams"
         ];
 
         constructor(
-            private signInApi: SignInService,
+            private accountApi: AccountService,
             private appNav: AppNavService,
             $routeParams: ng.route.IRouteParamsService) {
 
@@ -37,7 +37,7 @@
 
             if (!this.isSaving) {
                 this.isSaving = true;
-                this.signInApi.createPassword(this.email, this.password)
+                this.accountApi.createPassword(this.email, this.password)
                     .then(() => this.hasCreatedPassword = true)
                     .finally(() => this.isSaving = false);
             }

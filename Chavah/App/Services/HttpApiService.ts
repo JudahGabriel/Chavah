@@ -80,7 +80,7 @@
         }
 
         private createJwtAuthHeader(): string {
-            var jwt = this.localStorageService.get<string>(SignInService.jwtKey);
+            var jwt = this.localStorageService.get<string>(AccountService.jwtKey);
             if (jwt) {
                 return `Bearer ${jwt}`;
             }

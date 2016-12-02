@@ -12,6 +12,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using BitShuva.Common;
 using BitShuva.Models;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace BitShuva.Controllers
 {
@@ -22,14 +23,28 @@ namespace BitShuva.Controllers
 
         private ApplicationUser currentUser;
 
+        protected override void Initialize(HttpControllerContext controllerContext)
+        {
+            base.Initialize(controllerContext);
+            DbSession = controllerContext.Request.GetOwinContext().Get<IAsyncDocumentSession>();
+        }
+
         public async override Task<HttpResponseMessage> ExecuteAsync(
             HttpControllerContext controllerContext,
             CancellationToken cancellationToken)
         {
-            using (DbSession = RavenContext.Db.OpenAsyncSession())
+            using (DbSession)
             {
                 var result = await base.ExecuteAsync(controllerContext, cancellationToken);
-                await DbSession.SaveChangesAsync();
+                try
+                {
+                    await DbSession.SaveChangesAsync();
+                    DbSession.Advanced.WaitForIndexesAfterSaveChanges(TimeSpan.FromSeconds(5), false);
+                }
+                catch (Exception error)
+                {
+                    await TryLogSaveChangesError(error);
+                }
 
                 return result;
             }
@@ -66,6 +81,22 @@ namespace BitShuva.Controllers
         protected HttpResponseException NewUnauthorizedException()
         {
             return new HttpResponseException(HttpStatusCode.Unauthorized);
+        }
+
+        private async Task TryLogSaveChangesError(Exception error)
+        {
+            using (var errorSession = RavenContext.Db.OpenAsyncSession())
+            {
+                try
+                {
+                    await ChavahLog.Error(errorSession, "Unable to save changes in controller.", error.ToString(), error);
+                    await errorSession.SaveChangesAsync();
+                }
+                catch(Exception)
+                {
+                    // Can't log the error? We're fsked. Eat it.
+                }
+            }
         }
     }
 }

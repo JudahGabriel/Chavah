@@ -1,32 +1,36 @@
 ﻿<section class="footer" ng-controller="FooterController as vm">
+    <div class="trackbar"></div>
     <div class="song-controls">
-        <button class="btn btn-primary btn-lg" ng-click="vm.playPause()">
-            <i class="fa" ng-class="{ 'fa-pause': !vm.isPaused(), 'fa-play': vm.isPaused() }"></i>
-        </button>
-        <button class="btn btn-primary btn-lg" ng-click="vm.playNextSong()" title="Skip this song, play something else">
-            <i class="fa fa-fast-forward"></i>
-        </button>
-        <button class="btn btn-primary btn-lg" title="Got a song request? Chavah will play whatever tune's on your mind." ng-click="vm.requestSong()">
-            <i class="fa fa-comment"></i>
-        </button>
-        <button class="btn btn-primary btn-lg" title="Like this song. Chavah will play this song, and others like it, less often.">
+        <div class="pull-left">
+            <div class="audio-status"></div>
+        </div>
+        <button class="btn btn-link btn-lg" ng-class="{ 'active': vm.dislikesCurrentSong }" uib-tooltip="{{vm.dislikeText}}" ng-click="vm.dislikeSong()">
             <i class="fa fa-thumbs-down"></i>
         </button>
-        <button class="btn btn-primary btn-lg" title="Like this song. Chavah will play this song, and others like it, more often.">
+        <button class="btn btn-link btn-lg" uib-tooltip="Got a song request? Chavah will play whatever tune's on your mind." ng-click="vm.requestSong()">
+            <i class="fa fa-comment"></i>
+        </button>
+        <button class="btn btn-link btn-lg" ng-click="vm.playPause()">
+            <i class="fa fa-2x" ng-class="{ 'fa-pause': !vm.isPaused(), 'fa-play': vm.isPaused() }"></i>
+        </button>
+        <button class="btn btn-link btn-lg" ng-click="vm.playNextSong()" uib-tooltip="Skip this song, play something else">
+            <i class="fa fa-fast-forward"></i>
+        </button>
+        <button class="btn btn-link btn-lg" ng-class="{ 'active': vm.likesCurrentSong }" uib-tooltip="{{vm.likeText}}" ng-click="vm.likeSong()">
             <i class="fa fa-thumbs-up"></i>
         </button>
-        <button class="btn btn-primary btn-lg" ng-click="vm.toggleVolumnShown()" data-toggle="button">
-            <i class="fa fa-volume-up"></i>
-        </button>
-        <input class="volume-slider" type="range" min="0" max="100" ng-show="vm.volumeShown" />
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-        <!--<ul class="nav nav-pills">
-            <li role="presentation" ng-class="{ active: vm.currentRoute === 0 }"><a href="#/nowplaying">Now playing</a></li>
-            <li role="presentation" ng-class="{ active: vm.currentRoute === 1 }"><a href="#/trending">Trending</a></li>
-            <li role="presentation" ng-class="{ active: vm.currentRoute === 2 }"><a href="#">Top</a></li>
-            <li role="presentation" ng-class="{ active: vm.currentRoute === 3 }"><a href="#">My likes</a></li>
-        </ul>-->
+        <div class="pull-right volume-and-track-time">
+            <span class="track-time-container">
+                <span class="track-time"></span> 
+                |
+                <span class="track-duration"></span>
+            </span>
+            <button class="btn btn-link" ng-click="vm.toggleVolumnShown()" data-toggle="button">
+                <i class="fa" ng-class="vm.volumeIconClass"></i>
+            </button>
+            <input class="volume-slider" type="range" min="0" step="0.1" max="1" ng-show="vm.volumeShown" ng-model="vm.volume" />
+        </div>
+        
     </div>
 </section>
 

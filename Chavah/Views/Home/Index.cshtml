@@ -11,9 +11,12 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        @*This allows fixed position elements to work properly*@ 
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
         <meta name="description" content="The very best Messianic Jewish and Hebrew Roots radio on the web" />
-        <meta name="keywords" content="messianic, jewish, radio, hebrew, roots, radio, chavah" />
+        <meta name="keywords" content="messianic jewish radio hebrew roots chavah christian music" />
 
         @* Fav icons *@
         <!--[if IE]>
@@ -87,7 +90,7 @@
 
         <!-- BEGIN TRACKJS -->
         <script type="text/javascript">window._trackJs = { token: '3f47a41e023149458b76ae8aa70bab84' };</script>
-        <script type="text/javascript" src="//d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="https://cdn.trackjs.com/releases/current/tracker.js"></script>
         <!-- END TRACKJS -->
 
         @Styles.Render("~/bundles/bootstrap-theme")
@@ -102,6 +105,8 @@
                 songId: "@(Model.Song != null ? Model.Song.Id : "")",
                 redirect: "@Model.Redirect",
                 userEmail: "@Model.UserEmail",
+                userRoles: "@string.Join(",", Model.UserRoles)".split(","),
+                jwt: "@Model.Jwt",
                 embed: @(Model.Embed ? bool.TrueString.ToLower() : bool.FalseString.ToLower())
             };
         </script>
@@ -132,6 +137,7 @@
         @Scripts.Render("~/bundles/fastclick")
         @Scripts.Render("~/bundles/rx-lite")
         @Scripts.Render("~/bundles/vibrant")
+        @Scripts.Render("~/bundles/tinycolor")
         @Scripts.Render("~/bundles/app")
 
         @* Used only in the admin. Loaded async after all the other scripts. *@

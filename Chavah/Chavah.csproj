@@ -245,10 +245,11 @@
     <Compile Include="Common\Match.cs" />
     <Compile Include="Common\Range.cs" />
     <Compile Include="Common\RavenNLogTarget.cs" />
-    <Compile Include="Common\ParseJwtSession.cs" />
+    <Compile Include="Common\JwtSession.cs" />
     <Compile Include="Common\RssActionResult.cs" />
     <Compile Include="Common\SessionToken.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\LegacyAccountController.cs" />
     <Compile Include="Controllers\AlbumsController.cs" />
     <Compile Include="Controllers\ArtistsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -273,6 +274,7 @@
     <Compile Include="Models\Artist.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\CommunityRankStanding.cs" />
+    <Compile Include="Models\ConfirmEmailResult.cs" />
     <Compile Include="Models\HomeViewModel.cs" />
     <Compile Include="Models\Indexes\Songs_AverageCommunityRank.cs" />
     <Compile Include="Models\Indexes\Songs_RankStandings.cs" />
@@ -285,6 +287,8 @@
     <Compile Include="Models\PagedList.cs" />
     <Compile Include="Models\Playlist.cs" />
     <Compile Include="Models\RecentUserSummary.cs" />
+    <Compile Include="Models\RegisterResults.cs" />
+    <Compile Include="Models\ResetPasswordResult.cs" />
     <Compile Include="Models\SignInResult.cs" />
     <Compile Include="Models\Song.cs" />
     <Compile Include="Models\SongPick.cs" />
@@ -298,27 +302,44 @@
     <Compile Include="Models\UserProfile.cs" />
     <Compile Include="Models\UserSongPreferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SendGridEmailService.cs" />
+    <Compile Include="Services\JsonWebTokenService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\Views\ConfirmEmail.html" />
     <Content Include="App\Views\CreatePassword.html" />
     <Content Include="App\Views\EditAlbum.html" />
     <Content Include="App\Views\EditArtist.html" />
     <Content Include="App\Views\Footer.html" />
     <Content Include="App\Views\ForgotPassword.html" />
     <Content Include="App\Views\Header.html" />
+    <Content Include="App\Views\MyLikes.html" />
     <Content Include="App\Views\NowPlaying.html" />
     <Content Include="App\Views\Password.html" />
+    <Content Include="App\Views\Popular.html" />
     <Content Include="App\Views\Profile.html" />
+    <Content Include="App\Views\RecentSongs.html" />
     <Content Include="App\Views\Register.html" />
-    <Content Include="App\Views\RequestSong.html" />
+    <Content Include="App\Views\RequestSongModal.html" />
+    <Content Include="App\Views\ResetPassword.html" />
     <Content Include="App\Views\SignIn.html" />
+    <Content Include="App\Views\SubmitSongEdit.html" />
     <Content Include="App\Views\Templates\ArtistList.html" />
+    <Content Include="App\Views\Templates\SongList.html" />
+    <Content Include="App\Views\Templates\SongRequestResult.html" />
     <Content Include="App\Views\Trending.html" />
     <Content Include="App\Views\UploadAlbum.html" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\soundEffects\SongRequest10.mp3" />
+    <Content Include="Content\soundEffects\SongRequest8.mp3" />
+    <Content Include="Content\soundEffects\SongRequest9.mp3" />
+    <Content Include="Content\soundEffects\StationId3.mp3" />
+    <Content Include="Content\soundEffects\StationId4.mp3" />
+    <Content Include="Content\soundEffects\StationId5.mp3" />
+    <Content Include="Content\soundEffects\StationId6.mp3" />
     <Content Include="Content\styles\app\edit.artist.css">
       <DependentUpon>edit.artist.less</DependentUpon>
     </Content>
@@ -343,17 +364,23 @@
     <Content Include="Content\styles\app\now.playing.min.css">
       <DependentUpon>now.playing.css</DependentUpon>
     </Content>
+    <Content Include="Content\styles\app\requestSongModal.css">
+      <DependentUpon>requestSongModal.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\requestSongModal.min.css">
+      <DependentUpon>requestSongModal.css</DependentUpon>
+    </Content>
     <Content Include="Content\styles\app\shared.css">
       <DependentUpon>shared.less</DependentUpon>
     </Content>
     <Content Include="Content\styles\app\shared.min.css">
       <DependentUpon>shared.css</DependentUpon>
     </Content>
-    <Content Include="Content\styles\app\signIn.css">
-      <DependentUpon>signIn.less</DependentUpon>
+    <Content Include="Content\styles\app\songList.css">
+      <DependentUpon>songList.less</DependentUpon>
     </Content>
-    <Content Include="Content\styles\app\signIn.min.css">
-      <DependentUpon>signIn.css</DependentUpon>
+    <Content Include="Content\styles\app\songList.min.css">
+      <DependentUpon>songList.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\app\upload.album.css">
       <DependentUpon>upload.album.less</DependentUpon>
@@ -464,9 +491,10 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="Content\styles\app\header.less" />
-    <Content Include="Content\styles\app\signIn.less" />
     <Content Include="Content\styles\bootstrap.flatly.tweaks.less" />
     <Content Include="Content\styles\app\footer.less" />
+    <Content Include="Content\styles\app\songList.less" />
+    <Content Include="Content\styles\app\requestSongModal.less" />
     <None Include="Properties\PublishProfiles\bitshuva.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />
@@ -502,6 +530,7 @@
     <Content Include="Scripts\nprogress.js" />
     <Content Include="Scripts\nprogress.min.js" />
     <Content Include="Scripts\rx.lite.js" />
+    <Content Include="Scripts\tinycolor.min.js" />
     <Content Include="Scripts\vibrant.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -525,7 +554,6 @@
     <Content Include="Scripts\jquery-2.2.4.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App\Common\" />
     <Folder Include="App_Data\" />
     <Folder Include="Views\Account\" />
     <Folder Include="Views\Admin\" />
@@ -539,15 +567,21 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="App\App.ts" />
+    <TypeScriptCompile Include="App\Common\TemplatePaths.ts" />
+    <TypeScriptCompile Include="App\Controllers\ConfirmEmailController.ts" />
     <TypeScriptCompile Include="App\Controllers\CreatePasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\EditAlbumController.ts" />
     <TypeScriptCompile Include="App\Controllers\EditArtistController.ts" />
     <TypeScriptCompile Include="App\Controllers\FooterController.ts" />
+    <TypeScriptCompile Include="App\Controllers\ForgotPasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\HeaderController.ts" />
     <TypeScriptCompile Include="App\Controllers\NowPlayingController.ts" />
     <TypeScriptCompile Include="App\Controllers\PasswordController.ts" />
+    <TypeScriptCompile Include="App\Controllers\RegisterController.ts" />
     <TypeScriptCompile Include="App\Controllers\RequestSongController.ts" />
+    <TypeScriptCompile Include="App\Controllers\ResetPasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\SignInController.ts" />
+    <TypeScriptCompile Include="App\Controllers\SongListController.ts" />
     <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />
     <TypeScriptCompile Include="App\Controllers\UploadAlbumController.ts" />
     <TypeScriptCompile Include="App\Directives\AudioStatusChanged.ts" />
@@ -555,6 +589,8 @@
     <TypeScriptCompile Include="App\Models\AppRoute.ts" />
     <TypeScriptCompile Include="App\Models\Artist.ts" />
     <TypeScriptCompile Include="App\Models\AudioStatus.ts" />
+    <TypeScriptCompile Include="App\Models\CommunityRankStanding.ts" />
+    <TypeScriptCompile Include="App\Models\SongPick.ts" />
     <TypeScriptCompile Include="App\Models\User.ts" />
     <TypeScriptCompile Include="App\Models\HeaderRoute.ts" />
     <TypeScriptCompile Include="App\Models\IAlbumSwatch.ts" />
@@ -567,12 +603,14 @@
     <TypeScriptCompile Include="App\Polyfills\Array.ts" />
     <TypeScriptCompile Include="App\Polyfills\String.ts" />
     <TypeScriptCompile Include="App\Services\AlbumApiService.ts" />
+    <TypeScriptCompile Include="App\Services\AlbumCacheService.ts" />
     <TypeScriptCompile Include="App\Services\AppNavService.ts" />
     <TypeScriptCompile Include="App\Services\ArtistApiService.ts" />
     <TypeScriptCompile Include="App\Services\AudioPlayerService.ts" />
     <TypeScriptCompile Include="App\Services\HttpApiService.ts" />
+    <TypeScriptCompile Include="App\Services\LikeApiService.ts" />
     <TypeScriptCompile Include="App\Services\LoadingProgressService.ts" />
-    <TypeScriptCompile Include="App\Services\SignInService.ts" />
+    <TypeScriptCompile Include="App\Services\AccountService.ts" />
     <TypeScriptCompile Include="App\Services\SongBatchService.ts" />
     <TypeScriptCompile Include="App\Services\SongRequestService.ts" />
     <TypeScriptCompile Include="App\Services\SongApiService.ts" />
@@ -615,9 +653,8 @@
     <TypeScriptCompile Include="Scripts\typings\moment\moment.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\nprogress\NProgress.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\rx\rx.lite.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\angular-ui\angular-ui-router.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\angular-ui\angular-ui-sortable.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\filepicker\filepicker.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\tinycolor\tinycolor.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\vibrantjs\vibrant.d.ts" />
   </ItemGroup>
   <PropertyGroup>

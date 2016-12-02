@@ -7,6 +7,7 @@ namespace BitShuva.Models
 {
     public enum SongPick
     {
+        RandomSong,
         VeryPoorRank,
         PoorRank,
         NormalRank,
@@ -16,6 +17,9 @@ namespace BitShuva.Models
         LikedArtist,
         LikedAlbum,
         LikedSong,
-        RandomSong
+        SongFromAlbumRequested,
+        SongFromArtistRequested,
+        YouRequestedSong,
+        SomeoneRequestedSong
     }
 }

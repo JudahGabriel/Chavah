@@ -30,6 +30,7 @@ namespace BitShuva.Controllers
             var viewModel = new HomeViewModel();
             var currentUser = await this.GetCurrentUser();
             viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
+            viewModel.Jwt = currentUser != null ? currentUser.Jwt : "";
             viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
             await PopulateViewModelFromQueryString(viewModel);
 
@@ -50,6 +51,29 @@ namespace BitShuva.Controllers
             viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
             await PopulateViewModelFromQueryString(viewModel);
             return View("Index", viewModel);
+        }
+
+        [Route("account/registeredusers")]
+        [HttpGet]
+        public async Task<ActionResult> RegisteredUsers()
+        {
+            var lastRegisteredUsers = await this.DbSession
+                .Query<ApplicationUser>()
+                .Where(u => u.Email != null)
+                .OrderByDescending(a => a.RegistrationDate)
+                .Take(100)
+                .ToListAsync();
+            var feedItems = from user in lastRegisteredUsers
+                            select new SyndicationItem(
+                                id: user.Id,
+                                lastUpdatedTime: user.RegistrationDate,
+                                title: user.Email,
+                                content: "A new user registered on Chavah on " + user.RegistrationDate.ToString() + " with email address " + user.Email,
+                                itemAlternateLink: new Uri("http://messianicradio.com/?user=" + Uri.EscapeUriString(user.Id))
+                            );
+
+            var feed = new SyndicationFeed("Chavah Messianic Radio", "The most recent registered users at Chavah Messianic Radio", new Uri("http://messianicradio.com"), feedItems) { Language = "en-US" };
+            return new RssActionResult { Feed = feed };
         }
 
         //[Route("songs/getalbumart")]

@@ -32,12 +32,9 @@
         requestSong(song: Song): ng.IPromise<any> {            
             this.pendingSongRequestIds.unshift(song.id);
             this.hasPlayedRequestAnnouncement = false;
-
-            var args = {
-                songId: song.id
-            };
-            var url = "/api/requests/request/";
-            return this.httpApi.post(url, args);
+            
+            var url = `/api/requests/requestsong?songId=${song.id}`;
+            return this.httpApi.post(url, null);
         }
 
         playRequest() {
@@ -47,7 +44,7 @@
 
             if (!this.hasPlayedRequestAnnouncement) {
                 this.hasPlayedRequestAnnouncement = true;
-                var songRequestNumbers = [0, 1, 3, 4, 5, 6, 7];
+                var songRequestNumbers = [1, 3, 4, 5, 6, 7, 8, 9, 10];
                 var songRequestName = "SongRequest" + songRequestNumbers[Math.floor(Math.random() * songRequestNumbers.length)] + ".mp3";
                 var songRequestUrl = "content/soundEffects/" + songRequestName;
                 this.audioPlayer.playNewUri(songRequestUrl);
@@ -56,7 +53,7 @@
                 this.hasPlayedRequestAnnouncement = false;
                 var pendingRequestedSongId = this.pendingSongRequestIds.splice(0, 1)[0];
                 var currentSong = this.audioPlayer.song.getValue();
-                this.songApi.getSongById(pendingRequestedSongId)
+                this.songApi.getSongById(pendingRequestedSongId, SongPick.SomeoneRequestedSong)
                     .then(song => {
                         var isStillWaitingForSong = this.audioPlayer.song.getValue() === currentSong;
                         if (isStillWaitingForSong) {

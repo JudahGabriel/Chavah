@@ -24,9 +24,9 @@ namespace BitShuva.Common
     /// If found, it will be stored in the controller's SessionToken propery.
     /// Intended to work with RavenApiControllers only.
     /// </summary>
-    public class ParseJwtSessionAttribute : Attribute, IActionFilter
+    public class JwtSessionAttribute : Attribute, IActionFilter
     {
-        public static readonly string jwtSecureKey = ConfigurationManager.AppSettings["jwtSecureKey"];
+        public static readonly string jwtSecureKey = ConfigurationManager.AppSettings["JwtSecureKey"];
         private const string bearerPrefix = "Bearer ";
         private const string authHeaderName = "Authorization";
 
@@ -38,16 +38,29 @@ namespace BitShuva.Common
         public async Task<HttpResponseMessage> ExecuteActionFilterAsync(HttpActionContext actionContext, CancellationToken cancellationToken, Func<Task<HttpResponseMessage>> continuation)
         {
             var bearerToken = HttpContext.Current.Request.Headers[authHeaderName];
+            var sessionToken = default(SessionToken);
+            var controller = actionContext.ControllerContext.Controller as RavenApiController;
             if (!string.IsNullOrEmpty(bearerToken) && bearerToken.StartsWith(bearerPrefix))
             {
                 var jwtString = bearerToken.Substring(bearerPrefix.Length);
                 var claimsOrNull = TryValidateJwtToken(jwtString);
-                var controller = actionContext.ControllerContext.Controller as RavenApiController;
                 if (controller != null && claimsOrNull != null)
                 {
-                    controller.SessionToken = new SessionToken(claimsOrNull);
+                    sessionToken = new SessionToken(claimsOrNull);
                 }
             }
+
+            if (sessionToken == null)
+            {
+                sessionToken = new SessionToken
+                {
+                    Email = "",
+                    IsAdmin = false,
+                    IsSignedIn = false
+                };
+            }
+
+            controller.SessionToken = sessionToken;
 
             var response = await continuation();
             return response;
