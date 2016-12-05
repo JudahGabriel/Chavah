@@ -8,11 +8,13 @@
   width: 50%;
   margin: auto;
   height: 370px;
+  margin-top: 20px;
 }
 @media (max-width: 767px) {
   .now-playing-page .songs-container {
     height: 290px;
     width: 75%;
+    margin-top: 0;
   }
 }
 .now-playing-page .song {
@@ -89,7 +91,7 @@
 }
 .now-playing-page .song:hover:not(:first-child) .song-info {
   display: block;
-  opacity: .8;
+  opacity: .9;
 }
 .now-playing-page .song.ng-enter-active {
   opacity: 0;

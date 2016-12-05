@@ -70,6 +70,14 @@ namespace BitShuva.Controllers
             return DbSession.LoadAsync<Album>(id);
         }
 
+        [Route("GetByArtistAlbum")]
+        [HttpGet]
+        public Task<Album> GetByArtistAlbum(string artist, string album)
+        {
+            return DbSession.Query<Album>()
+                .FirstOrDefaultAsync(a => a.Name == album && (a.Artist == artist || a.IsVariousArtists));
+        }
+
         [Route("Save")]
         [HttpPost]
         public async Task<Album> Save(Album album)

@@ -16,10 +16,20 @@
             private appNav: AppNavService,
             $routeParams: ng.route.IRouteParamsService,
             private $q: ng.IQService) {
-            var albumId = "Albums/" + $routeParams["id"];
 
-            this.albumApi.get(albumId)
-                .then(result => this.albumLoaded(result));
+            // We allow the user to pass in either an album ID (Albums/777) or an artist/album combo (Lamb|The Sacrifice)
+            var albumId = $routeParams["id"];
+            var isArtistAlbum = albumId.indexOf("|") > 0;
+            if (isArtistAlbum) {
+                var artistAndAlbum = albumId.split("|");
+                var artist = artistAndAlbum
+                this.albumApi.getByArtistAndAlbumName(artistAndAlbum[0], artistAndAlbum[1])
+                    .then(result => this.albumLoaded(result));
+            } else {
+                // We're passed in an actual album ID
+                this.albumApi.get("Albums/" + albumId)
+                    .then(result => this.albumLoaded(result));
+            }
         }
 
         albumLoaded(album: Album | null) {

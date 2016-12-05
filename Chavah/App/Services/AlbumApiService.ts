@@ -20,6 +20,14 @@
             return this.httpApi.query<Server.IAlbum | null>("/api/albums/get", args, AlbumApiService.albumSelector);
         }
 
+        getByArtistAndAlbumName(artist: string, album: string): ng.IPromise<Album | null> {
+            var args = {
+                artist: artist,
+                album: album
+            };
+            return this.httpApi.query<Server.IAlbum | null>("/api/albums/getByArtistAlbum", args, AlbumApiService.albumSelector);
+        }
+
         save(album: Album): ng.IPromise<Album> {
             return this.httpApi.post("/api/albums/save", album, AlbumApiService.albumSelector);
         }
