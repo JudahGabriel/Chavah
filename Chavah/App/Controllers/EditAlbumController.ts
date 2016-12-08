@@ -17,19 +17,40 @@
             $routeParams: ng.route.IRouteParamsService,
             private $q: ng.IQService) {
 
-            // We allow the user to pass in either an album ID (Albums/777) or an artist/album combo (Lamb|The Sacrifice)
+            // We allow the user to pass in:
+            // -an album ID (Albums/777) 
+            // -an artist/ album combo (Lamb | The Sacrifice)
+            // -nothing (create new album)
             var albumId = $routeParams["id"];
-            var isArtistAlbum = albumId.indexOf("|") > 0;
-            if (isArtistAlbum) {
-                var artistAndAlbum = albumId.split("|");
-                var artist = artistAndAlbum
-                this.albumApi.getByArtistAndAlbumName(artistAndAlbum[0], artistAndAlbum[1])
-                    .then(result => this.albumLoaded(result));
+            if (albumId === "new") {
+                this.album = this.createNewAlbum();
             } else {
-                // We're passed in an actual album ID
-                this.albumApi.get("Albums/" + albumId)
-                    .then(result => this.albumLoaded(result));
+                var isArtistAlbum = albumId.indexOf("|") > 0;
+                if (isArtistAlbum) {
+                    var artistAndAlbum = albumId.split("|");
+                    var artist = artistAndAlbum
+                    this.albumApi.getByArtistAndAlbumName(artistAndAlbum[0], artistAndAlbum[1])
+                        .then(result => this.albumLoaded(result));
+                } else {
+                    // We're passed in an actual album ID
+                    this.albumApi.get("Albums/" + albumId)
+                        .then(result => this.albumLoaded(result));
+                }
             }
+        }
+
+        createNewAlbum(): Album {
+            return new Album({
+                albumArtUri: "",
+                artist: "[new artist]",
+                isVariousArtists: false,
+                backgroundColor: "",
+                foregroundColor: "",
+                mutedColor: "",
+                name: "[new album]",
+                id: "",
+                textShadowColor: ""
+            });
         }
 
         albumLoaded(album: Album | null) {
@@ -39,7 +60,7 @@
                     .then(img => this.populateColorSwatches(img));
             }
         }
-
+        
         save(): ng.IPromise<Album> | null {
             if (this.album && !this.album.isSaving) {
                 this.album.isSaving = true;

@@ -82,6 +82,15 @@ namespace BitShuva.Controllers
         [HttpPost]
         public async Task<Album> Save(Album album)
         {
+            if (string.IsNullOrEmpty(album.Artist) || string.IsNullOrEmpty(album.Name))
+            {
+                throw new ArgumentException("Album must have a name and artist.");
+            }
+            if (album.Id == "")
+            {
+                album.Id = null;
+            }
+
             await RequireAdminUser();
             await DbSession.StoreAsync(album);
             return album;

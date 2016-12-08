@@ -91,7 +91,7 @@
 }
 .now-playing-page .song:hover:not(:first-child) .song-info {
   display: block;
-  opacity: .9;
+  opacity: .85;
 }
 .now-playing-page .song.ng-enter-active {
   opacity: 0;
