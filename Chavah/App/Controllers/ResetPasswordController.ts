@@ -3,7 +3,7 @@
 
         readonly email = "";
         password = "";
-        readonly confirmCode = "";
+        readonly confirmCode: string;
         showPasswordError = false;
         isBusy = false;
         passwordResetSucccessful = false;

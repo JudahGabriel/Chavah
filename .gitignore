@@ -258,3 +258,4 @@ paket-files/
 .idea/
 *.sln.iml
 /Chavah/App/App.js
+/Chavah/AudioTest.html

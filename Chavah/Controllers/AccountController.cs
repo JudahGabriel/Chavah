@@ -60,6 +60,7 @@ namespace BitShuva.Controllers
             var user = await UserManager.FindAsync(email, password);
             if (user == null)
             {
+                await ChavahLog.Info(DbSession, "Sign in failed for user " + email + "; couldn't find user with that email address.");
                 return new SignInResult
                 {
                     ErrorMessage = "Bad user name or password",
@@ -91,7 +92,11 @@ namespace BitShuva.Controllers
             if (signInStatus == SignInStatus.Success)
             {
                 user.Jwt = jsonWebToken;
-            };
+            }
+            else
+            {
+                await ChavahLog.Info(DbSession, "Sign in failed for user " + email, signInStatus);
+            }
 
             return result;
         }
@@ -292,70 +297,6 @@ namespace BitShuva.Controllers
                 Success = passwordResetResult.Succeeded,
                 ErrorMessage = string.Join(",", passwordResetResult.Errors)
             };
-        }
-
-        [HttpGet]
-        [Route("MigrateOldUsers")]
-        public async Task<string> MigrateOldUsers()
-        {
-            var oldUsers = new List<User>(4000);
-            var existingUsers = new List<ApplicationUser>(4000);
-            using (var ravenSession = RavenContext.Db.OpenSession())
-            {
-                using (var stream = ravenSession.Advanced.Stream<User>("Users/"))
-                {
-                    while (stream.MoveNext())
-                    {
-                        oldUsers.Add(stream.Current.Document);
-                    }
-                }
-
-                using (var stream = ravenSession.Advanced.Stream<ApplicationUser>("ApplicationUsers/"))
-                {
-                    while (stream.MoveNext())
-                    {
-                        existingUsers.Add(stream.Current.Document);
-                    }
-                }
-            }
-
-            var usersNeedingMigration = oldUsers
-                .Where(u => !existingUsers.Any(n => n.Email.ToLower() == u.EmailAddress.ToLower()))
-                .Distinct(u => u.EmailAddress)
-                .Take(10)
-                .ToList();
-            var newUsers = usersNeedingMigration.Select(user => new ApplicationUser
-            {
-                Email = user.EmailAddress.ToLower(),
-                Id = "ApplicationUsers/" + user.EmailAddress.ToLower(),
-                LastSeen = user.LastSeen,
-                RegistrationDate = user.RegistrationDate,
-                Preferences = user.Preferences,
-                RequiresPasswordReset = true,
-                TotalPlays = user.TotalPlays,
-                TotalSongRequests = user.TotalSongRequests,
-                UserName = user.EmailAddress
-            })
-            .Take(10)
-            .ToList();
-
-            var successfulEmails = new List<string>(10);
-            var failedMigrationEmails = new List<string>(10);
-            foreach (var user in newUsers)
-            {
-                var createUserResult = await UserManager.CreateAsync(user, "IWillGlorifyTheLord613!" + Guid.NewGuid().ToString());
-                if (!createUserResult.Succeeded)
-                {
-                    failedMigrationEmails.Add(user.Email);
-                    await ChavahLog.Warn(DbSession, "Unable to migrate old user " + user.Email + " into the new system.", createUserResult);
-                }
-                else
-                {
-                    successfulEmails.Add(user.Email);
-                }
-            }
-            await DbSession.SaveChangesAsync();
-            return $"Successful: {usersNeedingMigration.Count - failedMigrationEmails.Count}, {string.Join(",", successfulEmails)}, \r\n------------ usersNeedingMigration failed: {failedMigrationEmails.Count}. Failed to migrate these users: {string.Join(",", failedMigrationEmails)}";
         }
     }
 }

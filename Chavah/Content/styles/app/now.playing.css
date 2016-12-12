@@ -117,6 +117,13 @@
   width: 100%;
   white-space: normal;
 }
+.now-playing-page .current-song-artist,
+.now-playing-page .current-song-album {
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
 .now-playing-page .left-pane,
 .now-playing-page .right-pane {
   padding: 20px;

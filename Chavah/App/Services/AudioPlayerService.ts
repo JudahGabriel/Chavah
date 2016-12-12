@@ -16,7 +16,7 @@
         
         constructor(private songApi: SongApiService) {
         }
-
+        
         initialize(audio: HTMLAudioElement) {
             var supportsMp3Audio = Modernizr.audio.mp3;
             if (supportsMp3Audio) {
@@ -61,6 +61,8 @@
                     this.audio.play();
                 }
             }
+
+            
         }
 
         playSongById(songId: string) {
@@ -83,13 +85,18 @@
             this.playSongWhenFinishedLoading(task);
         }
 
-        playSongWhenFinishedLoading(task: ng.IPromise<Song>) {
+        playSongWhenFinishedLoading(task: ng.IPromise<Song | null>) {
             var currentSong = this.song.getValue();
             this.pause();
 
-            task.then((s) => {
-                if (this.song.getValue() === currentSong) {
-                    this.playNewSong(s);
+            task.then(songResult => {
+                var isStillWaitingForSong = this.song.getValue() === currentSong;
+                if (isStillWaitingForSong) {
+                    if (songResult) {
+                        this.playNewSong(songResult);
+                    } else {
+                        this.resume();
+                    }
                 }
             });
         }

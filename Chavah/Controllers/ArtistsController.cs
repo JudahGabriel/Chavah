@@ -14,7 +14,7 @@ using System.Collections.ObjectModel;
 namespace BitShuva.Controllers
 {
     [RoutePrefix("api/artists")]
-    public class ArtistsController : UserContextController
+    public class ArtistsController : RavenApiController
     {
         [Route("getByName")]
         public async Task<Artist> GetByName(string artistName)
@@ -97,7 +97,8 @@ namespace BitShuva.Controllers
         [Route("admin/delete/{*artistId}")]
         public async Task Delete(string artistId)
         {
-            await this.EnsureIsAdminUser();
+            await this.RequireAdminUser();
+
             var artist = await this.DbSession.LoadAsync<Artist>(artistId);
             if (artist != null)
             {

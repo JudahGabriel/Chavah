@@ -25,7 +25,7 @@
             private appNav: AppNavService,
             private $scope: ng.IScope) {
 
-            var audio = <HTMLAudioElement>document.querySelector("audio");
+            var audio = document.querySelector("#audio") as HTMLVideoElement;
             this.audioPlayer.initialize(audio);
             this.volume = audio.volume;
 

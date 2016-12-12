@@ -15,6 +15,7 @@
             "songBatch",
             "audioPlayer",
             "albumCache",
+            "appNav",
             "$q",
             "$scope"
         ];
@@ -24,6 +25,7 @@
             private songBatch: SongBatchService,
             private audioPlayer: AudioPlayerService,
             private albumCache: AlbumCacheService,
+            private appNav: AppNavService,
             private $q: ng.IQService,
             $scope: ng.IScope) {
 
@@ -37,8 +39,11 @@
 
             // Play the next song if we don't already have one playing.
             // We don't have one playing when first loading the UI.
-            if (!this.audioPlayer.song.getValue()) {
-                this.songBatch.playNext();
+            var hasCurrentSong = this.audioPlayer.song.getValue();
+            if (!hasCurrentSong) {
+                if (!this.playSongInUrlQuery()) {
+                    this.songBatch.playNext();
+                }
             }
 
             $scope.$on("$destroy", () => this.dispose());
@@ -152,6 +157,59 @@
                     this.songBatch.playNext();
                 }
             }
+        }
+
+        playSongFromCurrentArtist() {
+            if (this.currentSong) {
+                this.audioPlayer.playSongFromArtist(this.currentSong.artist);
+            }
+        }
+
+        playSongFromCurrentAlbum() {
+            if (this.currentSong) {
+                this.audioPlayer.playSongFromAlbum(this.currentSong.album);
+            }
+        }
+
+        playSongInUrlQuery(): boolean {
+            // Does the user want us to play a certain song/album/artist?
+            var songId = this.getUrlQueryOrNull("song");
+            if (songId) {
+                this.audioPlayer.playSongById(songId);
+                return true;
+            }
+
+            var album = this.getUrlQueryOrNull("album");
+            if (album) {
+                this.audioPlayer.playSongFromAlbum(album);
+                return true;
+            }
+
+            var artist = this.getUrlQueryOrNull("artist");
+            if (artist) {
+                this.audioPlayer.playSongFromArtist(artist);
+                return true;
+            }
+
+            return false;
+        }
+
+        private getUrlQueryOrNull(term: string): string | null {
+            var queryString = window.location.search;
+            if (queryString) {
+                var allTerms = queryString.split("&");
+                var termWithEquals = term + "=";
+                var termAtBeginning = "?" + termWithEquals;
+                var match = allTerms.find(t => t.startsWith(termWithEquals) || t.startsWith(termAtBeginning));
+                if (match) {
+                    var termValue = match.substr(match.indexOf("=") + 1);
+                    if (termValue) {
+                        return termValue;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 

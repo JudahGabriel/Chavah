@@ -25,7 +25,9 @@
         artistList: "/App/Views/Templates/ArtistList.html",
         songList: "/App/Views/Templates/SongList.html",
         songRequestModal: "/App/Views/RequestSongModal.html",
-        songRequestResult: "/App/Views/Templates/SongRequestResult.html"
+        songRequestResult: "/App/Views/Templates/SongRequestResult.html",
+        headerPartial: "/App/Views/Header.html",
+        footerPartial: "/App/Views/Footer.html"
     };
     App.constant("templatePaths", templatePaths);
 

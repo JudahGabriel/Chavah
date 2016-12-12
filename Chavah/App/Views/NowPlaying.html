@@ -37,15 +37,20 @@
                 </div>
             </div>
 
-            <h1 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+            <h1 class="text-center current-song-name" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
                 {{vm.currentSong.name}}
             </h1>
-            <h4 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
-                {{vm.currentSong.artist}}
-            </h4>
-            <h4 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
-                {{vm.currentSong.album}}
-            </h4>
+            <div class="text-center">
+                <h4 class="current-song-artist" ng-click="vm.playSongFromCurrentArtist()" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}" uib-tooltip="Click to play another {{vm.currentSong.artist}} song" tooltip-placement="right">
+                    {{vm.currentSong.artist}}
+                </h4>
+            </div>
+            <div class="text-center">
+                <h4 class="text-center current-song-album" ng-click="vm.playSongFromCurrentAlbum()" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}" uib-tooltip="Click to play another song from {{vm.currentSong.album}}" tooltip-placement="right">
+                    {{vm.currentSong.album}}
+                </h4>
+            </div>
+            <br />
 
             <!--Song rank expander-->
             <div class="panel-group expander" role="tablist">

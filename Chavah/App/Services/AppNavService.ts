@@ -2,16 +2,21 @@
     export class AppNavService {
 
         static $inject = [
+            "audioPlayer",
             "templatePaths",
             "$location",
             "$uibModal"
         ];
 
         constructor(
+            private audioPlayer: AudioPlayerService,
             private templatePaths: TemplatePaths,
             private $location: ng.ILocationService,
             private $uibModal: ng.ui.bootstrap.IModalService) {
 
+            // Listen for when the song changes and update the document title.
+            audioPlayer.song
+                .subscribe(song => this.updateDocumentTitle(song));
         }
 
         signIn() {
@@ -50,6 +55,22 @@
             });
 
             return requestSongDialog;
+        }
+
+        /**
+         * Gets the client-side query parameters, returned as an object map.
+         */
+        getQueryParams(): any {
+            return this.$location.search();
+        }
+
+        private updateDocumentTitle(song: Song | null) {
+            // Update the document title so that the browser tab updates.
+            if (song) {
+                document.title = `${song.name} by ${song.artist} on Chavah Messianic Radio`;
+            } else {
+                document.title = "Chavah Messianic Radio";
+            }
         }
     }
 

@@ -4,5 +4,7 @@
         songList: string;
         songRequestModal: string;
         songRequestResult: string;
+        headerPartial: string;
+        footerPartial: string;
     }
 }

@@ -22,32 +22,32 @@
             return task;
         }
 
-        getSongByArtistAndAlbum(artist: string, album: string): ng.IPromise<Song> {
-            var url = "/api/songs/getSongByArtistAndAlbum";
+        getSongByArtistAndAlbum(artist: string, album: string): ng.IPromise<Song | null> {
+            var url = "/api/songs/getByArtistAndAlbum";
             var args = {
                 artist: artist,
                 album: album
             };
 
-            return this.httpApi.query(url, args, SongApiService.songConverter);
+            return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
-        getSongByAlbum(album: string): ng.IPromise<Song> {
-            var url = "/api/songs/album/";
+        getSongByAlbum(album: string): ng.IPromise<Song | null> {
+            var url = "/api/songs/getByAlbum/";
             var args = {
                 album: album
             };
 
-            return this.httpApi.query(url, args, SongApiService.songConverter);
+            return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
-        getSongByArtist(artist: string): ng.IPromise<Song> {
-            var url = "/api/songs/artist/";
+        getSongByArtist(artist: string): ng.IPromise<Song | null> {
+            var url = "/api/songs/getByArtist/";
             var args = {
-                album: artist
+                artist: artist
             };
 
-            return this.httpApi.query(url, args, SongApiService.songConverter);
+            return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
         getSongMatches(searchText: string): ng.IPromise<Song[]> {
@@ -95,6 +95,14 @@
 
         private static songListConverter(songs: Server.ISong[]): Song[] {
             return songs.map(r => SongApiService.songConverter(r));
+        }
+
+        private static songOrNullConverter(raw: Server.ISong | null): Song | null {
+            if (raw) {
+                return SongApiService.songConverter(raw);
+            }
+
+            return null;
         }
 
         private static songConverter(raw: Server.ISong): Song {

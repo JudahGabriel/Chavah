@@ -76,19 +76,6 @@ namespace BitShuva.Controllers
             return new RssActionResult { Feed = feed };
         }
 
-        //[Route("songs/getalbumart")]
-        //public async Task<ActionResult> DeprecatedGetAlbumArt(string songId)
-        //{
-        //    var isOldStyleSongFormat = !songId.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase);
-        //    if (isOldStyleSongFormat)
-        //    {
-        //        songId = "songs/" + songId;
-        //    }
-
-        //    var song = await this.DbSession.LoadAsync<Song>(songId);
-        //    return RedirectPermanent(song.AlbumArtUri.ToString());
-        //}
-
         public JsonResult GetLatestBlogPost()
         {
             var reader = XmlReader.Create("http://blog.messianicradio.com/feeds/posts/default");

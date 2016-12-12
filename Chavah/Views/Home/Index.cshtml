@@ -118,9 +118,9 @@
         }
 
         <div id="appContainer" data-ng-app="ChavahApp">
-            <div ng-include="'../../app/views/header.html'"></div>
+            <div ng-include="headerPartial"></div>
             <div id="currentPageContainer" data-ng-view></div>
-            <footer ng-include="'../../app/views/footer.html'"></footer>
+            <footer ng-include="footerPartial"></footer>
         </div>
 
         @Scripts.Render("~/bundles/jquery")

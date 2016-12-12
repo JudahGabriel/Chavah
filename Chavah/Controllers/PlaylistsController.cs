@@ -11,12 +11,12 @@ using System.Web.Http;
 namespace BitShuva.Controllers
 {
     [RoutePrefix("api/playlists")]
-    public class PlaylistsController : UserContextController
+    public class PlaylistsController : RavenApiController
     {
         [Route("get")]
         public async Task<IEnumerable<Playlist>> GetPlaylists()
         {
-            var user = await this.GetLoggedInUserOrNull();
+            var user = await this.GetCurrentUser();
             if (user == null)
             {
                 return new Playlist[0];
@@ -27,13 +27,12 @@ namespace BitShuva.Controllers
                 .Where(s => s.OwnerId == user.Id)
                 .ToListAsync();
         }
-
-        [Authorize]
+        
         [HttpPut]
         [Route("create")]
         public async Task<Playlist> Create(Playlist playlist)
         {
-            var user = await this.GetLoggedInUserOrNull();
+            var user = await this.GetCurrentUser();
             playlist.OwnerId = user.Id;
             await this.DbSession.StoreAsync(playlist);
             await this.DbSession.SaveChangesAsync();

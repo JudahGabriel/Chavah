@@ -261,7 +261,7 @@
     <Compile Include="Controllers\SongRequestsController.cs" />
     <Compile Include="Controllers\SongsController.cs" />
     <Compile Include="Controllers\StationsController.cs" />
-    <Compile Include="Controllers\UserContextController.cs" />
+    <Compile Include="Controllers\StreamController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -284,6 +284,7 @@
     <Compile Include="Models\LikeDislikeCount.cs" />
     <Compile Include="Models\LikeStatus.cs" />
     <Compile Include="Models\ChavahLog.cs" />
+    <Compile Include="Models\LogLevel.cs" />
     <Compile Include="Models\PagedList.cs" />
     <Compile Include="Models\Playlist.cs" />
     <Compile Include="Models\RecentUserSummary.cs" />
@@ -311,6 +312,7 @@
     <Content Include="App\Views\CreatePassword.html" />
     <Content Include="App\Views\EditAlbum.html" />
     <Content Include="App\Views\EditArtist.html" />
+    <Content Include="App\Views\EditSong.html" />
     <Content Include="App\Views\Footer.html" />
     <Content Include="App\Views\ForgotPassword.html" />
     <Content Include="App\Views\Header.html" />
@@ -331,8 +333,11 @@
     <Content Include="App\Views\Trending.html" />
     <Content Include="App\Views\UploadAlbum.html" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="AudioTest.html" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\soundEffects\Silence1.mp3" />
+    <Content Include="Content\soundEffects\Silence2.mp3" />
     <Content Include="Content\soundEffects\SongRequest10.mp3" />
     <Content Include="Content\soundEffects\SongRequest8.mp3" />
     <Content Include="Content\soundEffects\SongRequest9.mp3" />
@@ -444,7 +449,6 @@
       <DependentUpon>bootstrap.flatly.tweaks.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\bootswatch.css" />
-    <Content Include="Content\styles\nprogress.css" />
     <Content Include="Content\soundEffects\shabbatAnnouncement1.mp3" />
     <Content Include="Content\soundEffects\shabbatAnnouncement2.mp3" />
     <Content Include="Content\soundEffects\shabbatAnnouncement3.mp3" />
@@ -459,6 +463,12 @@
     <Content Include="Content\soundEffects\SongRequest7.mp3" />
     <Content Include="Content\soundEffects\StationId1.mp3" />
     <Content Include="Content\soundEffects\StationId2.mp3" />
+    <Content Include="Content\styles\nprogress.css">
+      <DependentUpon>nprogress.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\nprogress.min.css">
+      <DependentUpon>nprogress.css</DependentUpon>
+    </Content>
     <Content Include="Content\ui-bootstrap-csp.css" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -495,6 +505,7 @@
     <Content Include="Content\styles\app\footer.less" />
     <Content Include="Content\styles\app\songList.less" />
     <Content Include="Content\styles\app\requestSongModal.less" />
+    <Content Include="Content\styles\nprogress.less" />
     <None Include="Properties\PublishProfiles\bitshuva.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />

@@ -14,12 +14,12 @@ using System.Web.Http;
 namespace BitShuva.Controllers
 {
     [RoutePrefix("api/requests")]
-    public class SongRequestsController : UserContextController
+    public class SongRequestsController : RavenApiController
     {
         [Route("pending")]
         public async Task<string> GetPendingRequestedSongId()
         {
-            var user = await this.GetLoggedInUserOrNull();
+            var user = await this.GetCurrentUser();
             if (user == null)
             {
                 return null;
@@ -63,7 +63,7 @@ namespace BitShuva.Controllers
         [Route("requestsong")]
         public async Task RequestSong(string songId)
         {
-            var user = await this.GetLoggedInUserOrNull();
+            var user = await this.GetCurrentUser();
             var song = await this.DbSession.LoadAsync<Song>(songId);
             if (song != null && user != null)
             {

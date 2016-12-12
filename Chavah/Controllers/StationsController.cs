@@ -12,12 +12,12 @@ using System.Web.Http;
 namespace BitShuva.Controllers
 {
     [RoutePrefix("api/stations")]
-    public class StationsController : UserContextController
+    public class StationsController : RavenApiController
     {
         [Route("get")]
         public async Task<IEnumerable<Station>> GetStations()
         {
-            var user = await this.GetLoggedInUserOrNull();
+            var user = await this.GetCurrentUser();
             if (user != null)
             {
                 return await this.DbSession
@@ -40,13 +40,12 @@ namespace BitShuva.Controllers
             // TODO: implement station.GetSong();
             return null;
         }
-
-        [Authorize]
+        
         [HttpPut]
         [Route("create")]
         public async Task<Station> Create(Station station)
         {
-            var user = await this.GetLoggedInUserOrNull();
+            var user = await this.GetCurrentUser();
             station.OwnerId = user.Id;
             await this.DbSession.StoreAsync(station);
             await this.DbSession.SaveChangesAsync();

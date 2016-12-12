@@ -336,7 +336,9 @@ namespace BitShuva.Controllers
             }
         }
 
-        public async Task<Song> GetSongByArtistAndAlbum(string artist, string album)
+        [Route("GetByArtistAndAlbum")]
+        [HttpGet]
+        public async Task<Song> GetByArtistAndAlbum(string artist, string album)
         {
             var song = await this.DbSession
                     .Query<Song>()
@@ -346,26 +348,38 @@ namespace BitShuva.Controllers
             return await this.GetSongDto(song, SongPick.SongFromAlbumRequested);
         }
         
-        [Route("album/{album}")]
+        [Route("getByAlbum")]
         public async Task<Song> GetSongByAlbum(string album)
         {
-            var song = await this.DbSession
+            var albumUnescaped = Uri.UnescapeDataString(album);
+            var songOrNull = await this.DbSession
                     .Query<Song>()
                     .Customize(c => c.RandomOrdering())
-                    .FirstAsync(s => s.Album == album);
+                    .FirstOrDefaultAsync(s => s.Album == albumUnescaped);
+            if (songOrNull != null)
+            {
+                return await GetSongDto(songOrNull, SongPick.SongFromAlbumRequested);
+            }
 
-            return await GetSongDto(song, SongPick.SongFromAlbumRequested);
+            return null;
         }
 
-        [Route("artist/{artist}")]
-        public async Task<Song> GetSongByArtist(string artist)
+        [Route("getByArtist")]
+        [HttpGet]
+        public async Task<Song> GetByArtist(string artist)
         {
-            var song = await this.DbSession
+            var artistUnescaped = Uri.UnescapeDataString(artist);
+            var songOrNull = await this.DbSession
                 .Query<Song>()
                 .Customize(c => c.RandomOrdering())
-                .FirstAsync(s => s.Artist == artist);
+                .FirstOrDefaultAsync(s => s.Artist == artistUnescaped);
 
-            return await GetSongDto(song, SongPick.SongFromArtistRequested);
+            if (songOrNull != null)
+            {
+                return await GetSongDto(songOrNull, SongPick.SongFromArtistRequested);
+            }
+
+            return null;
         }
 
         [Route("trending")]
