@@ -24,8 +24,9 @@ namespace BitShuva
                 AngularBootstrapTemplates = "https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap-tpls.min.js",
                 NProgress = "https://cdn.jsdelivr.net/nprogress/0.1.6/js/nprogress.min.js",
                 RxLite = "https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.lite.js",
-                Vibrant = "https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/1.0.0/Vibrant.min.js",
+                //Vibrant = "https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/1.0.0/Vibrant.min.js",
                 TinyColor = "https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js",
+                //ES6Promise = "https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.0.5/es6-promise.min.js"
                 //Lodash = "https://cdn.jsdelivr.net/lodash/4.13.1/lodash.min.js"
             };
 
@@ -42,8 +43,9 @@ namespace BitShuva
             bundles.Add(new ScriptBundle("~/bundles/nprogress", cdns.NProgress).Include("~/Scripts/nprogress.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/rx-lite", cdns.RxLite).Include("~/Scripts/rx.lite.js"));
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include("~/Scripts/modernizr-production.js"));
-            bundles.Add(new ScriptBundle("~/bundles/vibrant").Include("~/Scripts/vibrant.min.js"));
-            bundles.Add(new ScriptBundle("~/bundles/tinycolor").Include("~/Scripts/tinycolor.min.js"));
+            //bundles.Add(new ScriptBundle("~/bundles/vibrant", cdns.Vibrant).Include("~/Scripts/vibrant.min.js"));
+            bundles.Add(new ScriptBundle("~/bundles/tinycolor", cdns.TinyColor).Include("~/Scripts/tinycolor.min.js"));
+            //bundles.Add(new ScriptBundle("~/bundles/es6promise", cdns.ES6Promise).Include("~/Scripts/es6-promise.js"));
             //bundles.Add(new ScriptBundle("~/bundles/lodash", cdns.Lodash).Include("~/Scripts/lodash.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/app")

@@ -308,6 +308,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\es6-promise.js" />
     <Content Include="App\Views\ConfirmEmail.html" />
     <Content Include="App\Views\CreatePassword.html" />
     <Content Include="App\Views\EditAlbum.html" />
@@ -613,6 +614,7 @@
     <TypeScriptCompile Include="App\Models\SongLike.ts" />
     <TypeScriptCompile Include="App\Polyfills\Array.ts" />
     <TypeScriptCompile Include="App\Polyfills\String.ts" />
+    <TypeScriptCompile Include="App\Services\AdminScriptsService.ts" />
     <TypeScriptCompile Include="App\Services\AlbumApiService.ts" />
     <TypeScriptCompile Include="App\Services\AlbumCacheService.ts" />
     <TypeScriptCompile Include="App\Services\AppNavService.ts" />
@@ -675,6 +677,17 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptStrictNullChecks>True</TypeScriptStrictNullChecks>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>None</TypeScriptModuleKind>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

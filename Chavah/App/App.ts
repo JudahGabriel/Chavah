@@ -61,11 +61,34 @@
             });
     }]);
 
-    App.run(["templatePaths", "$rootScope", (templatePaths: TemplatePaths, $rootScope: ng.IRootScopeService) => {
+    App.run([
+        "templatePaths", "accountApi", "appNav", "adminScripts", "$rootScope",
+        (templatePaths: TemplatePaths, accountApi: AccountService, appNav: AppNavService, adminScripts: AdminScriptsService, $rootScope: ng.IRootScopeService) => {
+        
         // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.
         for (var prop in templatePaths) {
             $rootScope[prop] = templatePaths[prop];
         }
+
+        // Hide the splash UI.
+        var splash = document.querySelector(".splash");
+        if (splash) {
+            splash.remove();
+        }
+
+        $rootScope.$on("$routeChangeStart", (_e: ng.IAngularEvent, next: any) => {
+            var route: AppRoute = next["$$route"];
+            
+            // If we're an admin route, load the admin-specific scripts.
+            if (route && route.isAdmin) {
+                adminScripts.install();
+                
+                // Also, cancel navigation if we're not an admin user.
+                if (!accountApi.isSignedIn) {
+                    appNav.nowPlaying();
+                }
+            }
+        });
     }]);
 
     // Setup Fastclick to remove the 300ms click delay on mobile browsers.

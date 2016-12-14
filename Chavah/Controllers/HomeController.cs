@@ -14,7 +14,6 @@ using System.Xml;
 
 namespace BitShuva.Controllers
 {
-    [RequireHttps]
     public class HomeController : RavenController
     {
         public HomeController()
@@ -25,31 +24,35 @@ namespace BitShuva.Controllers
             ViewBag.QueriedSong = null;
         }
 
+        [RequireHttps]
         public async Task<ActionResult> Index()
         {
-            var viewModel = new HomeViewModel();
-            var currentUser = await this.GetCurrentUser();
-            viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
-            viewModel.Jwt = currentUser != null ? currentUser.Jwt : "";
-            viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
-            await PopulateViewModelFromQueryString(viewModel);
-
-            // Set a session cookie. We use this to determine who's currently online.
-            var cookie = new HttpCookie("SessionId") { Value = Guid.NewGuid().ToString() };
-            Response.SetCookie(cookie);
-            
+            var viewModel = await GetHomeViewModel();
+            //var isAnonymous = string.IsNullOrEmpty(viewModel.Jwt);
+            //if (isAnonymous)
+            //{
+            //    Session["Foo"] = 42;
+            //}
+                    
             return View(viewModel);
+        }
+
+        /// <summary>
+        /// UI that doesn't require HTTPS. Used for Windows XP and old Android that doesn't support LetsEncrypt certs.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ActionResult> Legacy()
+        {
+            var viewModel = await GetHomeViewModel();
+            await ChavahLog.Info(this.DbSession, "Loaded non-HTTPS Chavah via /home/legacy", Request.UserAgent);
+            return View("Index", viewModel);
         }
 
         [Route("home/embed")]
         [Route("durandal/embed")]
         public async Task<ActionResult> Embed()
         {
-            var viewModel = new HomeViewModel();
-            var currentUser = await this.GetCurrentUser();
-            viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
-            viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
-            await PopulateViewModelFromQueryString(viewModel);
+            var viewModel = await this.GetHomeViewModel();
             return View("Index", viewModel);
         }
 
@@ -105,6 +108,17 @@ namespace BitShuva.Controllers
 
             var feed = new SyndicationFeed("Chavah Messianic Radio", "The latest activity over at Chavah Messianic Radio", new Uri("http://messianicradio.com"), feedItems) { Language = "en-US" };
             return new RssActionResult { Feed = feed };
+        }
+
+        private async Task<HomeViewModel> GetHomeViewModel()
+        {
+            var currentUser = await this.GetCurrentUser();
+            var viewModel = new HomeViewModel();
+            viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
+            viewModel.Jwt = currentUser != null ? currentUser.Jwt : "";
+            viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
+            await PopulateViewModelFromQueryString(viewModel);
+            return viewModel;
         }
 
         /// <summary>

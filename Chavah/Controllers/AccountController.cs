@@ -229,9 +229,10 @@ namespace BitShuva.Controllers
             var confirmResult = await userManager.ConfirmEmailAsync(userId, confirmCode);
             if (!confirmResult.Succeeded)
             {
-                await ChavahLog.Error(DbSession, "Unable to confirm email", string.Join(",", confirmResult.Errors), confirmResult);
+                await ChavahLog.Error(DbSession, $"Unable to confirm email {email} using confirm code {confirmCode}", string.Join(",", confirmResult.Errors), confirmResult);
             }
 
+            await ChavahLog.Info(DbSession, $"Successfully confirmed new account for {email}");
             return new ConfirmEmailResult
             {
                 Success = confirmResult.Succeeded,

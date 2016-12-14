@@ -1,4 +1,0 @@
-﻿class About {
-}
-
-export = About;

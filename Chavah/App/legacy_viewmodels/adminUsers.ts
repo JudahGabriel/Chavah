@@ -1,4 +1,0 @@
-class adminUsers {
-}
-
-export = adminUsers;
