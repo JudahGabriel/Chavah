@@ -27,8 +27,27 @@ namespace BitShuva.Common
         public static readonly Uri musicUri = cdnAddress.Combine("music");
         public static readonly Uri albumArtUri = cdnAddress.Combine("album-art");
         public static readonly Uri artistImagesUri = cdnAddress.Combine("artist-images");
+        
+        public static string TestZanz()
+        {
+            var artist = "__zanz " + new Random().Next(1000).ToString();
+            var artistDirectory = ftpMusicDirectory.Combine(artist);
+            var ftpConnection = CreateFtpConnection();
+            var artistDirExists = ftpConnection.DirectoryExists(artistDirectory);
+            if (!artistDirExists)
+            {
+                ftpConnection.CreateDirectory(artistDirectory);
+            }
 
-        ////private static readonly Logger log = LogManager.GetCurrentClassLogger();
+            var fileMp3Uri = artistDirectory.Combine("foo.txt");
+            using (var destinationStream = ftpConnection.OpenWrite(fileMp3Uri))
+            {
+                destinationStream.WriteByte(42);
+                destinationStream.WriteByte(7);
+                destinationStream.WriteByte(42);
+                return artist;
+            }
+        }
 
         /// <summary>
         /// Uploads the song to the CDN.
@@ -51,7 +70,14 @@ namespace BitShuva.Common
                 var artistDirExists = ftpConnection.DirectoryExists(artistDirectory);
                 if (!artistDirExists)
                 {
-                    ftpConnection.CreateDirectory(artistDirectory);
+                    try
+                    {
+                        ftpConnection.CreateDirectory(artistDirectory);
+                    }
+                    catch (Exception)
+                    {
+                        // Some FTPs don't report DirectoryExists correctly, then fail on CreateDirectory of existing.
+                    }
                 }
                 
                 using (var destinationStream = ftpConnection.OpenWrite(fileMp3Uri))
@@ -60,7 +86,7 @@ namespace BitShuva.Common
                     await sourceStream.CopyToAsync(destinationStream);
                 }                
 
-                return musicUri.Combine(fileName);
+                return fileMp3Uri.Combine(fileName);
             }
             catch (Exception error)
             {

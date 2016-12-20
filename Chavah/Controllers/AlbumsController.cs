@@ -63,14 +63,6 @@ namespace BitShuva.Controllers
             return existingAlbum;
         }
 
-        [Route("TestZanz")]
-        [HttpGet]
-        public string TestZanz()
-        {
-            return "OK";
-        }
-
-
         [Route("Get")]
         [HttpGet]
         public Task<Album> Get(string id)

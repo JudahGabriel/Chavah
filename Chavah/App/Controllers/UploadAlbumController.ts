@@ -18,11 +18,18 @@
 
         static filePickerKey = "AwdRIarCGT8COm0mkYX1Ez";
 
-        static $inject = ["artistApi", "albumApi", "$scope", "$sce"];
+        static $inject = [
+            "artistApi",
+            "albumApi",
+            "appNav",
+            "$scope",
+            "$sce"
+        ];
 
         constructor(
             artistApi: ArtistApiService,
             private albumApi: AlbumApiService,
+            private appNav: AppNavService,
             private $scope: ng.IScope,
             private $sce: ng.ISCEService) {
             artistApi.getAll().then(results => this.allArtists = results.items);
@@ -194,7 +201,7 @@
                 };
                 this.isUploading = true;
                 this.albumApi.upload(album)
-                    .then(albumId => window.location.href = `#/${albumId}`)
+                    .then(albumId => this.appNav.editAlbum(albumId))
                     .finally(() => this.isUploading = false);
             }
         }

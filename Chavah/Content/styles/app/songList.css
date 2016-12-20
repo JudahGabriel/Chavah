@@ -51,8 +51,8 @@
   padding: 2px;
 }
 .song-list .song-item img {
-  max-width: 100px;
-  max-height: 100px;
+  max-width: 125px;
+  max-height: 125px;
 }
 .song-list .song-item:hover {
   transform: scale(1.5) translate3d(5px, 0, 1px);
