@@ -27,6 +27,10 @@
             this.$location.url("/nowplaying");
         }
 
+        promptSignIn() {
+            this.$location.url("/promptsignin");
+        }
+
         register(attemptedEmail?: string) {
             if (attemptedEmail) {
                 this.$location.url(`/register/${encodeURIComponent(attemptedEmail)}`)

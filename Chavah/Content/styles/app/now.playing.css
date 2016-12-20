@@ -7,14 +7,16 @@
         bottom: 0;*/
   width: 50%;
   margin: auto;
-  height: 370px;
+  height: 365px;
   margin-top: 20px;
+  padding-left: 20px;
 }
 @media (max-width: 767px) {
   .now-playing-page .songs-container {
     height: 290px;
     width: 75%;
     margin-top: 0;
+    padding-left: 10px;
   }
 }
 .now-playing-page .song {
@@ -147,10 +149,10 @@
   color: #e9dd9a;
   padding-top: 15px;
 }
-.now-playing-page .expander .panel-heading .panel-title {
+.now-playing-page .expander .panel-title {
   font-size: 24px;
 }
-.now-playing-page .expander .panel-heading .panel-title .fa {
+.now-playing-page .expander .panel-title .fa {
   font-size: 36px;
   margin-top: -2px;
 }

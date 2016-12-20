@@ -110,30 +110,41 @@
         }
 
         dislikeSong() {
-            var currentSong = this.audioPlayer.song.getValue();
-            if (currentSong && currentSong.songLike !== SongLike.Disliked) {
-                currentSong.songLike = SongLike.Disliked;
-                this.likeApi.dislikeSong(currentSong.id)
-                    .then(rank => currentSong!.communityRank = rank);
-                this.songBatch.playNext();
+            if (this.requireSignIn()) {
+                var currentSong = this.audioPlayer.song.getValue();
+                if (currentSong && currentSong.songLike !== SongLike.Disliked) {
+                    currentSong.songLike = SongLike.Disliked;
+                    this.likeApi.dislikeSong(currentSong.id)
+                        .then(rank => currentSong!.communityRank = rank);
+                    this.songBatch.playNext();
+                }
             }
         }
 
         likeSong() {
-            var currentSong = this.audioPlayer.song.getValue();
-            if (currentSong && currentSong.songLike !== SongLike.Liked) {
-                currentSong.songLike = SongLike.Liked;
-                this.likeApi.likeSong(currentSong.id)
-                    .then(rank => currentSong!.communityRank = rank);
+            if (this.requireSignIn()) {
+                var currentSong = this.audioPlayer.song.getValue();
+                if (currentSong && currentSong.songLike !== SongLike.Liked) {
+                    currentSong.songLike = SongLike.Liked;
+                    this.likeApi.likeSong(currentSong.id)
+                        .then(rank => currentSong!.communityRank = rank);
+                }
             }
         }
 
         requestSong() {
-            if (this.accountApi.isSignedIn) {
+            if (this.requireSignIn()) {
                 this.appNav.showSongRequestDialog()
                     .result.then((song: Song | null) => this.songRequestDialogCompleted(song));
+            }
+        }
+
+        requireSignIn(): boolean {
+            if (this.accountApi.isSignedIn) {
+                return true;
             } else {
-                this.appNav.signIn();
+                this.appNav.promptSignIn();
+                return false;
             }
         }
 

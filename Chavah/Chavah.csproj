@@ -308,6 +308,13 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\Views\Donate.html" />
+    <Content Include="App\Views\DonateSuccess.html" />
+    <Content Include="App\Views\DonateCancelled.html" />
+    <Content Include="App\Views\PromptSignIn.html" />
+    <Content Include="Content\images\FavIcon192.png" />
+    <Content Include="Content\images\FavIcon48.png" />
+    <Content Include="Content\images\FavIcon96.png" />
     <Content Include="Scripts\es6-promise.js" />
     <Content Include="App\Views\ConfirmEmail.html" />
     <Content Include="App\Views\CreatePassword.html" />
@@ -564,6 +571,7 @@
     <Content Include="Views\Home\Migrate.cshtml" />
     <Content Include="Views\Home\AlbumArtMigrate.cshtml" />
     <Content Include="Scripts\jquery-2.2.4.min.map" />
+    <Content Include="WebAppManifest.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -582,6 +590,7 @@
     <TypeScriptCompile Include="App\Common\TemplatePaths.ts" />
     <TypeScriptCompile Include="App\Controllers\ConfirmEmailController.ts" />
     <TypeScriptCompile Include="App\Controllers\CreatePasswordController.ts" />
+    <TypeScriptCompile Include="App\Controllers\DonateController.ts" />
     <TypeScriptCompile Include="App\Controllers\EditAlbumController.ts" />
     <TypeScriptCompile Include="App\Controllers\EditArtistController.ts" />
     <TypeScriptCompile Include="App\Controllers\FooterController.ts" />
@@ -594,6 +603,7 @@
     <TypeScriptCompile Include="App\Controllers\ResetPasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\SignInController.ts" />
     <TypeScriptCompile Include="App\Controllers\SongListController.ts" />
+    <TypeScriptCompile Include="App\Controllers\SubmitSongEditController.ts" />
     <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />
     <TypeScriptCompile Include="App\Controllers\UploadAlbumController.ts" />
     <TypeScriptCompile Include="App\Directives\AudioStatusChanged.ts" />

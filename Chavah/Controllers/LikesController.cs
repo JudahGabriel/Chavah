@@ -50,13 +50,7 @@ namespace BitShuva.Controllers
             var song = await this.DbSession.LoadAsync<Song>(songId);
             if (user == null || song == null)
             {
-                var errorLog = new ChavahLog
-                {
-                    Message = "User updated like status, even though user or song wasn't found. UserID = " + (user == null ? "[null]" : user.Id) + ", SongID = " + (song == null ? "[null]" : song.Id)
-                };
-                await this.DbSession.StoreAsync(errorLog);
-                this.DbSession.AddRavenExpiration(errorLog, DateTime.UtcNow.AddDays(60));
-                throw new Exception("Couldn't find user or song. Check server log.");
+                throw new Exception($"User updated like status, even though user or song wasn't found. UserID = {user?.Id}, SongID = {song?.Id}");
             }
 
             var isReversal = false;

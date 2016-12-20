@@ -58,11 +58,15 @@
                 if (uri) {
                     this.audio.src = uri;
                     this.audio.load();
-                    this.audio.play();
+
+                    try {
+                        this.audio.play();
+                    } catch (error) {
+                        // This can happen on mobile when we try to play before user interaction. Don't worry about it; it will remain paused until the user clicks play.
+                        console.log("Unable to play audio", error);
+                    }
                 }
             }
-
-            
         }
 
         playSongById(songId: string) {
@@ -106,6 +110,11 @@
 
             this.songApi.getSongById(songId)
                 .then(song => {
+                    if (!song) {
+                        this.resume();
+                        return;
+                    }
+
                     var unwrappedSong = this.song.getValue();
                     if (unwrappedSong) {
                         this.playedSongs.unshift(unwrappedSong);
@@ -118,7 +127,6 @@
                         this.audio.load();
                         this.audio.pause();
                     }
-                    //this.$scope.$broadcast("songPlayed", song);
                 });
         }
 

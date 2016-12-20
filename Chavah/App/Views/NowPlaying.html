@@ -70,6 +70,13 @@
                 </div>
             </div>
 
+            <!--Reason we played text -->
+            <div>
+                <h4 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                    We're playing this song for you because {{vm.currentSong.reasonPlayedText}}.
+                </h4>
+            </div>
+
             <!--Lyrics expander-->
             <div class="panel-group expander lyrics-expander" role="tablist">
                 <div class="panel panel-default">
@@ -83,7 +90,7 @@
                         <pre class="panel-body" ng-show="vm.currentSong.lyrics" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">{{vm.currentSong.lyrics}}</pre>
                         <div class="panel-body" ng-hide="vm.currentSong.lyrics" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
                             No lyrics for this song yet.
-                            <a class="submit-lyrics" href="#" ng-href="{{'#/submitsongedit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground } : {}">
+                            <a class="submit-lyrics" href="#" ng-href="{{'#/SubmitSongEdit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground } : {}">
                                 Submit lyrics for this song
                             </a>
                         </div>
@@ -91,10 +98,26 @@
                 </div>
             </div>
 
-            <!--Reason we played text -->
-            <h4 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
-                We're playing this song for you because {{vm.currentSong.reasonPlayedText}}.
-            </h4>
+            <!--Donate to artist-->
+            <div class="panel-group expander support-expander" role="tablist">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}">
+                        <h3 class="panel-title text-center" ng-click="vm.currentSong.isSupportExpanded = !vm.currentSong.isSupportExpanded">
+                            Support {{vm.currentSong.artist}}
+                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isSupportExpanded, 'fa-angle-up': vm.currentSong.isSupportExpanded }"></i>
+                        </h3>
+                    </div>
+                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isSupportExpanded }" role="tabpanel">
+                        <div class="panel-body text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
+                            <br />
+                            <a href="#/donate" ng-href="{{vm.currentArtistDonateUrl}}" class="btn btn-primary"><i class="fa fa-paypal"></i> Donate to {{vm.currentSong.artist}}</a>
+                            <a href="#" target="_blank" ng-show="vm.currentSong.purchaseUri" ng-href="{{vm.currentSong.purchaseUri}}" class="btn btn-primary"><i class="fa fa-music"></i> Purchase {{vm.currentSong.artist}}'s music</a>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
 
         </div>
         <div class="col-sm-3 hidden-xs">

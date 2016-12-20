@@ -55,8 +55,8 @@
                 var currentSong = this.audioPlayer.song.getValue();
                 this.songApi.getSongById(pendingRequestedSongId, SongPick.SomeoneRequestedSong)
                     .then(song => {
-                        var isStillWaitingForSong = this.audioPlayer.song.getValue() === currentSong;
-                        if (isStillWaitingForSong) {
+                        var isStillWaitingForSong = this.audioPlayer.song.getValue() === currentSong;   
+                        if (isStillWaitingForSong && song) {
                             this.audioPlayer.playNewSong(song);
                         }
                     });

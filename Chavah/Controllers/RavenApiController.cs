@@ -35,7 +35,17 @@ namespace BitShuva.Controllers
         {
             using (DbSession)
             {
-                var result = await base.ExecuteAsync(controllerContext, cancellationToken);
+                HttpResponseMessage result;
+                try
+                {
+                    result = await base.ExecuteAsync(controllerContext, cancellationToken);
+                }
+                catch (Exception error)
+                {
+                    await TryLogSaveChangesError(error, $"Error executing controller action {controllerContext?.ControllerDescriptor?.ControllerName}.{controllerContext?.Request?.GetActionDescriptor()?.ActionName}");
+                    throw; // Throw, because we don't want to try to save changes below.
+                }
+
                 try
                 {
                     await DbSession.SaveChangesAsync();
@@ -43,7 +53,7 @@ namespace BitShuva.Controllers
                 }
                 catch (Exception error)
                 {
-                    await TryLogSaveChangesError(error);
+                    await TryLogSaveChangesError(error, "Error saving changes for {controllerContext?.ControllerDescriptor?.ControllerName}.{controllerContext?.Request?.GetActionDescriptor()?.ActionName}");
                 }
 
                 return result;
@@ -83,13 +93,13 @@ namespace BitShuva.Controllers
             return new HttpResponseException(HttpStatusCode.Unauthorized);
         }
 
-        private async Task TryLogSaveChangesError(Exception error)
+        private async Task TryLogSaveChangesError(Exception error, string message)
         {
             using (var errorSession = RavenContext.Db.OpenAsyncSession())
             {
                 try
                 {
-                    await ChavahLog.Error(errorSession, "Unable to save changes in controller.", error.ToString(), error);
+                    await ChavahLog.Error(errorSession, message, error.ToString(), error);
                     await errorSession.SaveChangesAsync();
                 }
                 catch(Exception)

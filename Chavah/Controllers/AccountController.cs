@@ -189,6 +189,7 @@ namespace BitShuva.Controllers
                 // Send confirmation email.
                 var confirmToken = await userManager.GenerateEmailConfirmationTokenAsync(user.Id);
                 await userManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken, Request.RequestUri));
+                await ChavahLog.Info(DbSession, $"Sending confirmation email to {email}", new { confirmToken = confirmToken });
                 return new RegisterResults
                 {
                     Success = true

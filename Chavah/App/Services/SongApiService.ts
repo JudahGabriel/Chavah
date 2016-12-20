@@ -14,10 +14,14 @@
             return this.httpApi.query("/api/songs/batch", null, SongApiService.songListConverter);
         }
 
-        getSongById(id: string, songPickReason?: SongPick): ng.IPromise<Song> {
-            var task = this.httpApi.query("/api/songs/id", { songId: id }, SongApiService.songConverter);
+        getSongById(id: string, songPickReason?: SongPick): ng.IPromise<Song | null> {
+            var task = this.httpApi.query("/api/songs/getById", { songId: id }, SongApiService.songOrNullConverter);
             if (songPickReason != null) {
-                task.then(song => song.reasonPlayed = songPickReason);
+                task.then(song => {
+                    if (song) {
+                        song.reasonPlayed = songPickReason;
+                    }
+                });
             }
             return task;
         }

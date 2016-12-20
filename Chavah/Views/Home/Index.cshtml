@@ -8,10 +8,12 @@
 
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta name="format-detection" content="telephone=no" />
-        
+
+        <meta name="mobile-web-app-capable" content="yes" />
+
+        @* See http://stackoverflow.com/questions/39749015/apple-mobile-web-app-status-bar-style-in-ios-10*@
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+                
         @*This allows fixed position elements to work properly*@ 
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -55,6 +57,10 @@
         <meta name="msapplication-square310x310logo" content="@Url.Content("~/content/images/Windows81Tile/large.png")" />
         <meta name="msapplication-notification" content="frequency=30;polling-uri=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=1;polling-uri2=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=2;polling-uri3=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=3;polling-uri4=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=4;polling-uri5=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=5; cycle=1" />
 
+        @* Web app manifest. Browsers use this to install the app to the desktop if the users wants to. *@
+        @* Commented out: we need to get this working. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/ *@
+        @*<link rel="manifest" href="/WebAppManifest.json" />*@
+
         @* Twitter card *@
         <meta name="twitter:creator" content="&#64;chavahradio">
         <meta name="twitter:site" content="&#64;chavahradio">
@@ -90,18 +96,6 @@
     </head>
 
     <body>
-        <script type="text/javascript">
-            window["BitShuva.Chavah.InitConfig"] = {
-                debug: @(Model.Debug ? bool.TrueString.ToLower() : bool.FalseString.ToLower()),
-                songId: "@(Model.Song != null ? Model.Song.Id : "")",
-                redirect: "@Model.Redirect",
-                userEmail: "@Model.UserEmail",
-                userRoles: "@string.Join(",", Model.UserRoles)".split(","),
-                jwt: "@Model.Jwt",
-                embed: @(Model.Embed ? bool.TrueString.ToLower() : bool.FalseString.ToLower())
-            };
-        </script>
-
         @* Attach an image that Facebook will use if someone links to a song. *@
         @if (!string.IsNullOrEmpty(Model.DescriptiveImageUrl))
         {
@@ -120,6 +114,17 @@
             <footer ng-include="footerPartial"></footer>
         </div>
 
+        <script type="text/javascript">
+            window["BitShuva.Chavah.InitConfig"] = {
+                debug: @(Model.Debug ? bool.TrueString.ToLower() : bool.FalseString.ToLower()),
+                songId: "@(Model.Song != null ? Model.Song.Id : "")",
+                redirect: "@Model.Redirect",
+                userEmail: "@Model.UserEmail",
+                userRoles: "@string.Join(",", Model.UserRoles)".split(","),
+                jwt: "@Model.Jwt",
+                embed: @(Model.Embed ? bool.TrueString.ToLower() : bool.FalseString.ToLower())
+            };
+        </script>
         @Styles.Render("~/bundles/bootstrap-theme")
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         @Styles.Render("~/bundles/app-styles")

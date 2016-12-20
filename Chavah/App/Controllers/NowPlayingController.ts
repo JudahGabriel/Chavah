@@ -49,6 +49,15 @@
             $scope.$on("$destroy", () => this.dispose());
         }
 
+        get currentArtistDonateUrl(): string {
+            var song = this.currentSong;
+            if (song && song.artist) {
+                return "#/donate/" + encodeURIComponent(song.artist);
+            }
+
+            return "#/donate";
+        }
+
         dispose() {
             if (this.recurringFetchHandle) {
                 clearTimeout(this.recurringFetchHandle);
@@ -90,17 +99,15 @@
         }
 
         setupRecurringFetches() {
-            var trendingTask = this.songApi.getTrendingSongs(3)
-                .then(results => this.updateSongList(this.trending, results));
-            var popularTask = this.songApi.getPopularSongs(3)
-                .then(results => this.updateSongList(this.popular, results));
-            var likesTask = this.songApi.getLikes(3)
-                .then(results => this.updateSongList(this.likes, results));
-
-            this.$q.all([trendingTask, popularTask, likesTask])
+            var songFetchesTask = this.songApi.getTrendingSongs(3)
+                .then(results => this.updateSongList(this.trending, results))
+                .then(() => this.songApi.getPopularSongs(3))
+                .then(results => this.updateSongList(this.popular, results))
+                .then(() => this.songApi.getLikes(3))
+                .then(results => this.updateSongList(this.likes, results))
                 .finally(() => {
                     this.fetchAlbumColors(this.getAllSongsOnScreen());
-
+                    
                     // Call ourselves every 30s.
                     this.recurringFetchHandle = setTimeout(() => this.setupRecurringFetches(), 30000);
                 });

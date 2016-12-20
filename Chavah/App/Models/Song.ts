@@ -34,6 +34,8 @@ namespace BitShuva.Chavah {
         clientId: string;
         isLyricsExpanded = false;
         isSongStatusExpanded = false;
+        isSupportExpanded = false;
+        isEditingLyrics = false;
 
         static readonly defaultSwatch: ISwatch = {
             getBodyTextColor: () => "black",

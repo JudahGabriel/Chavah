@@ -1,0 +1,42 @@
+﻿<section class="page donate-page" ng-controller="DonateController as vm">
+    <div class="row">
+        <div class="col-xs-12 col-sm-8 col-lg-6 col-sm-offset-2 col-lg-offset-3">
+            <h1>
+                Donate
+            </h1>
+
+            <p>
+                Thanks for supporting Messiah's musicians! Many of the artists on Chavah rely on your donations, so thank you so much for your generosity.
+            </p>
+            <p>
+                You can donate any amount, one-time or monthly. Your donation can support Chavah Messianic Radio, a particular artist, or all artists on Chavah.
+            </p>
+
+            <h4>
+                My donation should be distributed to:
+                <select class="form-control" ng-model="vm.donationTarget" ng-options="target for target in vm.donationTargetOptions">
+                </select>
+            </h4>
+            <br />
+
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_donations">
+                <input type="hidden" name="business" value="judahgabriel@gmail.com">
+                <input type="hidden" name="lc" value="US">
+                <input type="hidden" name="item_name" value="Chavah Messianic Radio">
+                <input type="hidden" name="item_number" value="{{'distribute to ' + vm.donationTarget}}">
+                <input type="hidden" name="no_note" value="0">
+                <input type="hidden" name="cn" value="Add a comment to Chavah Messianic Radio:">
+                <input type="hidden" name="no_shipping" value="1">
+                <input type="hidden" name="rm" value="1">
+                <input type="hidden" name="return" value="https://messianicradio.com/#/donatesuccess">
+                <input type="hidden" name="cancel_return" value="https://messianicradio.com/#/donatecancelled">
+                <input type="hidden" name="currency_code" value="USD">
+                <input type="hidden" name="bn" value="PP-DonationsBF:btn_donateCC_LG.gif:NonHosted">
+                <input type="hidden" name="artist" value="foobar">
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" style="border-width: 0;" uib-tooltip="This will take you to PayPal where you can specify the donation amount" tooltip-placement="right">
+                <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+            </form>
+        </div>
+    </div>
+</section>

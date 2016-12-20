@@ -304,10 +304,15 @@ namespace BitShuva.Controllers
             return batch;
         }
 
-        [Route("id/{*songId}")]
+        [Route("GetById")]
         public async Task<Song> GetSongById(string songId)
         {
             var song = await this.DbSession.LoadAsync<Song>(songId);
+            if (song == null)
+            {
+                return null;
+            }
+
             return await this.GetSongDto(song, SongPick.YouRequestedSong);
         }
 
@@ -587,7 +592,7 @@ namespace BitShuva.Controllers
             {
                 var songLike = await this.DbSession
                     .Query<Like>()
-                    .Customize(c => c.Include<Like>(l => l.SongId))
+                    //.Customize(c => c.Include<Like>(l => l.SongId))
                     .FirstOrDefaultAsync(s => s.UserId == user.Id && s.SongId == song.Id);
 
                 return song.ToDto(songLike.StatusOrNone(), pickReason);

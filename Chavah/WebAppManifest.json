@@ -1,0 +1,46 @@
+﻿{
+    "short_name": "Chavah",
+    "name": "Chavah Messianic Radio",
+    "icons": [
+        {
+            "src": "/content/images/FavIcon32.png",
+            "type": "image/png",
+            "sizes": "32x32"
+        },
+        {
+            "src": "/content/images/FavIcon48.png",
+            "type": "image/png",
+            "sizes": "48x48"
+        },
+        {
+            "src": "/content/images/FavIcon64.png",
+            "type": "image/png",
+            "sizes": "64x64"
+        },
+        {
+            "src": "/content/images/FavIcon96.png",
+            "type": "image/png",
+            "sizes": "96x96"
+        },
+        {
+            "src": "/content/images/FavIcon128.png",
+            "type": "image/png",
+            "sizes": "128x128"
+        },
+        {
+            "src": "/content/images/FavIcon192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/content/images/FavIcon256.png",
+            "type": "image/png",
+            "sizes": "256x256"
+        }
+    ],
+    "start_url": "/?src=homescreen/#/nowplaying",
+    "background_color": "#2f3d58",
+    "theme_color": "#2f3d58",
+    "display": "standalone",
+    "orientation": "portrait"
+}

@@ -43,6 +43,7 @@
             .when("/mylikes", createRoute("/App/Views/MyLikes.html"))
 
             // Sign in
+            .when("/promptsignin", createRoute("/App/Views/PromptSignIn.html"))
             .when("/signin", createRoute("/App/Views/SignIn.html"))
             .when("/password/:email", createRoute("/App/Views/Password.html"))
             .when("/forgotpassword", createRoute("/App/Views/ForgotPassword.html"))
@@ -50,6 +51,11 @@
             .when("/register/:email?", createRoute("/App/Views/Register.html"))
             .when("/confirmemail/:email/:confirmCode", createRoute("/App/Views/ConfirmEmail.html"))
             .when("/resetpassword/:email/:confirmCode", createRoute("/App/Views/ResetPassword.html"))
+
+            // Donate
+            .when("/donate/:artist?", createRoute("/App/Views/Donate.html"))
+            .when("/donatesuccess", createRoute("/App/Views/DonateSuccess.html"))
+            .when("/donatecancelled", createRoute("/App/Views/DonateCancelled.html"))
 
             // Admin
             .when("/admin/albums/upload", createRoute("/App/Views/UploadAlbum.html", true))
@@ -71,10 +77,7 @@
         }
 
         // Hide the splash UI.
-        var splash = document.querySelector(".splash");
-        if (splash) {
-            splash.remove();
-        }
+        $(".splash").remove();
 
         $rootScope.$on("$routeChangeStart", (_e: ng.IAngularEvent, next: any) => {
             var route: AppRoute = next["$$route"];

@@ -9,8 +9,10 @@
         }
 
         playSong(song: Song) {
-            song.reasonPlayed = SongPick.YouRequestedSong;
-            this.audioPlayer.playNewSong(song);
+            // Clone the song so that we assign a new clientId for tracking separately in ng repeaters.
+            var clone = new Song(song);
+            clone.reasonPlayed = SongPick.YouRequestedSong;
+            this.audioPlayer.playNewSong(clone);
         }
     }
 
