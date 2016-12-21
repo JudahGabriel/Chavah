@@ -117,15 +117,6 @@
 
             return deferred.promise;
         }
-        
-        zanzFetchNullArt() {
-            this.albumApi.zanzFetchNullArt()
-                .then(album => {
-                    if (album) {
-                        this.appNav.editAlbum(album.id);
-                    }
-                })
-        }
     }
 
     App.controller("EditAlbumController", EditAlbumController);

@@ -43,6 +43,12 @@ header .title {
     padding-left: 15px;
   }
 }
+header .title a,
+header .title a:hover,
+header .title a:active,
+header .title a:visited {
+  text-decoration: none;
+}
 header .title .hebrew {
   font-size: 48px;
 }

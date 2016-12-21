@@ -40,9 +40,10 @@ namespace BitShuva.Controllers
                 {
                     result = await base.ExecuteAsync(controllerContext, cancellationToken);
                 }
-                catch (Exception error)
+                catch (Exception error) 
+                    when (!(error is TaskCanceledException)) // We don't care if it's just a TaskCancelledException.
                 {
-                    await TryLogSaveChangesError(error, $"Error executing controller action {controllerContext?.ControllerDescriptor?.ControllerName}.{controllerContext?.Request?.GetActionDescriptor()?.ActionName}");
+                    await TryLogSaveChangesError(error, $"Error executing controller action {controllerContext?.ControllerDescriptor?.ControllerName}.{controllerContext?.Request?.GetActionDescriptor()?.ActionName}. Current user Id = {SessionToken?.Email}");
                     throw; // Throw, because we don't want to try to save changes below.
                 }
 
@@ -53,7 +54,7 @@ namespace BitShuva.Controllers
                 }
                 catch (Exception error)
                 {
-                    await TryLogSaveChangesError(error, "Error saving changes for {controllerContext?.ControllerDescriptor?.ControllerName}.{controllerContext?.Request?.GetActionDescriptor()?.ActionName}");
+                    await TryLogSaveChangesError(error, "Error saving changes for {controllerContext?.ControllerDescriptor?.ControllerName}.{controllerContext?.Request?.GetActionDescriptor()?.ActionName}. Current user Id = {SessionToken?.Email}");
                 }
 
                 return result;

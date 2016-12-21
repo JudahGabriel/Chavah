@@ -1,4 +1,5 @@
-﻿using BitShuva.Models;
+﻿using BitShuva.Common;
+using BitShuva.Models;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
@@ -10,6 +11,7 @@ using System.Web.Http;
 
 namespace BitShuva.Controllers
 {
+    [JwtSession]
     [RoutePrefix("api/playlists")]
     public class PlaylistsController : RavenApiController
     {

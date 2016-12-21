@@ -9,7 +9,11 @@
   margin: auto;
   height: 365px;
   margin-top: 20px;
-  padding-left: 20px;
+}
+@media (min-width: 1400px) {
+  .now-playing-page .songs-container {
+    padding-left: 20px;
+  }
 }
 @media (max-width: 767px) {
   .now-playing-page .songs-container {

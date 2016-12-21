@@ -11,6 +11,8 @@ namespace BitShuva.Models
         {
             PlayedForUserIds = new List<string>();
         }
+
+        public string Id { get; set; }
         public string UserId { get; set; }
         public string SongId { get; set; }
         public DateTime DateTime { get; set; }

@@ -50,7 +50,6 @@ namespace BitShuva.Chavah {
         constructor(song: Server.ISong) {
             angular.merge(this, song);
 
-            this.purchaseUri = song.purchaseUri ? song.purchaseUri : 'http://lmgtfy.com/?q=' + encodeURIComponent(this.artist + " " + this.album + " purchase");
             this.clientId = `${song.id}_${new Date().getTime() + Math.random()}`;
         }
 

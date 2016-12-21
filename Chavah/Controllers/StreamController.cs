@@ -16,7 +16,7 @@ namespace BitShuva.Controllers
         /// Returns an M3U file. Used for streaming services such as TuneIn radio.
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> TuneIn()
+        public async Task<ActionResult> TuneInV2()
         {
             var songs = await this.DbSession.Query<Song>()
                 .Customize(x => x.RandomOrdering())
@@ -33,7 +33,7 @@ namespace BitShuva.Controllers
             foreach (var song in songs)
             {
                 m3uBuilder.AppendLine($"# EXTINF:0, {song.Artist} - {song.Name}");
-                m3uBuilder.AppendLine(song.Uri.ToString());
+                m3uBuilder.AppendLine(song.Uri.AbsoluteUri);
             }
 
             var m3uBytes = Encoding.UTF8.GetBytes(m3uBuilder.ToString());

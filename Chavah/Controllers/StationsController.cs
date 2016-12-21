@@ -11,6 +11,7 @@ using System.Web.Http;
 
 namespace BitShuva.Controllers
 {
+    [JwtSession]
     [RoutePrefix("api/stations")]
     public class StationsController : RavenApiController
     {

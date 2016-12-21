@@ -227,6 +227,16 @@ namespace BitShuva.Controllers
                 };
             }
 
+            // We've seen some users click the confirm link multiple times. 
+            // If the user is already confirmed, just play along and say it's ok.
+            if (user.IsEmailConfirmed)
+            {
+                return new ConfirmEmailResult
+                {
+                    Success = true
+                };
+            }
+
             var confirmResult = await userManager.ConfirmEmailAsync(userId, confirmCode);
             if (!confirmResult.Succeeded)
             {

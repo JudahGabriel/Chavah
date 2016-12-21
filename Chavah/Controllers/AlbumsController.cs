@@ -101,7 +101,9 @@ namespace BitShuva.Controllers
         public async Task<IList<Album>> GetAlbumsForSongs(string songIdsCsv)
         {
             const int maxAlbumArtFetch = 30;
-            var songIds = songIdsCsv.Split(',').Take(maxAlbumArtFetch);
+            var songIds = songIdsCsv.Split(',')
+                .Where(s => s.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase)) // Somehow, some users are calling this with ApplicationUsers/[current email].
+                .Take(maxAlbumArtFetch);
             var songs = await DbSession.LoadAsync<Song>(songIds);
             var albumNames = songs
                 .Where(s => s != null && !string.IsNullOrEmpty(s.Album))

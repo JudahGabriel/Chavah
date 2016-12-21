@@ -12,6 +12,16 @@ body {
   background-repeat: no-repeat;
   height: 100%;
 }
+/*Custom scrollbar*/
+::-webkit-scrollbar {
+  width: 6px;
+  background-color: #f1f0ed;
+}
+/* Custom scrollbar track */
+/* Custom scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background: #2f3d58;
+}
 #currentPageContainer {
   padding: 100px 10px 100px 10px;
   max-width: 1520px;

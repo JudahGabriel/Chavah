@@ -39,10 +39,6 @@
             return this.httpApi.query("/api/albums/GetAlbumsForSongs", args, AlbumApiService.albumArraySelector);
         }
 
-        zanzFetchNullArt(): ng.IPromise<Album | null> {
-            return this.httpApi.query<Server.IAlbum | null>("/api/albums/NullColors", null, AlbumApiService.albumSelector);
-        }
-
         static albumSelector(serverObj: Server.IAlbum | null): Album | null {
             if (serverObj) {
                 return new Album(serverObj);

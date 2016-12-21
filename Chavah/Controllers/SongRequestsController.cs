@@ -13,6 +13,7 @@ using System.Web.Http;
 
 namespace BitShuva.Controllers
 {
+    [JwtSession]
     [RoutePrefix("api/requests")]
     public class SongRequestsController : RavenApiController
     {
@@ -27,7 +28,6 @@ namespace BitShuva.Controllers
 
             var recentSongRequests = await this.DbSession
                  .Query<SongRequest>()
-                 .Customize(x => x.WaitForNonStaleResultsAsOfNow(TimeSpan.FromSeconds(5)))
                  .OrderByDescending(d => d.DateTime)
                  .Take(10)
                  .ToListAsync();
@@ -36,29 +36,28 @@ namespace BitShuva.Controllers
             var validSongRequest = recentSongRequests
                 .OrderBy(d => d.DateTime) // OrderBy to give us the oldest of the recent song requests first.
                 .FirstOrDefault(s => s.DateTime >= recent && !s.PlayedForUserIds.Contains(user.Id));
+            var updatedSongRequest = default(SongRequest);
             if (validSongRequest != null)
             {
-                validSongRequest.PlayedForUserIds.Add(user.Id);
-                await this.DbSession.StoreAsync(validSongRequest);
-                await this.DbSession.SaveChangesAsync();
+                updatedSongRequest = await AddUserToSongRequestPlayedList(validSongRequest, user.Id);
             }
 
             // We've got a valid song request. Verify the user hasn't disliked this song.
-            if (validSongRequest != null)
+            if (updatedSongRequest != null)
             {
                 var userDislikesSong = await this.DbSession
                     .Query<Like>()
-                    .Where(l => l.UserId == user.Id && l.Status == LikeStatus.Dislike && l.SongId == validSongRequest.SongId)
+                    .Where(l => l.UserId == user.Id && l.Status == LikeStatus.Dislike && l.SongId == updatedSongRequest.SongId)
                     .AnyAsync();
                 if (!userDislikesSong)
                 {
-                    return validSongRequest.SongId;
+                    return updatedSongRequest.SongId;
                 }
             }
 
             return null;
         }
-        
+
         [HttpPost]
         [Route("requestsong")]
         public async Task RequestSong(string songId)
@@ -67,7 +66,7 @@ namespace BitShuva.Controllers
             var song = await this.DbSession.LoadAsync<Song>(songId);
             if (song != null && user != null)
             {
-                var requestExpiration = DateTime.UtcNow.AddDays(2);
+                var requestExpiration = DateTime.UtcNow.AddDays(10);
                 var hasRecentPendingRequest = await this.HasRecentPendingSongRequest(songId);
                 var hasManyRequestForArtist = await this.HasManyPendingSongRequestForArtist(song.Artist);
                 var hasManySongRequestsFromUser = await this.HasManyRecentSongRequestsFromUser(user.Id);
@@ -125,6 +124,31 @@ namespace BitShuva.Controllers
                 .Query<SongRequest>()
                 .CountAsync(s => s.UserId == userId && s.DateTime >= recent);
             return recentSongRequestsFromUser >= many;
+        }
+
+        private async Task<SongRequest> AddUserToSongRequestPlayedList(SongRequest req, string userId)
+        {
+            req.PlayedForUserIds.Add(userId);
+            try
+            {
+                await this.DbSession.SaveChangesAsync();
+                return req;
+            }
+            catch (Raven.Abstractions.Exceptions.ConcurrencyException)
+            {
+                // We get this error often as this song request will get updated frequently in a brief period of time.
+                // In such a case, try loading it directly from storage, rather than queried from index.
+                DbSession.Advanced.Evict(req);
+                var refreshedSongRequest = await DbSession.LoadAsync<SongRequest>(req.Id);
+                if (refreshedSongRequest != null && !refreshedSongRequest.PlayedForUserIds.Contains(userId))
+                {
+                    refreshedSongRequest.PlayedForUserIds.Add(userId);
+                    await DbSession.SaveChangesAsync();
+                    return refreshedSongRequest;
+                }
+
+                return null;
+            }
         }
     }
 }

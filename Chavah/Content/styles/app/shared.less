@@ -16,6 +16,21 @@ body {
     height: 100%;
 }
 
+/*Custom scrollbar*/
+::-webkit-scrollbar {
+    width: 6px;
+    background-color: rgb(241, 240, 237);
+}
+ 
+/* Custom scrollbar track */
+::-webkit-scrollbar-track {
+}
+ 
+/* Custom scrollbar thumb */
+::-webkit-scrollbar-thumb {
+    background: @brand-primary;
+}
+
 #currentPageContainer {
     padding: 100px 10px 100px 10px;
     max-width: 1520px; // Any wider and the layout looks bare

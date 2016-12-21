@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 
 namespace BitShuva.Controllers
 {
+    [JwtSession]
     [RoutePrefix("api/artists")]
     public class ArtistsController : RavenApiController
     {

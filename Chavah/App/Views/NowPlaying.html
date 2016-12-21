@@ -111,6 +111,8 @@
                         <div class="panel-body text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
                             <br />
                             <a href="#/donate" ng-href="{{vm.currentArtistDonateUrl}}" class="btn btn-primary"><i class="fa fa-paypal"></i> Donate to {{vm.currentSong.artist}}</a>
+                            <br class="visible-xs-block" />
+                            <br class="visible-xs-block" />
                             <a href="#" target="_blank" ng-show="vm.currentSong.purchaseUri" ng-href="{{vm.currentSong.purchaseUri}}" class="btn btn-primary"><i class="fa fa-music"></i> Purchase {{vm.currentSong.artist}}'s music</a>
                             <br />
                         </div>
