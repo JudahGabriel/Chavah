@@ -11,7 +11,6 @@
         ];
 
         constructor(private accountApi: AccountService) {
-
         }
 
         get registerUrl(): string {
@@ -23,6 +22,12 @@
         }
 
         resetPassword() {
+            var isValidEmail = this.email && this.email.includes("@");
+            if (!isValidEmail) {
+                this.resetErrorMessage = "Please enter your email so we can reset your password";
+                return;
+            }
+
             this.resetFields();
 
             if (!this.isBusy) {

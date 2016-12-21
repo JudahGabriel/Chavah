@@ -60,7 +60,7 @@ namespace BitShuva.Controllers
             var user = await UserManager.FindAsync(email, password);
             if (user == null)
             {
-                await ChavahLog.Info(DbSession, "Sign in failed for user " + email + "; couldn't find user with that email address.");
+                await ChavahLog.Info(DbSession, "Sign in failed for user " + email + "; bad user name or password.");
                 return new SignInResult
                 {
                     ErrorMessage = "Bad user name or password",

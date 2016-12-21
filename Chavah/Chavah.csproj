@@ -277,7 +277,7 @@
     <Compile Include="Models\Indexes\Songs_AverageCommunityRank.cs" />
     <Compile Include="Models\Indexes\Songs_RankStandings.cs" />
     <Compile Include="Models\Indexes\Songs_Search.cs" />
-    <Compile Include="Models\Indexes\Users_Dupes.cs" />
+    <Compile Include="Models\Indexes\Album_Dupes.cs" />
     <Compile Include="Models\Like.cs" />
     <Compile Include="Models\LikeDislikeCount.cs" />
     <Compile Include="Models\LikeStatus.cs" />
@@ -297,7 +297,7 @@
     <Compile Include="Models\StationSongChoice.cs" />
     <Compile Include="Models\Transformers\SongNameTransformer.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Models\UserDupe.cs" />
+    <Compile Include="Models\AlbumDupe.cs" />
     <Compile Include="Models\UserProfile.cs" />
     <Compile Include="Models\UserSongPreferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

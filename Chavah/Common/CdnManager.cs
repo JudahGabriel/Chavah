@@ -28,37 +28,16 @@ namespace BitShuva.Common
         public static readonly Uri albumArtUri = cdnAddress.Combine("album-art");
         public static readonly Uri artistImagesUri = cdnAddress.Combine("artist-images");
         
-        public static string TestZanz()
-        {
-            var artist = "__zanz " + new Random().Next(1000).ToString();
-            var artistDirectory = ftpMusicDirectory.Combine(artist);
-            var ftpConnection = CreateFtpConnection();
-            var artistDirExists = ftpConnection.DirectoryExists(artistDirectory);
-            if (!artistDirExists)
-            {
-                ftpConnection.CreateDirectory(artistDirectory);
-            }
-
-            var fileMp3Uri = artistDirectory.Combine("foo.txt");
-            using (var destinationStream = ftpConnection.OpenWrite(fileMp3Uri))
-            {
-                destinationStream.WriteByte(42);
-                destinationStream.WriteByte(7);
-                destinationStream.WriteByte(42);
-                return artist;
-            }
-        }
-
         /// <summary>
         /// Uploads the song to the CDN.
         /// </summary>
         /// <param name="song">The song whose MP3 to upload.</param>
         /// <param name="tempHttpAddress">The temporary HTTP address of the file. This is supplied by FilePickr. The file will be downloaded from here and moved to the CDN.</param>
         /// <returns>The HTTP URI to the MP3 file on the CDN.</returns>
-        public static async Task<Uri> UploadMp3ToCdn(Uri tempHttpAddress, string artist, string album, string songName)
+        public static async Task<Uri> UploadMp3ToCdn(Uri tempHttpAddress, string artist, string album, int songNumber, string songName)
         {
             var tempDownloadedFile = default(string);
-            var fileName = GetCdnSafeSongFileName(artist, album, songName);
+            var fileName = GetCdnSafeSongFileName(artist, album, songNumber, songName);
             var fileMp3Uri = ftpMusicDirectory.Combine(artist, fileName);
             try
             {
@@ -86,13 +65,11 @@ namespace BitShuva.Common
                     await sourceStream.CopyToAsync(destinationStream);
                 }                
 
-                return fileMp3Uri.Combine(fileName);
+                return musicUri.Combine(artist, fileName);
             }
             catch (Exception error)
             {
                 var errorMessage = $"Unable to upload MP3 to CDN. Attempted to upload \"{fileName}\" to {fileMp3Uri}. See inner exception for details.";
-                ////log.Error(error, errorMessage);
-
                 throw new Exception(errorMessage, error);
             }
             finally
@@ -218,7 +195,7 @@ namespace BitShuva.Common
         {
             var connection = CreateFtpConnection();
             var artistFolder = GetAlphaNumericEnglish(song.Artist);
-            var songFileName = GetCdnSafeSongFileName(song.Artist, song.Album, song.Name);
+            var songFileName = GetCdnSafeSongFileName(song.Artist, song.Album, song.Number, song.Name);
             var songUri = ftpMusicDirectory.Combine(artistFolder, songFileName);
             connection.DeleteFile(songUri);
         }
@@ -242,7 +219,7 @@ namespace BitShuva.Common
             return client;
         }
 
-        private static string GetCdnSafeSongFileName(string artist, string album, string songName)
+        private static string GetCdnSafeSongFileName(string artist, string album, int songNumber, string songName)
         {
             if (string.IsNullOrWhiteSpace(artist))
             {
@@ -256,8 +233,10 @@ namespace BitShuva.Common
             {
                 songName = "Unspecified Song Name";
             }
+
+            var songNumberPaddedByZero = songNumber > 0 && songNumber < 10 ? "0" + songNumber : songNumber.ToString();
             
-            return $"{GetAlphaNumericEnglish(artist)} - {GetAlphaNumericEnglish(album)} - {GetAlphaNumericEnglish(songName)}.mp3";
+            return $"{GetAlphaNumericEnglish(artist)} - {GetAlphaNumericEnglish(album)} - {songNumberPaddedByZero} - {GetAlphaNumericEnglish(songName)}.mp3";
         }
 
         public static string GetAlphaNumericEnglish(string input)
@@ -271,7 +250,7 @@ namespace BitShuva.Common
                 .Replace('ó', 'o')
                 .Replace('í', 'i')
                 .Replace('á', 'a');
-            var isAscii = new Func<char, bool>(c => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+            var isAscii = new Func<char, bool>(c => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ',' || c == '.');
             if (lower.All(c => isAscii(c) || char.IsNumber(c) || c == ' ' || c == '_' || c == '+'))
             {
                 return lower;

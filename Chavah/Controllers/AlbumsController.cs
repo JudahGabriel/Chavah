@@ -181,7 +181,7 @@ namespace BitShuva.Controllers
             var songNumber = 1;
             foreach (var albumSong in album.Songs)
             {
-                var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, albumSong.FileName);
+                var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
                 var song = new Song
                 {
                     Album = album.Name,
@@ -201,7 +201,7 @@ namespace BitShuva.Controllers
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()
-                .FirstOrDefaultAsync(a => a.Artist == album.Artist && a.Name == album.Name);
+                .FirstOrDefaultAsync(a => a.Name == album.Name && a.Artist == album.Artist);
             if (existingAlbum == null)
             {
                 existingAlbum = new Album();
