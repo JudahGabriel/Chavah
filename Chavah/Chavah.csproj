@@ -253,6 +253,7 @@
     <Compile Include="Controllers\ArtistsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LikesController.cs" />
+    <Compile Include="Controllers\OffersController.cs" />
     <Compile Include="Controllers\PlaylistsController.cs" />
     <Compile Include="Controllers\RavenApiController.cs" />
     <Compile Include="Controllers\RavenController.cs" />
@@ -313,6 +314,7 @@
     <Content Include="Content\images\FavIcon192.png" />
     <Content Include="Content\images\FavIcon48.png" />
     <Content Include="Content\images\FavIcon96.png" />
+    <Content Include="Content\offers\Micha%27el Eliyahu BenDavid - Kol Yonah - 10 - Rejoice in Yah.mp3" />
     <Content Include="Scripts\es6-promise.js" />
     <Content Include="App\Views\ConfirmEmail.html" />
     <Content Include="App\Views\CreatePassword.html" />
