@@ -68,7 +68,7 @@ namespace BitShuva.Controllers
             }
             else
             {
-                var newLikeStatus = new Like()
+                var newLikeStatus = new Like
                 {
                     Status = likeStatus,
                     SongId = songId,
@@ -99,32 +99,27 @@ namespace BitShuva.Controllers
             }
 
             // Update the community rank.
-            if (song != null)
-            {
-                var multiplier = isReversal ? 2 : isNoChange ? 0 : 1;
-                var changePositiveOrNegative = likeStatus == LikeStatus.Like ? 1 : -1;
-                song.CommunityRank = song.CommunityRank + (multiplier * changePositiveOrNegative);
-                user.Preferences.Update(song, likeStatus);
+            var multiplier = isReversal ? 2 : isNoChange ? 0 : 1;
+            var changePositiveOrNegative = likeStatus == LikeStatus.Like ? 1 : -1;
+            song.CommunityRank = song.CommunityRank + (multiplier * changePositiveOrNegative);
+            user.Preferences.Update(song, likeStatus);
 
-                var communityRankStats = await this.DbSession
-                    .Query<Song, Songs_AverageCommunityRank>()
-                    .As<Songs_AverageCommunityRank.Results>()
-                    .FirstOrDefaultAsync();
-                var averageSongRank = communityRankStats != null ? communityRankStats.RankAverage : 0;
-                var newStanding = Match.Value(song.CommunityRank)
-                    .With(v => v <= -5, CommunityRankStanding.VeryPoor)
-                    .With(v => v <= -1, CommunityRankStanding.Poor)
-                    .With(v => v <= averageSongRank * 2, CommunityRankStanding.Normal)
-                    .With(v => v <= averageSongRank * 4, CommunityRankStanding.Good)
-                    .With(v => v <= averageSongRank * 6, CommunityRankStanding.Great)
-                    .DefaultTo(CommunityRankStanding.Best)
-                    .Evaluate();
-                song.CommunityRankStanding = newStanding;
+            var communityRankStats = await this.DbSession
+                .Query<Song, Songs_AverageCommunityRank>()
+                .As<Songs_AverageCommunityRank.Results>()
+                .FirstOrDefaultAsync();
+            var averageSongRank = communityRankStats != null ? communityRankStats.RankAverage : 0;
+            var newStanding = Match.Value(song.CommunityRank)
+                .With(v => v <= -5, CommunityRankStanding.VeryPoor)
+                .With(v => v <= -1, CommunityRankStanding.Poor)
+                .With(v => v <= (averageSongRank * 1.5), CommunityRankStanding.Normal)
+                .With(v => v <= (averageSongRank * 3), CommunityRankStanding.Good)
+                .With(v => v <= (averageSongRank * 5), CommunityRankStanding.Great)
+                .DefaultTo(CommunityRankStanding.Best)
+                .Evaluate();
+            song.CommunityRankStanding = newStanding;
 
-                return song.CommunityRank;
-            }
-
-            return 0;
+            return song.CommunityRank;
         }
     }
 }

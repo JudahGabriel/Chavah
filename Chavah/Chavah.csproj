@@ -278,7 +278,6 @@
     <Compile Include="Models\Indexes\Songs_AverageCommunityRank.cs" />
     <Compile Include="Models\Indexes\Songs_RankStandings.cs" />
     <Compile Include="Models\Indexes\Songs_Search.cs" />
-    <Compile Include="Models\Indexes\Album_Dupes.cs" />
     <Compile Include="Models\Like.cs" />
     <Compile Include="Models\LikeDislikeCount.cs" />
     <Compile Include="Models\LikeStatus.cs" />
