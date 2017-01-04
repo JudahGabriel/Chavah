@@ -43,7 +43,7 @@ namespace BitShuva.Models
                 Details = details
             };
             await session.StoreAsync(log);
-            session.AddRavenExpiration(log, DateTime.UtcNow.AddDays(60));
+            session.AddRavenExpiration(log, DateTime.UtcNow.AddDays(30));
             return log;
         }
     }

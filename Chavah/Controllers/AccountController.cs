@@ -262,6 +262,7 @@ namespace BitShuva.Controllers
             var user = await DbSession.LoadAsync<ApplicationUser>(userId);
             if (user == null)
             {
+                await ChavahLog.Warn(DbSession, $"Tried to reset password for {email}, but couldn't find user with that email.");
                 return new ResetPasswordResult
                 {
                     Success = false,
@@ -275,6 +276,7 @@ namespace BitShuva.Controllers
             var mailMessage = SendGridEmailService.ResetPassword(email, passwordResetCode, Request.RequestUri);
             await userManager.SendEmailAsync(userId, mailMessage.Subject, mailMessage.Body);
 
+            await ChavahLog.Info(DbSession, $"Sending reset password email to {email}, reset code {passwordResetCode}");
             return new ResetPasswordResult
             {
                 Success = true,
@@ -294,6 +296,7 @@ namespace BitShuva.Controllers
             var user = await DbSession.LoadAsync<ApplicationUser>(userId);
             if (user == null)
             {
+                await ChavahLog.Warn(DbSession, $"Attempted to reset password {email}, but couldn't find a user with that email.");
                 return new ResetPasswordResult
                 {
                     Success = false,
@@ -303,6 +306,11 @@ namespace BitShuva.Controllers
 
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var passwordResetResult = await userManager.ResetPasswordAsync(userId, passwordResetCode, newPassword);
+
+            if (!passwordResetResult.Succeeded)
+            {
+                await ChavahLog.Warn(DbSession, $"Unable to reset password for {email} using code {passwordResetCode}", passwordResetResult);
+            }
 
             return new ResetPasswordResult
             {
