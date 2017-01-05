@@ -13,6 +13,14 @@
             return this.httpApi.post("/api/albums/upload", album);
         }
 
+        changeArt(albumId: string, artUri: string) {
+            var args = {
+                ablumId: albumId,
+                artUri: artUri
+            };
+            return this.httpApi.postUriEncoded("/api/albums/changeArt", args, AlbumApiService.albumSelector);
+        }
+
         get(id: string): ng.IPromise<Album | null> {
             var args = {
                 id: id

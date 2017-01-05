@@ -21,46 +21,33 @@ namespace BitShuva.Controllers
         /// <summary>
         /// Uploads the album art for a song. The album art will be applied to all songs matching the artist and album.
         /// </summary>
-        /// <param name="address">The HTTP address where the album art can be fetched. This is expected to be a temporary address created by FilePickr.</param>
+        /// <param name="albumArtAddress">The HTTP address where the album art can be fetched. This is expected to be a temporary address created by FilePickr.</param>
         /// <param name="fileName">The file name. Used for extracting the extension.</param>
         /// <param name="artist">The artist this album art applies to.</param>
         /// <param name="album">The name of the album this album art applies to.</param>
         [HttpPost]
-        [Route("uploadArt")]
-        public async Task<Album> UploadAlbumArt(string address, string fileName, string artist, string album)
+        [Route("changeArt")]
+        public async Task<Album> ChangeArt(string albumId, string artUri)
         {
             await this.RequireAdminUser();
 
-            var downloader = new System.Net.WebClient();
-            var unescapedFileName = Uri.UnescapeDataString(artist) + " - " + Uri.UnescapeDataString(album) + Path.GetExtension(fileName);
+            var album = await DbSession.LoadAsync<Album>(albumId);
+            if (album == null)
+            {
+                throw new ArgumentException("Couldn't find album with ID " + albumId);
+            }
 
-            var albumArtUri = await CdnManager.UploadAlbumArtToCdn(new Uri(address), artist, album, Path.GetExtension(fileName));
-            var existingAlbum = await this.DbSession
-                .Query<Album>()
-                .FirstOrDefaultAsync(a => a.Artist == artist && a.Name == album);
-            if (existingAlbum != null)
-            {
-                existingAlbum.AlbumArtUri = albumArtUri;
-            }
-            else
-            {
-                existingAlbum = new Album
-                {
-                    Name = album,
-                    Artist = artist,
-                    AlbumArtUri = albumArtUri
-                };
-                await this.DbSession.StoreAsync(existingAlbum);
-            }
+            var albumArtUri = await CdnManager.UploadAlbumArtToCdn(new Uri(artUri), album.Artist, album.Name, ".jpg");
+            album.AlbumArtUri = albumArtUri;
 
             // Update the songs on this album.
             var songsOnAlbum = await this.DbSession
                 .Query<Song>()
-                .Where(s => s.Artist == artist && s.Album == album)
+                .Where(s => s.Artist == album.Artist && s.Album == album.Name)
                 .ToListAsync();
             songsOnAlbum.ForEach(s => s.AlbumArtUri = albumArtUri);
 
-            return existingAlbum;
+            return album;
         }
 
         [Route("Get")]

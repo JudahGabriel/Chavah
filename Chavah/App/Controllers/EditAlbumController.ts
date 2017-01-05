@@ -3,6 +3,7 @@
 
         album: Album | null = null;
         allAlbumSwatches: IAlbumSwatch[] = [];
+        hasChangedAlbumArt = false;
 
         static $inject = [
             "albumApi",
@@ -55,21 +56,33 @@
 
         albumLoaded(album: Album | null) {
             if (album) {
-                this.album = album;                
-                this.loadCanvasSafeAlbumArt()
-                    .then(img => this.populateColorSwatches(img));
+                this.album = album;
+
+                if (album.albumArtUri) {
+                    this.loadCanvasSafeAlbumArt(album.albumArtUri)
+                        .then(img => this.populateColorSwatches(img));
+                }
             }
         }
         
-        save(): ng.IPromise<Album> | null {
+        save() {
             if (this.album && !this.album.isSaving) {
                 this.album.isSaving = true;
-                var task = this.albumApi.save(this.album!);
-                task
-                    .then(result => this.album = result)
-                    .finally(() => this.album!.isSaving = false);
-
-                return task;
+                var task: ng.IPromise<Album>;
+                if (this.hasChangedAlbumArt) {
+                    // We must .save first to ensure we have an album ID.
+                    this.albumApi.save(this.album)
+                        .then(result => this.albumApi.changeArt(result.id, this.album!.albumArtUri!))
+                        .then(result => {
+                            this.album = result;
+                            this.hasChangedAlbumArt = false;
+                        })
+                        .finally(() => this.album!.isSaving = false);
+                } else {
+                    this.albumApi.save(this.album)
+                        .then(result => this.album = result)
+                        .finally(() => this.album!.isSaving = false);
+                }
             }
 
             return null;
@@ -84,8 +97,28 @@
             return "";
         }
 
-        resetColorSwatches() {
-            this.loadCanvasSafeAlbumArt()
+        resetColorSwatches(imgUrl: string) {
+            this.loadCanvasSafeAlbumArt(imgUrl)
+                .then(img => this.populateColorSwatches(img));
+        }
+
+        chooseAlbumArt() {
+            filepicker.setKey(UploadAlbumController.filePickerKey)
+            var options: FilepickerMultipleFilePickOptions = {
+                extensions: [".jpg", ".png"]
+            };
+            filepicker.pick(
+                options,
+                (result: FilepickerInkBlob) => this.albumArtChosen(result),
+                (error) => console.log("Album art pick failed.", error));
+        }
+
+        albumArtChosen(albumArt: FilepickerInkBlob) {
+            this.hasChangedAlbumArt = true;
+            if (this.album) {
+                this.album.albumArtUri = albumArt.url;
+            }
+            this.loadCanvasSafeAlbumArt(albumArt.url)
                 .then(img => this.populateColorSwatches(img));
         }
 
@@ -106,15 +139,15 @@
             }
         }
 
-        loadCanvasSafeAlbumArt(): ng.IPromise<HTMLImageElement> {
+        loadCanvasSafeAlbumArt(imgUrl: string): ng.IPromise<HTMLImageElement> {
             var deferred = this.$q.defer<HTMLImageElement>();
             var img = document.createElement("img");
-            img.src = "/api/albums/art/imageOnDomain?imageUrl=" + encodeURIComponent(this.album!.albumArtUri);
+            img.src = "/api/albums/art/imageOnDomain?imageUrl=" + encodeURIComponent(imgUrl);
             img.addEventListener("load", () => {
                 deferred.resolve(img);
             });
             img.addEventListener("error", () => deferred.reject());
-
+                     
             return deferred.promise;
         }
     }

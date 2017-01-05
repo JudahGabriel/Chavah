@@ -70,6 +70,42 @@
             return deferred.promise;
         }
 
+        postUriEncoded<T>(relativeUrl: string, args: any, selector?: (rawResult: any) => T, showProgress = true): ng.IPromise<T> {
+            var deferred: ng.IDeferred<T>;
+            if (showProgress) {
+                deferred = this.loadingProgress.start<T>();
+            } else {
+                deferred = this.$q.defer<T>();
+            }
+
+            var absoluteUrl = `${this.apiBaseUrl}${relativeUrl}?`;
+            var config: ng.IRequestShortcutConfig = {
+                headers: this.createHeaders()
+            };
+
+            // Encode the args into the URL
+            for (var prop in args) {
+                var isFirstArgument = absoluteUrl.endsWith("?");
+                absoluteUrl += isFirstArgument ? "" : "&";
+                var arg = args[prop] as string | null;
+                var argAsString = arg ? arg.toString() : "";
+                var argEscaped = encodeURIComponent(argAsString);
+                absoluteUrl += `${prop}=${argEscaped}`;
+            }
+
+            var postTask = this.$http.post(absoluteUrl, null, config);
+            postTask.then((result: any) => {
+                var preppedResult = selector ? selector(result.data) : result.data;
+                deferred.resolve(preppedResult);
+            });
+            postTask.catch(error => {
+                this.onAjaxError(error, `Error saving ${relativeUrl}.`);
+                deferred.reject(error);
+            });
+
+            return deferred.promise;
+        }
+
         private createHeaders(): {} {
             var jwtAuthHeader = this.createJwtAuthHeader();
             if (jwtAuthHeader) {

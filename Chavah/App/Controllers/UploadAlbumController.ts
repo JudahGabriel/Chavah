@@ -36,7 +36,7 @@
         }
 
         chooseSongs() {
-            filepicker.setKey(UploadAlbumController.filePickerKey)
+            filepicker.setKey(UploadAlbumController.filePickerKey);
             var options: FilepickerMultipleFilePickOptions = {
                 extension: ".mp3"
             };

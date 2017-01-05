@@ -82,7 +82,7 @@
     export interface IAlbum {
         artist: string;
         name: string;
-        albumArtUri: string;
+        albumArtUri: string | null;
         id: string;
         backgroundColor: string;
         foregroundColor: string;

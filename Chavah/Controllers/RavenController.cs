@@ -12,7 +12,7 @@ namespace BitShuva.Controllers
     /// </summary>
     public abstract class RavenController : Controller
     {
-        public new IAsyncDocumentSession DbSession { get; set; }
+        public IAsyncDocumentSession DbSession { get; set; }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
