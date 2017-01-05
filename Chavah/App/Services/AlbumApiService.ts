@@ -15,7 +15,7 @@
 
         changeArt(albumId: string, artUri: string) {
             var args = {
-                ablumId: albumId,
+                albumId: albumId,
                 artUri: artUri
             };
             return this.httpApi.postUriEncoded("/api/albums/changeArt", args, AlbumApiService.albumSelector);
