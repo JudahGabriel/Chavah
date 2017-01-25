@@ -42,7 +42,7 @@
 
         .song-info {
             text-align: left;
-            opacity: 0;
+            opacity: .7;
             transition: all .2s ease-out;
             background-color: fadeOut(@brand-background, 10%);
             width: 100%;
@@ -54,13 +54,25 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-size: 9px;
+            font-size: 11px;
             padding: 2px;
         }
 
         img {
             max-width: 125px;
             max-height: 125px;
+
+            // on tablets, shrink the images down further
+            @media (max-width: @screen-md-max) {
+                max-width: 100px;
+                max-height: 100px;
+            }
+
+            // if we're in portrait mode on tablets, shrink even more
+            @media (max-width: 768px) {
+                max-width: 75px;
+                max-height: 75px;
+            }
         }
 
         &:hover {

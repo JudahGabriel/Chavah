@@ -35,7 +35,7 @@
 }
 .song-list .song-item .song-info {
   text-align: left;
-  opacity: 0;
+  opacity: .7;
   transition: all 0.2s ease-out;
   background-color: rgba(47, 61, 88, 0.9);
   width: 100%;
@@ -47,12 +47,24 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 9px;
+  font-size: 11px;
   padding: 2px;
 }
 .song-list .song-item img {
   max-width: 125px;
   max-height: 125px;
+}
+@media (max-width: 1199px) {
+  .song-list .song-item img {
+    max-width: 100px;
+    max-height: 100px;
+  }
+}
+@media (max-width: 768px) {
+  .song-list .song-item img {
+    max-width: 75px;
+    max-height: 75px;
+  }
 }
 .song-list .song-item:hover {
   transform: scale(1.5) translate3d(5px, 0, 1px);

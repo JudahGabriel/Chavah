@@ -21,10 +21,8 @@ namespace BitShuva.Controllers
             var songs = await this.DbSession.Query<Song>()
                 .Customize(x => x.RandomOrdering())
                 .Where(s => s.CommunityRank >= 25)
-                .Take(50)
-                .ToListAsync();
-
-            await ChavahLog.Info(this.DbSession, "TuneIn radio fetched");
+                .Take(10)
+                .ToListAsync();       
 
             // Build the M3U file.
             // M3U format is very simple: https://en.wikipedia.org/wiki/M3U

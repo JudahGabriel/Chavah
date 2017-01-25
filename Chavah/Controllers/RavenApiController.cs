@@ -43,7 +43,7 @@ namespace BitShuva.Controllers
                 catch (Exception error) 
                     when (!(error is TaskCanceledException)) // We don't care if it's just a TaskCancelledException.
                 {
-                    await TryLogSaveChangesError(error, $"Error executing controller action {controllerContext?.ControllerDescriptor?.ControllerName}.{controllerContext?.Request?.GetActionDescriptor()?.ActionName}. Current user Id = {SessionToken?.Email}");
+                    await TryLogSaveChangesError(error, $"Error executing controller action {controllerContext.Request?.RequestUri}. Current user Id = {SessionToken?.Email}");
                     throw; // Throw, because we don't want to try to save changes below.
                 }
 

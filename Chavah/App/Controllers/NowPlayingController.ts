@@ -186,13 +186,19 @@
                 return true;
             }
 
+            var artist = this.getUrlQueryOrNull("artist");
             var album = this.getUrlQueryOrNull("album");
+
+            if (artist && album) {
+                this.audioPlayer.playSongFromArtistAndAlbum(artist, album);
+                return true;
+            }
+
             if (album) {
                 this.audioPlayer.playSongFromAlbum(album);
                 return true;
             }
-
-            var artist = this.getUrlQueryOrNull("artist");
+            
             if (artist) {
                 this.audioPlayer.playSongFromArtist(artist);
                 return true;
@@ -211,7 +217,8 @@
                 if (match) {
                     var termValue = match.substr(match.indexOf("=") + 1);
                     if (termValue) {
-                        return termValue;
+                        var termValueWithoutPlus = termValue.split("+").join(" "); // Replace + with space.
+                        return decodeURIComponent(termValueWithoutPlus);
                     }
                 }
             }

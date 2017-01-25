@@ -277,7 +277,7 @@ namespace BitShuva.Controllers
         [Route("batch")]
         public async Task<IEnumerable<Song>> GetBatch()
         {
-            const int songsInBatch = 10;
+            const int songsInBatch = 5;
             var user = await this.GetCurrentUser();
             
             var songRankStandings = await this.DbSession
@@ -345,12 +345,17 @@ namespace BitShuva.Controllers
         [HttpGet]
         public async Task<Song> GetByArtistAndAlbum(string artist, string album)
         {
-            var song = await this.DbSession
+            var songOrNull = await this.DbSession
                     .Query<Song>()
                     .Customize(c => c.RandomOrdering())
-                    .FirstAsync(s => s.Album == album && s.Artist == artist);
+                    .FirstOrDefaultAsync(s => s.Album == album && s.Artist == artist);
+            if (songOrNull == null)
+            {
+                await ChavahLog.Warn(DbSession, "Couldn't find song by artist and album", new { Artist = artist, Album = album });
+                return null;
+            }
 
-            return await this.GetSongDto(song, SongPick.SongFromAlbumRequested);
+            return await this.GetSongDto(songOrNull, SongPick.SongFromAlbumRequested);
         }
         
         [Route("getByAlbum")]

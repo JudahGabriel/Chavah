@@ -61,7 +61,7 @@
   transform: scale(0.7) translateX(-160px);
   opacity: .5;
 }
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .now-playing-page .song:nth-child(4) {
     display: none;
   }
@@ -71,7 +71,7 @@
   transform: scale(0.6) translateX(-240px);
   opacity: .3;
 }
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .now-playing-page .song:nth-child(5) {
     display: none;
   }
