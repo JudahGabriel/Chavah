@@ -141,9 +141,15 @@
 
     .current-song-artist, .current-song-album {
         cursor: pointer;
-        display: inline-block;
-        margin-top: 5px;
-        margin-bottom: 5px;
+        padding-top: 0;
+        padding-bottom: 0;
+
+        h4 {
+            display: inline-block;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            color: @brand-primary;
+        }
     }
 
     .left-pane, .right-pane {

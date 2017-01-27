@@ -41,14 +41,20 @@
                 {{vm.currentSong.name}}
             </h1>
             <div class="text-center">
-                <h4 class="current-song-artist" ng-click="vm.playSongFromCurrentArtist()" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}" uib-tooltip="Click to play another {{vm.currentSong.artist}} song" tooltip-placement="right">
-                    {{vm.currentSong.artist}}
-                </h4>
+                <button class="btn btn-link current-song-artist" ng-click="vm.playSongFromCurrentArtist()" uib-tooltip="Click to play another {{vm.currentSong.artist}} song" tooltip-placement="right" role="button">
+                    <h4 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                        <span class="sr-only">Play another song from the artist</span>
+                        {{vm.currentSong.artist}}
+                    </h4>
+                </button>
             </div>
             <div class="text-center">
-                <h4 class="text-center current-song-album" ng-click="vm.playSongFromCurrentAlbum()" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}" uib-tooltip="Click to play another song from {{vm.currentSong.album}}" tooltip-placement="right">
-                    {{vm.currentSong.album}}
-                </h4>
+                <button class="btn btn-link current-song-album" ng-click="vm.playSongFromCurrentAlbum()" uib-tooltip="Click to play another song from {{vm.currentSong.album}}" tooltip-placement="right" role="button">
+                    <h4 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                        <span class="sr-only">Play another song from the album</span>
+                        {{vm.currentSong.album}}
+                    </h4>
+                </button>                
             </div>
             <br />
 
@@ -70,9 +76,26 @@
                 </div>
             </div>
 
+            <!--Song tags -->
+            <div class="text-center">
+                <h4 ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                    <i class="fa fa-tags"></i>
+                    <span class="sr-only">Song traits</span>
+                    <span ng-show="vm.currentSong.tags && vm.currentSong.tags.length">
+                        {{vm.currentSong.tags.join(', ')}}
+                    </span>
+                    <span ng-hide="vm.currentSong.tags && vm.currentSong.tags.length">
+                        <a class="submit-lyrics" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                            Submit tags for this song
+                        </a>
+                    </span>
+                </h4>
+            </div>
+
             <!--Reason we played text -->
             <div>
                 <h4 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                    <i class="fa fa-info-circle"></i>
                     We're playing this song for you because {{vm.currentSong.reasonPlayedText}}.
                 </h4>
             </div>
@@ -87,10 +110,10 @@
                         </h3>
                     </div>
                     <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isLyricsExpanded }" role="tabpanel">
-                        <pre class="panel-body" ng-show="vm.currentSong.lyrics" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">{{vm.currentSong.lyrics}}</pre>
+                        <pre class="panel-body" ng-show="vm.currentSong.lyrics" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">{{vm.currentSong.lyrics}}<br /><br /><a class="submit-lyrics" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground } : {}">Edit the lyrics for this song</a></pre>
                         <div class="panel-body" ng-hide="vm.currentSong.lyrics" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
                             No lyrics for this song yet.
-                            <a class="submit-lyrics" href="#" ng-href="{{'#/SubmitSongEdit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground } : {}">
+                            <a class="submit-lyrics" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground } : {}">
                                 Submit lyrics for this song
                             </a>
                         </div>

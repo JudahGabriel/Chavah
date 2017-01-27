@@ -47,7 +47,7 @@ namespace BitShuva.Models
             };
         }
 
-        public bool IsAdmin => this.Roles.Contains(ApplicationUser.AdminRole);
+        public bool IsAdmin() => this.Roles.Contains(ApplicationUser.AdminRole);
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

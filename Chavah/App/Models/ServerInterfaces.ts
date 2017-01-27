@@ -66,6 +66,24 @@
         fileName: string;
     }
 
+    export interface ISongEdit {
+        id: string;
+        status: SongEditStatus;
+        submitDate: string;
+        userId: string;
+        songId: string;
+        newArtist: string;
+        newAlbum: string;
+        newName: string;
+        newTags: string[];
+        newLyrics: string;
+        oldArtist: string;
+        oldAlbum: string;
+        oldLyrics: string;
+        oldName: string;
+        oldTags: string[];
+    }
+
     export interface IAlbumUpload {
         name: string,
         artist: string,

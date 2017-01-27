@@ -16,6 +16,7 @@
             "audioPlayer",
             "albumCache",
             "appNav",
+            "accountApi",
             "$q",
             "$scope"
         ];
@@ -26,6 +27,7 @@
             private audioPlayer: AudioPlayerService,
             private albumCache: AlbumCacheService,
             private appNav: AppNavService,
+            private accountApi: AccountService,
             private $q: ng.IQService,
             $scope: ng.IScope) {
 
@@ -56,6 +58,18 @@
             }
 
             return "#/donate";
+        }
+
+        getEditSongUrl(): string {
+            if (this.currentSong) {
+                if (this.accountApi.isSignedIn) {
+                    return this.appNav.getEditSongUrl(this.currentSong.id);
+                }
+
+                return this.appNav.promptSignInUrl;
+            }
+
+            return "#";
         }
 
         dispose() {

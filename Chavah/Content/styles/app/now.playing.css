@@ -126,9 +126,15 @@
 .now-playing-page .current-song-artist,
 .now-playing-page .current-song-album {
   cursor: pointer;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.now-playing-page .current-song-artist h4,
+.now-playing-page .current-song-album h4 {
   display: inline-block;
   margin-top: 5px;
   margin-bottom: 5px;
+  color: #2f3d58;
 }
 .now-playing-page .left-pane,
 .now-playing-page .right-pane {

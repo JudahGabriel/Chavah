@@ -1,6 +1,8 @@
 ﻿namespace BitShuva.Chavah {
     export class AppNavService {
 
+        readonly promptSignInUrl = "#/promptsignin";
+
         static $inject = [
             "audioPlayer",
             "templatePaths",
@@ -28,7 +30,7 @@
         }
 
         promptSignIn() {
-            this.$location.url("/promptsignin");
+            this.$location.url(this.promptSignInUrl.replace("#", ""));
         }
 
         register(attemptedEmail?: string) {
@@ -49,6 +51,10 @@
 
         editAlbum(albumId: string) {
             this.$location.url(`/admin/${albumId}`);
+        }
+
+        getEditSongUrl(songId: string): string {
+            return `/edit/${songId}`;
         }
 
         showSongRequestDialog(): ng.ui.bootstrap.IModalServiceInstance {

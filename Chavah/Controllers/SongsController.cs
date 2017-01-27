@@ -96,30 +96,6 @@ namespace BitShuva.Controllers
             };
         }
 
-        [Route("admin/list/{skip}/{take}")]
-        [HttpGet]
-        public async Task<PagedList<Song>> AdminSongs(int skip, int take)
-        {
-            await this.RequireAdminUser();
-
-            var totalCount = await this.DbSession.Query<Song>().CountAsync();
-            var results = await this.DbSession
-                .Query<Song>()
-                //.Customize(x => x.WaitForNonStaleResultsAsOfNow(TimeSpan.FromSeconds(5)))
-                .Skip(skip)
-                .Take(take)
-                .OrderByDescending(o => o.UploadDate)
-                .ToListAsync();
-
-            return new PagedList<Song>
-            {
-                Total = totalCount,
-                Items = results,
-                Skip = skip,
-                Take = take
-            };
-        }
-
         [HttpDelete]
         [Route("admin/delete/{*songId}")]
         public async Task Delete(string songId)
@@ -474,26 +450,15 @@ namespace BitShuva.Controllers
             return $"Looked at {songs.Count}, patched {patchedCount}";
         }
 
-        //[HttpPost]
-        //[Route("admin/upload")]
-        //public async Task UploadSong(SongUpload upload)
-        //{
-        //    await this.EnsureIsAdminUser();
+        [HttpPost]
+        [Route("audioFailed")]
+        public async Task<AudioErrorInfo> AudioFailed(AudioErrorInfo errorInfo)
+        {
+            errorInfo.UserId = this.SessionToken?.UserId;
+            await ChavahLog.Error(DbSession, "Audio playback failed", "", errorInfo);
+            return errorInfo;
+        }
 
-        //    // Upload process: 
-        //    // 1. User uploads a song to FilePickr, giving us an HTTP address to the MP3.
-        //    // 2. We store a new Song object in SongsController, sending the MP3's http address.
-        //    // 3. We then grab the file and push it to our CDN via FTP. 
-
-        //    var unescapedFileName = Uri.UnescapeDataString(upload.FileName);
-        //    var song = Song.FromFileName(unescapedFileName);
-        //    await this.Session.StoreAsync(song); // Gives us an Id, which is required for uploading to Cdn.
-
-        //    var mp3Uri = await song.UploadMp3ToCdn(upload.Address);
-        //    song.Uri = mp3Uri;
-        //    song.UploadDate = DateTime.Now;
-        //}
-        
         private async Task<Song> PickSongForUser(ApplicationUser user, IList<Songs_RankStandings.Results> songRankStandings)
         {
             var veryPoorRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.VeryPoor).Select(s => s.Count).FirstOrDefault();

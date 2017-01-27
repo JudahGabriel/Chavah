@@ -9,12 +9,17 @@
         readonly duration = new Rx.BehaviorSubject<number>(0);
         playedSongs: Song[] = [];
         private audio: HTMLAudioElement;
+        private audioErrors = new Rx.Subject<AudioErrorInfo>();
 
         private lastPlayedTime = 0;
 
         static $inject = ["songApi"];
         
         constructor(private songApi: SongApiService) {
+            // Listen for audio errors.
+            this.audioErrors
+                .throttle(10000) // If the CDN is down, we don't want to submit thousands of errors. Throttle it.
+                .subscribe(val => this.submitAudioError(val))
         }
         
         initialize(audio: HTMLAudioElement) {
@@ -149,7 +154,14 @@
 
         private erred(args: any) {
             this.status.onNext(AudioStatus.Erred);
-            console.log("Audio erred", this.audio.currentSrc, args);
+            console.log("Audio erred. Error code: ", this.audio.error, "Audio source: ", this.audio.currentSrc, "Error event: ", args);
+
+            var currentSong = this.song.getValue();
+            this.audioErrors.onNext({
+                errorCode: this.audio.error,
+                songId: currentSong ? currentSong.id : "",
+                trackPosition: this.audio.currentTime
+            });
         }
 
         private ended() {
@@ -184,6 +196,10 @@
                 this.remainingTimeText.onNext(remainingTime.format("m:ss"));
                 this.playedTimePercentage.onNext((100 / duration) * currentTimeFloored);
             }
+        }
+
+        private submitAudioError(val: AudioErrorInfo) {
+            this.songApi.songFailed(val);
         }
     }
 

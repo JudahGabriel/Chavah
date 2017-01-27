@@ -97,6 +97,10 @@
             return this.httpApi.post(`/api/songs/completed?songId=${songId}`, null);
         }
 
+        songFailed(error: AudioErrorInfo): ng.IPromise<any> {
+            return this.httpApi.post("/api/songs/audiofailed", error);
+        }
+
         private static songListConverter(songs: Server.ISong[]): Song[] {
             return songs.map(r => SongApiService.songConverter(r));
         }

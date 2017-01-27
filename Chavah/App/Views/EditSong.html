@@ -1,10 +1,61 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-	<meta charset="utf-8" />
-</head>
-<body>
+﻿<section class="submit-lyrics-page" ng-controller="EditSongController as vm">
+    <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+            <h3>Submit song lyrics and tags <br /><small class="text-muted">Thanks for helping us out and making Chavah better</small></h3>
 
-</body>
-</html>
+            <div class="row">
+                <div class="col-xs-12 col-sm-4">
+                    <img class="img-thumbnail img-responsive" ng-src="{{vm.song.albumArtUri}}" />
+                    <h3>{{vm.song.name}} <br /><span class="text-muted">by</span> {{vm.song.artist}}</h3>
+                </div>
+                <div class="col-xs-12 col-sm-8">
+                    <form ng-show="vm.song && !vm.isSaveSuccess && !vm.isSaveFail">
+                        <div class="form-group" ng-show="vm.isAdmin">
+                            <label for="nameInput">Song name</label>
+                            <input type="text" class="form-control" id="nameInput" placeholder="Song name" ng-model="vm.song.name">
+                        </div>
+                        <div class="form-group" ng-show="vm.isAdmin">
+                            <label for="artistInput">Artist</label>
+                            <input type="text" class="form-control" id="artistInput" placeholder="Artist" ng-model="vm.song.artist">
+                        </div>
+                        <div class="form-group" ng-show="vm.isAdmin">
+                            <label for="albumInput">Album</label>
+                            <input type="text" class="form-control" id="albumInput" placeholder="Album" ng-model="vm.song.album">
+                            <img class="img-thumbnail" ng-src="{{vm.song.albumArtUri}}" style="max-height: 100px;" />
+                        </div>
+                        <div class="form-group">
+                            <label for="lyricsInput">Lyrics</label>
+                            <textarea class="form-control" ng-model="vm.song.lyrics" rows="15" placeholder="Type the lyrics here" trigger-focus="vm.isLyricsFocused"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="tagsInput"><i class="fa fa-tag"></i> Tags</label>
+                            <input type="text" class="form-control" id="tagsInput" placeholder="piano, violin, male vocal, hebrew, psalms" ng-model="vm.tagsCsv">
+                            <p class="help-block"><i class="fa fa-info-circle"></i> Optional. Comma-separated list of song tags. Example: piano, male vocal, worship, hebrew, psalms</p>
+                        </div>
+
+                        <button class="btn btn-primary" ng-click="vm.submit()" ng-disabled="vm.isSaving"><i class="fa fa-save"></i> Submit</button>
+                    </form>
+
+                    <div ng-show="vm.isSaveSuccess">
+                        <h2>
+                            <i class="fa fa-check-circle text-success"></i> Submitted! Chavah thanks you (✿◠‿◠)
+                        </h2>
+                        <p>
+                            Your changes have been submitted and are under review by one of our moderators. If approved, your changes will be applied later today. Todah rabah!
+                        </p>
+                        <a class="btn btn-primary" href="#/"><i class="fa fa-arrow-left"></i> Go back to the music</a>
+                    </div>
+                    <div ng-show="vm.isSaveFail">
+                        <h2>
+                            <i class="fa fa-exclamation-circle text-danger"></i> There was a problem. :-(
+                        </h2>
+                        <p>
+                            We couldn't submit your changes. Make sure you're signed in. If the problem persists, contact chavah@messianicradio.com
+                        </p>
+                        <a class="btn btn-primary" href="#/"><i class="fa fa-arrow-left"></i> Go back to the music</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

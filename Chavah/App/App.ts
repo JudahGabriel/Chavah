@@ -37,10 +37,10 @@
             .when("/nowplaying", createRoute("/App/Views/NowPlaying.html"))
             .when("/trending", createRoute("/App/Views/Trending.html"))
             .when("/profile", createRoute("/App/Views/Profile.html"))
-            .when("/submitsongedit/songs/:numberId", createRoute("/App/Views/SubmitSongEdit.html"))
             .when("/popular", createRoute("/App/Views/Popular.html"))
             .when("/recent", createRoute("/App/Views/RecentSongs.html"))
             .when("/mylikes", createRoute("/App/Views/MyLikes.html"))
+            .when("/edit/songs/:id", createRoute("/App/Views/EditSong.html"))
 
             // Sign in
             .when("/promptsignin", createRoute("/App/Views/PromptSignIn.html"))
@@ -61,6 +61,7 @@
             .when("/admin/albums/upload", createRoute("/App/Views/UploadAlbum.html", true))
             .when("/admin/albums/:id", createRoute("/App/Views/EditAlbum.html", true))
             .when("/admin/artists/:artistName?", createRoute("/App/Views/EditArtist.html", true))
+            .when("/admin/songedits", createRoute("/App/views/ApproveSongEdits.html", true))
 
             .otherwise({
                 redirectTo: "/nowplaying"

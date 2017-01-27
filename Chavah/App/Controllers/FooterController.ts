@@ -69,7 +69,7 @@
         }
 
         get likeText(): string {
-            if (this.dislikesCurrentSong) {
+            if (this.likesCurrentSong) {
                 return "You have already liked this song. Chavah is playing it more often."
             }
             return "Like this song. Chavah will play this song, and others like it, more often.";

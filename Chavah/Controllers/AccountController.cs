@@ -78,7 +78,7 @@ namespace BitShuva.Controllers
             }
 
             var jsonWebTokenExpiration = staySignedIn ? DateTime.UtcNow.AddDays(365) : DateTime.UtcNow.AddDays(1);
-            var jsonWebToken = new JsonWebTokenService().WriteToken(user.Email, user.IsAdmin, jsonWebTokenExpiration);
+            var jsonWebToken = new JsonWebTokenService().WriteToken(user.Email, user.IsAdmin(), jsonWebTokenExpiration);
             var signInStatus = await SignInManager.PasswordSignInAsync(email, password, staySignedIn, shouldLockout: false);
             var result = new SignInResult
             {

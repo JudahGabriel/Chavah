@@ -83,7 +83,7 @@ namespace BitShuva.Controllers
         public async Task RequireAdminUser()
         {
             var user = await this.GetCurrentUser();
-            if (user == null || !user.IsAdmin)
+            if (user == null || !user.IsAdmin())
             {
                 throw NewUnauthorizedException();
             }

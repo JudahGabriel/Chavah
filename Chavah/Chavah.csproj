@@ -257,6 +257,7 @@
     <Compile Include="Controllers\PlaylistsController.cs" />
     <Compile Include="Controllers\RavenApiController.cs" />
     <Compile Include="Controllers\RavenController.cs" />
+    <Compile Include="Controllers\SongEditsController.cs" />
     <Compile Include="Controllers\SongRequestsController.cs" />
     <Compile Include="Controllers\SongsController.cs" />
     <Compile Include="Controllers\StationsController.cs" />
@@ -272,9 +273,11 @@
     <Compile Include="Models\ApplicationUserManager.cs" />
     <Compile Include="Models\Artist.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
+    <Compile Include="Models\AudioErrorInfo.cs" />
     <Compile Include="Models\CommunityRankStanding.cs" />
     <Compile Include="Models\ConfirmEmailResult.cs" />
     <Compile Include="Models\HomeViewModel.cs" />
+    <Compile Include="Models\Html5MediaError.cs" />
     <Compile Include="Models\Indexes\Songs_AverageCommunityRank.cs" />
     <Compile Include="Models\Indexes\Songs_RankStandings.cs" />
     <Compile Include="Models\Indexes\Songs_Search.cs" />
@@ -290,6 +293,8 @@
     <Compile Include="Models\ResetPasswordResult.cs" />
     <Compile Include="Models\SignInResult.cs" />
     <Compile Include="Models\Song.cs" />
+    <Compile Include="Models\SongEdit.cs" />
+    <Compile Include="Models\SongEditStatus.cs" />
     <Compile Include="Models\SongPick.cs" />
     <Compile Include="Models\SongRequest.cs" />
     <Compile Include="Models\SongUpload.cs" />
@@ -306,6 +311,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\Views\ApproveSongEdits.html" />
     <Content Include="App\Views\Donate.html" />
     <Content Include="App\Views\DonateSuccess.html" />
     <Content Include="App\Views\DonateCancelled.html" />
@@ -333,7 +339,6 @@
     <Content Include="App\Views\RequestSongModal.html" />
     <Content Include="App\Views\ResetPassword.html" />
     <Content Include="App\Views\SignIn.html" />
-    <Content Include="App\Views\SubmitSongEdit.html" />
     <Content Include="App\Views\Templates\ArtistList.html" />
     <Content Include="App\Views\Templates\SongList.html" />
     <Content Include="App\Views\Templates\SongRequestResult.html" />
@@ -587,6 +592,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="App\App.ts" />
     <TypeScriptCompile Include="App\Common\TemplatePaths.ts" />
+    <TypeScriptCompile Include="App\Controllers\ApproveSongEditsController.ts" />
     <TypeScriptCompile Include="App\Controllers\ConfirmEmailController.ts" />
     <TypeScriptCompile Include="App\Controllers\CreatePasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\DonateController.ts" />
@@ -602,15 +608,18 @@
     <TypeScriptCompile Include="App\Controllers\ResetPasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\SignInController.ts" />
     <TypeScriptCompile Include="App\Controllers\SongListController.ts" />
-    <TypeScriptCompile Include="App\Controllers\SubmitSongEditController.ts" />
+    <TypeScriptCompile Include="App\Controllers\EditSongController.ts" />
     <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />
     <TypeScriptCompile Include="App\Controllers\UploadAlbumController.ts" />
     <TypeScriptCompile Include="App\Directives\AudioStatusChanged.ts" />
+    <TypeScriptCompile Include="App\Directives\TriggerFocus.ts" />
     <TypeScriptCompile Include="App\Models\Album.ts" />
     <TypeScriptCompile Include="App\Models\AppRoute.ts" />
     <TypeScriptCompile Include="App\Models\Artist.ts" />
+    <TypeScriptCompile Include="App\Models\AudioErrorInfo.ts" />
     <TypeScriptCompile Include="App\Models\AudioStatus.ts" />
     <TypeScriptCompile Include="App\Models\CommunityRankStanding.ts" />
+    <TypeScriptCompile Include="App\Models\SongEditStatus.ts" />
     <TypeScriptCompile Include="App\Models\SongPick.ts" />
     <TypeScriptCompile Include="App\Models\User.ts" />
     <TypeScriptCompile Include="App\Models\HeaderRoute.ts" />
@@ -634,6 +643,7 @@
     <TypeScriptCompile Include="App\Services\LoadingProgressService.ts" />
     <TypeScriptCompile Include="App\Services\AccountService.ts" />
     <TypeScriptCompile Include="App\Services\SongBatchService.ts" />
+    <TypeScriptCompile Include="App\Services\SongEditService.ts" />
     <TypeScriptCompile Include="App\Services\SongRequestService.ts" />
     <TypeScriptCompile Include="App\Services\SongApiService.ts" />
     <TypeScriptCompile Include="App\Services\StationIdentifierService.ts" />
