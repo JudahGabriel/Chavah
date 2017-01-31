@@ -53,6 +53,7 @@ namespace BitShuva.Controllers
         public async Task<ActionResult> Embed()
         {
             var viewModel = await this.GetHomeViewModel();
+            viewModel.Embed = true;
             return View("Index", viewModel);
         }
 

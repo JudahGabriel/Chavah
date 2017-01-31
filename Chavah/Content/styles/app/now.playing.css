@@ -178,3 +178,21 @@
   font-weight: bold;
   text-decoration: underline;
 }
+.now-playing-page .share-expander .social-link {
+  background-color: white;
+  margin-right: 10px;
+  width: 37px;
+  height: 38px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 7px;
+}
+.now-playing-page .share-expander .social-link:hover {
+  text-decoration: none;
+}
+.now-playing-page .share-expander .social-link i {
+  vertical-align: top;
+  position: relative;
+  top: -4px;
+  left: -1px;
+}

@@ -35,7 +35,12 @@ namespace BitShuva.Chavah {
         isLyricsExpanded = false;
         isSongStatusExpanded = false;
         isSupportExpanded = false;
+        isShareExpanded = false;
         isEditingLyrics = false;
+        isShowingEmbedCode = false;
+        private _facebookShareUrl: string | null;
+        private _googlePlusShareUrl: string | null;
+        private _twitterShareUrl: string | null;
 
         static readonly defaultSwatch: ISwatch = {
             getBodyTextColor: () => "black",
@@ -105,6 +110,53 @@ namespace BitShuva.Chavah {
                 default:
                     return "Chavah plays random songs from time to time to see what kind of music you like";
             }
+        }
+
+        get facebookShareUrl(): string {
+            if (!this._facebookShareUrl) {
+                var name = `${this.artist} - ${this.name}`.replace(new RegExp("&", 'g'), "and"); // Yes, replace ampersand. Even though we escape it via encodeURIComponent, Facebook barfs on it.
+                var url = `https://messianicradio.com?song=${this.id}`;
+                var albumArtUrl = `https://messianicradio.com/api/albums/art/get?artist=${encodeURIComponent(this.artist)}&Album=${encodeURIComponent(this.album)}`;
+                this._facebookShareUrl = "https://www.facebook.com/dialog/feed?app_id=256833604430846" +
+                    `&link=${url}` +
+                    `&picture=${encodeURIComponent(albumArtUrl)}` +
+                    `&name=${encodeURIComponent(name)}` +
+                    `&description=${encodeURIComponent("On " + this.album)}` +
+                    `&caption=${encodeURIComponent("Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music")}` +
+                    `&redirect_uri=${encodeURIComponent("https://messianicradio.com/#/sharethanks")}`;
+            }
+            
+            return this._facebookShareUrl;
+        }
+
+        get twitterShareUrl(): string {
+            if (!this._twitterShareUrl) {
+                var tweetText = 'Listening to "' + this.artist + " - " + this.name + '"';
+                var url = "https://messianicradio.com/?song=" + this.id;
+                var via = "messianicradio";
+                this._twitterShareUrl = "https://twitter.com/share" +
+                    "?text=" + encodeURIComponent(tweetText) +
+                    "&url=" + encodeURIComponent(url) +
+                    "&via=" + encodeURIComponent(via);
+            }
+
+            return this._twitterShareUrl;
+        }
+
+        get googlePlusShareUrl(): string {
+            if (!this._googlePlusShareUrl) {
+                this._googlePlusShareUrl = "https://plus.google.com/share?url=" + encodeURI("https://messianicradio.com/?song=" + this.id);
+            }
+
+            return this._googlePlusShareUrl;
+        }
+
+        get shareUrl(): string {
+            return "https://messianicradio.com/?song=" + this.id;
+        }
+
+        getEmbedCode(): string {
+            return `<iframe style="border-top: medium none; height: 558px; border-right: medium none; width: 350px; border-bottom: medium none; border-left: medium none" src="http://messianicradio.com/home/embed?song=${this.id}" scrolling="none"></iframe>`;
         }
         
         updateFrom(other: Song) {

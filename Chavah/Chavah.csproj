@@ -316,6 +316,7 @@
     <Content Include="App\Views\DonateSuccess.html" />
     <Content Include="App\Views\DonateCancelled.html" />
     <Content Include="App\Views\PromptSignIn.html" />
+    <Content Include="App\Views\ShareThanks.html" />
     <Content Include="Content\images\FavIcon192.png" />
     <Content Include="Content\images\FavIcon48.png" />
     <Content Include="Content\images\FavIcon96.png" />
@@ -606,6 +607,7 @@
     <TypeScriptCompile Include="App\Controllers\RegisterController.ts" />
     <TypeScriptCompile Include="App\Controllers\RequestSongController.ts" />
     <TypeScriptCompile Include="App\Controllers\ResetPasswordController.ts" />
+    <TypeScriptCompile Include="App\Controllers\ShareThanksController.ts" />
     <TypeScriptCompile Include="App\Controllers\SignInController.ts" />
     <TypeScriptCompile Include="App\Controllers\SongListController.ts" />
     <TypeScriptCompile Include="App\Controllers\EditSongController.ts" />

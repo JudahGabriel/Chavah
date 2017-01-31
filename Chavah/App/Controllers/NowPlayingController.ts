@@ -15,6 +15,7 @@
             "songBatch",
             "audioPlayer",
             "albumCache",
+            "initConfig",
             "appNav",
             "accountApi",
             "$q",
@@ -26,6 +27,7 @@
             private songBatch: SongBatchService,
             private audioPlayer: AudioPlayerService,
             private albumCache: AlbumCacheService,
+            private initConfig: InitConfig,
             private appNav: AppNavService,
             private accountApi: AccountService,
             private $q: ng.IQService,
@@ -38,13 +40,19 @@
             // Recent plays we fetch once, at init. Afterwards, we update it ourselves.
             this.fetchRecentPlays();
             this.setupRecurringFetches();
-
-            // Play the next song if we don't already have one playing.
-            // We don't have one playing when first loading the UI.
-            var hasCurrentSong = this.audioPlayer.song.getValue();
-            if (!hasCurrentSong) {
-                if (!this.playSongInUrlQuery()) {
-                    this.songBatch.playNext();
+            
+            if (initConfig.embed) {
+                // If we're embedded on another page, queue up the song we're told to play.
+                // Don't play it automatically, though, because there may be multiple embeds on the same page.
+                
+            } else {
+                // Play the next song if we don't already have one playing.
+                // We don't have one playing when first loading the UI.
+                var hasCurrentSong = this.audioPlayer.song.getValue();
+                if (!hasCurrentSong) {
+                    if (!this.playSongInUrlQuery()) {
+                        this.songBatch.playNext();
+                    }
                 }
             }
 
@@ -58,6 +66,18 @@
             }
 
             return "#/donate";
+        }
+
+        get currentSongShareUrl(): string {
+            if (this.currentSong) {
+                if (this.currentSong.isShowingEmbedCode) {
+                    return this.currentSong.getEmbedCode();
+                }
+
+                return this.currentSong.shareUrl;
+            }
+
+            return "";
         }
 
         getEditSongUrl(): string {
@@ -219,6 +239,12 @@
             }
 
             return false;
+        }
+
+        copyShareUrl() {
+            var shareUrlInput = document.querySelector("#currentSongShareLink") as HTMLInputElement;
+            shareUrlInput.select();
+            document.execCommand("copy");
         }
 
         private getUrlQueryOrNull(term: string): string | null {

@@ -107,16 +107,6 @@ namespace BitShuva.Controllers
             return albums;
         }
 
-        [Route("NullColors")]
-        [HttpGet]
-        public async Task<Album> GetAlbumWithNullColors()
-        {
-            var album = await DbSession.Query<Album>()
-                .Customize(x => x.RandomOrdering())
-                .FirstOrDefaultAsync(a => a.BackgroundColor == null);
-            return album;
-        }
-
         /// <summary>
         /// Streams an image from another domain through our domain. 
         /// Needed for client-side canvas rendering of images on other domains (e.g. on our media CDN.)

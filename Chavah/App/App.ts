@@ -41,6 +41,7 @@
             .when("/recent", createRoute("/App/Views/RecentSongs.html"))
             .when("/mylikes", createRoute("/App/Views/MyLikes.html"))
             .when("/edit/songs/:id", createRoute("/App/Views/EditSong.html"))
+            .when("/sharethanks/:artist?", createRoute("/App/Views/ShareThanks.html"))
 
             // Sign in
             .when("/promptsignin", createRoute("/App/Views/PromptSignIn.html"))

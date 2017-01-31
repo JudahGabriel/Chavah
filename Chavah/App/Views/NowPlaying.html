@@ -100,6 +100,49 @@
                 </h4>
             </div>
 
+            <!--Share-->
+            <div class="panel-group expander share-expander" role="tablist">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}">
+                        <h3 class="panel-title text-center" ng-click="vm.currentSong.isShareExpaned = !vm.currentSong.isShareExpaned">
+                            <i class="fa fa-share" style="font-size: 22px;"></i> Share
+                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isShareExpaned, 'fa-angle-up': vm.currentSong.isShareExpaned }"></i>
+                        </h3>
+                    </div>
+                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isShareExpaned }" role="tabpanel">
+                        <div class="panel-body" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
+                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSong.facebookShareUrl}}" uib-tooltip="Share this song on Facebook" tooltip-append-to-body="true">
+                                <i class="fa fa-facebook-official fa-3x" style="color: rgb(59, 88, 152)"></i>
+                            </a>
+                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSong.twitterShareUrl}}" uib-tooltip="Tweet this song" tooltip-append-to-body="true">
+                                <i class="fa fa-twitter-square fa-3x" style="color: rgb(85, 172, 238)"></i>
+                            </a>
+                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSong.googlePlusShareUrl}}" uib-tooltip="Share this song on Google+" tooltip-append-to-body="true">
+                                <i class="fa fa-google-plus-square fa-3x" style="color: rgb(219, 68, 55)"></i>
+                            </a>
+                            <br />
+                            <br />
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default" type="button" uib-tooltip="Show the song link" tooltip-append-to-body="true" ng-click="vm.currentSong.isShowingEmbedCode = false" ng-class="{ 'active': !vm.currentSong.isShowingEmbedCode }">
+                                        <i class="fa fa-link"></i>
+                                    </button>
+                                    <button class="btn btn-default" type="button" uib-tooltip="Show the embed code" tooltip-append-to-body="true" ng-click="vm.currentSong.isShowingEmbedCode = true" ng-class="{ 'active': vm.currentSong.isShowingEmbedCode }">
+                                        <i class="fa fa-code"></i>
+                                    </button>
+                                </div>
+                                <input type="url" id="currentSongShareLink" class="form-control" ng-model="vm.currentSongShareUrl" onclick="this.select()" readonly="readonly" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" uib-tooltip="Copy" uib-popover="Copied!" popover-placement="right" popover-popup-close-delay="1500" popover-trigger="'outsideClick'" ng-click="vm.copyShareUrl()">
+                                        <i class="fa fa-copy" title="Copy the link to this song"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!--Lyrics expander-->
             <div class="panel-group expander lyrics-expander" role="tablist">
                 <div class="panel panel-default">

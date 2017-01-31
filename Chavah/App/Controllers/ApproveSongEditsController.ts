@@ -8,6 +8,10 @@
         currentEditOldCsv = "";
         currentEditNewCsv = "";
 
+        static $inject = [
+            "songEditApi"
+        ];
+
         constructor(private songEditApi: SongEditService) {
             this.songEditApi.getPendingEdits(20)
                 .then(results => this.pendingEditsLoaded(results));
@@ -46,14 +50,15 @@
                         if (result) {
                             this.removeSongEdit(result.id);
                         }
-                    });
+                    })
+                    .finally(() => this.isSaving = false);
             }
         }
 
         removeSongEdit(editId: string) {
             this.pendingEdits = this.pendingEdits.filter(e => e.id !== editId);
             if (this.currentEdit && this.currentEdit.id === editId) {
-                this.currentEdit = this.pendingEdits[0];
+                this.setCurrentEdit(this.pendingEdits[0]);
             }
         }
     }
