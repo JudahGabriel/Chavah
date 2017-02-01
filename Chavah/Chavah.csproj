@@ -556,17 +556,6 @@
     <Content Include="Scripts\rx.lite.js" />
     <Content Include="Scripts\tinycolor.min.js" />
     <Content Include="Scripts\vibrant.min.js" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Views\Web.config" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\ThanksForSharing.cshtml" />
     <Content Include="Scripts\angular.min.js.map" />
@@ -577,6 +566,13 @@
     <Content Include="Views\Home\AlbumArtMigrate.cshtml" />
     <Content Include="Scripts\jquery-2.2.4.min.map" />
     <Content Include="WebAppManifest.json" />
+    <Content Include="Web.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
