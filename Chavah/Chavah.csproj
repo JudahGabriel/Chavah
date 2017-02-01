@@ -346,7 +346,6 @@
     <Content Include="App\Views\Trending.html" />
     <Content Include="App\Views\UploadAlbum.html" />
     <Content Include="App_Readme\Elmah.txt" />
-    <Content Include="AudioTest.html" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\soundEffects\Silence1.mp3" />
@@ -493,6 +492,8 @@
     <Content Include="App_Readme\NProgressjs_LICENSE" />
     <Content Include="Content\styles\functions.less" />
     <Content Include="Content\styles\variables.less" />
+    <Content Include="AppSettings.Debug.Secrets.config" />
+    <Content Include="AppSettings.Release.Secrets.config" />
     <None Include="compilerconfig.json" />
     <Content Include="Content\styles\bootstrap.flatly.less" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -519,6 +520,8 @@
     <Content Include="Content\styles\app\songList.less" />
     <Content Include="Content\styles\app\requestSongModal.less" />
     <Content Include="Content\styles\nprogress.less" />
+    <Content Include="ConnnectionStrings.Debug.Secrets.config" />
+    <Content Include="ConnnectionStrings.Release.Secrets.config" />
     <None Include="Properties\PublishProfiles\bitshuva.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />

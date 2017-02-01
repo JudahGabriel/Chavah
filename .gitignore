@@ -259,3 +259,7 @@ paket-files/
 *.sln.iml
 /Chavah/App/App.js
 /Chavah/AudioTest.html
+/Chavah/ConnnectionStrings.Release.Secrets.config
+/Chavah/ConnnectionStrings.Debug.Secrets.config
+/Chavah/AppSettings.Release.Secrets.config
+/Chavah/AppSettings.Debug.Secrets.config
