@@ -3,7 +3,6 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
 using System;
-using System.Web.Routing;
 
 namespace BitShuva.Controllers
 {
@@ -12,6 +11,11 @@ namespace BitShuva.Controllers
     /// </summary>
     public abstract class RavenController : Controller
     {
+        //TODO: add the DI injection for the RavenDB
+        public RavenController()
+        {
+
+        }
         public IAsyncDocumentSession DbSession { get; set; }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -35,7 +39,7 @@ namespace BitShuva.Controllers
                     {
                         var saveTask = DbSession.SaveChangesAsync();
 
-                        // Tell the task we don't need to invoke on MVC's SynchronizationContext. 
+                        // Tell the task we don't need to invoke on MVC's SynchronizationContext.
                         // Otherwise we can end up with deadlocks. See http://code.jonwagner.com/2012/09/04/deadlock-asyncawait-is-not-task-wait/
                         saveTask.ConfigureAwait(continueOnCapturedContext: false);
                         saveTask.Wait(TimeSpan.FromSeconds(10));

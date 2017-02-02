@@ -248,7 +248,7 @@
     <Compile Include="Common\JwtSession.cs" />
     <Compile Include="Common\RssActionResult.cs" />
     <Compile Include="Common\SessionToken.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Api\AccountController.cs" />
     <Compile Include="Controllers\AlbumsController.cs" />
     <Compile Include="Controllers\ArtistsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

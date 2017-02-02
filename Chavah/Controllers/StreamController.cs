@@ -1,9 +1,6 @@
 ﻿using BitShuva.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Raven.Client;
 using System.Text;
@@ -22,7 +19,7 @@ namespace BitShuva.Controllers
                 .Customize(x => x.RandomOrdering())
                 .Where(s => s.CommunityRank >= 25)
                 .Take(10)
-                .ToListAsync();       
+                .ToListAsync();
 
             // Build the M3U file.
             // M3U format is very simple: https://en.wikipedia.org/wiki/M3U

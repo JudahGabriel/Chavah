@@ -12,6 +12,11 @@ namespace Chava.Tests
     [TestClass]
     public class RavenDbTests
     {
+        [TestInitialize]
+        public void TestInitialize()
+        {
+
+        }
         [TestMethod]
         public void TestMethod1()
         {
@@ -23,7 +28,7 @@ namespace Chava.Tests
 
 
                 IEnumerable<Song> songs = JsonConvert.DeserializeObject<IEnumerable<Song>>(json);
-                
+
                 using (IDocumentSession session = store.OpenSession())
                 {
 

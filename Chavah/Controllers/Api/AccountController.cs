@@ -1,16 +1,12 @@
 ﻿using BitShuva.Common;
 using BitShuva.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using Microsoft.AspNet.Identity.Owin;
 using System.Net.Http;
 using System.Web.Http;
 using System.Threading.Tasks;
 using BitShuva.Services;
-using BitShuva.Models.Indexes;
-using Raven.Client;
 
 namespace BitShuva.Controllers
 {
@@ -18,24 +14,26 @@ namespace BitShuva.Controllers
     [JwtSession]
     public class AccountController : RavenApiController
     {
-        private ApplicationSignInManager signInManager;
-        private ApplicationUserManager userManager;
+        //TODO:migrate to DI for controllers and also creation of unit tests
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
 
         public AccountController()
         {
 
         }
-        
+
+        #region Identity
         public ApplicationSignInManager SignInManager
         {
             get
             {
-                if (signInManager == null)
+                if (_signInManager == null)
                 {
-                    signInManager = Request.GetOwinContext().Get<ApplicationSignInManager>();
+                    _signInManager = Request.GetOwinContext().Get<ApplicationSignInManager>();
                 }
 
-                return signInManager;
+                return _signInManager;
             }
         }
 
@@ -43,14 +41,15 @@ namespace BitShuva.Controllers
         {
             get
             {
-                if (userManager == null)
+                if (_userManager == null)
                 {
-                    userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                    _userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
                 }
 
-                return userManager;
+                return _userManager;
             }
         }
+        #endregion
 
         [Route("SignIn")]
         [HttpPost]
@@ -227,7 +226,7 @@ namespace BitShuva.Controllers
                 };
             }
 
-            // We've seen some users click the confirm link multiple times. 
+            // We've seen some users click the confirm link multiple times.
             // If the user is already confirmed, just play along and say it's ok.
             if (user.IsEmailConfirmed)
             {

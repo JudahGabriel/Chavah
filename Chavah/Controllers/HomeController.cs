@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 
@@ -19,7 +18,7 @@ namespace BitShuva.Controllers
         public HomeController()
         {
             ViewBag.Title = "Chavah Messianic Radio";
-            ViewBag.Description = "iternet radio for Yeshua's disciples";
+            ViewBag.Description = "Internet radio for Yeshua's disciples";
             ViewBag.DescriptiveImageUrl = null;
             ViewBag.QueriedSong = null;
         }
@@ -33,7 +32,7 @@ namespace BitShuva.Controllers
             //{
             //    Session["Foo"] = 42;
             //}
-                    
+
             return View(viewModel);
         }
 
@@ -82,6 +81,7 @@ namespace BitShuva.Controllers
 
         public JsonResult GetLatestBlogPost()
         {
+            //TODO: move this to the web.config?
             var reader = XmlReader.Create("http://blog.messianicradio.com/feeds/posts/default");
             var feed = SyndicationFeed.Load(reader);
             var item = feed.Items.First();
@@ -186,7 +186,7 @@ namespace BitShuva.Controllers
             var properlyFormattedSongId = songQuery.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase) ?
                 songQuery :
                 "songs/" + songQuery;
-            
+
             return await this.DbSession.LoadAsync<Song>(properlyFormattedSongId);
         }
 

@@ -1,9 +1,5 @@
 ﻿using Raven.Client;
-using Raven.Client.Document;
-using Raven.Client.Indexes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -40,7 +36,7 @@ namespace BitShuva.Controllers
                 {
                     result = await base.ExecuteAsync(controllerContext, cancellationToken);
                 }
-                catch (Exception error) 
+                catch (Exception error)
                     when (!(error is TaskCanceledException)) // We don't care if it's just a TaskCancelledException.
                 {
                     await TryLogSaveChangesError(error, $"Error executing controller action {controllerContext.Request?.RequestUri}. Current user Id = {SessionToken?.Email}");

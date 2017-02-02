@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
-using Raven.Client;
-using System.Web.Http;
-using System.Net;
 using BitShuva.Controllers;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -21,7 +16,7 @@ namespace BitShuva.Common
 {
     /// <summary>
     /// Action filter that checks for the existence of a JSON web token in request's authorization header.
-    /// If found, it will be stored in the controller's SessionToken propery.
+    /// If found, it will be stored in the controller's SessionToken property.
     /// Intended to work with RavenApiControllers only.
     /// </summary>
     public class JwtSessionAttribute : Attribute, IActionFilter
@@ -35,7 +30,9 @@ namespace BitShuva.Common
             get { return false; }
         }
 
-        public async Task<HttpResponseMessage> ExecuteActionFilterAsync(HttpActionContext actionContext, CancellationToken cancellationToken, Func<Task<HttpResponseMessage>> continuation)
+        public async Task<HttpResponseMessage> ExecuteActionFilterAsync(HttpActionContext actionContext,
+                                                                        CancellationToken cancellationToken,
+                                                                        Func<Task<HttpResponseMessage>> continuation)
         {
             var bearerToken = HttpContext.Current.Request.Headers[authHeaderName];
             var sessionToken = default(SessionToken);
