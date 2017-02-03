@@ -249,20 +249,20 @@
     <Compile Include="Common\RssActionResult.cs" />
     <Compile Include="Common\SessionToken.cs" />
     <Compile Include="Controllers\Api\AccountController.cs" />
-    <Compile Include="Controllers\AlbumsController.cs" />
-    <Compile Include="Controllers\ArtistsController.cs" />
+    <Compile Include="Controllers\Api\AlbumsController.cs" />
+    <Compile Include="Controllers\Api\ArtistsController.cs" />
+    <Compile Include="Controllers\Api\LikesController.cs" />
+    <Compile Include="Controllers\Api\PlaylistsController.cs" />
+    <Compile Include="Controllers\Api\RavenApiController.cs" />
+    <Compile Include="Controllers\Api\SongEditsController.cs" />
+    <Compile Include="Controllers\Api\SongRequestsController.cs" />
+    <Compile Include="Controllers\Api\SongsController.cs" />
+    <Compile Include="Controllers\Api\StationsController.cs" />
+    <Compile Include="Controllers\Api\UsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\LikesController.cs" />
     <Compile Include="Controllers\OffersController.cs" />
-    <Compile Include="Controllers\PlaylistsController.cs" />
-    <Compile Include="Controllers\RavenApiController.cs" />
     <Compile Include="Controllers\RavenController.cs" />
-    <Compile Include="Controllers\SongEditsController.cs" />
-    <Compile Include="Controllers\SongRequestsController.cs" />
-    <Compile Include="Controllers\SongsController.cs" />
-    <Compile Include="Controllers\StationsController.cs" />
     <Compile Include="Controllers\StreamController.cs" />
-    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -520,12 +520,11 @@
     <Content Include="Content\styles\app\songList.less" />
     <Content Include="Content\styles\app\requestSongModal.less" />
     <Content Include="Content\styles\nprogress.less" />
-    <Content Include="ConnnectionStrings.Debug.Secrets.config" />
-    <Content Include="ConnnectionStrings.Release.Secrets.config" />
+    <Content Include="ConnectionStrings.Release.Secrets.config" />
+    <Content Include="ConnectionStrings.Debug.Secrets.config" />
     <None Include="Properties\PublishProfiles\bitshuva.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />
-    <Content Include="ReadMe.txt" />
     <Content Include="Scripts\angular-animate.js" />
     <Content Include="Scripts\angular-animate.min.js" />
     <Content Include="Scripts\angular-local-storage.js" />
