@@ -26,8 +26,6 @@ namespace BitShuva.Providers.Jwt
 
             string validAudience = ConfigurationManager.AppSettings["Tokens:Audience"];
 
-            string symmetricKeyAsBase64 = ConfigurationManager.AppSettings["Tokens:Key"];
-
             var key = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["Tokens:Key"]);
 
             var signingKey = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
@@ -36,11 +34,11 @@ namespace BitShuva.Providers.Jwt
 
             var expires = data.Properties.ExpiresUtc;
 
-            var token = new JwtSecurityToken(_issuer, 
-                                             validAudience, 
-                                             data.Identity.Claims, 
-                                             issued.Value.UtcDateTime, 
-                                             expires.Value.UtcDateTime, 
+            var token = new JwtSecurityToken(_issuer,
+                                             validAudience,
+                                             data.Identity.Claims,
+                                             issued.Value.UtcDateTime,
+                                             expires.Value.UtcDateTime,
                                              signingKey);
 
             var handler = new JwtSecurityTokenHandler();

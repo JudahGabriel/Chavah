@@ -15,41 +15,10 @@ namespace BitShuva.Controllers
     public class AccountController : RavenApiController
     {
         //TODO:migrate to DI for controllers and also creation of unit tests
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
 
         public AccountController()
         {
-
         }
-
-        #region Identity
-        public ApplicationSignInManager SignInManager
-        {
-            get
-            {
-                if (_signInManager == null)
-                {
-                    _signInManager = Request.GetOwinContext().Get<ApplicationSignInManager>();
-                }
-
-                return _signInManager;
-            }
-        }
-
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                if (_userManager == null)
-                {
-                    _userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-                }
-
-                return _userManager;
-            }
-        }
-        #endregion
 
         [Route("SignIn")]
         [HttpPost]

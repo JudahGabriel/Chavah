@@ -14,10 +14,33 @@ namespace BitShuva.Controllers
 {
     public abstract class RavenApiController : ApiController
     {
+
+        private ApplicationUser currentUser;
+        private ApplicationUserManager _AppUserManager;
+        private ApplicationSignInManager _SignInManager;
+
         public IAsyncDocumentSession DbSession { get; private set; }
         public SessionToken SessionToken { get; set; }
 
-        private ApplicationUser currentUser;
+        #region Identity
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+               return _SignInManager ?? Request.GetOwinContext().GetUserManager<ApplicationSignInManager>();
+            }
+        }
+
+        protected ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _AppUserManager ?? Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+        }
+
+        #endregion
+
 
         protected override void Initialize(HttpControllerContext controllerContext)
         {
