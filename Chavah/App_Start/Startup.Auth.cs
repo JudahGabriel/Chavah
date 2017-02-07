@@ -51,16 +51,16 @@ namespace BitShuva
             var key = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["Tokens:Key"]);
 
             // Api controllers with an [Authorize] attribute will be validated with JWT
-            app.UseJwtBearerAuthentication(
-               new JwtBearerAuthenticationOptions
-               {
-                   AuthenticationMode = AuthenticationMode.Active,
-                   AllowedAudiences = new[] { validAudience },
-                   IssuerSecurityTokenProviders = new IIssuerSecurityTokenProvider[]
-                   {
-                        new SymmetricKeyIssuerSecurityTokenProvider(issuer, key)
-                   }
-               });
+            //app.UseJwtBearerAuthentication(
+            //   new JwtBearerAuthenticationOptions
+            //   {
+            //       AuthenticationMode = AuthenticationMode.Active,
+            //       AllowedAudiences = new[] { validAudience },
+            //       IssuerSecurityTokenProviders = new IIssuerSecurityTokenProvider[]
+            //       {
+            //            new SymmetricKeyIssuerSecurityTokenProvider(issuer, key)
+            //       }
+            //   });
             #endregion
 
             #region Cookie authentication
