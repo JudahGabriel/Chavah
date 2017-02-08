@@ -15,7 +15,6 @@ namespace BitShuva.Controllers
     public class AccountController : RavenApiController
     {
         //TODO:migrate to DI for controllers and also creation of unit tests
-
         public AccountController()
         {
         }
@@ -69,8 +68,8 @@ namespace BitShuva.Controllers
             return result;
         }
 
-        [HttpPost]
         [Route("SignOut")]
+        [HttpPost]
         public void SignOut()
         {
             Request.GetOwinContext().Authentication.SignOut();
@@ -109,10 +108,11 @@ namespace BitShuva.Controllers
             user.IsEmailConfirmed = true;
         }
 
-        [HttpGet]
         [Route("GetUserWithEmail")]
+        [HttpGet]
         public async Task<ApplicationUser> GetUserWithEmail(string email)
         {
+            //TODO: have POCO object to be send back to the app requester
             var user = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + email);
             if (user != null)
             {
@@ -125,13 +125,13 @@ namespace BitShuva.Controllers
             return user;
         }
 
-        [HttpPost]
         [Route("Register")]
+        [HttpPost]
+        [AllowAnonymous]
         public async Task<RegisterResults> Register(string email, string password)
         {
             // See if we're already registered.
-            var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var existingUser = await userManager.FindByEmailAsync(email.ToLower());
+            var existingUser = await UserManager.FindByEmailAsync(email.ToLower());
             if (existingUser != null)
             {
                 return new RegisterResults
@@ -151,12 +151,12 @@ namespace BitShuva.Controllers
                 LastSeen = DateTime.UtcNow,
                 RegistrationDate = DateTime.UtcNow
             };
-            var creteUserResult = await userManager.CreateAsync(user, password);
+            var creteUserResult = await UserManager.CreateAsync(user, password);
             if (creteUserResult.Succeeded)
             {
                 // Send confirmation email.
-                var confirmToken = await userManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                await userManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken, Request.RequestUri));
+                var confirmToken = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                await UserManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken, Request.RequestUri));
                 await ChavahLog.Info(DbSession, $"Sending confirmation email to {email}", new { confirmToken = confirmToken });
                 return new RegisterResults
                 {
@@ -177,8 +177,8 @@ namespace BitShuva.Controllers
         /// <summary>
         /// Confirms a user's email.
         /// </summary>
-        [HttpPost]
         [Route("ConfirmEmail")]
+        [HttpPost]
         public async Task<ConfirmEmailResult> ConfirmEmail(string email, string confirmCode)
         {
             var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -222,8 +222,8 @@ namespace BitShuva.Controllers
         /// <summary>
         /// Begins the password reset process by generating a password reset token and sending the user an email with the link to reset the password.
         /// </summary>
-        [HttpPost]
         [Route("SendResetPasswordEmail")]
+        [HttpPost]
         public async Task<ResetPasswordResult> SendResetPasswordEmail(string email)
         {
             var userId = "ApplicationUsers/" + email.ToLower();
@@ -256,8 +256,8 @@ namespace BitShuva.Controllers
         /// <summary>
         /// Resets the user's password using the email and password reset code.
         /// </summary>
-        [HttpPost]
         [Route("ResetPassword")]
+        [HttpPost]
         public async Task<ResetPasswordResult> ResetPassword(string email, string passwordResetCode, string newPassword)
         {
             var userId = "ApplicationUsers/" + email.ToLower();

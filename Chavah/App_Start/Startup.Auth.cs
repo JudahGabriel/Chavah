@@ -1,17 +1,16 @@
 ﻿using BitShuva.Models;
 using BitShuva.Providers.Jwt;
-using System.Text;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
-
+using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Jwt;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 using System;
 using System.Configuration;
-using Microsoft.Owin.Security.Cookies;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security.Jwt;
+using System.Text;
 
 
 namespace BitShuva
@@ -51,16 +50,16 @@ namespace BitShuva
             var key = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["Tokens:Key"]);
 
             // Api controllers with an [Authorize] attribute will be validated with JWT
-            //app.UseJwtBearerAuthentication(
-            //   new JwtBearerAuthenticationOptions
-            //   {
-            //       AuthenticationMode = AuthenticationMode.Active,
-            //       AllowedAudiences = new[] { validAudience },
-            //       IssuerSecurityTokenProviders = new IIssuerSecurityTokenProvider[]
-            //       {
-            //            new SymmetricKeyIssuerSecurityTokenProvider(issuer, key)
-            //       }
-            //   });
+            app.UseJwtBearerAuthentication(
+               new JwtBearerAuthenticationOptions
+               {
+                   AuthenticationMode = AuthenticationMode.Active,
+                   AllowedAudiences = new[] { validAudience },
+                   IssuerSecurityTokenProviders = new IIssuerSecurityTokenProvider[]
+                   {
+                        new SymmetricKeyIssuerSecurityTokenProvider(issuer, key)
+                   }
+               });
             #endregion
 
             #region Cookie authentication

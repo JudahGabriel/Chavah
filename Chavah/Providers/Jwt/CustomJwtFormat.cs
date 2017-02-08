@@ -1,8 +1,11 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿//v5
+//using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security;
 using System;
 using System.Configuration;
-using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens;
+//v5
+//using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace BitShuva.Providers.Jwt
@@ -28,7 +31,12 @@ namespace BitShuva.Providers.Jwt
 
             var key = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["Tokens:Key"]);
 
-            var signingKey = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
+            //v5
+            //var signingKey = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
+
+            var signingKey = new SigningCredentials(new InMemorySymmetricSecurityKey(key),
+                                                        "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256",
+                                                        "http://www.w3.org/2001/04/xmlenc#sha256");
 
             var issued = data.Properties.IssuedUtc;
 

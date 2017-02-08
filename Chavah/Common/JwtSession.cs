@@ -6,11 +6,14 @@ using System.Web;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using BitShuva.Controllers;
-using Microsoft.IdentityModel.Tokens;
+//v5
+//using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Configuration;
-using System.IdentityModel.Tokens.Jwt;
+//v5
+//using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.IdentityModel.Tokens;
 
 namespace BitShuva.Common
 {
@@ -65,7 +68,10 @@ namespace BitShuva.Common
 
         private ClaimsPrincipal TryValidateJwtToken(string jwtString)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.Default.GetBytes(jwtSecureKey));
+            //v5
+            //var securityKey = new SymmetricSecurityKey(Encoding.Default.GetBytes(jwtSecureKey));
+            //v4 that works with Owin Middleware
+            var securityKey = new InMemorySymmetricSecurityKey(Encoding.Default.GetBytes(jwtSecureKey));
             var validationParams = new TokenValidationParameters
             {
                 IssuerSigningKey = securityKey,
