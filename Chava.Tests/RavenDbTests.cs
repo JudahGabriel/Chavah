@@ -11,21 +11,22 @@ namespace Chava.Tests
 {
     public class RavenDbTests
     {
+        private EmbeddableDocumentStore _store;
+
+        public RavenDbTests()
+        {
+            _store = new InMemoryDocumentStore().Store;
+        }
 
         [Fact]
         public void TestMethod1()
         {
             try
             {
-                var store = new EmbeddableDocumentStore { ConnectionStringName = "RavenDB" };
-                store.Configuration.Storage.Voron.AllowOn32Bits = true;
-                store.Initialize();
                 String json = File.ReadAllText(@"batch-songs.json");
-
-
                 IEnumerable<Song> songs = JsonConvert.DeserializeObject<IEnumerable<Song>>(json);
 
-                using (IDocumentSession session = store.OpenSession())
+                using (IDocumentSession session = _store.OpenSession())
                 {
 
                     foreach (var song in songs)
