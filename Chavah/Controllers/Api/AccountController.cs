@@ -14,9 +14,14 @@ namespace BitShuva.Controllers
     [JwtSession]
     public class AccountController : RavenApiController
     {
-        //TODO:migrate to DI for controllers and also creation of unit tests
-        public AccountController()
+        private readonly ApplicationUserManager UserManager;
+        private readonly ApplicationSignInManager SignInManager;
+
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
+            this.UserManager = userManager;
+            this.SignInManager = signInManager;
+            //this.authenticationManager = authenticationManager;
         }
 
         [Route("SignIn")]
@@ -47,6 +52,7 @@ namespace BitShuva.Controllers
             var jsonWebTokenExpiration = staySignedIn ? DateTime.UtcNow.AddDays(365) : DateTime.UtcNow.AddDays(1);
             var jsonWebToken = new JsonWebTokenService().WriteToken(user.Email, user.IsAdmin(), jsonWebTokenExpiration);
             var signInStatus = await SignInManager.PasswordSignInAsync(email, password, staySignedIn, shouldLockout: false);
+
             var result = new SignInResult
             {
                 Status = signInStatus,
@@ -72,7 +78,8 @@ namespace BitShuva.Controllers
         [HttpPost]
         public void SignOut()
         {
-            Request.GetOwinContext().Authentication.SignOut();
+            SignInManager.AuthenticationManager.SignOut();
+            //Request.GetOwinContext().Authentication.SignOut();
         }
 
         /// <summary>
@@ -181,7 +188,7 @@ namespace BitShuva.Controllers
         [HttpPost]
         public async Task<ConfirmEmailResult> ConfirmEmail(string email, string confirmCode)
         {
-            var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            //var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             // Make sure the user exists.
             var userId = "ApplicationUsers/" + email;
@@ -205,7 +212,7 @@ namespace BitShuva.Controllers
                 };
             }
 
-            var confirmResult = await userManager.ConfirmEmailAsync(userId, confirmCode);
+            var confirmResult = await UserManager.ConfirmEmailAsync(userId, confirmCode);
             if (!confirmResult.Succeeded)
             {
                 await ChavahLog.Error(DbSession, $"Unable to confirm email {email} using confirm code {confirmCode}", string.Join(",", confirmResult.Errors), confirmResult);
@@ -239,10 +246,10 @@ namespace BitShuva.Controllers
                 };
             }
 
-            var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var passwordResetCode = await userManager.GeneratePasswordResetTokenAsync(userId);
+            //var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var passwordResetCode = await UserManager.GeneratePasswordResetTokenAsync(userId);
             var mailMessage = SendGridEmailService.ResetPassword(email, passwordResetCode, Request.RequestUri);
-            await userManager.SendEmailAsync(userId, mailMessage.Subject, mailMessage.Body);
+            await UserManager.SendEmailAsync(userId, mailMessage.Subject, mailMessage.Body);
 
             await ChavahLog.Info(DbSession, $"Sending reset password email to {email}, reset code {passwordResetCode}");
             return new ResetPasswordResult
@@ -272,8 +279,8 @@ namespace BitShuva.Controllers
                 };
             }
 
-            var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var passwordResetResult = await userManager.ResetPasswordAsync(userId, passwordResetCode, newPassword);
+            //var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var passwordResetResult = await UserManager.ResetPasswordAsync(userId, passwordResetCode, newPassword);
 
             if (!passwordResetResult.Succeeded)
             {

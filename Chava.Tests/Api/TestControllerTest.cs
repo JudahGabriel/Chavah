@@ -1,14 +1,11 @@
 ﻿using BitShuva.Controllers;
 using Raven.Client.Embedded;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Raven.Client;
 using System.Web.Http.Results;
-using System.Net;
 using BitShuva.Models.Indexes;
 
 namespace Chava.Tests.Api

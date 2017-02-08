@@ -16,31 +16,9 @@ namespace BitShuva.Controllers
     {
 
         private ApplicationUser currentUser;
-        private ApplicationUserManager _AppUserManager;
-        private ApplicationSignInManager _SignInManager;
-
+      
         public IAsyncDocumentSession DbSession { get; private set; }
         public SessionToken SessionToken { get; set; }
-
-        #region Identity
-        public ApplicationSignInManager SignInManager
-        {
-            get
-            {
-               return _SignInManager ?? Request.GetOwinContext().GetUserManager<ApplicationSignInManager>();
-            }
-        }
-
-        protected ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _AppUserManager ?? Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-        }
-
-        #endregion
-
 
         protected override void Initialize(HttpControllerContext controllerContext)
         {
