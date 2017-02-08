@@ -1,28 +1,24 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Raven.Client.Document;
 using BitShuva.Models;
-using Raven.Client;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using Xunit;
+using Raven.Client;
+using Raven.Client.Embedded;
 
 namespace Chava.Tests
 {
-    [TestClass]
     public class RavenDbTests
     {
-        [TestInitialize]
-        public void TestInitialize()
-        {
 
-        }
-        [TestMethod]
+        [Fact]
         public void TestMethod1()
         {
             try
             {
-                var store = new DocumentStore { ConnectionStringName = "RavenDB" };
+                var store = new EmbeddableDocumentStore { ConnectionStringName = "RavenDB" };
+                store.Configuration.Storage.Voron.AllowOn32Bits = true;
                 store.Initialize();
                 String json = File.ReadAllText(@"batch-songs.json");
 
