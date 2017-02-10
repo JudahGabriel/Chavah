@@ -56,5 +56,13 @@ namespace BitShuva.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
+        {
+            var userIdentity = await manager.CreateIdentityAsync(this, authenticationType);
+            //TODO: Add custom user claims here
+
+            return userIdentity;
+        }
     }
 }

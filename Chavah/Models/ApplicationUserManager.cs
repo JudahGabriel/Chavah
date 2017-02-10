@@ -30,6 +30,7 @@ namespace BitShuva.Models
             var dbSession = context.Get<IAsyncDocumentSession>();
             var userStore = new UserStore<ApplicationUser>(dbSession);
             var manager = new ApplicationUserManager(userStore);
+            //TODO: remove this dependecies thru IoC
             manager.EmailService = new SendGridEmailService();
             manager.DbSession = dbSession;
 

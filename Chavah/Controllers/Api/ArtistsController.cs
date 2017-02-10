@@ -5,11 +5,8 @@ using Raven.Client.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Collections.ObjectModel;
 
 namespace BitShuva.Controllers
 {
@@ -18,6 +15,7 @@ namespace BitShuva.Controllers
     public class ArtistsController : RavenApiController
     {
         [Route("getByName")]
+        [AllowAnonymous]
         public async Task<Artist> GetByName(string artistName)
         {
             var artist = await this.DbSession
@@ -27,6 +25,7 @@ namespace BitShuva.Controllers
         }
 
         [Route("all")]
+        [AllowAnonymous]
         public async Task<PagedList<Artist>> GetAll(string search, int skip, int take)
         {
             var stats = default(RavenQueryStatistics);
@@ -50,8 +49,9 @@ namespace BitShuva.Controllers
             };
         }
 
-        [HttpGet]
         [Route("rank")]
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<dynamic> Rank(string artistName)
         {
             var songsByArtist = await this.DbSession.Query<Song>().Where(s => s.Artist == artistName).ToListAsync();
@@ -59,8 +59,8 @@ namespace BitShuva.Controllers
             {
                 var additionalSongs = await this.DbSession.Query<Song>().Where(s => s.Artist == artistName).Skip(128).ToListAsync();
                 additionalSongs.ForEach(s => songsByArtist.Add(s));
-            }            
-            
+            }
+
             var orderedByRank = songsByArtist.OrderByDescending(s => s.CommunityRank);
             return new
             {
@@ -93,9 +93,9 @@ namespace BitShuva.Controllers
         }
 
 
+        [Route("admin/delete/{*artistId}")]
         [HttpDelete]
         [Authorize]
-        [Route("admin/delete/{*artistId}")]
         public async Task Delete(string artistId)
         {
             await this.RequireAdminUser();
@@ -107,6 +107,7 @@ namespace BitShuva.Controllers
             }
         }
 
+        #region Private
         private async Task<List<string>> EnsureArtistImagesOnCdn(string artistName, IList<string> artistImages)
         {
             // Go through each of the images and make sure they're on the CDN.
@@ -150,5 +151,6 @@ namespace BitShuva.Controllers
 
             throw new InvalidOperationException("Programming bug. Couldn't find a valid artist image name.");
         }
+        #endregion
     }
 }
