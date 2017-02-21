@@ -1,9 +1,6 @@
 ﻿using Raven.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using BitShuva.Common;
 
 namespace BitShuva.Models
@@ -43,6 +40,9 @@ namespace BitShuva.Models
                 Details = details
             };
             await session.StoreAsync(log);
+            //record the session to the database
+            await session.SaveChangesAsync();
+
             session.AddRavenExpiration(log, DateTime.UtcNow.AddDays(30));
             return log;
         }

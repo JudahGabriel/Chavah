@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Diagnostics.Contracts;
-using BitShuva.Common;
-using System.Web.Hosting;
-using System.IO;
 
 namespace BitShuva.Models
 {
@@ -36,6 +31,7 @@ namespace BitShuva.Models
         public string Lyrics { get; set; }
         public int TotalPlays { get; set; }
 
+        #region Functions
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public SongPick ReasonPlayed { get; set; }
 
@@ -138,7 +134,9 @@ namespace BitShuva.Models
 
         public Uri GetSongShareLink()
         {
+            //TODO: move to station configuraitons
             return new Uri("http://messianicradio.com/?song=" + this.Id);
         }
+        #endregion
     }
 }

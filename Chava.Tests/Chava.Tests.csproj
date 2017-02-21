@@ -95,6 +95,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Api\TestControllerTest.cs" />
+    <Compile Include="Db\ChavaLogTests.cs" />
     <Compile Include="InMemoryDocumentStore.cs" />
     <Compile Include="RavenDbTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
