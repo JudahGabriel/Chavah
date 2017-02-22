@@ -1,4 +1,5 @@
 using BitShuva.Common;
+using BitShuva.Interfaces;
 using BitShuva.Models;
 using Chavah.Common;
 using Raven.Client;
@@ -15,12 +16,19 @@ namespace BitShuva.Controllers
 {
     public class HomeController : RavenController
     {
+        private ILoggerService _logger;
+
         public HomeController()
         {
             ViewBag.Title = "Chavah Messianic Radio";
             ViewBag.Description = "Internet radio for Yeshua's disciples";
             ViewBag.DescriptiveImageUrl = null;
             ViewBag.QueriedSong = null;
+        }
+
+        public HomeController(ILoggerService logger) : base()
+        {
+            _logger = logger;
         }
 
         [RequireHttps]
@@ -32,7 +40,7 @@ namespace BitShuva.Controllers
             //{
             //    Session["Foo"] = 42;
             //}
-
+            await _logger.Info($"HomeController Index on https",new { model = viewModel });
             return View(viewModel);
         }
 
@@ -43,7 +51,8 @@ namespace BitShuva.Controllers
         public async Task<ActionResult> Legacy()
         {
             var viewModel = await GetHomeViewModel();
-            await ChavahLog.Info(this.DbSession, "Loaded non-HTTPS Chavah via /home/legacy", Request.UserAgent);
+            await _logger.Info("Loaded non-HTTPS Chavah via /home/legacy", Request.UserAgent);
+            //await ChavahLog.Info(this.DbSession, "Loaded non-HTTPS Chavah via /home/legacy", Request.UserAgent);
             return View("Index", viewModel);
         }
 

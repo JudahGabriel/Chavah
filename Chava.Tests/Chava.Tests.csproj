@@ -95,10 +95,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Api\TestControllerTest.cs" />
-    <Compile Include="Db\ChavaLogTests.cs" />
     <Compile Include="InMemoryDocumentStore.cs" />
     <Compile Include="RavenDbTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\LoggerServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\packages\RavenDB.Database.3.5.1\tools\Raven.Studio.Html5.zip">
@@ -116,6 +116,9 @@
       <Project>{54f84c3d-133a-457b-9f4f-61555da0af10}</Project>
       <Name>Chavah</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Db\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

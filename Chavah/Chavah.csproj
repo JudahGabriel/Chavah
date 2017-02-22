@@ -301,6 +301,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\ILoggerService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Album.cs" />
@@ -346,6 +347,7 @@
     <Compile Include="Providers\Jwt\CustomOAuthProvider.cs" />
     <Compile Include="Providers\Jwt\ExtendedClaimsProvider.cs" />
     <Compile Include="Providers\Jwt\RolesFromClaims.cs" />
+    <Compile Include="Services\LoggerService.cs" />
     <Compile Include="Services\SendGridEmailService.cs" />
     <Compile Include="Services\JsonWebTokenService.cs" />
     <Compile Include="Startup.cs" />

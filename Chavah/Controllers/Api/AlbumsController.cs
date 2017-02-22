@@ -1,4 +1,5 @@
 ﻿using BitShuva.Common;
+using BitShuva.Interfaces;
 using BitShuva.Models;
 using Raven.Client;
 using Raven.Client.Linq;
@@ -18,6 +19,9 @@ namespace BitShuva.Controllers
     [RoutePrefix("api/albums")]
     public class AlbumsController : RavenApiController
     {
+        public AlbumsController(ILoggerService logger) : base(logger)
+        {
+        }
         /// <summary>
         /// Uploads the album art for a song. The album art will be applied to all songs matching the artist and album.
         /// </summary>

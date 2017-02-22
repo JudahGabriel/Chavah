@@ -1,4 +1,5 @@
 ﻿using BitShuva.Common;
+using BitShuva.Interfaces;
 using BitShuva.Models;
 using Raven.Client;
 using Raven.Client.Linq;
@@ -17,6 +18,10 @@ namespace BitShuva.Controllers
     [RoutePrefix("api/requests")]
     public class SongRequestsController : RavenApiController
     {
+        public SongRequestsController(ILoggerService logger) : base(logger)
+        {
+        }
+
         [Route("pending")]
         public async Task<string> GetPendingRequestedSongId()
         {

@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using Raven.Client;
 using Raven.Client.Linq;
+using BitShuva.Interfaces;
 
 namespace BitShuva.Controllers
 {
@@ -15,6 +16,12 @@ namespace BitShuva.Controllers
     [JwtSession]
     public class SongEditsController : RavenApiController
     {
+        private ILoggerService _logger;
+
+        public SongEditsController(ILoggerService logger) : base(logger)
+        {
+            _logger = logger;
+        }
         [Route("Edit")]
         [HttpPost]
         public async Task<SongEdit> EditSong(Song song)
@@ -28,7 +35,9 @@ namespace BitShuva.Controllers
             var existingSong = await this.DbSession.LoadAsync<Song>(song.Id);
             if (existingSong == null)
             {
-                throw new InvalidOperationException("Couldn't find " + song.Id);
+                string ex = $"Couldn't find: {song.Id}";
+                await _logger.Warn(ex);
+                throw new InvalidOperationException(ex);
             }
 
             var songEdit = new SongEdit(existingSong, song)
@@ -41,7 +50,8 @@ namespace BitShuva.Controllers
                 if (user.IsAdmin())
                 {
                     songEdit.Apply(existingSong);
-                    await ChavahLog.Info(DbSession, "Applied song edit", songEdit);
+                    await _logger.Info("Applied song edit", songEdit);
+                    //await ChavahLog.Info(DbSession, "Applied song edit", songEdit);
                 }
                 else
                 {

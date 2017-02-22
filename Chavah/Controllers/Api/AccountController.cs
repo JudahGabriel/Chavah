@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Threading.Tasks;
 using BitShuva.Services;
+using BitShuva.Interfaces;
 
 namespace BitShuva.Controllers
 {
@@ -16,12 +17,18 @@ namespace BitShuva.Controllers
     {
         private readonly ApplicationUserManager UserManager;
         private readonly ApplicationSignInManager SignInManager;
+        private ILoggerService _logger;
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public AccountController(ApplicationUserManager userManager, 
+                                 ApplicationSignInManager signInManager,
+                                 ILoggerService logger) : base(logger)
         {
             this.UserManager = userManager;
             this.SignInManager = signInManager;
             //this.authenticationManager = authenticationManager;
+
+            //logger serivce
+            _logger = logger;
         }
 
         [Route("SignIn")]
@@ -32,7 +39,8 @@ namespace BitShuva.Controllers
             var user = await UserManager.FindAsync(email, password);
             if (user == null)
             {
-                await ChavahLog.Info(DbSession, "Sign in failed for user " + email + "; bad user name or password.");
+                await _logger.Info($"Sign in failed for user {email} bad user name or password");
+                //await ChavahLog.Info(DbSession, "Sign in failed for user " + email + "; bad user name or password.");
                 return new SignInResult
                 {
                     ErrorMessage = "Bad user name or password",
@@ -68,7 +76,8 @@ namespace BitShuva.Controllers
             }
             else
             {
-                await ChavahLog.Info(DbSession, "Sign in failed for user " + email, signInStatus);
+                await _logger.Info($"Sign in failed for user {email}", signInStatus);
+                //await ChavahLog.Info(DbSession, "Sign in failed for user " + email, signInStatus);
             }
 
             return result;
@@ -103,13 +112,17 @@ namespace BitShuva.Controllers
             var removePasswordResult = await UserManager.RemovePasswordAsync(userId);
             if (!removePasswordResult.Succeeded)
             {
-                throw new Exception("Unable to remove password. " + string.Join(Environment.NewLine, removePasswordResult.Errors));
+                string ex = $"Unable to remove password. {string.Join(Environment.NewLine, removePasswordResult.Errors)}";
+                await _logger.Error("Password Removal",ex);
+                throw new Exception(ex);
             }
 
             var addPasswordResult = await UserManager.AddPasswordAsync(userId, password);
             if (!addPasswordResult.Succeeded)
             {
-                throw new Exception("Unable to add password. " + string.Join(Environment.NewLine, addPasswordResult.Errors));
+                string ex = $"Unable to add password. {string.Join(Environment.NewLine, addPasswordResult.Errors)}";
+                await _logger.Error("Password Add", ex);
+                throw new Exception(ex);
             }
             user.RequiresPasswordReset = false;
             user.IsEmailConfirmed = true;
@@ -119,17 +132,26 @@ namespace BitShuva.Controllers
         [HttpGet]
         public async Task<ApplicationUser> GetUserWithEmail(string email)
         {
-            //TODO: have POCO object to be send back to the app requester
-            var user = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + email);
-            if (user != null)
+            try
             {
-                // Remove the user from the session, as we're going to clear out the password hash for security reasons before sending it to the user.
-                DbSession.Advanced.Evict(user);
-                user.PasswordHash = "";
-                user.SecurityStamp = "";
-            }
+                //TODO: have POCO object to be send back to the app requester
+                var user = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + email);
+                if (user != null)
+                {
+                    // Remove the user from the session, as we're going to clear out the password hash for security reasons before sending it to the user.
+                    DbSession.Advanced.Evict(user);
+                    user.PasswordHash = "";
+                    user.SecurityStamp = "";
+                }
 
-            return user;
+                return user;
+            }
+            catch (Exception ex)
+            {
+                await _logger.Error("GetUserWithEmail", ex.ToString());
+                throw;
+            }
+           
         }
 
         [Route("Register")]
@@ -164,7 +186,9 @@ namespace BitShuva.Controllers
                 // Send confirmation email.
                 var confirmToken = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                 await UserManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken, Request.RequestUri));
-                await ChavahLog.Info(DbSession, $"Sending confirmation email to {email}", new { confirmToken = confirmToken });
+
+                await _logger.Info($"Sending confirmation email to {email}", new { confirmToken = confirmToken });
+                //await ChavahLog.Info(DbSession, $"Sending confirmation email to {email}", new { confirmToken = confirmToken });
                 return new RegisterResults
                 {
                     Success = true
@@ -173,7 +197,8 @@ namespace BitShuva.Controllers
             else
             {
                 // Registration failed.
-                await ChavahLog.Warn(DbSession, "Register new user failed.", creteUserResult);
+                await _logger.Warn("Register new user failed.", creteUserResult);
+                //await ChavahLog.Warn(DbSession, "Register new user failed.", creteUserResult);
                 return new RegisterResults
                 {
                     ErrorMessage = string.Join(",", creteUserResult.Errors)
@@ -215,10 +240,12 @@ namespace BitShuva.Controllers
             var confirmResult = await UserManager.ConfirmEmailAsync(userId, confirmCode);
             if (!confirmResult.Succeeded)
             {
-                await ChavahLog.Error(DbSession, $"Unable to confirm email {email} using confirm code {confirmCode}", string.Join(",", confirmResult.Errors), confirmResult);
+                await _logger.Error($"Unable to confirm email {email} using confirm code {confirmCode}", string.Join(",", confirmResult.Errors), confirmResult);
+                //await ChavahLog.Error(DbSession, $"Unable to confirm email {email} using confirm code {confirmCode}", string.Join(",", confirmResult.Errors), confirmResult);
             }
 
-            await ChavahLog.Info(DbSession, $"Successfully confirmed new account for {email}");
+            await _logger.Info($"Successfully confirmed new account for {email}");
+            //await ChavahLog.Info(DbSession, $"Successfully confirmed new account for {email}");
             return new ConfirmEmailResult
             {
                 Success = confirmResult.Succeeded,
@@ -237,7 +264,8 @@ namespace BitShuva.Controllers
             var user = await DbSession.LoadAsync<ApplicationUser>(userId);
             if (user == null)
             {
-                await ChavahLog.Warn(DbSession, $"Tried to reset password for {email}, but couldn't find user with that email.");
+                await _logger.Warn($"Tried to reset password for {email}, but couldn't find user with that email.");
+                //await ChavahLog.Warn(DbSession, $"Tried to reset password for {email}, but couldn't find user with that email.");
                 return new ResetPasswordResult
                 {
                     Success = false,
@@ -251,7 +279,8 @@ namespace BitShuva.Controllers
             var mailMessage = SendGridEmailService.ResetPassword(email, passwordResetCode, Request.RequestUri);
             await UserManager.SendEmailAsync(userId, mailMessage.Subject, mailMessage.Body);
 
-            await ChavahLog.Info(DbSession, $"Sending reset password email to {email}, reset code {passwordResetCode}");
+            await _logger.Info($"Sending reset password email to {email}, reset code {passwordResetCode}");
+            //await ChavahLog.Info(DbSession, $"Sending reset password email to {email}, reset code {passwordResetCode}");
             return new ResetPasswordResult
             {
                 Success = true,
@@ -271,7 +300,8 @@ namespace BitShuva.Controllers
             var user = await DbSession.LoadAsync<ApplicationUser>(userId);
             if (user == null)
             {
-                await ChavahLog.Warn(DbSession, $"Attempted to reset password {email}, but couldn't find a user with that email.");
+                await _logger.Warn($"Attempted to reset password {email}, but couldn't find a user with that email.");
+                //await ChavahLog.Warn(DbSession, $"Attempted to reset password {email}, but couldn't find a user with that email.");
                 return new ResetPasswordResult
                 {
                     Success = false,
@@ -284,7 +314,8 @@ namespace BitShuva.Controllers
 
             if (!passwordResetResult.Succeeded)
             {
-                await ChavahLog.Warn(DbSession, $"Unable to reset password for {email} using code {passwordResetCode}", passwordResetResult);
+                await _logger.Warn($"Unable to reset password for {email} using code {passwordResetCode}", passwordResetResult);
+                //await ChavahLog.Warn(DbSession, $"Unable to reset password for {email} using code {passwordResetCode}", passwordResetResult);
             }
 
             return new ResetPasswordResult

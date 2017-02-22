@@ -9,6 +9,7 @@ using System.Web.Http.Controllers;
 using BitShuva.Common;
 using BitShuva.Models;
 using Microsoft.AspNet.Identity.Owin;
+using BitShuva.Interfaces;
 
 namespace BitShuva.Controllers
 {
@@ -16,9 +17,18 @@ namespace BitShuva.Controllers
     {
 
         private ApplicationUser currentUser;
-      
+        private ILoggerService _logger;
         public IAsyncDocumentSession DbSession { get; private set; }
         public SessionToken SessionToken { get; set; }
+
+        public RavenApiController(ILoggerService logger)
+        {
+            _logger = logger;
+        }
+
+        public RavenApiController()
+        {
+        }
 
         protected override void Initialize(HttpControllerContext controllerContext)
         {
@@ -93,18 +103,20 @@ namespace BitShuva.Controllers
 
         private async Task TryLogSaveChangesError(Exception error, string message)
         {
-            using (var errorSession = RavenContext.Db.OpenAsyncSession())
-            {
-                try
-                {
-                    await ChavahLog.Error(errorSession, message, error.ToString(), error);
-                    await errorSession.SaveChangesAsync();
-                }
-                catch(Exception)
-                {
-                    // Can't log the error? We're fsked. Eat it.
-                }
-            }
+            //mvk
+            await _logger.Error(message, error.ToString(), error);
+            //using (var errorSession = RavenContext.Db.OpenAsyncSession())
+            //{
+            //    try
+            //    {
+            //        await ChavahLog.Error(errorSession, message, error.ToString(), error);
+            //        await errorSession.SaveChangesAsync();
+            //    }
+            //    catch(Exception)
+            //    {
+            //        // Can't log the error? We're fsked. Eat it.
+            //    }
+            //}
         }
     }
 }

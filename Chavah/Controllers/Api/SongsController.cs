@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web.Http;
 using System.Threading.Tasks;
 using BitShuva.Models.Indexes;
+using BitShuva.Interfaces;
 
 namespace BitShuva.Controllers
 {
@@ -15,6 +16,12 @@ namespace BitShuva.Controllers
     [JwtSession]
     public class SongsController : RavenApiController
     {
+        private ILoggerService _logger;
+
+        public SongsController(ILoggerService logger)
+        {
+            _logger = logger;
+        }
         [HttpGet]
         [Route("GetRecentPlays")]
         public async Task<IEnumerable<Song>> GetRecentPlays(int count)
@@ -100,26 +107,31 @@ namespace BitShuva.Controllers
             if (song != null)
             {
                 this.DbSession.Delete(song);
-                var errorLog = default(ChavahLog);
+                //mvk
+                //var errorLog = default(ChavahLog);
                 try
                 {
                     await Task.Run(() => CdnManager.DeleteFromCdn(song));
                 }
                 catch (Exception error)
                 {
+                    string ex = $"Song deleted from the database, but unable to delete from CDN. Song Id ={songId}{Environment.NewLine} Error message: { error.Message}{Environment.NewLine} Stack trace: { error.StackTrace}";
+                    //mvk
                     // If we can't delete the file, no worries, we've already removed it from the database.
-                    errorLog = new ChavahLog
-                    {
-                        Message = string.Format("Song deleted from the database, but unable to delete from CDN. Song Id = {0}{1}Error message: {2}{1}Stack trace: {3}",
-                            songId, Environment.NewLine, error.Message, error.StackTrace)
-                    };
-                }
+                    //errorLog = new ChavahLog
+                    //{
+                    //    Message = ex
+                    //};
 
-                if (errorLog != null)
-                {
-                    await this.DbSession.StoreAsync(errorLog);
-                    this.DbSession.AddRavenExpiration(errorLog, DateTime.Now.AddDays(30));
+                    await _logger.Error(ex, ex.ToString());
+
                 }
+                //mvk
+                //if (errorLog != null)
+                //{
+                //    await this.DbSession.StoreAsync(errorLog);
+                //    this.DbSession.AddRavenExpiration(errorLog, DateTime.Now.AddDays(30));
+                //}
 
                 await this.DbSession.SaveChangesAsync();
             }
@@ -321,7 +333,9 @@ namespace BitShuva.Controllers
                     .FirstOrDefaultAsync(s => s.Album == album && s.Artist == artist);
             if (songOrNull == null)
             {
-                await ChavahLog.Warn(DbSession, "Couldn't find song by artist and album", new { Artist = artist, Album = album });
+                await _logger.Warn("Couldn't find song by artist and album", new { Artist = artist, Album = album });
+                //mvk
+                //await ChavahLog.Warn(DbSession, "Couldn't find song by artist and album", new { Artist = artist, Album = album });
                 return null;
             }
 
@@ -449,7 +463,9 @@ namespace BitShuva.Controllers
         public async Task<AudioErrorInfo> AudioFailed(AudioErrorInfo errorInfo)
         {
             errorInfo.UserId = this.SessionToken?.UserId;
-            await ChavahLog.Error(DbSession, "Audio playback failed", "", errorInfo);
+            await _logger.Error("Audio playback failed", "", errorInfo);
+            //mvk
+            //await ChavahLog.Error(DbSession, "Audio playback failed", "", errorInfo);
             return errorInfo;
         }
 
