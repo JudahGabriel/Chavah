@@ -7,11 +7,8 @@ using BitShuva.Interfaces;
 
 namespace BitShuva.Services
 {
-    //TODO: 1. unit tests to test new funcnialinity
-    //      2. Interface for IoC
-    //      3. Re-write the entire code base with a new logger service
     /// <summary>
-    /// 
+    /// Basic Log Service for the project
     /// </summary>
     public class LoggerService : ILoggerService
     {

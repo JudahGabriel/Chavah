@@ -98,6 +98,7 @@
     <Compile Include="InMemoryDocumentStore.cs" />
     <Compile Include="RavenDbTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SongServiceTests.cs" />
     <Compile Include="Services\LoggerServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +107,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />
+    <None Include="Data\songs.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="batch-songs.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

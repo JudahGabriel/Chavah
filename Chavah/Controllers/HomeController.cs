@@ -1,6 +1,7 @@
 using BitShuva.Common;
 using BitShuva.Interfaces;
 using BitShuva.Models;
+using BitShuva.ViewModels;
 using Chavah.Common;
 using Raven.Client;
 using Raven.Client.Linq;
@@ -17,6 +18,7 @@ namespace BitShuva.Controllers
     public class HomeController : RavenController
     {
         private ILoggerService _logger;
+        private ISongService _songService;
 
         public HomeController()
         {
@@ -26,8 +28,10 @@ namespace BitShuva.Controllers
             ViewBag.QueriedSong = null;
         }
 
-        public HomeController(ILoggerService logger) : base()
+        public HomeController(ILoggerService logger,
+                              ISongService songService) : base()
         {
+            _songService = songService;
             _logger = logger;
         }
 
@@ -35,11 +39,7 @@ namespace BitShuva.Controllers
         public async Task<ActionResult> Index()
         {
             var viewModel = await GetHomeViewModel();
-            //var isAnonymous = string.IsNullOrEmpty(viewModel.Jwt);
-            //if (isAnonymous)
-            //{
-            //    Session["Foo"] = 42;
-            //}
+
             await _logger.Info($"HomeController Index on https",new { model = viewModel });
             return View(viewModel);
         }
@@ -146,9 +146,9 @@ namespace BitShuva.Controllers
             var firstValidQuery = new[] { artistQuery, albumQuery, songQuery }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
             if (firstValidQuery != null)
             {
-                var taskOrNull = firstValidQuery == songQuery ? this.GetSongByIdQuery(firstValidQuery) :
-                    firstValidQuery == artistQuery ? this.GetSongByArtist(firstValidQuery) :
-                    firstValidQuery == albumQuery ? this.GetSongByAlbum(firstValidQuery) :
+                var taskOrNull = firstValidQuery == songQuery ? _songService.GetSongByIdQueryAsync(firstValidQuery) :
+                    firstValidQuery == artistQuery ? _songService.GetSongByArtistAsync(firstValidQuery) :
+                    firstValidQuery == albumQuery ? _songService.GetSongByAlbumAsync(firstValidQuery) :
                     null;
 
                 if (taskOrNull != null)
@@ -178,35 +178,6 @@ namespace BitShuva.Controllers
             }
 
             return null;
-        }
-
-        private async Task<Song> GetSongByAlbum(string albumQuery)
-        {
-            return await GetMatchingSong(s => s.Album == albumQuery);
-        }
-
-        private async Task<Song> GetSongByArtist(string artistQuery)
-        {
-            return await GetMatchingSong(s => s.Artist == artistQuery);
-        }
-
-        private async Task<Song> GetSongByIdQuery(string songQuery)
-        {
-            var properlyFormattedSongId = songQuery.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase) ?
-                songQuery :
-                "songs/" + songQuery;
-
-            return await this.DbSession.LoadAsync<Song>(properlyFormattedSongId);
-        }
-
-        private async Task<Song> GetMatchingSong(System.Linq.Expressions.Expression<Func<Song, bool>> predicate)
-        {
-            return await this.DbSession
-                .Query<Song>()
-                .Customize(x => x.RandomOrdering())
-                .Where(predicate)
-                .OrderBy(s => s.Id)
-                .FirstOrDefaultAsync();
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BitShuva.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace BitShuva.Models
+namespace BitShuva.ViewModels
 {
     public class HomeViewModel
     {
@@ -22,6 +23,7 @@ namespace BitShuva.Models
         public bool Embed { get; set; }
         public string PageTitle { get; set; }
         public string DescriptiveImageUrl { get; set; }
+        //to abstract Song to SongViewModel possible
         public Song Song { get; set; }
         public string SongNth { get; set; }
     }

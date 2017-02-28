@@ -15,14 +15,14 @@ namespace Chava.Tests
                     {
                         RunInUnreliableYetFastModeThatIsNotSuitableForProduction = true,
                         RunInMemory = true
-                    }
+                      }
             };
 
             documentStore.Initialize();
 
             //custom indexes go here
             CreatIndexes(documentStore);
-
+            
             Store = documentStore;
         }
 

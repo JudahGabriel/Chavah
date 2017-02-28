@@ -312,7 +312,8 @@
     <Compile Include="Models\AudioErrorInfo.cs" />
     <Compile Include="Models\CommunityRankStanding.cs" />
     <Compile Include="Models\ConfirmEmailResult.cs" />
-    <Compile Include="Models\HomeViewModel.cs" />
+    <Compile Include="Interfaces\ISongService.cs" />
+    <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="Models\Html5MediaError.cs" />
     <Compile Include="Models\Indexes\Songs_AverageCommunityRank.cs" />
     <Compile Include="Models\Indexes\Songs_RankStandings.cs" />
@@ -350,6 +351,7 @@
     <Compile Include="Services\LoggerService.cs" />
     <Compile Include="Services\SendGridEmailService.cs" />
     <Compile Include="Services\JsonWebTokenService.cs" />
+    <Compile Include="Services\SongService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -762,9 +764,11 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>52926</DevelopmentServerPort>
+          <DevelopmentServerPort>5050</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44372/</IISUrl>
+          <IISUrl>https://localhost:44350/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>https://localhost:44350/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
