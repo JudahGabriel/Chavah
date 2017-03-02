@@ -1,0 +1,32 @@
+[
+  {
+    "Artist": "Greg Silverman",
+    "Name": "Revive",
+    "AlbumArtUri": "http://bitshuvafiles01.com/chavah/album-art/greg silverman - revive.jpg",
+    "BackgroundColor": "#6c3c2c",
+    "ForegroundColor": "#cfb599",
+    "MutedColor": "#fff",
+    "TextShadowColor": "#504247",
+    "IsVariousArtists": false
+  },
+  {
+    "Artist": "Giselle",
+    "Name": "I Believe in Jesus",
+    "AlbumArtUri": "http://bitshuvafiles01.com/chavah/album-art/giselle - i believe in jesus.jpg",
+    "BackgroundColor": "#874639",
+    "ForegroundColor": "#f9eecc",
+    "MutedColor": "#fff",
+    "TextShadowColor": "#8e5e43",
+    "IsVariousArtists": false
+  },
+  {
+    "Artist": "Lynne McDowell",
+    "Name": "Heart's Cry",
+    "AlbumArtUri": "http://bitshuvafiles01.com/chavah/album-art/lynne mcdowell - heart's cry.jpg",
+    "BackgroundColor": "#7d5334",
+    "ForegroundColor": "#d9b89c",
+    "MutedColor": "#fff",
+    "TextShadowColor": "#716467",
+    "IsVariousArtists": false
+  }
+]

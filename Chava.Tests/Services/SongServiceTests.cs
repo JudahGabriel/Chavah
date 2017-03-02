@@ -26,18 +26,14 @@ namespace Chava.Tests.Services
             _documentStore = new InMemoryDocumentStore().Store;
             _session = _documentStore.OpenAsyncSession();
 
-            #region Create inMemory Songs
-            string songsJson = File.ReadAllText(@"Data/songs.json");
-            List<Song> songs = JsonConvert.DeserializeObject<List<Song>>(songsJson);
-            using(var session = _documentStore.OpenSession())
+            #region Create inMemory 
+            List<Song> songs = JsonConvert.DeserializeObject<List<Song>>(File.ReadAllText(@"Data/songs.json"));
+            using (var session = _documentStore.OpenSession())
             {
-                foreach (var song in songs)
-                {
-                    session.Store(song);
-                    session.SaveChanges();
-                }
+                songs.ForEach(a => session.Store(a));
+                //save all changes at once
+                session.SaveChanges();
             }
-           
             #endregion
 
             _songService = new SongService(_session);
