@@ -42,6 +42,7 @@ namespace BitShuva.Controllers
         ///           page with info about that song.
         ///           This is used for social media sites like Facebook and Twitter which show images, title, 
         ///           and description from the loaded page.
+        ///  In addition it serves Json back for http://messianicradio.com?user=email
         /// </summary>
         /// <param name="user"></param>
         /// <param name="artist"></param>
@@ -56,18 +57,46 @@ namespace BitShuva.Controllers
                                               string song=null,
                                               bool embed = false)
         {
-
+            #region User Details
             if (user != null)
             {
                 //return user information for the feed.
 
-                var userDb = _userService.GetUser(user);
-                if (user == null)
+                var userDb = await _userService.GetUser(user);
+                if (userDb == null)
+                {
                     return Json(new ApplicationUser(), JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    userDb.PasswordHash = "";
+                    userDb.SecurityStamp = "";
+
+                    return Json(userDb, JsonRequestBehavior.AllowGet);
+                }
+                    
             }
+            #endregion
 
             var viewModel = new HomeViewModel();
             viewModel.Embed = embed;
+
+            #region User Specifc information
+            var userName = User.Identity.Name;
+            ApplicationUser currentUser = null;
+
+            if (!string.IsNullOrEmpty(userName))
+            {
+                currentUser = await _userService.GetUser(userName);
+            }
+
+            viewModel.PageTitle = "Chavah Messianic Radio";
+            viewModel.PageDescription = "Internet radio for Yeshua's disciples";
+
+            viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
+            viewModel.Jwt = currentUser != null ? currentUser.Jwt : "";
+            viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
+            #endregion
 
             #region QueryString Specific Information
             //get the query
@@ -93,23 +122,6 @@ namespace BitShuva.Controllers
                     }
                 }
             }
-            #endregion
-
-            #region User Specifc information
-            var userName = User.Identity.Name;
-            ApplicationUser currentUser = null;
-
-            if (!string.IsNullOrEmpty(userName))
-            {
-                currentUser = await _userService.GetUser(userName);
-            }
-           
-            viewModel.PageTitle = "Chavah Messianic Radio";
-            viewModel.PageDescription = "Internet radio for Yeshua's disciples";
-
-            viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
-            viewModel.Jwt = currentUser != null ? currentUser.Jwt : "";
-            viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
             #endregion
 
             return View(viewModel);
@@ -160,11 +172,11 @@ namespace BitShuva.Controllers
 
             var feedItems = from user in lastRegisteredUsers
                             select new SyndicationItem(
-                                id: user.Id,
+                                id: user.Email,
                                 lastUpdatedTime: user.RegistrationDate,
                                 title: user.Email,
                                 content: $"A new user registered on Chavah on {user.RegistrationDate} with email address {user.Email}",
-                                itemAlternateLink: new Uri($"{_radioUrl}/?user={Uri.EscapeUriString(user.Id)}")
+                                itemAlternateLink: new Uri($"{_radioUrl}/?user={Uri.EscapeUriString(user.Email)}")
                             );
 
             var feed = new SyndicationFeed("Chavah Messianic Radio", 

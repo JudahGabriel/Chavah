@@ -1,21 +1,20 @@
 ﻿using BitShuva.Controllers;
 using BitShuva.Services;
 using Rhino.Mocks;
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Raven.Client.Embedded;
 using Raven.Client;
-using System.Web.Routing;
 using System.Web.Mvc;
-using System.Security.Principal;
-using System.Threading;
 using System.Web;
 using BitShuva.Models;
+using Newtonsoft.Json;
+using System.IO;
+using Chavah.Common;
+using BitShuva.ViewModels;
 
 namespace Chava.Tests.Controllers
 {
@@ -31,25 +30,37 @@ namespace Chava.Tests.Controllers
             _documentStore = new InMemoryDocumentStore().Store;
             _session = _documentStore.OpenAsyncSession();
 
-            #region Controller
-            var log = new LoggerService(_session);
-            var song = new SongService(_session);
-            var album = new AlbumService(_session);
-            var user = new UserService(_session);
+            #region Load test data
+            List<ApplicationUser> users = JsonConvert.DeserializeObject<List<ApplicationUser>>(File.ReadAllText(@"Data/users.json"));
+            List<Song> songs = JsonConvert.DeserializeObject<List<Song>>(File.ReadAllText(@"Data/songs.json"));
+            List<Album> albums = JsonConvert.DeserializeObject<List<Album>>(File.ReadAllText(@"Data/albums.json"));
+            using (var session = _documentStore.OpenSession())
+            {
+                foreach (var user in users)
+                {
+                    user.Id = $"ApplicationUsers/{user.Email}";
+                    session.Store(user);
+                }
 
-            _controller = new HomeController(log, song, album, user);
+                songs.ForEach(a => session.Store(a));
+                albums.ForEach(a => session.Store(a));
+                //save all changes at once
+                session.SaveChanges();
+            }
             #endregion
 
-            #region other IPrinciple and IIdentity
-            //IIdentity mockIdentity = MockRepository.GenerateMock<IIdentity>();
-            //mockIdentity.Stub(p => p.Name).Return("admin@messianicradio.com").Repeat.Any();
+            #region IoC Controller
+            var logService = new LoggerService(_session);
+            var songService = new SongService(_session);
+            var albumService = new AlbumService(_session);
+            var userService = new UserService(_session);
 
-            //IPrincipal mockPrinciple = MockRepository.GenerateMock<IPrincipal>();
-            //mockPrinciple.Stub(p => p.Identity).Return(mockIdentity).Repeat.Any();
+            _controller = new HomeController(logService, songService, albumService, userService);
             #endregion
         }
         #endregion
 
+        #region Index Action Tests
         [Fact]
         public async Task IndexTest()
         {
@@ -80,13 +91,105 @@ namespace Chava.Tests.Controllers
         }
 
         [Fact]
-        public async Task IndexNoUserFoundTest()
+        public async Task IndexNoUserFoundReturnEmptyJsonTest()
         {
             //Arrange
-            var userName = "admin@messianicradio.com";
+            var userName = "admin1@messianicradio.com";
+            //Act
             var result = await _controller.Index(user: userName) as JsonResult;
             var userReturned = result.Data as ApplicationUser;
-            Assert.Equal(string.Empty,userReturned.Email);
+            //Assert
+            Assert.NotNull(userReturned);
+            Assert.Null(userReturned.Email);
+        }
+
+        [Fact]
+        public async Task IndexNoUserFoundReturnUserJsonTest()
+        {
+            //Arrange
+            var email = "admin@messianicradio.com";
+            //Act
+            var result = await _controller.Index(user: email) as JsonResult;
+            var userReturned = result.Data as ApplicationUser;
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(userReturned);
+            Assert.Equal(email, userReturned.Email);
+        }
+
+        [Fact]
+        public async Task IndexFoundSonSuccefulNoUserTest()
+        {
+            //Assign
+            #region Context with Null Idenity
+            var mockRequest = MockRepository.GenerateMock<HttpRequestBase>();
+            var mockHttpContext = MockRepository.GenerateMock<HttpContextBase>();
+            mockHttpContext.Stub(h => h.User.Identity.Name).Return(null);
+
+            mockHttpContext.Stub(c => c.Request).Return(mockRequest);
+
+            var mockControllerContext = MockRepository.GenerateMock<ControllerContext>();
+            mockControllerContext.Stub(x => x.HttpContext).Return(mockHttpContext);
+            _controller.ControllerContext = mockControllerContext;
+            #endregion
+
+            //Act
+            var result = await _controller.Index(song: "1") as ViewResult;
+            var model = result.Model as HomeViewModel;
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(model.Song);
+            Assert.Equal("Revive", model.Song.Album);
+            //this value comes from SongService
+            Assert.Equal("songs/1", model.Song.Id);
+            //this value comes from AlbumService
+            Assert.Equal(@"http://bitshuvafiles01.com/chavah/album-art/greg silverman - revive.jpg", model.DescriptiveImageUrl);
+        }
+
+        [Fact]
+        public async Task IndexFoundSonSuccefulAdminUserTest()
+        {
+            //Assign
+            var email = "admin@messianicradio.com";
+            #region Context with Null Idenity
+            var mockRequest = MockRepository.GenerateMock<HttpRequestBase>();
+            var mockHttpContext = MockRepository.GenerateMock<HttpContextBase>();
+            mockHttpContext.Stub(h => h.User.Identity.Name).Return(email);
+
+            mockHttpContext.Stub(c => c.Request).Return(mockRequest);
+
+            var mockControllerContext = MockRepository.GenerateMock<ControllerContext>();
+            mockControllerContext.Stub(x => x.HttpContext).Return(mockHttpContext);
+            _controller.ControllerContext = mockControllerContext;
+            #endregion
+
+            //Act
+            var result = await _controller.Index(song: "1") as ViewResult;
+            var model = result.Model as HomeViewModel;
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(model.Song);
+            Assert.Equal("Revive", model.Song.Album);
+            //this value comes from SongService
+            Assert.Equal("songs/1", model.Song.Id);
+            //this value comes from AlbumService
+            Assert.Equal(@"http://bitshuvafiles01.com/chavah/album-art/greg silverman - revive.jpg", model.DescriptiveImageUrl);
+
+            Assert.Equal(email,model.UserEmail);
+        }
+
+        #endregion
+
+        [Fact]
+        public async Task RegisteredUsersSuccefulTest()
+        {
+            //Act
+            var result = await _controller.RegisteredUsers() as RssActionResult;
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotNull(result.Feed);
+            Assert.Equal(3,result.Feed.Items.Count());
+
         }
     }
 }
