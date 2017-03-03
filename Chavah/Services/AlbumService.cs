@@ -1,4 +1,5 @@
-﻿using BitShuva.Models;
+﻿using BitShuva.Interfaces;
+using BitShuva.Models;
 using Raven.Client;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BitShuva.Services
 {
-    public class AlbumService
+    public class AlbumService : IAlbumService
     {
         private IAsyncDocumentSession _session;
 

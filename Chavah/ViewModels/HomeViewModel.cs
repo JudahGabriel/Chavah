@@ -22,6 +22,7 @@ namespace BitShuva.ViewModels
         public string Redirect { get; set; }
         public bool Embed { get; set; }
         public string PageTitle { get; set; }
+        public string PageDescription { get; set; }
         public string DescriptiveImageUrl { get; set; }
         //to abstract Song to SongViewModel possible
         public Song Song { get; set; }

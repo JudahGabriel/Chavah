@@ -4,6 +4,8 @@ using System;
 using System.Threading.Tasks;
 using BitShuva.Common;
 using BitShuva.Interfaces;
+using Raven.Client.Linq;
+using System.Collections.Generic;
 
 namespace BitShuva.Services
 {
@@ -59,5 +61,12 @@ namespace BitShuva.Services
             return log;
         }
 
+        public async Task<IList<Activity>> GetActivity(int take)
+        {
+           return await _session.Query<Activity>()
+                .OrderByDescending(a => a.DateTime)
+                .Take(take)
+                .ToListAsync();
+        }
     }
 }

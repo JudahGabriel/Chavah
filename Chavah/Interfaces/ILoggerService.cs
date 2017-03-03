@@ -1,4 +1,5 @@
 ﻿using BitShuva.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BitShuva.Interfaces
@@ -19,6 +20,12 @@ namespace BitShuva.Interfaces
                                         string exception,
                                         LogLevel logLevel,
                                         object details = null);
+        /// <summary>
+        /// Activity Object return
+        /// </summary>
+        /// <param name="take"></param>
+        /// <returns></returns>
+        Task<IList<Activity>> GetActivity(int take);
 
     }
 }

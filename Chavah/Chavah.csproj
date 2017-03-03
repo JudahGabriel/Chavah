@@ -313,7 +313,10 @@
     <Compile Include="Models\CommunityRankStanding.cs" />
     <Compile Include="Models\ConfirmEmailResult.cs" />
     <Compile Include="Interfaces\ISongService.cs" />
+    <Compile Include="Interfaces\IUserService.cs" />
+    <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\AlbumService.cs" />
+    <Compile Include="Interfaces\IAlbumService.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="Models\Html5MediaError.cs" />
     <Compile Include="Models\Indexes\Songs_AverageCommunityRank.cs" />
@@ -614,6 +617,7 @@
     <Content Include="Scripts\jquery-2.2.4.min.map" />
     <Content Include="WebAppManifest.json" />
     <Content Include="Web.config" />
+    <Content Include="Views\Web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
