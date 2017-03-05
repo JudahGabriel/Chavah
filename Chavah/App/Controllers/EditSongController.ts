@@ -50,6 +50,7 @@
                     .split(",")
                     .filter(t => !!t && t.length > 0)
                     .map(t => t.trim());
+                this.song.tags = this.song.tags;
 
                 this.isSaving = true;
                 this.songEditApi.submit(this.song)
