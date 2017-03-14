@@ -1,4 +1,5 @@
 ﻿using BitShuva.Common;
+using BitShuva.Interfaces;
 using BitShuva.Models;
 using Raven.Client;
 using Raven.Client.Linq;
@@ -15,6 +16,10 @@ namespace BitShuva.Controllers
     [RoutePrefix("api/playlists")]
     public class PlaylistsController : RavenApiController
     {
+        public PlaylistsController(ILoggerService logger) : base(logger)
+        {
+        }
+
         [Route("get")]
         public async Task<IEnumerable<Playlist>> GetPlaylists()
         {

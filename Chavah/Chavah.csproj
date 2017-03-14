@@ -301,6 +301,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\ILoggerService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Album.cs" />
@@ -311,7 +312,12 @@
     <Compile Include="Models\AudioErrorInfo.cs" />
     <Compile Include="Models\CommunityRankStanding.cs" />
     <Compile Include="Models\ConfirmEmailResult.cs" />
-    <Compile Include="Models\HomeViewModel.cs" />
+    <Compile Include="Interfaces\ISongService.cs" />
+    <Compile Include="Interfaces\IUserService.cs" />
+    <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\AlbumService.cs" />
+    <Compile Include="Interfaces\IAlbumService.cs" />
+    <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="Models\Html5MediaError.cs" />
     <Compile Include="Models\Indexes\Songs_AverageCommunityRank.cs" />
     <Compile Include="Models\Indexes\Songs_RankStandings.cs" />
@@ -346,8 +352,10 @@
     <Compile Include="Providers\Jwt\CustomOAuthProvider.cs" />
     <Compile Include="Providers\Jwt\ExtendedClaimsProvider.cs" />
     <Compile Include="Providers\Jwt\RolesFromClaims.cs" />
+    <Compile Include="Services\LoggerService.cs" />
     <Compile Include="Services\SendGridEmailService.cs" />
     <Compile Include="Services\JsonWebTokenService.cs" />
+    <Compile Include="Services\SongService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -609,6 +617,7 @@
     <Content Include="Scripts\jquery-2.2.4.min.map" />
     <Content Include="WebAppManifest.json" />
     <Content Include="Web.config" />
+    <Content Include="Views\Web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -760,9 +769,11 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>52926</DevelopmentServerPort>
+          <DevelopmentServerPort>5050</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44372/</IISUrl>
+          <IISUrl>https://localhost:44350/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>https://localhost:44350/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

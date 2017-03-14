@@ -1,4 +1,5 @@
 ﻿using BitShuva.Common;
+using BitShuva.Interfaces;
 using BitShuva.Models;
 using Raven.Client;
 using Raven.Client.Linq;
@@ -18,6 +19,9 @@ namespace BitShuva.Controllers
     [RoutePrefix("api/albums")]
     public class AlbumsController : RavenApiController
     {
+        public AlbumsController(ILoggerService logger) : base(logger)
+        {
+        }
         /// <summary>
         /// Uploads the album art for a song. The album art will be applied to all songs matching the artist and album.
         /// </summary>
@@ -25,6 +29,24 @@ namespace BitShuva.Controllers
         /// <param name="fileName">The file name. Used for extracting the extension.</param>
         /// <param name="artist">The artist this album art applies to.</param>
         /// <param name="album">The name of the album this album art applies to.</param>
+
+
+        [Route("Get")]
+        [HttpGet]
+        public Task<Album> Get(string id)
+        {
+            return DbSession.LoadAsync<Album>(id);
+        }
+
+        [Route("GetByArtistAlbum")]
+        [HttpGet]
+        public Task<Album> GetByArtistAlbum(string artist, string album)
+        {
+            return DbSession.Query<Album>()
+                .FirstOrDefaultAsync(a => a.Name == album && (a.Artist == artist || a.IsVariousArtists));
+        }
+
+        #region Admin
         [HttpPost]
         [Route("changeArt")]
         public async Task<Album> ChangeArt(string albumId, string artUri)
@@ -50,21 +72,6 @@ namespace BitShuva.Controllers
             return album;
         }
 
-        [Route("Get")]
-        [HttpGet]
-        public Task<Album> Get(string id)
-        {
-            return DbSession.LoadAsync<Album>(id);
-        }
-
-        [Route("GetByArtistAlbum")]
-        [HttpGet]
-        public Task<Album> GetByArtistAlbum(string artist, string album)
-        {
-            return DbSession.Query<Album>()
-                .FirstOrDefaultAsync(a => a.Name == album && (a.Artist == artist || a.IsVariousArtists));
-        }
-
         [Route("Save")]
         [HttpPost]
         public async Task<Album> Save(Album album)
@@ -82,6 +89,63 @@ namespace BitShuva.Controllers
             await DbSession.StoreAsync(album);
             return album;
         }
+
+        [HttpPost]
+        [Route("upload")]
+        public async Task<string> Upload(AlbumUpload album)
+        {
+            await this.RequireAdminUser();
+
+            // Put the album art on the CDN.
+            var albumArtUriCdn = await CdnManager.UploadAlbumArtToCdn(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
+
+            // Put all the songs on the CDN.
+            var songNumber = 1;
+            foreach (var albumSong in album.Songs)
+            {
+                var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
+                var song = new Song
+                {
+                    Album = album.Name,
+                    Artist = album.Artist,
+                    AlbumArtUri = albumArtUriCdn,
+                    CommunityRankStanding = CommunityRankStanding.Normal,
+                    Genres = album.Genres.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                    Name = albumSong.FileName,
+                    Number = songNumber,
+                    PurchaseUri = album.PurchaseUrl,
+                    UploadDate = DateTime.UtcNow,
+                    Uri = songUriCdn
+                };
+                await this.DbSession.StoreAsync(song);
+                songNumber++;
+            }
+
+            // Store the new album if it doesn't exist already.
+            var existingAlbum = await DbSession.Query<Album>()
+                .FirstOrDefaultAsync(a => a.Name == album.Name && a.Artist == album.Artist);
+            if (existingAlbum == null)
+            {
+                existingAlbum = new Album();
+            }
+
+            existingAlbum.AlbumArtUri = albumArtUriCdn;
+            existingAlbum.Artist = album.Artist;
+            existingAlbum.BackgroundColor = album.BackColor;
+            existingAlbum.ForegroundColor = album.ForeColor;
+            existingAlbum.MutedColor = album.MutedColor;
+            existingAlbum.Name = album.Name;
+            existingAlbum.TextShadowColor = album.TextShadowColor;
+
+            if (string.IsNullOrEmpty(existingAlbum.Id))
+            {
+                await this.DbSession.StoreAsync(existingAlbum);
+            }
+
+            await this.DbSession.SaveChangesAsync();
+            return existingAlbum.Id;
+        }
+        #endregion
 
         [Route("GetAlbumsForSongs")]
         [HttpGet]
@@ -150,62 +214,6 @@ namespace BitShuva.Controllers
             };
         }
         
-        [HttpPost]
-        [Route("upload")]
-        public async Task<string> Upload(AlbumUpload album)
-        {
-            await this.RequireAdminUser();
-
-            // Put the album art on the CDN.
-            var albumArtUriCdn = await CdnManager.UploadAlbumArtToCdn(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
-
-            // Put all the songs on the CDN.
-            var songNumber = 1;
-            foreach (var albumSong in album.Songs)
-            {
-                var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
-                var song = new Song
-                {
-                    Album = album.Name,
-                    Artist = album.Artist,
-                    AlbumArtUri = albumArtUriCdn,
-                    CommunityRankStanding = CommunityRankStanding.Normal,
-                    Genres = album.Genres.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                    Name = albumSong.FileName,
-                    Number = songNumber,
-                    PurchaseUri = album.PurchaseUrl,
-                    UploadDate = DateTime.UtcNow,
-                    Uri = songUriCdn
-                };
-                await this.DbSession.StoreAsync(song);
-                songNumber++;
-            }
-
-            // Store the new album if it doesn't exist already.
-            var existingAlbum = await DbSession.Query<Album>()
-                .FirstOrDefaultAsync(a => a.Name == album.Name && a.Artist == album.Artist);
-            if (existingAlbum == null)
-            {
-                existingAlbum = new Album();
-            }
-
-            existingAlbum.AlbumArtUri = albumArtUriCdn;
-            existingAlbum.Artist = album.Artist;
-            existingAlbum.BackgroundColor = album.BackColor;
-            existingAlbum.ForegroundColor = album.ForeColor;
-            existingAlbum.MutedColor = album.MutedColor;
-            existingAlbum.Name = album.Name;
-            existingAlbum.TextShadowColor = album.TextShadowColor;
-
-            if (string.IsNullOrEmpty(existingAlbum.Id))
-            {
-                await this.DbSession.StoreAsync(existingAlbum);
-            }
-
-            await this.DbSession.SaveChangesAsync();
-            return existingAlbum.Id;
-        }
-
         /// <summary>
         /// Gets the HTTP address for the album art image for the album with the specified name and artist.
         /// </summary>

@@ -31,6 +31,8 @@ namespace BitShuva.DependencyResolution
     using StructureMap.Web;
     using Microsoft.Owin.Security;
     using System.Web;
+    using Interfaces;
+    using Services;
 
     public class DefaultRegistry : Registry {
         #region Constructors and Destructors
@@ -42,6 +44,9 @@ namespace BitShuva.DependencyResolution
                     scan.WithDefaultConventions();
                 });
             //For<IExample>().Use<Example>();
+
+            For<ILoggerService>().Use<LoggerService>();
+
             #region RavebDb registry
             For<IDocumentStore>().Singleton().Use(ConfigureDocumentStore());
             For<IDocumentSession>().Singleton().Use(ctx => ctx.GetInstance<IDocumentStore>().OpenSession());

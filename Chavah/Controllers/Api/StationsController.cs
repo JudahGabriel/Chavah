@@ -1,4 +1,5 @@
 ﻿using BitShuva.Common;
+using BitShuva.Interfaces;
 using BitShuva.Models;
 using Raven.Client;
 using Raven.Client.Linq;
@@ -15,6 +16,12 @@ namespace BitShuva.Controllers
     [RoutePrefix("api/stations")]
     public class StationsController : RavenApiController
     {
+        private ILoggerService _logger;
+
+        public StationsController(ILoggerService logger)
+        {
+            _logger = logger;
+        }
         [Route("get")]
         public async Task<IEnumerable<Station>> GetStations()
         {
@@ -35,7 +42,7 @@ namespace BitShuva.Controllers
         {
             var station = await this.DbSession.LoadAsync<Station>(stationId);
             var seed = station.PickRandomSeed();
-            var songsController = new SongsController() { Request = this.Request };
+            var songsController = new SongsController(_logger) { Request = this.Request };
             var seedType = seed.Item1;
 
             // TODO: implement station.GetSong();

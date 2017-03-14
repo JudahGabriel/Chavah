@@ -12,10 +12,7 @@ namespace BitShuva.Controllers
     public abstract class RavenController : Controller
     {
         //TODO: add the DI injection for the RavenDB
-        public RavenController()
-        {
 
-        }
         public IAsyncDocumentSession DbSession { get; set; }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
