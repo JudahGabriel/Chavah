@@ -562,7 +562,6 @@
     <Content Include="Content\styles\nprogress.less" />
     <Content Include="ConnectionStrings.Release.Secrets.config" />
     <Content Include="ConnectionStrings.Debug.Secrets.config" />
-    <None Include="Properties\PublishProfiles\bitshuva.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />
     <Content Include="Scripts\angular-animate.js" />
@@ -584,13 +583,12 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\fastclick.js" />
     <Content Include="Scripts\angular-local-storage.min.js.map" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-2.2.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.2.4.js" />
     <Content Include="Scripts\jquery-2.2.4.min.js" />
     <Content Include="Scripts\jquery-transit-0.9.9.js" />
     <Content Include="Scripts\modernizr-production.js" />
-    <Content Include="Scripts\moment-with-locales.js" />
-    <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\nprogress.js" />
@@ -611,6 +609,7 @@
     <Content Include="Web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>

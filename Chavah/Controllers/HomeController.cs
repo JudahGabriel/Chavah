@@ -149,7 +149,7 @@ namespace BitShuva.Controllers
                     {
                         var album = await this.DbSession.Query<Album>().FirstOrDefaultAsync(a => a.Name == songForQuery.Album && a.Artist == songForQuery.Artist);
                         viewModel.PageTitle = songForQuery.Name + " by " + songForQuery.Artist + " on Chavah Messianic Radio";
-                        viewModel.DescriptiveImageUrl = album != null ? album.AlbumArtUri.ToString() : null;
+                        viewModel.DescriptiveImageUrl = album?.AlbumArtUri?.ToString();
                         viewModel.Song = songForQuery;
                         viewModel.SongNth = songForQuery.Number.ToNumberWord();
                     }
