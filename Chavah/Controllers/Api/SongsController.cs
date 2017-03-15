@@ -199,7 +199,7 @@ namespace BitShuva.Controllers
             // This queries the Songs_RankStandings index, which will reduce the results. Max number of results will be the number of CommunityRankStanding enum constants.
             var songRankStandings = await this.DbSession
                 .Query<Song, Songs_RankStandings>()
-                .As<Songs_RankStandings.Results>()
+                .As<Songs_RankStandings.Result>()
                 .ToListAsync();
 
             var user = await this.GetCurrentUser();
@@ -212,14 +212,14 @@ namespace BitShuva.Controllers
             return await PickSongForAnonymousUser(songRankStandings);
         }
 
-        private async Task<Song> PickSongForAnonymousUser(IList<Songs_RankStandings.Results> songRankStandings)
+        private async Task<Song> PickSongForAnonymousUser(IList<Songs_RankStandings.Result> songRankStandings)
         {
-            var veryPoorRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.VeryPoor).Select(s => s.Count).FirstOrDefault();
-            var poorRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Poor).Select(s => s.Count).FirstOrDefault();
-            var normalRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Normal).Select(s => s.Count).FirstOrDefault();
-            var goodRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Good).Select(s => s.Count).FirstOrDefault();
-            var greatRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Great).Select(s => s.Count).FirstOrDefault();
-            var bestRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Best).Select(s => s.Count).FirstOrDefault();
+            var veryPoorRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.VeryPoor).Select(s => s.SongIds.Count).FirstOrDefault();
+            var poorRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Poor).Select(s => s.SongIds.Count).FirstOrDefault();
+            var normalRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Normal).Select(s => s.SongIds.Count).FirstOrDefault();
+            var goodRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Good).Select(s => s.SongIds.Count).FirstOrDefault();
+            var greatRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Great).Select(s => s.SongIds.Count).FirstOrDefault();
+            var bestRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Best).Select(s => s.SongIds.Count).FirstOrDefault();
             var songPick = new UserSongPreferences().PickSong(
                 veryPoorRankSongCount,
                 poorRankSongCount,
@@ -264,7 +264,7 @@ namespace BitShuva.Controllers
             
             var songRankStandings = await this.DbSession
                 .Query<Song, Songs_RankStandings>()
-                .As<Songs_RankStandings.Results>()
+                .As<Songs_RankStandings.Result>()
                 .ToListAsync();
                 
             var batch = new List<Song>(songsInBatch);
@@ -422,42 +422,6 @@ namespace BitShuva.Controllers
                 .ToListAsync();
         }
 
-        [HttpGet]
-        [Route("patchupsongranks")]
-        public async Task<string> PatchUpSongRanks(int skip = 0, int take = 500)
-        {
-            var communityRankStats = await this.DbSession
-                    .Query<Song, Songs_AverageCommunityRank>()
-                    .As<Songs_AverageCommunityRank.Results>()
-                    .FirstOrDefaultAsync();
-
-            var songs = await this.DbSession.Query<Song>()
-                .OrderBy(s => s.Name)
-                .Skip(skip)
-                .Take(take)
-                .ToListAsync();
-            int patchedCount = 0;
-            foreach (var song in songs)
-            {
-                var averageSongRank = communityRankStats != null ? communityRankStats.RankAverage : 0;
-                var newStanding = Match.Value(song.CommunityRank)
-                    .With(v => v <= -5, CommunityRankStanding.VeryPoor)
-                    .With(v => v <= -1, CommunityRankStanding.Poor)
-                    .With(v => v <= averageSongRank * 2, CommunityRankStanding.Normal)
-                    .With(v => v <= averageSongRank * 4, CommunityRankStanding.Good)
-                    .With(v => v <= averageSongRank * 6, CommunityRankStanding.Great)
-                    .DefaultTo(CommunityRankStanding.Best)
-                    .Evaluate();
-                if (song.CommunityRankStanding != newStanding)
-                {
-                    patchedCount++;
-                    song.CommunityRankStanding = newStanding;
-                }
-            }
-
-            return $"Looked at {songs.Count}, patched {patchedCount}";
-        }
-
         [HttpPost]
         [Route("audioFailed")]
         public async Task<AudioErrorInfo> AudioFailed(AudioErrorInfo errorInfo)
@@ -469,14 +433,14 @@ namespace BitShuva.Controllers
             return errorInfo;
         }
 
-        private async Task<Song> PickSongForUser(ApplicationUser user, IList<Songs_RankStandings.Results> songRankStandings)
+        private async Task<Song> PickSongForUser(ApplicationUser user, IList<Songs_RankStandings.Result> songRankStandings)
         {
-            var veryPoorRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.VeryPoor).Select(s => s.Count).FirstOrDefault();
-            var poorRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Poor).Select(s => s.Count).FirstOrDefault();
-            var normalRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Normal).Select(s => s.Count).FirstOrDefault();
-            var goodRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Good).Select(s => s.Count).FirstOrDefault();
-            var greatRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Great).Select(s => s.Count).FirstOrDefault();
-            var bestRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Best).Select(s => s.Count).FirstOrDefault();
+            var veryPoorRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.VeryPoor).Select(s => s.SongIds.Count).FirstOrDefault();
+            var poorRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Poor).Select(s => s.SongIds.Count).FirstOrDefault();
+            var normalRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Normal).Select(s => s.SongIds.Count).FirstOrDefault();
+            var goodRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Good).Select(s => s.SongIds.Count).FirstOrDefault();
+            var greatRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Great).Select(s => s.SongIds.Count).FirstOrDefault();
+            var bestRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Best).Select(s => s.SongIds.Count).FirstOrDefault();
 
             var pickRankedSong = new Func<CommunityRankStanding, Func<Task<Song>>>(standing => new Func<Task<Song>>(() => PickRankedSongForUser(standing, user)));
             var songPick = user.Preferences.PickSong(veryPoorRankSongCount, poorRankSongCount, normalRankSongCount, goodRankSongCount, greatRankSongCount, bestRankSongCount);

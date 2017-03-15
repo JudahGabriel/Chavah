@@ -314,6 +314,7 @@
     <Compile Include="Models\ConfirmEmailResult.cs" />
     <Compile Include="Interfaces\ISongService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
+    <Compile Include="Models\Indexes\Likes_SongPreferences.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\AlbumService.cs" />
     <Compile Include="Interfaces\IAlbumService.cs" />

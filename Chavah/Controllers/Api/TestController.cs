@@ -32,7 +32,7 @@ namespace BitShuva.Controllers
             // This queries the Songs_RankStandings index, which will reduce the results.
             var songRankStandings = await session
                 .Query<Song, Songs_RankStandings>()
-                .As<Songs_RankStandings.Results>()
+                .As<Songs_RankStandings.Result>()
                 .ToListAsync();
 
             return Ok(songRankStandings);
