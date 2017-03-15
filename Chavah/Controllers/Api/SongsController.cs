@@ -194,22 +194,27 @@ namespace BitShuva.Controllers
 
         [Route("get")]
         public async Task<Song> GetSong()
-        {            
-            // This is NOT an unbounded result set:
-            // This queries the Songs_RankStandings index, which will reduce the results. Max number of results will be the number of CommunityRankStanding enum constants.
-            var songRankStandings = await this.DbSession
-                .Query<Song, Songs_RankStandings>()
-                .As<Songs_RankStandings.Result>()
-                .ToListAsync();
-
-            var user = await this.GetCurrentUser();
-            if (user != null)
+        {
+            // This method greatly impacts the UI. The user waits for this method before ever hearing a song.
+            // We want to send back the next song ASAP.
+            using (var cache = DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
             {
-                var song = await PickSongForUser(user, songRankStandings);
-                return song;
+                // This is NOT an unbounded result set:
+                // This queries the Songs_RankStandings index, which will reduce the results. Max number of results will be the number of CommunityRankStanding enum constants.
+                var songRankStandings = await this.DbSession
+                    .Query<Song, Songs_RankStandings>()
+                    .As<Songs_RankStandings.Result>()
+                    .ToListAsync();
+
+                var user = await this.GetCurrentUser();
+                if (user != null)
+                {
+                    var song = await PickSongForUser(user, songRankStandings);
+                    return song;
+                }
+
+                return await PickSongForAnonymousUser(songRankStandings);
             }
-            
-            return await PickSongForAnonymousUser(songRankStandings);
         }
 
         private async Task<Song> PickSongForAnonymousUser(IList<Songs_RankStandings.Result> songRankStandings)
