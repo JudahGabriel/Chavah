@@ -276,8 +276,7 @@ namespace BitShuva.Controllers
             var songLikeStatus = songLikeDislike != null && songLikeDislike.LikeCount > 0 ?
                 LikeStatus.Like : songLikeDislike != null && songLikeDislike.DislikeCount > 0 ?
                 LikeStatus.Dislike : LikeStatus.None;
-            song.ToDto(songLikeStatus, songPick);
-            return song;
+            return song.ToDto(songLikeStatus, songPick);
         }
 
         private async Task<Song> PickSongForAnonymousUser(IList<Songs_RankStandings.Result> songRankStandings)
