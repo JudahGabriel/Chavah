@@ -15,30 +15,30 @@ namespace BitShuva.Models
         private const double VeryPoorRankingMultipler = 0.1;
         private const double PoorRankingMultipler = 0.5;
         private const double NormalRankingMultiplier = 1;
-        private const double GoodRankingMultipler = 2;
-        private const double GreatRankingMultipler = 3;
-        private const double BestRankingMultipler = 4;
+        private const double GoodRankingMultipler = 1.5;
+        private const double GreatRankingMultipler = 2;
+        private const double BestRankingMultipler = 3;
 
         private const double SongDislikedMultiplier = 0.1;
-        private const double SongLikedMultipler = 10;
+        private const double SongLikedMultipler = 2;
 
         private const double ArtistVeryDislikedMultiplier = 0.1;
         private const double ArtistDislikedMultiplier = 0.5;
-        private const double ArtistLikedMultiplier = 1.5;
-        private const double ArtistVeryLikedMultiplier = 2;
-        private const double ArtistFavoriteMultiplier = 3;
+        private const double ArtistLikedMultiplier = 1.1;
+        private const double ArtistVeryLikedMultiplier = 1.5;
+        private const double ArtistFavoriteMultiplier = 2;
 
         private const double AlbumVeryDislikedMultiplier = 0.1;
         private const double AlbumDislikedMultiplier = 0.5;
-        private const double AlbumLikedMultiplier = 2;
-        private const double AlbumVeryLikedMultiplier = 3.5;
-        private const double AlbumFavoriteMultiplier = 4;
+        private const double AlbumLikedMultiplier = 1.1;
+        private const double AlbumVeryLikedMultiplier = 1.5;
+        private const double AlbumFavoriteMultiplier = 2;
 
-        private const double TagVeryDislikedMultiplier = 0.95;
+        private const double TagVeryDislikedMultiplier = 0.98;
         private const double TagDislikedMultiplier = 0.99;
         private const double TagLikedMultiplier = 1.01;
-        private const double TagVeryLikedMultiplier = 1.05;
-        private const double TagFavoriteMultiplier = 1.1;
+        private const double TagVeryLikedMultiplier = 1.02;
+        private const double TagFavoriteMultiplier = 1.03;
 
         private static Random random = new Random();
 
