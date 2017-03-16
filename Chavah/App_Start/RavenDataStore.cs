@@ -1,5 +1,6 @@
 ﻿using BitShuva.Common;
 using BitShuva.Controllers;
+using BitShuva.Models.Transformers;
 ////using NLog;
 ////using NLog.Config;
 using Raven.Client;
@@ -29,7 +30,11 @@ namespace BitShuva
             ////loggingConfig.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, ravenNLogTarget));
             ////LogManager.Configuration = loggingConfig;
 
+            // Install all our indexes.
             IndexCreation.CreateIndexes(typeof(RavenContext).Assembly, Db);
+
+            // Install our transformers.
+            new SongNameTransformer().Execute(Db);
         }
     }
 }

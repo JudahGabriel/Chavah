@@ -7,6 +7,9 @@ using BitShuva.Models.Indexes;
 
 namespace BitShuva.Models
 {
+    /// <summary>
+    /// Contains information about a user's song preferences, based on songs, artists, albums, and tags.
+    /// </summary>
     public class UserSongPreferences
     {
         static Random random = new Random();
@@ -16,21 +19,27 @@ namespace BitShuva.Models
             Artists = new List<LikeDislikeCount>();
             Albums = new List<LikeDislikeCount>();
             Songs = new List<LikeDislikeCount>();
+            Tags = new List<LikeDislikeCount>();
         }
 
+        public string UserId { get; set; }
         public List<LikeDislikeCount> Artists { get; set; }
         public List<LikeDislikeCount> Albums { get; set; }
         public List<LikeDislikeCount> Songs { get; set; }
+        public List<LikeDislikeCount> Tags { get; set; }
 
         /// <summary>
         /// Picks a song for the user based his music preferences.
         /// </summary>
         /// <param name="totalSongCount">The total number of songs.</param>
         /// <returns></returns>
-        public SongPick PickSong(int veryPoorRankedSongCount, int poorRankedSongCount, int normalRankedSongCount, int goodRankedSongCount, int greatRankedSongCount, int bestRankedSongCount)
+        public SongPick OldPickSong(int veryPoorRankedSongCount, int poorRankedSongCount, int normalRankedSongCount, int goodRankedSongCount, int greatRankedSongCount, int bestRankedSongCount)
         {
             // Based off of the song weights algorithm described here:
             // http://stackoverflow.com/questions/3345788/algorithm-for-picking-thumbed-up-items/3345838#3345838
+            // 
+            // The song weights algorithm is loosely based on the more general Multiplicative Weight Update Algorithm (MWUA), described here:
+            // https://jeremykun.com/2017/02/27/the-reasonable-effectiveness-of-the-multiplicative-weights-update-algorithm/
 
             var veryPoorRange = new Range(0, .001 * veryPoorRankedSongCount);
             var poorRange = new Range(veryPoorRange.End, .01 * poorRankedSongCount);

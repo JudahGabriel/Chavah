@@ -7,16 +7,13 @@ namespace BitShuva.Models
 {
     public class ChavahLog
     {
-        #region Properties
         public string Id { get; set; }
         public string Message { get; set; }
         public string Exception { get; set; }
         public DateTime DateTime { get; set; } = DateTime.UtcNow;
         public LogLevel Level { get; set; }
         public object Details { get; set; }
-        #endregion
-
-        #region Functionality
+        
         //public static Task<ChavahLog> Error(IAsyncDocumentSession session, string message, string exception, object details = null)
         //{
         //    return ChavahLog.Log(session, message, exception, LogLevel.Error, details);
@@ -49,7 +46,5 @@ namespace BitShuva.Models
         //    session.AddRavenExpiration(log, DateTime.UtcNow.AddDays(30));
         //    return log;
         //}
-
-        #endregion
     }
 }

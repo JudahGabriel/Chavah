@@ -6,29 +6,33 @@ using BitShuva.Models;
 
 namespace BitShuva.Models.Indexes
 {
-    public class Songs_RankStandings : Raven.Client.Indexes.AbstractIndexCreationTask<Song, Songs_RankStandings.Results>
+    /// <summary>
+    /// RavenDB index that groups songs by CommunityRankStanding.
+    /// Used for generating the list of songs from which our song picker algorithm chooses a song based on user preferences.
+    /// </summary>
+    public class Songs_RankStandings : Raven.Client.Indexes.AbstractIndexCreationTask<Song, Songs_RankStandings.Result>
     {
         public Songs_RankStandings()
         {
             this.Map = songs => from song in songs
-                                select new
+                                select new Result
                                 {
                                     Standing = song.CommunityRankStanding,
-                                    Count = 1
+                                    SongIds = new List<string> { song.Id }
                                 };
             this.Reduce = results => from result in results
                                      group result by result.Standing into standingGroup
                                      select new
                                      {
                                          Standing = standingGroup.Key,
-                                         Count = standingGroup.Sum(s => s.Count)
+                                         SongIds = standingGroup.SelectMany(s => s.SongIds)
                                      };
         }
 
-        public class Results
+        public class Result
         {
             public CommunityRankStanding Standing { get; set; }
-            public int Count { get; set; }
+            public List<string> SongIds { get; set; }
         }
     }
 }

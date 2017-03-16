@@ -13,12 +13,9 @@ namespace BitShuva.Services
     /// Basic Log Service for the project
     /// </summary>
     public class LoggerService : ILoggerService
-    {
-        private IAsyncDocumentSession _session;
-
-        public LoggerService(IAsyncDocumentSession session)
+    {        
+        public LoggerService()
         {
-            _session = session;
         }
 
         public Task<ChavahLog> Error(string message,
@@ -40,10 +37,11 @@ namespace BitShuva.Services
             return this.Log(message, null, LogLevel.Info, details);
         }
 
-        public async Task<ChavahLog> Log(string message, 
-                                            string exception, 
-                                            LogLevel logLevel, 
-                                            object details = null)
+        public async Task<ChavahLog> Log(
+            string message, 
+            string exception, 
+            LogLevel logLevel, 
+            object details = null)
         {
             var log = new ChavahLog
             {
@@ -53,20 +51,27 @@ namespace BitShuva.Services
                 Level = logLevel,
                 Details = details
             };
-            await _session.StoreAsync(log);
-            //record the session to the database
-            await _session.SaveChangesAsync();
 
-            _session.AddRavenExpiration(log, DateTime.UtcNow.AddDays(30));
+            // Newing up our own session here. Needed because we're calling .SaveChanges and we don't want to commit other in-progress changes.
+            using (var session = RavenContext.Db.OpenAsyncSession())
+            {
+                await session.StoreAsync(log);
+                session.AddRavenExpiration(log, DateTime.UtcNow.AddDays(30));
+                await session.SaveChangesAsync();
+            }
+
             return log;
         }
 
         public async Task<IList<Activity>> GetActivity(int take)
         {
-           return await _session.Query<Activity>()
-                .OrderByDescending(a => a.DateTime)
-                .Take(take)
-                .ToListAsync();
+            using (var session = RavenContext.Db.OpenAsyncSession())
+            {
+                return await session.Query<Activity>()
+                    .OrderByDescending(a => a.DateTime)
+                    .Take(take)
+                    .ToListAsync();
+            }
         }
     }
 }
