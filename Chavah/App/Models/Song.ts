@@ -122,23 +122,28 @@ namespace BitShuva.Chavah {
 
                 
                 if (this.reasonsPlayed.lovedAlbum) {
-                    reasons.push(`you love the ${this.album} album`);
+                    reasons.push(`you love ${this.album}`);
                 } else if (this.reasonsPlayed.likedAlbum) {
-                    reasons.push(`you like other songs on the ${this.album} album`);
+                    reasons.push(`you like ${this.album}`);
                 }
 
                 if (this.reasonsPlayed.lovedArtist) {
                     reasons.push(`you love ${this.artist} and have thumbed-up an abundance of ${this.artist} songs`)
                 } else if (this.reasonsPlayed.likedArtist) {
-                    reasons.push(`you like other ${this.artist} songs`);
+                    reasons.push(`you like ${this.artist}`);
                 }
 
                 if (this.reasonsPlayed.likedSong) {
                     reasons.push("you like this song");
                 }
 
-                reasons.push(...this.reasonsPlayed.lovedTags.map(t => `you love ${t} songs`));
-                reasons.push(...this.reasonsPlayed.likedTags.map(t => `you like ${t} songs`));
+                if (this.reasonsPlayed.lovedTags.length > 0) {
+                    var lovedText = this.reasonsPlayed.lovedTags.slice(3).join(", ");
+                    reasons.push(`you love similiar songs (songs with ${lovedText}, etc.)`);
+                } else if (this.reasonsPlayed.likedTags.length > 0) {
+                    var lovedText = this.reasonsPlayed.likedTags.slice(3).join(", ");
+                    reasons.push(`you like similiar songs (songs with ${lovedText}, etc.)`);
+                }
                 
                 // We're going to join all the reasons together into a single, comma-delimited string.
                 // e.g. "We played this song because you like this song, you love Ted Pearce, and it's one of the top-ranked songs on Chavah.

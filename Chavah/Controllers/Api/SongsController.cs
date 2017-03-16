@@ -415,8 +415,8 @@ namespace BitShuva.Controllers
                     var songLikeStatus = songLikeDislike != null && songLikeDislike.LikeCount > 0 ?
                         LikeStatus.Like : songLikeDislike != null && songLikeDislike.DislikeCount > 0 ?
                         LikeStatus.Dislike : LikeStatus.None;
-                    song.ToDto(songLikeStatus, pickReasons);
-                    song.ReasonsPlayed = pickedSongs[i];
+                    var dto = song.ToDto(songLikeStatus, pickReasons);
+                    songDtos.Add(dto);
                 }
             }
 
