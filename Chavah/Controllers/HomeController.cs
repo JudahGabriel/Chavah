@@ -1,7 +1,8 @@
 using BitShuva.Common;
+using BitShuva.Interfaces;
 using BitShuva.Models;
+using BitShuva.ViewModels;
 using Chavah.Common;
-using Raven.Client;
 using Raven.Client.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,25 +14,115 @@ using System.Xml;
 
 namespace BitShuva.Controllers
 {
-    public class HomeController : RavenController
+    public class HomeController : Controller
     {
-        public HomeController()
+        private ILoggerService _logger;
+        private ISongService _songService;
+        private IAlbumService _albumService;
+        private IUserService _userService;
+
+        //TODO: move this to the web.config?
+        private string _radioUrl = @"http://messianicradio.com";
+        private string _blogUrl = @"http://blog.messianicradio.com/feeds/posts/default";
+
+        public HomeController(ILoggerService logger,
+                              ISongService songService,
+                              IAlbumService albumService,
+                              IUserService userService) 
         {
-            ViewBag.Title = "Chavah Messianic Radio";
-            ViewBag.Description = "Internet radio for Yeshua's disciples";
-            ViewBag.DescriptiveImageUrl = null;
-            ViewBag.QueriedSong = null;
+            _songService = songService;
+            _logger = logger;
+            _albumService = albumService;
+            _userService = userService;
         }
 
+        #region Views
+        /// <summary>
+        /// Urls like "http://messianicradio.com?song=songs/32" need to load the server-rendered Razor 
+        ///           page with info about that song.
+        ///           This is used for social media sites like Facebook and Twitter which show images, title, 
+        ///           and description from the loaded page.
+        ///  In addition it serves Json back for http://messianicradio.com?user=email
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="artist"></param>
+        /// <param name="album"></param>
+        /// <param name="song"></param>
+        /// <param name="embed"></param>
+        /// <returns></returns>
         [RequireHttps]
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string user=null, 
+                                              string artist = null,
+                                              string album = null,
+                                              string song=null,
+                                              bool embed = false)
         {
-            var viewModel = await GetHomeViewModel();
-            //var isAnonymous = string.IsNullOrEmpty(viewModel.Jwt);
-            //if (isAnonymous)
-            //{
-            //    Session["Foo"] = 42;
-            //}
+            #region User Details
+            if (user != null)
+            {
+                //return user information for the feed.
+
+                var userDb = await _userService.GetUser(user);
+                if (userDb == null)
+                {
+                    return Json(new ApplicationUser(), JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    userDb.PasswordHash = "";
+                    userDb.SecurityStamp = "";
+
+                    return Json(userDb, JsonRequestBehavior.AllowGet);
+                }
+                    
+            }
+            #endregion
+
+            var viewModel = new HomeViewModel();
+            viewModel.Embed = embed;
+
+            #region User Specifc information
+            var userName = User.Identity.Name;
+            ApplicationUser currentUser = null;
+
+            if (!string.IsNullOrEmpty(userName))
+            {
+                currentUser = await _userService.GetUser(userName);
+            }
+
+            viewModel.PageTitle = "Chavah Messianic Radio";
+            viewModel.PageDescription = "Internet radio for Yeshua's disciples";
+
+            viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
+            viewModel.Jwt = currentUser != null ? currentUser.Jwt : "";
+            viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
+            #endregion
+
+            #region QueryString Specific Information
+            //get the query
+            var firstValidQuery = new[] { artist, album, song }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
+
+            if (firstValidQuery != null)
+            {
+                var taskOrNull = firstValidQuery == song ? _songService.GetSongByIdQueryAsync(firstValidQuery) :
+                    firstValidQuery == artist ? _songService.GetSongByArtistAsync(firstValidQuery) :
+                    firstValidQuery == album ? _songService.GetSongByAlbumAsync(firstValidQuery) :
+                    null;
+
+                if (taskOrNull != null)
+                {
+                    var songForQuery = await taskOrNull;
+                    if (songForQuery != null)
+                    {
+                        var albumData = await _albumService.GetMatchingAlbumAsync(a => a.Name == songForQuery.Album && a.Artist == songForQuery.Artist);
+                        viewModel.PageTitle = $"{songForQuery.Name} by {songForQuery.Artist} on Chavah Messianic Radio";
+                        viewModel.DescriptiveImageUrl = albumData != null ? albumData.AlbumArtUri.ToString() : null;
+                        viewModel.Song = songForQuery;
+                        viewModel.SongNth = songForQuery.Number.ToNumberWord();
+                    }
+                }
+            }
+            #endregion
 
             return View(viewModel);
         }
@@ -40,49 +131,64 @@ namespace BitShuva.Controllers
         /// UI that doesn't require HTTPS. Used for Windows XP and old Android that doesn't support LetsEncrypt certs.
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> Legacy()
+        public async Task<ActionResult> Legacy(string user = null,
+                                               string artist = null,
+                                               string album = null,
+                                               string song = null)
         {
-            var viewModel = await GetHomeViewModel();
-            await ChavahLog.Info(this.DbSession, "Loaded non-HTTPS Chavah via /home/legacy", Request.UserAgent);
-            return View("Index", viewModel);
+            //log the User Agent
+            await _logger.Info("Loaded non-HTTPS Chavah via /home/legacy", Request.UserAgent);
+            //return the default HomeViewModel
+            return await Index(user, artist, album, song);
         }
 
         [Route("home/embed")]
-        [Route("durandal/embed")]
-        public async Task<ActionResult> Embed()
+        //[Route("durandal/embed")]
+        public async Task<ActionResult> Embed(string user = null,
+                              string artist = null,
+                              string album = null,
+                              string song = null)
         {
-            var viewModel = await this.GetHomeViewModel();
-            viewModel.Embed = true;
-            return View("Index", viewModel);
+            return await Index(user, artist, album, song, true);
         }
 
+        /// <summary>
+        /// site.com/about
+        /// </summary>
+        /// <returns></returns>
+        [Route("about")]
+        public ActionResult About()
+        {
+            return View();
+        }
+        #endregion
+
+        #region WebApi calls
         [Route("account/registeredusers")]
         [HttpGet]
         public async Task<ActionResult> RegisteredUsers()
         {
-            var lastRegisteredUsers = await this.DbSession
-                .Query<ApplicationUser>()
-                .Where(u => u.Email != null)
-                .OrderByDescending(a => a.RegistrationDate)
-                .Take(100)
-                .ToListAsync();
+            var lastRegisteredUsers = await _userService.RegisteredUsers(100);
+
             var feedItems = from user in lastRegisteredUsers
                             select new SyndicationItem(
-                                id: user.Id,
+                                id: user.Email,
                                 lastUpdatedTime: user.RegistrationDate,
                                 title: user.Email,
-                                content: "A new user registered on Chavah on " + user.RegistrationDate.ToString() + " with email address " + user.Email,
-                                itemAlternateLink: new Uri("http://messianicradio.com/?user=" + Uri.EscapeUriString(user.Id))
+                                content: $"A new user registered on Chavah on {user.RegistrationDate} with email address {user.Email}",
+                                itemAlternateLink: new Uri($"{_radioUrl}/?user={Uri.EscapeUriString(user.Email)}")
                             );
 
-            var feed = new SyndicationFeed("Chavah Messianic Radio", "The most recent registered users at Chavah Messianic Radio", new Uri("http://messianicradio.com"), feedItems) { Language = "en-US" };
+            var feed = new SyndicationFeed("Chavah Messianic Radio", 
+                                           "The most recent registered users at Chavah Messianic Radio", 
+                                           new Uri(_radioUrl), feedItems) { Language = "en-US" };
             return new RssActionResult { Feed = feed };
         }
 
+        [Route("GetLatestBlogPost")]
         public JsonResult GetLatestBlogPost()
         {
-            //TODO: move this to the web.config?
-            var reader = XmlReader.Create("http://blog.messianicradio.com/feeds/posts/default");
+            var reader = XmlReader.Create(_blogUrl);
             var feed = SyndicationFeed.Load(reader);
             var item = feed.Items.First();
             var result = new
@@ -94,110 +200,24 @@ namespace BitShuva.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        [Route("durandal/activityfeed")]
         public async Task<ActionResult> ActivityFeed(int take = 5)
         {
-            var recentActivities = await this.DbSession
-                .Query<Activity>()
-                .OrderByDescending(a => a.DateTime)
-                .Take(take)
-                .ToListAsync();
+            var recentActivities = await _logger.GetActivity(take);
+
             var feedItems = from activity in recentActivities
                             select new SyndicationItem(
                                 title: activity.Title,
                                 content: activity.Description,
                                 itemAlternateLink: activity.MoreInfoUri);
 
-            var feed = new SyndicationFeed("Chavah Messianic Radio", "The latest activity over at Chavah Messianic Radio", new Uri("http://messianicradio.com"), feedItems) { Language = "en-US" };
+            var feed = new SyndicationFeed("Chavah Messianic Radio",
+                                           "The latest activity over at Chavah Messianic Radio",
+                                           new Uri(_radioUrl), feedItems)
+            { Language = "en-US" };
             return new RssActionResult { Feed = feed };
         }
+        #endregion
 
-        private async Task<HomeViewModel> GetHomeViewModel()
-        {
-            var currentUser = await this.GetCurrentUser();
-            var viewModel = new HomeViewModel();
-            viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
-            viewModel.Jwt = currentUser != null ? currentUser.Jwt : "";
-            viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
-            await PopulateViewModelFromQueryString(viewModel);
-            return viewModel;
-        }
-
-        /// <summary>
-        /// Urls like "http://messianicradio.com?song=songs/32" need to load the server-rendered Razor page with info about that song.
-        /// This is used for social media sites like Facebook and Twitter which show images, title, and description from the loaded page.
-        /// </summary>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        private async Task PopulateViewModelFromQueryString(HomeViewModel viewModel)
-        {
-            var artistQuery = Request.QueryString["artist"];
-            var albumQuery = Request.QueryString["album"];
-            var songQuery = Request.QueryString["song"];
-
-            var firstValidQuery = new[] { artistQuery, albumQuery, songQuery }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
-            if (firstValidQuery != null)
-            {
-                var taskOrNull = firstValidQuery == songQuery ? this.GetSongByIdQuery(firstValidQuery) :
-                    firstValidQuery == artistQuery ? this.GetSongByArtist(firstValidQuery) :
-                    firstValidQuery == albumQuery ? this.GetSongByAlbum(firstValidQuery) :
-                    null;
-
-                if (taskOrNull != null)
-                {
-                    var songForQuery = await taskOrNull;
-                    if (songForQuery != null)
-                    {
-                        var album = await this.DbSession.Query<Album>().FirstOrDefaultAsync(a => a.Name == songForQuery.Album && a.Artist == songForQuery.Artist);
-                        viewModel.PageTitle = songForQuery.Name + " by " + songForQuery.Artist + " on Chavah Messianic Radio";
-                        viewModel.DescriptiveImageUrl = album?.AlbumArtUri?.ToString();
-                        viewModel.Song = songForQuery;
-                        viewModel.SongNth = songForQuery.Number.ToNumberWord();
-                    }
-                }
-            }
-        }
-
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            var userName = User.Identity.Name;
-            if (!string.IsNullOrEmpty(userName))
-            {
-                using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
-                {
-                    return await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + userName);
-                }
-            }
-
-            return null;
-        }
-
-        private async Task<Song> GetSongByAlbum(string albumQuery)
-        {
-            return await GetMatchingSong(s => s.Album == albumQuery);
-        }
-
-        private async Task<Song> GetSongByArtist(string artistQuery)
-        {
-            return await GetMatchingSong(s => s.Artist == artistQuery);
-        }
-
-        private async Task<Song> GetSongByIdQuery(string songQuery)
-        {
-            var properlyFormattedSongId = songQuery.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase) ?
-                songQuery :
-                "songs/" + songQuery;
-
-            return await this.DbSession.LoadAsync<Song>(properlyFormattedSongId);
-        }
-
-        private async Task<Song> GetMatchingSong(System.Linq.Expressions.Expression<Func<Song, bool>> predicate)
-        {
-            return await this.DbSession
-                .Query<Song>()
-                .Customize(x => x.RandomOrdering())
-                .Where(predicate)
-                .OrderBy(s => s.Id)
-                .FirstOrDefaultAsync();
-        }
     }
 }

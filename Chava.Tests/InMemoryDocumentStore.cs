@@ -1,10 +1,5 @@
 ﻿using BitShuva.Models.Indexes;
 using Raven.Client.Embedded;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chava.Tests
 {
@@ -20,19 +15,21 @@ namespace Chava.Tests
                     {
                         RunInUnreliableYetFastModeThatIsNotSuitableForProduction = true,
                         RunInMemory = true
-                    }
-             };
+                      }
+            };
 
             documentStore.Initialize();
 
-
-            //custom index
-            var songs_RankStandings = new Songs_RankStandings();
-            songs_RankStandings.Execute(documentStore);
-
+            //custom indexes go here
+            CreatIndexes(documentStore);
+            
             Store = documentStore;
         }
 
-       
+        public void CreatIndexes(EmbeddableDocumentStore store)
+        {   
+            var songs_RankStandings = new Songs_RankStandings();
+            songs_RankStandings.Execute(store);
+        }
     }
 }
