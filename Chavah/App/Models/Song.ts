@@ -120,17 +120,16 @@ namespace BitShuva.Chavah {
                     reasons.push("it's got a good community ranking");
                 }
 
-                
-                if (this.reasonsPlayed.lovedAlbum) {
-                    reasons.push(`you love ${this.album}`);
-                } else if (this.reasonsPlayed.likedAlbum) {
-                    reasons.push(`you like ${this.album}`);
-                }
-
                 if (this.reasonsPlayed.lovedArtist) {
                     reasons.push(`you love ${this.artist} and have thumbed-up an abundance of ${this.artist} songs`)
                 } else if (this.reasonsPlayed.likedArtist) {
                     reasons.push(`you like ${this.artist}`);
+                }
+
+                if (this.reasonsPlayed.lovedAlbum) {
+                    reasons.push(`you love ${this.album}`);
+                } else if (this.reasonsPlayed.likedAlbum) {
+                    reasons.push(`you like ${this.album}`);
                 }
 
                 if (this.reasonsPlayed.likedSong) {
