@@ -21,5 +21,10 @@ namespace BitShuva.Models
         /// The number of dislikes for the name.
         /// </summary>
         public int DislikeCount { get; set; }
+
+        /// <summary>
+        /// The ID of the song this like/dislike applies to.
+        /// </summary>
+        public string SongId { get; set; }
     }
 }

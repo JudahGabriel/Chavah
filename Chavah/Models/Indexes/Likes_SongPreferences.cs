@@ -20,42 +20,46 @@ namespace BitShuva.Models.Indexes
                            where song != null
                            let likeCount = like.Status == LikeStatus.Like ? 1 : 0
                            let dislikeCount = like.Status == LikeStatus.Dislike ? 1 : 0
-                           select new UserSongPreferences
+                           select new
                            {
                                UserId = like.UserId,
-                               Songs = new List<LikeDislikeCount>
+                               Songs = new LikeDislikeCount[]
                                {
                                     new LikeDislikeCount
                                     {
                                         Name = song.Name,
                                         LikeCount = likeCount,
-                                        DislikeCount = dislikeCount
+                                        DislikeCount = dislikeCount,
+                                        SongId = song.Id
                                     }
                                },
 
-                               Artists = new List<LikeDislikeCount>
+                               Artists = new LikeDislikeCount[]
                                {
                                     new LikeDislikeCount
                                     {
                                         Name = song.Artist,
                                         LikeCount = likeCount,
-                                        DislikeCount = dislikeCount
+                                        DislikeCount = dislikeCount,
+                                        SongId = song.Id
                                     }
                                },
-                               Albums = new List<LikeDislikeCount>()
+                               Albums = new LikeDislikeCount[]
                                {
                                     new LikeDislikeCount
                                     {
                                         Name = song.Album,
                                         LikeCount = likeCount,
-                                        DislikeCount = dislikeCount
+                                        DislikeCount = dislikeCount,
+                                        SongId = song.Id
                                     },
                                },
                                Tags = song.Tags.Select(t => new LikeDislikeCount
                                {
                                    Name = t,
                                    LikeCount = likeCount,
-                                   DislikeCount = dislikeCount
+                                   DislikeCount = dislikeCount,
+                                   SongId = song.Id
                                }).ToList()
                            };
 

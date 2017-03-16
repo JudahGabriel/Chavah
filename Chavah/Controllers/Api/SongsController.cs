@@ -193,28 +193,87 @@ namespace BitShuva.Controllers
         }
 
         [Route("get")]
+        [Obsolete("Use the new ChooseSong instead")]
         public async Task<Song> GetSong()
         {
-            // This method greatly impacts the UI. The user waits for this method before ever hearing a song.
+            // This is NOT an unbounded result set:
+            // This queries the Songs_RankStandings index, which will reduce the results. Max number of results will be the number of CommunityRankStanding enum constants.
+            var songsWithRanking = await this.DbSession.Query<Song, Songs_RankStandings>()
+                .As<Songs_RankStandings.Result>()
+                .ToListAsync();
+
+            var user = await this.GetCurrentUser();
+            if (user != null)
+            {
+                var song = await PickSongForUser(user, songsWithRanking);
+                return song;
+            }
+
+            return await PickSongForAnonymousUser(songsWithRanking);
+        }
+
+        [HttpGet]
+        public async Task<UserSongPreferences> GetPrefsDebug(string email)
+        {
+            var userId = "ApplicationUsers/" + email;
+            var userPreferences = await DbSession.Query<Like, Likes_SongPreferences>()
+                .As<UserSongPreferences>()
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+            return userPreferences;
+        }
+
+        /// <summary>
+        /// Called when the user asks for the next song.
+        /// </summary>
+        /// <returns></returns>
+        [Route("chooseSong")]
+        [HttpGet]
+        public async Task<Song> ChooseSong()
+        {
+            // HOT PATH: This method greatly impacts the UI. The user waits for this method before ever hearing a song.
             // We want to send back the next song ASAP.
+
+            var userPreferences = default(UserSongPreferences);
+            var songsWithRanking = default(IList<Songs_RankStandings.Result>);
+
+            // Aggressive caching for the UserSongPreferences and SongsWithRanking. These don't change often.
             using (var cache = DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
             {
+                var user = await this.GetCurrentUser();
+
                 // This is NOT an unbounded result set:
                 // This queries the Songs_RankStandings index, which will reduce the results. Max number of results will be the number of CommunityRankStanding enum constants.
-                var songRankStandings = await this.DbSession
-                    .Query<Song, Songs_RankStandings>()
+                songsWithRanking = await this.DbSession.Query<Song, Songs_RankStandings>()
                     .As<Songs_RankStandings.Result>()
                     .ToListAsync();
-
-                var user = await this.GetCurrentUser();
                 if (user != null)
                 {
-                    var song = await PickSongForUser(user, songRankStandings);
-                    return song;
+                    userPreferences = await DbSession.Query<Like, Likes_SongPreferences>()
+                        .As<UserSongPreferences>()
+                        .FirstOrDefaultAsync(u => u.UserId == user.Id);
                 }
-
-                return await PickSongForAnonymousUser(songRankStandings);
+                if (userPreferences == null)
+                {
+                    userPreferences = new UserSongPreferences();
+                }
             }
+
+            // Run the song picking algorithm.
+            var songPick = userPreferences.PickSong(songsWithRanking);
+            if (string.IsNullOrEmpty(songPick.SongId))
+            {
+                await _logger.Warn("Chose song but ended up with an empty Song ID.");
+                return await this.PickRandomSong();
+            }
+
+            var song = await DbSession.LoadAsync<Song>(songPick.SongId);
+            if (song == null)
+            {
+                await _logger.Warn($"Chose song ID {songPick.SongId}, but that song is null.", songPick);
+            }
+
+            song.ReasonsPlayed = songPick;
+            return song;
         }
 
         private async Task<Song> PickSongForAnonymousUser(IList<Songs_RankStandings.Result> songRankStandings)
@@ -225,7 +284,7 @@ namespace BitShuva.Controllers
             var goodRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Good).Select(s => s.SongIds.Count).FirstOrDefault();
             var greatRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Great).Select(s => s.SongIds.Count).FirstOrDefault();
             var bestRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Best).Select(s => s.SongIds.Count).FirstOrDefault();
-            var songPick = new UserSongPreferences().PickSong(
+            var songPick = new UserSongPreferences().OldPickSong(
                 veryPoorRankSongCount,
                 poorRankSongCount,
                 normalRankSongCount,
@@ -260,7 +319,7 @@ namespace BitShuva.Controllers
                 .FirstOrDefaultAsync();
         }
 
-        [JwtSession]
+        [Obsolete("Use the new ChooseSongBatch")]
         [Route("batch")]
         public async Task<IEnumerable<Song>> GetBatch()
         {
@@ -289,6 +348,68 @@ namespace BitShuva.Controllers
             }
 
             return batch;
+        }
+        
+        [HttpGet]
+        [Route("chooseSongBatch")]
+        public async Task<IEnumerable<Song>> ChooseSongBatch()
+        {
+            const int songsInBatch = 5;
+            var userPreferences = default(UserSongPreferences);
+            var songsWithRanking = default(IList<Songs_RankStandings.Result>);
+
+            // Aggressive caching for the UserSongPreferences and SongsWithRanking. These don't change often.
+            using (var cache = DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
+            {
+                var user = await this.GetCurrentUser();
+
+                // This is NOT an unbounded result set:
+                // This queries the Songs_RankStandings index, which will reduce the results. Max number of results will be the number of CommunityRankStanding enum constants.
+                songsWithRanking = await this.DbSession.Query<Song, Songs_RankStandings>()
+                    .As<Songs_RankStandings.Result>()
+                    .ToListAsync();
+                if (user != null)
+                {
+                    userPreferences = await DbSession.Query<Like, Likes_SongPreferences>()
+                        .As<UserSongPreferences>()
+                        .FirstOrDefaultAsync(u => u.UserId == user.Id);
+                }
+                if (userPreferences == null)
+                {
+                    userPreferences = new UserSongPreferences();
+                }
+            }
+
+            // Run the song picking algorithm.
+            var batch = new List<Song>(songsInBatch);
+            var pickedSongs = Enumerable.Range(0, 5)
+                .Select(_ => userPreferences.PickSong(songsWithRanking))
+                .ToList();
+            if (pickedSongs.Any(s => string.IsNullOrEmpty(s.SongId)))
+            {
+                await _logger.Warn("Picked songs for batch, but returned one or more empty song IDs");
+            }
+
+            // Make a single trip to the database to load all the picked songs.
+            var pickedSongIds = pickedSongs
+                .Select(s => s.SongId)
+                .ToList();
+            var songs = await DbSession.LoadAsync<Song>(pickedSongIds);
+            if (songs.Any(s => s == null))
+            {
+                await _logger.Warn("Picked songs for batch, but some loaded songs were null.", pickedSongIds);
+            }
+
+            for (var i = 0; i < songs.Length; i++)
+            {
+                var song = songs[i];
+                if (song != null)
+                {
+                    song.ReasonsPlayed = pickedSongs[i];
+                }
+            }
+
+            return songs.Where(s => s != null);
         }
 
         [Route("GetById")]
@@ -448,7 +569,7 @@ namespace BitShuva.Controllers
             var bestRankSongCount = songRankStandings.Where(s => s.Standing == CommunityRankStanding.Best).Select(s => s.SongIds.Count).FirstOrDefault();
 
             var pickRankedSong = new Func<CommunityRankStanding, Func<Task<Song>>>(standing => new Func<Task<Song>>(() => PickRankedSongForUser(standing, user)));
-            var songPick = user.Preferences.PickSong(veryPoorRankSongCount, poorRankSongCount, normalRankSongCount, goodRankSongCount, greatRankSongCount, bestRankSongCount);
+            var songPick = user.Preferences.OldPickSong(veryPoorRankSongCount, poorRankSongCount, normalRankSongCount, goodRankSongCount, greatRankSongCount, bestRankSongCount);
             var songPicker = Match.Value(songPick)
                 .With(SongPick.VeryPoorRank, pickRankedSong(CommunityRankStanding.VeryPoor))
                 .With(SongPick.PoorRank, pickRankedSong(CommunityRankStanding.Poor))

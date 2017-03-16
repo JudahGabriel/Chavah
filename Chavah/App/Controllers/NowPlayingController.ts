@@ -189,7 +189,7 @@
 
         songClicked(song: Song) {
             if (song !== this.currentSong) {
-                song.reasonPlayed = SongPick.YouRequestedSong;
+                song.setSolePickReason(SongPick.YouRequestedSong);
                 var songBatch = this.songBatch.songsBatch.getValue();
                 var songIndex = songBatch.indexOf(song);
                 if (songIndex >= 0) {

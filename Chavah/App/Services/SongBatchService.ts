@@ -36,7 +36,7 @@
             } else {
                 // Woops, we don't have any songs at all. Request just one (fast), then ask for a batch.
                 this.songApi
-                    .getSong()
+                    .chooseSong()
                     .then(song => {
                         this.audioPlayer.playNewSong(song);
                         this.fetchSongBatch();
@@ -51,7 +51,7 @@
 
         private fetchSongBatch() {
             this.songApi
-                .getSongBatch()
+                .chooseSongBatch()
                 .then(songs => {
                     var existingSongBatch = this.songsBatch.getValue();
                         var freshSongs = songs

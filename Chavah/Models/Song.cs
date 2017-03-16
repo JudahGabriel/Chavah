@@ -30,10 +30,13 @@ namespace BitShuva.Models
         public List<string> Genres { get; set; }
         public string Lyrics { get; set; }
         public int TotalPlays { get; set; }
-
-        #region Functions
+        
+        [Obsolete("Use the new ReasonsPlayed instead")]
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public SongPick ReasonPlayed { get; set; }
+
+        [Raven.Imports.Newtonsoft.Json.JsonIgnore]
+        public SongPickReasons ReasonsPlayed { get; set; }
 
         public static Song FromFileName(string fileName)
         {
@@ -135,8 +138,7 @@ namespace BitShuva.Models
         public Uri GetSongShareLink()
         {
             //TODO: move to station configuraitons
-            return new Uri("http://messianicradio.com/?song=" + this.Id);
+            return new Uri("https://messianicradio.com/?song=" + this.Id);
         }
-        #endregion
     }
 }

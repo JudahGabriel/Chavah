@@ -22,7 +22,8 @@ namespace BitShuva.Chavah {
         artistInfo: Server.IArtist;
         tags: string[];
         purchaseUri: string;
-        reasonPlayed: SongPick;
+        //reasonPlayed: SongPick;
+        reasonsPlayed: Server.ISongPickReasons | null;
 
         albumSwatchBackground = "white";
         albumSwatchForeground = "black";
@@ -90,26 +91,77 @@ namespace BitShuva.Chavah {
         }
 
         get reasonPlayedText(): string {
-
             // "we played this song because {{text}}"
-            switch (this.reasonPlayed) {
-                case SongPick.BestRank: return "it's one of the highest ranked songs on Chavah";
-                case SongPick.GoodRank: return "it's got a good ranking";
-                case SongPick.GreatRank: return "it's got great ranking";
-                case SongPick.LikedAlbum: return `you like other songs on the ${this.album} album`;
-                case SongPick.LikedArtist: return `you like other ${this.artist} songs`;
-                case SongPick.LikedSong: return "you like this song";
-                case SongPick.NormalRank: return "it's got an average ranking. Occasionally, Chavah will play songs with average rank to better understand what kind of music you like";
-                case SongPick.PoorRank: return "we give even poorly ranked songs a chance";
-                case SongPick.SomeoneRequestedSong: return "it was requested by a listener";
-                case SongPick.SongFromAlbumRequested: return `you asked to hear another song from the ${this.album} album`;
-                case SongPick.SongFromArtistRequested: return `you asked to hear another song from ${this.artist}`;
-                case SongPick.VeryPoorRank: return "...well, even the lowest-ranked songs will get played sometimes :-)";
-                case SongPick.YouRequestedSong: return "you asked Chavah to play it";
-                case SongPick.RandomSong:
-                default:
-                    return "Chavah plays random songs from time to time to see what kind of music you like";
+
+            var randomReason = "Chavah plays random songs from time to time to see what kind of music you like";
+            if (this.reasonsPlayed) {
+
+                // If there's a sole reason, just list that.
+                if (this.reasonsPlayed.soleReason !== null) {
+                    switch (this.reasonsPlayed.soleReason) {
+                        case SongPick.SomeoneRequestedSong: return "it was requested by a listener";
+                        case SongPick.SongFromAlbumRequested: return `you asked to hear another song from the ${this.album} album`;
+                        case SongPick.SongFromArtistRequested: return `you asked to hear another song from ${this.artist}`;
+                        case SongPick.VeryPoorRank: return "...well, even the lowest-ranked songs will get played sometimes :-)";
+                        case SongPick.YouRequestedSong: return "you asked Chavah to play it";
+                        case SongPick.RandomSong:
+                        default:
+                            return randomReason;
+                    }
+                }
+
+                // There is zero or more reasons we played this.
+                var reasons: string[] = [];
+                if (this.reasonsPlayed.bestRanking) {
+                    reasons.push("it's one of the highest ranked songs on Chavah");
+                } else if (this.reasonsPlayed.greatRanking) {
+                    reasons.push("it's got a great community ranking");
+                } else if (this.reasonsPlayed.goodRanking) {
+                    reasons.push("it's got a good community ranking");
+                }
+
+                
+                if (this.reasonsPlayed.lovedAlbum) {
+                    reasons.push(`you love the ${this.album} album`);
+                } else if (this.reasonsPlayed.likedAlbum) {
+                    reasons.push(`you like other songs on the ${this.album} album`);
+                }
+
+                if (this.reasonsPlayed.lovedArtist) {
+                    reasons.push(`you love ${this.artist} and have thumbed-up an abundance of ${this.artist} songs`)
+                } else if (this.reasonsPlayed.likedArtist) {
+                    reasons.push(`you like other ${this.artist} songs`);
+                }
+
+                if (this.reasonsPlayed.likedSong) {
+                    reasons.push("you like this song");
+                }
+
+                reasons.push(...this.reasonsPlayed.lovedTags.map(t => `you love ${t} songs`));
+                reasons.push(...this.reasonsPlayed.likedTags.map(t => `you like ${t} songs`));
+                
+                // We're going to join all the reasons together into a single, comma-delimited string.
+                // e.g. "We played this song because you like this song, you love Ted Pearce, and it's one of the top-ranked songs on Chavah.
+
+                // No reasons? 
+                if (reasons.length === 0) {
+                    return `you might like it`;
+                }
+
+                if (reasons.length === 1) {
+                    return reasons[0];
+                }
+
+                if (reasons.length === 2) {
+                    return reasons.join(" and ");
+                }
+
+                // Append "and" to the last reason if there's more than one.
+                reasons[reasons.length - 1] = "and " + reasons[reasons.length - 1];
+                return reasons.join(", ");
             }
+
+            return randomReason;
         }
 
         get facebookShareUrl(): string {
@@ -197,8 +249,30 @@ namespace BitShuva.Chavah {
                 tags: [],
                 totalPlays: 0,
                 uri: "",
-                reasonPlayed: SongPick.RandomSong
+                reasonsPlayed: this.createEmptySongPickReasons("songs/0")
             });
+        }
+
+        setSolePickReason(reason: SongPick) {
+            this.reasonsPlayed = Song.createEmptySongPickReasons(this.id);
+            this.reasonsPlayed.soleReason = reason;
+        }
+
+        static createEmptySongPickReasons(songId: string): Server.ISongPickReasons {
+            return {
+                likedAlbum: false,
+                likedArtist: false,
+                likedSong: false,
+                likedTags: [],
+                lovedAlbum: false,
+                lovedArtist: false,
+                lovedTags: [],
+                bestRanking: false,
+                goodRanking: false,
+                greatRanking: false,
+                soleReason: null,
+                songId: songId
+            };
         }
 
         //private getColorClass() {

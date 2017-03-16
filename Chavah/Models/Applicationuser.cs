@@ -22,6 +22,8 @@ namespace BitShuva.Models
         }
         
         public int TotalPlays { get; set; }
+
+        [Obsolete("This is no longer used. Please use the Likes_SongPreferences index instead.")]
         public UserSongPreferences Preferences { get; set; }
         public DateTime RegistrationDate { get; set; }
         public DateTime LastSeen { get; set; }

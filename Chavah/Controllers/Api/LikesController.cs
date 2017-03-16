@@ -111,7 +111,7 @@ namespace BitShuva.Controllers
             var averageSongRank = communityRankStats != null ? communityRankStats.RankAverage : 0;
             var newStanding = Match.Value(song.CommunityRank)
                 .With(v => v <= -5, CommunityRankStanding.VeryPoor)
-                .With(v => v <= -1, CommunityRankStanding.Poor)
+                .With(v => v <= -3, CommunityRankStanding.Poor)
                 .With(v => v <= (averageSongRank * 1.5), CommunityRankStanding.Normal)
                 .With(v => v <= (averageSongRank * 3), CommunityRankStanding.Good)
                 .With(v => v <= (averageSongRank * 5), CommunityRankStanding.Great)
