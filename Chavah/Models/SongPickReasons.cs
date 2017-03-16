@@ -29,5 +29,10 @@ namespace BitShuva.Models
         /// Used when the user requests a particular song, artist, album, or tag.
         /// </summary>
         public SongPick? SoleReason { get; set; }
+
+        public static SongPickReasons FromSoleReason(SongPick playedReason)
+        {
+            return new SongPickReasons { SoleReason = playedReason };
+        }
     }
 }

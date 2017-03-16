@@ -104,6 +104,16 @@ namespace BitShuva.Models
         /// <returns></returns>
         public Song ToDto(LikeStatus likeStatus, SongPick playedReason)
         {
+            return ToDto(likeStatus, SongPickReasons.FromSoleReason(playedReason));
+        }
+
+        /// <summary>
+        /// Creates a new song object that's ready to be sent as a data transfer object over to the client.
+        /// </summary>
+        /// <param name="likeStatus">The like status for the song.</param>
+        /// <returns></returns>
+        public Song ToDto(LikeStatus likeStatus, SongPickReasons pickReasons)
+        {
             return new Song
             {
                 Album = this.Album,
@@ -121,7 +131,7 @@ namespace BitShuva.Models
                 Tags = this.Tags,
                 Lyrics = this.Lyrics,
                 TotalPlays = this.TotalPlays,
-                ReasonPlayed = playedReason
+                ReasonsPlayed = pickReasons
             };
         }
 

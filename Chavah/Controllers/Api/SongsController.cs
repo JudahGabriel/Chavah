@@ -271,8 +271,12 @@ namespace BitShuva.Controllers
             {
                 await _logger.Warn($"Chose song ID {songPick.SongId}, but that song is null.", songPick);
             }
-
-            song.ReasonsPlayed = songPick;
+            
+            var songLikeDislike = userPreferences.Songs.FirstOrDefault(s => s.SongId == song.Id);
+            var songLikeStatus = songLikeDislike != null && songLikeDislike.LikeCount > 0 ?
+                LikeStatus.Like : songLikeDislike != null && songLikeDislike.DislikeCount > 0 ?
+                LikeStatus.Dislike : LikeStatus.None;
+            song.ToDto(songLikeStatus, songPick);
             return song;
         }
 
@@ -400,16 +404,23 @@ namespace BitShuva.Controllers
                 await _logger.Warn("Picked songs for batch, but some loaded songs were null.", pickedSongIds);
             }
 
+            var songDtos = new List<Song>(songs.Length);
             for (var i = 0; i < songs.Length; i++)
             {
                 var song = songs[i];
                 if (song != null)
                 {
+                    var pickReasons = pickedSongs[i];
+                    var songLikeDislike = userPreferences.Songs.FirstOrDefault(s => s.SongId == song.Id);
+                    var songLikeStatus = songLikeDislike != null && songLikeDislike.LikeCount > 0 ?
+                        LikeStatus.Like : songLikeDislike != null && songLikeDislike.DislikeCount > 0 ?
+                        LikeStatus.Dislike : LikeStatus.None;
+                    song.ToDto(songLikeStatus, pickReasons);
                     song.ReasonsPlayed = pickedSongs[i];
                 }
             }
 
-            return songs.Where(s => s != null);
+            return songDtos;
         }
 
         [Route("GetById")]
