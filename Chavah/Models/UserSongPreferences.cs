@@ -34,11 +34,11 @@ namespace BitShuva.Models
         private const double AlbumVeryLikedMultiplier = 3.5;
         private const double AlbumFavoriteMultiplier = 4;
 
-        private const double TagVeryDislikedMultiplier = 0.1;
-        private const double TagDislikedMultiplier = 0.5;
-        private const double TagLikedMultiplier = 2;
-        private const double TagVeryLikedMultiplier = 5;
-        private const double TagFavoriteMultiplier = 10;
+        private const double TagVeryDislikedMultiplier = 0.95;
+        private const double TagDislikedMultiplier = 0.99;
+        private const double TagLikedMultiplier = 1.01;
+        private const double TagVeryLikedMultiplier = 1.05;
+        private const double TagFavoriteMultiplier = 1.1;
 
         private static Random random = new Random();
 
