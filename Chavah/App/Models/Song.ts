@@ -138,11 +138,11 @@ namespace BitShuva.Chavah {
                 }
 
                 if (this.reasonsPlayed.lovedTags.length > 0) {
-                    var lovedText = this.reasonsPlayed.lovedTags.slice(3).join(", ");
+                    var lovedText = this.reasonsPlayed.lovedTags.slice(0, 3).join(", ");
                     reasons.push(`you love similiar songs (songs with ${lovedText}, etc.)`);
                 } else if (this.reasonsPlayed.likedTags.length > 0) {
-                    var lovedText = this.reasonsPlayed.likedTags.slice(3).join(", ");
-                    reasons.push(`you like similiar songs (songs with ${lovedText}, etc.)`);
+                    var likedText = this.reasonsPlayed.likedTags.slice(0, 3).join(", ");
+                    reasons.push(`you like similiar songs (songs with ${likedText}, etc.)`);
                 }
                 
                 // We're going to join all the reasons together into a single, comma-delimited string.
