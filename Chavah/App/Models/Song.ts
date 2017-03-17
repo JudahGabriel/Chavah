@@ -42,6 +42,7 @@ namespace BitShuva.Chavah {
         private _facebookShareUrl: string | null;
         private _googlePlusShareUrl: string | null;
         private _twitterShareUrl: string | null;
+        private _reasonPlayedText: string | null;
 
         static readonly defaultSwatch: ISwatch = {
             getBodyTextColor: () => "black",
@@ -91,81 +92,11 @@ namespace BitShuva.Chavah {
         }
 
         get reasonPlayedText(): string {
-            // "we played this song because {{text}}"
-
-            var randomReason = "Chavah plays random songs from time to time to see what kind of music you like";
-            if (this.reasonsPlayed) {
-
-                // If there's a sole reason, just list that.
-                if (this.reasonsPlayed.soleReason !== null) {
-                    switch (this.reasonsPlayed.soleReason) {
-                        case SongPick.SomeoneRequestedSong: return "it was requested by a listener";
-                        case SongPick.SongFromAlbumRequested: return `you asked to hear another song from the ${this.album} album`;
-                        case SongPick.SongFromArtistRequested: return `you asked to hear another song from ${this.artist}`;
-                        case SongPick.VeryPoorRank: return "...well, even the lowest-ranked songs will get played sometimes :-)";
-                        case SongPick.YouRequestedSong: return "you asked Chavah to play it";
-                        case SongPick.RandomSong:
-                        default:
-                            return randomReason;
-                    }
-                }
-
-                // There is zero or more reasons we played this.
-                var reasons: string[] = [];
-                if (this.reasonsPlayed.bestRanking) {
-                    reasons.push("it's one of the highest ranked songs on Chavah");
-                } else if (this.reasonsPlayed.greatRanking) {
-                    reasons.push("it's got a great community ranking");
-                } else if (this.reasonsPlayed.goodRanking) {
-                    reasons.push("it's got a good community ranking");
-                }
-
-                if (this.reasonsPlayed.lovedArtist) {
-                    reasons.push(`you love ${this.artist} and have thumbed-up an abundance of ${this.artist} songs`)
-                } else if (this.reasonsPlayed.likedArtist) {
-                    reasons.push(`you like ${this.artist}`);
-                }
-
-                if (this.reasonsPlayed.lovedAlbum) {
-                    reasons.push(`you love ${this.album}`);
-                } else if (this.reasonsPlayed.likedAlbum) {
-                    reasons.push(`you like ${this.album}`);
-                }
-
-                if (this.reasonsPlayed.likedSong) {
-                    reasons.push("you like this song");
-                }
-
-                if (this.reasonsPlayed.lovedTags.length > 0) {
-                    var lovedText = this.reasonsPlayed.lovedTags.slice(0, 3).join(", ");
-                    reasons.push(`you love similiar songs (songs with ${lovedText}, etc.)`);
-                } else if (this.reasonsPlayed.likedTags.length > 0) {
-                    var likedText = this.reasonsPlayed.likedTags.slice(0, 3).join(", ");
-                    reasons.push(`you like similiar songs (songs with ${likedText}, etc.)`);
-                }
-                
-                // We're going to join all the reasons together into a single, comma-delimited string.
-                // e.g. "We played this song because you like this song, you love Ted Pearce, and it's one of the top-ranked songs on Chavah.
-
-                // No reasons? 
-                if (reasons.length === 0) {
-                    return `you might like it`;
-                }
-
-                if (reasons.length === 1) {
-                    return reasons[0];
-                }
-
-                if (reasons.length === 2) {
-                    return reasons.join(" and ");
-                }
-
-                // Append "and" to the last reason if there's more than one.
-                reasons[reasons.length - 1] = "and " + reasons[reasons.length - 1];
-                return reasons.join(", ");
+            if (!this._reasonPlayedText) {
+                this._reasonPlayedText = this.createReasonPlayedText();
             }
 
-            return randomReason;
+            return this._reasonPlayedText;
         }
 
         get facebookShareUrl(): string {
@@ -260,6 +191,84 @@ namespace BitShuva.Chavah {
         setSolePickReason(reason: SongPick) {
             this.reasonsPlayed = Song.createEmptySongPickReasons(this.id);
             this.reasonsPlayed.soleReason = reason;
+        }
+
+        private createReasonPlayedText(): string {
+            // "we played this song because {{text}}"
+
+            var randomReason = "Chavah plays random songs from time to time to see what kind of music you like";
+            if (this.reasonsPlayed) {
+
+                // If there's a sole reason, just list that.
+                if (this.reasonsPlayed.soleReason !== null) {
+                    switch (this.reasonsPlayed.soleReason) {
+                        case SongPick.SomeoneRequestedSong: return "it was requested by a listener";
+                        case SongPick.SongFromAlbumRequested: return `you asked to hear another song from the ${this.album} album`;
+                        case SongPick.SongFromArtistRequested: return `you asked to hear another song from ${this.artist}`;
+                        case SongPick.VeryPoorRank: return "...well, even the lowest-ranked songs will get played sometimes :-)";
+                        case SongPick.YouRequestedSong: return "you asked Chavah to play it";
+                        case SongPick.RandomSong:
+                        default:
+                            return randomReason;
+                    }
+                }
+
+                // There is zero or more reasons we played this.
+                var reasons: string[] = [];
+                if (this.reasonsPlayed.bestRanking) {
+                    reasons.push("it's one of the highest ranked songs on Chavah");
+                } else if (this.reasonsPlayed.greatRanking) {
+                    reasons.push("it's got a great community ranking");
+                } else if (this.reasonsPlayed.goodRanking) {
+                    reasons.push("it's got a good community ranking");
+                }
+
+                if (this.reasonsPlayed.lovedArtist) {
+                    reasons.push(`you love ${this.artist} and have thumbed-up an abundance of ${this.artist} songs`)
+                } else if (this.reasonsPlayed.likedArtist) {
+                    reasons.push(`you like ${this.artist}`);
+                }
+
+                if (this.reasonsPlayed.lovedAlbum) {
+                    reasons.push(`you love ${this.album}`);
+                } else if (this.reasonsPlayed.likedAlbum) {
+                    reasons.push(`you like ${this.album}`);
+                }
+
+                if (this.reasonsPlayed.likedSong) {
+                    reasons.push("you like this song");
+                }
+
+                if (this.reasonsPlayed.lovedTags.length > 0) {
+                    var lovedText = this.reasonsPlayed.lovedTags.slice(0, 3).join(", ");
+                    reasons.push(`you love similiar songs (songs with ${lovedText}, etc.)`);
+                } else if (this.reasonsPlayed.likedTags.length > 0) {
+                    var likedText = this.reasonsPlayed.likedTags.slice(0, 3).join(", ");
+                    reasons.push(`you like similiar songs (songs with ${likedText}, etc.)`);
+                }
+
+                // We're going to join all the reasons together into a single, comma-delimited string.
+                // e.g. "We played this song because you like this song, you love Ted Pearce, and it's one of the top-ranked songs on Chavah.
+
+                // No reasons? 
+                if (reasons.length === 0) {
+                    return `you might like it`;
+                }
+
+                if (reasons.length === 1) {
+                    return reasons[0];
+                }
+
+                if (reasons.length === 2) {
+                    return reasons.join(" and ");
+                }
+
+                // Append "and" to the last reason if there's more than one.
+                reasons[reasons.length - 1] = "and " + reasons[reasons.length - 1];
+                return reasons.join(", ");
+            }
+
+            return randomReason;
         }
 
         static createEmptySongPickReasons(songId: string): Server.ISongPickReasons {

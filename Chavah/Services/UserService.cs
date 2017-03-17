@@ -18,11 +18,11 @@ namespace BitShuva.Services
             _session = session;
         }
 
-        public async Task<ApplicationUser> GetUser(string idenityName)
+        public async Task<ApplicationUser> GetUser(string userId)
         {
             using (_session.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
             {
-                return await _session.LoadAsync<ApplicationUser>($"ApplicationUsers/{idenityName}");
+                return await _session.LoadAsync<ApplicationUser>($"ApplicationUsers/{userId}");
             }
         }
 

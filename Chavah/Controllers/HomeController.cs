@@ -22,7 +22,7 @@ namespace BitShuva.Controllers
         private IUserService _userService;
 
         //TODO: move this to the web.config?
-        private string _radioUrl = @"http://messianicradio.com";
+        private string _radioUrl = @"https://messianicradio.com";
         private string _blogUrl = @"http://blog.messianicradio.com/feeds/posts/default";
 
         public HomeController(ILoggerService logger,
@@ -35,8 +35,7 @@ namespace BitShuva.Controllers
             _albumService = albumService;
             _userService = userService;
         }
-
-        #region Views
+        
         /// <summary>
         /// Urls like "http://messianicradio.com?song=songs/32" need to load the server-rendered Razor 
         ///           page with info about that song.
@@ -57,7 +56,6 @@ namespace BitShuva.Controllers
                                               string song=null,
                                               bool embed = false)
         {
-            #region User Details
             if (user != null)
             {
                 //return user information for the feed.
@@ -76,12 +74,10 @@ namespace BitShuva.Controllers
                 }
                     
             }
-            #endregion
 
             var viewModel = new HomeViewModel();
             viewModel.Embed = embed;
-
-            #region User Specifc information
+            
             var userName = User.Identity.Name;
             ApplicationUser currentUser = null;
 
@@ -96,9 +92,8 @@ namespace BitShuva.Controllers
             viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
             viewModel.Jwt = currentUser != null ? currentUser.Jwt : "";
             viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
-            #endregion
 
-            #region QueryString Specific Information
+            
             //get the query
             var firstValidQuery = new[] { artist, album, song }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
 
@@ -122,9 +117,8 @@ namespace BitShuva.Controllers
                     }
                 }
             }
-            #endregion
 
-            return View(viewModel);
+            return View("Index", viewModel);
         }
 
         /// <summary>
@@ -161,9 +155,7 @@ namespace BitShuva.Controllers
         {
             return View();
         }
-        #endregion
-
-        #region WebApi calls
+        
         [Route("account/registeredusers")]
         [HttpGet]
         public async Task<ActionResult> RegisteredUsers()
@@ -217,7 +209,6 @@ namespace BitShuva.Controllers
             { Language = "en-US" };
             return new RssActionResult { Feed = feed };
         }
-        #endregion
 
     }
 }

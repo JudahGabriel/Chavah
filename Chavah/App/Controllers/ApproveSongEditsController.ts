@@ -26,7 +26,7 @@
         setCurrentEdit(songEdit: Server.ISongEdit | null) {
             this.currentEdit = songEdit;
             if (songEdit) {
-                this.currentEditNewCsv = songEdit.newTags.join(", ");
+                this.currentEditNewCsv = songEdit.newTags.join(", ").toLowerCase();
                 this.currentEditOldCsv = songEdit.oldTags.join(", ");
             }
         }
@@ -35,6 +35,11 @@
             var edit = this.currentEdit;
             if (!this.isSaving && edit) {
                 this.isSaving = true;
+                edit.newTags = this.currentEditNewCsv
+                    .split(",")
+                    .filter(c => !!c)
+                    .map(c => c.trim())
+                    .filter(c => c.length > 0);
                 this.songEditApi.approve(edit)
                     .then(results => this.removeSongEdit(results.id))
                     .finally(() => this.isSaving = false);

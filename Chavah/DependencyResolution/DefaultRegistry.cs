@@ -17,23 +17,24 @@
 // --------------------------------------------------------------------------------------------------------------------
 #endregion
 
+using System;
+using Raven.Client;
+using Raven.Client.Document;
+using Raven.Client.Indexes;
+using RavenDB.AspNet.Identity;
+using StructureMap;
+using StructureMap.Configuration.DSL;
+using StructureMap.Graph;
+using StructureMap.Web;
+using Microsoft.Owin.Security;
+using System.Web;
+using BitShuva.Interfaces;
+using BitShuva.Services;
+using Microsoft.AspNet.Identity.Owin;
+using BitShuva.Models;
+
 namespace BitShuva.DependencyResolution
 {
-    using System;
-    using Models;
-    using Raven.Client;
-    using Raven.Client.Document;
-    using Raven.Client.Indexes;
-    using RavenDB.AspNet.Identity;
-    using StructureMap;
-    using StructureMap.Configuration.DSL;
-    using StructureMap.Graph;
-    using StructureMap.Web;
-    using Microsoft.Owin.Security;
-    using System.Web;
-    using Interfaces;
-    using Services;
-
     public class DefaultRegistry : Registry {
         #region Constructors and Destructors
 
@@ -47,37 +48,43 @@ namespace BitShuva.DependencyResolution
 
             For<ILoggerService>().Use<LoggerService>();
 
-            #region RavebDb registry
-            For<IDocumentStore>().Singleton().Use(ConfigureDocumentStore());
-            For<IDocumentSession>().Singleton().Use(ctx => ctx.GetInstance<IDocumentStore>().OpenSession());
+            // JGH I commented this out: we should have only 1 DocumentStore per app. We already initialize one in RavenContext. We either need to intialize it here, or in RavenContext, but not both.
+            //For<IDocumentStore>().Singleton().Use(ConfigureDocumentStore());
+
+            // JGH Commented out: DocumentSessions are intended to be short-lived. Do we really want a singleton here?
+            // Also, do we really want a IDocumentSession? We should default to IAsyncDocumentSession.
+            //For<IDocumentSession>().Singleton().Use(ctx => ctx.GetInstance<IDocumentStore>().OpenSession());
+
+            // JGH Were is .SaveChanges being called? 
             For<IAsyncDocumentSession>().HttpContextScoped()
-                .Use(ctx => ctx.GetInstance<IDocumentStore>().OpenAsyncSession());
+                .Use(ctx => HttpContext.Current.GetOwinContext().Get<IAsyncDocumentSession>());
 
-            #endregion
-
-            #region Identity registry
-
-            For<UserStore<ApplicationUser>>().Use(ctx=> ConfigureUserStore(ctx));
+            For<ApplicationUserManager>().Use(ctx => HttpContext.Current.GetOwinContext().Get<ApplicationUserManager>());
+            For<UserStore<ApplicationUser>>().Use(ctx => ConfigureUserStore(ctx));
             For<IAuthenticationManager>().Use(() => HttpContext.Current.GetOwinContext().Authentication);
-
-            #endregion
         }
 
         static UserStore<ApplicationUser> ConfigureUserStore(IContext arg)
         {
-            var store = new UserStore<ApplicationUser>(arg.GetInstance<IAsyncDocumentSession>());
-            return store;
+            // JGH: This doesn't work. The UserStore will throw an exception when generating a password reset token because its owning ApplicationUserManager isn't configured right. See ApplicationUser.Create to see how to configure it properly. 
+            // Found this was broken the hard way: user complained Chavah wasn't working when he tried to reset his password.
+            // I've changed the calling code to use the existing ApplicationUserManager.
+
+            //var store =  new UserStore<ApplicationUser>(arg.GetInstance<IAsyncDocumentSession>());
+            //return store;
+
+            return ApplicationUserManager.UserStore;
         }
 
         #endregion
 
-        static IDocumentStore ConfigureDocumentStore()
-        {
-            var docStore = new DocumentStore { ConnectionStringName = "RavenDB" };
-            docStore.Initialize();
-           
-            IndexCreation.CreateIndexes(typeof(RavenContext).Assembly, docStore);
-            return docStore;
-        }
+        //static IDocumentStore ConfigureDocumentStore()
+        //{
+        //    var docStore = new DocumentStore { ConnectionStringName = "RavenDB" };
+        //    docStore.Initialize();
+
+        //    IndexCreation.CreateIndexes(typeof(RavenContext).Assembly, docStore);
+        //    return docStore;
+        //}
     }
 }
