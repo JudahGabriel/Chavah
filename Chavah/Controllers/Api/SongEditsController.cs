@@ -32,14 +32,7 @@ namespace BitShuva.Controllers
                 throw NewUnauthorizedException();
             }
 
-            var existingSong = await this.DbSession.LoadAsync<Song>(song.Id);
-            if (existingSong == null)
-            {
-                string ex = $"Couldn't find: {song.Id}";
-                await _logger.Warn(ex);
-                throw new InvalidOperationException(ex);
-            }
-
+            var existingSong = await this.DbSession.LoadNonNull<Song>(song.Id);
             var songEdit = new SongEdit(existingSong, song)
             {
                 UserId = user.Id
@@ -50,12 +43,11 @@ namespace BitShuva.Controllers
                 if (user.IsAdmin())
                 {
                     songEdit.Apply(existingSong);
-                    await _logger.Info("Applied song edit", songEdit);
-                    //await ChavahLog.Info(DbSession, "Applied song edit", songEdit);
                 }
                 else
                 {
                     await DbSession.StoreAsync(songEdit);
+                    
                 }
             }
 
@@ -85,6 +77,7 @@ namespace BitShuva.Controllers
                 songEdit.Apply(song);
                 songEdit.Status = SongEditStatus.Approved;
                 await DbSession.StoreAsync(songEdit);
+                await _logger.Info("Applied song edit", songEdit);
             }
 
             return songEdit;

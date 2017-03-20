@@ -240,10 +240,12 @@ namespace BitShuva.Chavah {
                 }
 
                 if (this.reasonsPlayed.lovedTags.length > 0) {
-                    var lovedText = this.reasonsPlayed.lovedTags.slice(0, 3).join(", ");
+                    var randomLovedTags = Song.shuffle(this.reasonsPlayed.lovedTags.concat([]));
+                    var lovedText = randomLovedTags.slice(0, 3).join(", ");
                     reasons.push(`you love similiar songs (songs with ${lovedText}, etc.)`);
                 } else if (this.reasonsPlayed.likedTags.length > 0) {
-                    var likedText = this.reasonsPlayed.likedTags.slice(0, 3).join(", ");
+                    var randomLikedTags = Song.shuffle(this.reasonsPlayed.likedTags.concat([]));
+                    var likedText = randomLikedTags.slice(0, 3).join(", ");
                     reasons.push(`you like similiar songs (songs with ${likedText}, etc.)`);
                 }
 
@@ -269,6 +271,26 @@ namespace BitShuva.Chavah {
             }
 
             return randomReason;
+        }
+
+        // Shuffles an array. Should be moved to a utility class, or maybe just bite the bullet and include lodash.
+        static shuffle<T>(array: T[]): T[] {
+            var currentIndex = array.length, temporaryValue, randomIndex;
+
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+
+            return array;
         }
 
         static createEmptySongPickReasons(songId: string): Server.ISongPickReasons {

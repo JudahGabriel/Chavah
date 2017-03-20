@@ -191,8 +191,7 @@ namespace BitShuva.Controllers
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-
-        [Route("durandal/activityfeed")]
+        
         public async Task<ActionResult> ActivityFeed(int take = 5)
         {
             var recentActivities = await _logger.GetActivity(take);

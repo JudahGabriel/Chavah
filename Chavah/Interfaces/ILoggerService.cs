@@ -7,7 +7,7 @@ namespace BitShuva.Interfaces
     public interface ILoggerService
     {
         Task<ChavahLog> Error(string message, 
-                              string exception, 
+                              string exception = null, 
                               object details = null);
 
         Task<ChavahLog> Warn(string message,

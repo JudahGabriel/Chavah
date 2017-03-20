@@ -18,13 +18,14 @@ namespace BitShuva.Models
 
         public ApplicationUser()
         {
-            this.Preferences = new UserSongPreferences();
+            //this.Preferences = new UserSongPreferences();
         }
         
         public int TotalPlays { get; set; }
 
-        [Obsolete("This is no longer used. Please use the Likes_SongPreferences index instead.")]
-        public UserSongPreferences Preferences { get; set; }
+        //[Obsolete("This is no longer used. Please use the Likes_SongPreferences index instead.")]
+        //public UserSongPreferences Preferences { get; set; }
+
         public DateTime RegistrationDate { get; set; }
         public DateTime LastSeen { get; set; }
         public int TotalSongRequests { get; set; }
@@ -38,7 +39,6 @@ namespace BitShuva.Models
             {
                 Id = this.Id,
                 LastSeen = this.LastSeen,
-                Preferences = this.Preferences,
                 TotalSongRequests = this.TotalSongRequests,
                 RegistrationDate = this.RegistrationDate,
                 RequiresPasswordReset = this.RequiresPasswordReset,
@@ -62,8 +62,6 @@ namespace BitShuva.Models
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
             var userIdentity = await manager.CreateIdentityAsync(this, authenticationType);
-            //TODO: Add custom user claims here
-
             return userIdentity;
         }
     }

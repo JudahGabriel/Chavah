@@ -7,6 +7,7 @@ using System.Diagnostics.Contracts;
 using System.Collections.Concurrent;
 using BitShuva.Models;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BitShuva.Common
 {
@@ -41,9 +42,12 @@ namespace BitShuva.Common
         /// </returns>
         public static LikeStatus StatusOrNone(this Like like)
         {
-            return Match.Value(like)
-                .With(default(Like), LikeStatus.None)
-                .With(l => l != null, l => l.Status);
+            if (like == null)
+            {
+                return LikeStatus.None;
+            }
+
+            return like.Status;
         }
 
         /// <summary>
@@ -115,6 +119,24 @@ namespace BitShuva.Common
         public static void AddRavenExpiration(this Raven.Client.IAsyncDocumentSession session, object objectToExpire, DateTime dateTime)
         {
             session.Advanced.GetMetadataFor(objectToExpire)["Raven-Expiration-Date"] = new Raven.Json.Linq.RavenJValue(dateTime);
+        }
+
+        /// <summary>
+        /// Loads an entity from Raven. If the entity is null, an ArgumentException is thrown.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="session"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static async Task<T> LoadNonNull<T>(this Raven.Client.IAsyncDocumentSession session, string id)
+        {
+            var doc = await session.LoadAsync<T>(id);
+            if (doc == null)
+            {
+                throw new ArgumentException($"Tried to load document {id}, but it was null.");
+            }
+
+            return doc;
         }
 
         public static List<Tuple<TKey, TValue>> TryRemoveMultiple<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, int maxRemove)

@@ -39,7 +39,11 @@
 
             // At least some songs need their album fetched.
             var deferredResult = this.$q.defer<Album[]>();
-            this.albumApi.getAlbumsForSongs(songsNeedingAlbum.map(s => s.id))
+            var songIdsNeedingAlbum = songsNeedingAlbum.map(s => s.id);
+            if (songIdsNeedingAlbum.length === 0) {
+                deferredResult.resolve([]);
+            }
+            this.albumApi.getAlbumsForSongs(songIdsNeedingAlbum)
                 .then(results => {
                     deferredResult.resolve(albumsForSongs.concat(results));
                     this.addToCache(results);

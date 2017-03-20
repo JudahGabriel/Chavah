@@ -88,29 +88,29 @@ namespace BitShuva.Controllers
             return this.User.Identity.Name;
         }
         
-        [HttpGet]
-        public async Task<UserProfile> GetUserProfile()
-        {
-            var user = await this.GetCurrentUser();
-            if (user != null)
-            {
-                // So that we don't inadvertently change the user in the DB.
-                DbSession.Advanced.Evict(user); 
+        //[HttpGet]
+        //public async Task<UserProfile> GetUserProfile()
+        //{
+        //    var user = await this.GetCurrentUser();
+        //    if (user != null)
+        //    {
+        //        // So that we don't inadvertently change the user in the DB.
+        //        DbSession.Advanced.Evict(user); 
 
-                var likedSongIds = user
-                    .Preferences
-                    .Songs
-                    .Where(s => s.LikeCount == 1)
-                    .Shuffle()
-                    .Take(5)
-                    .Select(s => s.Name)
-                    .ToList();
+        //        var likedSongIds = user
+        //            .Preferences
+        //            .Songs
+        //            .Where(s => s.LikeCount == 1)
+        //            .Shuffle()
+        //            .Take(5)
+        //            .Select(s => s.Name)
+        //            .ToList();
 
-                var likedSongNames = await this.DbSession.LoadAsync<SongNameTransformer, SongNameTransformer.SongName>(likedSongIds);
-                return new UserProfile(user, likedSongNames.Where(s => s != null).Select(s => s.Name).ToList());
-            }
+        //        var likedSongNames = await this.DbSession.LoadAsync<SongNameTransformer, SongNameTransformer.SongName>(likedSongIds);
+        //        return new UserProfile(user, likedSongNames.Where(s => s != null).Select(s => s.Name).ToList());
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
     }
 }

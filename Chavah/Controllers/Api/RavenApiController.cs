@@ -103,20 +103,17 @@ namespace BitShuva.Controllers
 
         private async Task TryLogSaveChangesError(Exception error, string message)
         {
-            //mvk
-            await _logger.Error(message, error.ToString(), error);
-            //using (var errorSession = RavenContext.Db.OpenAsyncSession())
-            //{
-            //    try
-            //    {
-            //        await ChavahLog.Error(errorSession, message, error.ToString(), error);
-            //        await errorSession.SaveChangesAsync();
-            //    }
-            //    catch(Exception)
-            //    {
-            //        // Can't log the error? We're fsked. Eat it.
-            //    }
-            //}
+            using (var errorSession = RavenContext.Db.OpenAsyncSession())
+            {
+                try
+                {
+                    await _logger.Error(message, error.ToString(), error);
+                }
+                catch (Exception)
+                {
+                    // Can't log the error? We're fsked. Eat it.
+                }
+            }
         }
     }
 }

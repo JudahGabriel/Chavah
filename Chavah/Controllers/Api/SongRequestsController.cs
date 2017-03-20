@@ -72,10 +72,11 @@ namespace BitShuva.Controllers
             if (song != null && user != null)
             {
                 var requestExpiration = DateTime.UtcNow.AddDays(10);
-                var hasRecentPendingRequest = await this.HasRecentPendingSongRequest(songId);
+                var hasSongBeenRecentlyRequested = await this.HasSongBeenRequestedRecently(songId);
                 var hasManyRequestForArtist = await this.HasManyPendingSongRequestForArtist(song.Artist);
                 var hasManySongRequestsFromUser = await this.HasManyRecentSongRequestsFromUser(user.Id);
-                if (!hasRecentPendingRequest && !hasManyRequestForArtist && !hasManySongRequestsFromUser)
+                var isPoorlyRated = song.CommunityRankStanding == CommunityRankStanding.VeryPoor;
+                if (!hasSongBeenRecentlyRequested && !hasManyRequestForArtist && !hasManySongRequestsFromUser && !isPoorlyRated)
                 {
                     user.TotalSongRequests++;
                     var songRequest = new SongRequest
@@ -89,22 +90,22 @@ namespace BitShuva.Controllers
                     };
                     await this.DbSession.StoreAsync(songRequest);
                     this.DbSession.AddRavenExpiration(songRequest, requestExpiration);
-                }
 
-                var songArtist = song.Artist;
-                var activity = new Activity
-                {
-                    DateTime = DateTime.Now,
-                    Title = string.Format("{0} - {1} was requested by one of our listeners", song.Artist, song.Name),
-                    Description = string.Format("\"{0}\" by {1} was requested by one of our listeners on Chavah Messianic Radio.", song.Name, songArtist),
-                    MoreInfoUri = song.GetSongShareLink()
-                };
-                await this.DbSession.StoreAsync(activity);
-                this.DbSession.AddRavenExpiration(activity, requestExpiration);
+                    // Store an activity for the song request.
+                    var activity = new Activity
+                    {
+                        DateTime = DateTime.Now,
+                        Title = string.Format("{0} - {1} was requested by one of our listeners", song.Artist, song.Name),
+                        Description = string.Format("\"{0}\" by {1} was requested by one of our listeners on Chavah Messianic Radio.", song.Name, song.Artist),
+                        MoreInfoUri = song.GetSongShareLink()
+                    };
+                    await this.DbSession.StoreAsync(activity);
+                    this.DbSession.AddRavenExpiration(activity, requestExpiration);
+                }
             }
         }
 
-        private async Task<bool> HasRecentPendingSongRequest(string songId)
+        private async Task<bool> HasSongBeenRequestedRecently(string songId)
         {
             var recent = DateTime.Now.Subtract(TimeSpan.FromMinutes(120));
             return await this.DbSession
@@ -114,7 +115,7 @@ namespace BitShuva.Controllers
 
         private async Task<bool> HasManyPendingSongRequestForArtist(string artist)
         {
-            var recent = DateTime.Now.Subtract(TimeSpan.FromMinutes(60));
+            var recent = DateTime.Now.Subtract(TimeSpan.FromMinutes(30));
             var many = 1;
             return await this.DbSession
                 .Query<SongRequest>()
@@ -123,7 +124,7 @@ namespace BitShuva.Controllers
 
         private async Task<bool> HasManyRecentSongRequestsFromUser(string userId)
         {
-            var recent = DateTime.Now.Subtract(TimeSpan.FromMinutes(60));
+            var recent = DateTime.Now.Subtract(TimeSpan.FromMinutes(30));
             var many = 2;
             var recentSongRequestsFromUser = await this.DbSession
                 .Query<SongRequest>()

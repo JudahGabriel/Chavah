@@ -1,9 +1,14 @@
 ﻿namespace BitShuva.Chavah {
     export class AlbumApiService {
 
-        static $inject = ["httpApi"];
+        static $inject = [
+            "httpApi",
+            "$q"
+        ];
 
-        constructor(private httpApi: HttpApiService) {
+        constructor(
+            private httpApi: HttpApiService,
+            private $q: ng.IQService) {
         }
 
         /**
@@ -41,8 +46,13 @@
         }
 
         getAlbumsForSongs(songIds: string[]): ng.IPromise<Album[]> {
+            var songIdsCsv = songIds.join(",");
+            if (songIdsCsv.length === 0) {
+                return this.$q.resolve<Album[]>([]);
+            }
+
             var args = {
-                songIdsCsv: songIds.join(",")
+                songIdsCsv: songIdsCsv
             };
             return this.httpApi.query("/api/albums/GetAlbumsForSongs", args, AlbumApiService.albumArraySelector);
         }
