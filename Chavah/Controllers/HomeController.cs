@@ -111,7 +111,7 @@ namespace BitShuva.Controllers
                     {
                         var albumData = await _albumService.GetMatchingAlbumAsync(a => a.Name == songForQuery.Album && a.Artist == songForQuery.Artist);
                         viewModel.PageTitle = $"{songForQuery.Name} by {songForQuery.Artist} on Chavah Messianic Radio";
-                        viewModel.DescriptiveImageUrl = albumData != null ? albumData.AlbumArtUri.ToString() : null;
+                        viewModel.DescriptiveImageUrl = albumData?.AlbumArtUri?.ToString();
                         viewModel.Song = songForQuery;
                         viewModel.SongNth = songForQuery.Number.ToNumberWord();
                     }

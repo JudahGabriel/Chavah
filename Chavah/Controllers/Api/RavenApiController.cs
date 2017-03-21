@@ -50,14 +50,14 @@ namespace BitShuva.Controllers
                 catch (Exception error)
                     when (!(error is TaskCanceledException)) // We don't care if it's just a TaskCancelledException.
                 {
-                    await TryLogSaveChangesError(error, $"Error executing controller action {controllerContext.Request?.RequestUri}. Current user Id = {SessionToken?.Email}");
+                    await TryLogSaveChangesError(error, $"Error executing controller action {controllerContext.Request?.RequestUri}", SessionToken);
                     throw; // Throw, because we don't want to try to save changes below.
                 }
 
                 try
                 {
-                    await DbSession.SaveChangesAsync();
                     DbSession.Advanced.WaitForIndexesAfterSaveChanges(TimeSpan.FromSeconds(5), false);
+                    await DbSession.SaveChangesAsync();
                 }
                 catch (Exception error)
                 {
@@ -101,13 +101,13 @@ namespace BitShuva.Controllers
             return new HttpResponseException(HttpStatusCode.Unauthorized);
         }
 
-        private async Task TryLogSaveChangesError(Exception error, string message)
+        private async Task TryLogSaveChangesError(Exception error, string message, object details = null)
         {
             using (var errorSession = RavenContext.Db.OpenAsyncSession())
             {
                 try
                 {
-                    await _logger.Error(message, error.ToString(), error);
+                    await _logger.Error(message, error.ToString(), details);
                 }
                 catch (Exception)
                 {

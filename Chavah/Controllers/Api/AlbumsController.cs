@@ -12,6 +12,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Optional;
+using Optional.Async;
 
 namespace BitShuva.Controllers
 {
@@ -225,19 +227,30 @@ namespace BitShuva.Controllers
         public async Task<HttpResponseMessage> GetAlbumArt(string artist, string album)
         {
             var redirectUri = default(Uri);
-            var existingAlbum = await this.DbSession.Query<Album>()
-                .FirstOrDefaultAsync(a => a.Artist == artist && a.Name == album);
-            if (existingAlbum != null && existingAlbum.AlbumArtUri != null)
-            {
-                redirectUri = existingAlbum.AlbumArtUri;
-            }
-            else
+            await this.DbSession.Query<Album>()
+                .FirstOrNoneAsync(a => a.Artist == artist && a.Name == album)
+                .ToAsyncOption()
+                .Map(a => a.AlbumArtUri)
+                .MatchSome(uri => redirectUri = uri);
+            
+            if (redirectUri == null)
             {
                 // We don't have an album for this. See if we have a matching song.
-                var matchingSong = await this.DbSession.Query<Song>().FirstOrDefaultAsync(s => s.Album == album && s.Artist == artist);
-                if (matchingSong != null && matchingSong.AlbumArtUri != null)
+                await this.DbSession.Query<Song>()
+                    .FirstOrNoneAsync(s => s.Album == album && s.Artist == artist)
+                    .ToAsyncOption()
+                    .Map(s => s.AlbumArtUri)
+                    .MatchSome(uri => redirectUri = uri);
+                
+                if (redirectUri == null)
                 {
-                    redirectUri = matchingSong.AlbumArtUri;
+                    // We can't find album art with this artist and album, nor any song with this album and artist.
+                    // See if we have an album by that name.
+                    await DbSession.Query<Album>()
+                        .FirstOrNoneAsync(a => a.Name == album)
+                        .ToAsyncOption()
+                        .Map(a => a.AlbumArtUri)
+                        .MatchSome(uri => redirectUri = uri);
                 }
             }
 
@@ -249,6 +262,21 @@ namespace BitShuva.Controllers
             }
 
             throw new Exception("Unable to find any matching album art for " + artist + " - " + album);
+        }
+
+        /// <summary>
+        /// Gets the album art for a particular song. Used in the UI by Facebook song share.
+        /// </summary>
+        /// <param name="songId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("art/forSong")]
+        public async Task<HttpResponseMessage> GetArtForSong(string songId)
+        {
+            var song = await DbSession.LoadNonNull<Song>(songId);
+            var response = Request.CreateResponse(HttpStatusCode.Moved);
+            response.Headers.Location = song.AlbumArtUri;
+            return response; ;
         }
 
         [HttpGet]

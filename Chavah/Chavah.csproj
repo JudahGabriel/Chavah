@@ -279,8 +279,12 @@
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\IEnumerableExtensions.cs" />
     <Compile Include="Common\Match.cs" />
+    <Compile Include="Common\Optional\AsyncOption.cs" />
+    <Compile Include="Common\Optional\AsyncOptionExtensions.cs" />
+    <Compile Include="Common\Optional\TaskTransformationExtensions.cs" />
     <Compile Include="Common\Range.cs" />
     <Compile Include="Common\RavenDbUnitOfWorkAttribute.cs" />
+    <Compile Include="Common\RavenExtensions.cs" />
     <Compile Include="Common\RavenNLogTarget.cs" />
     <Compile Include="Common\JwtSession.cs" />
     <Compile Include="Common\RssActionResult.cs" />

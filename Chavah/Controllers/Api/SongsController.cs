@@ -202,7 +202,7 @@ namespace BitShuva.Controllers
             var songsWithRanking = default(IList<Songs_RankStandings.Result>);
 
             // Aggressive caching for the UserSongPreferences and SongsWithRanking. These don't change often.
-            using (var cache = DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
+            using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
             {
                 var user = await this.GetCurrentUser();
 
