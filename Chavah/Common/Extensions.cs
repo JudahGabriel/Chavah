@@ -15,7 +15,7 @@ namespace BitShuva.Common
 {
     public static class Extensions
     {
-        public static double MinMax(this double value, double min, double max)
+        public static double Clamp(this double value, double min, double max)
         {
             var valMinned = Math.Max(value, min);
             var valMinnedAndMaxed = Math.Min(valMinned, max);
@@ -108,6 +108,25 @@ namespace BitShuva.Common
                 default:
                     return number.ToString() + "th";
             }
+        }
+
+        /// <summary>
+        /// Attempts to get the value from a dictionary. If not found, Nullable will be returned.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="dictionary"></param>
+        /// <param name="key">The key whose value to find.</param>
+        /// <returns></returns>
+        public static TValue? GetValueOrNull<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+            where TValue: struct
+        {
+            if(dictionary.TryGetValue(key, out var val))
+            {
+                return val;
+            }
+
+            return default(TValue?);
         }
 
         public static List<Tuple<TKey, TValue>> TryRemoveMultiple<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, int maxRemove)

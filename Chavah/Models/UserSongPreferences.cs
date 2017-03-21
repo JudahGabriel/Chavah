@@ -34,11 +34,11 @@ namespace BitShuva.Models
         private const double AlbumVeryLikedMultiplier = 1.5;
         private const double AlbumFavoriteMultiplier = 2;
 
-        private const double TagVeryDislikedMultiplier = 0.98;
-        private const double TagDislikedMultiplier = 0.99;
-        private const double TagLikedMultiplier = 1.01;
-        private const double TagVeryLikedMultiplier = 1.02;
-        private const double TagFavoriteMultiplier = 1.03;
+        private const double TagVeryDislikedMultiplier = 0.1;
+        private const double TagDislikedMultiplier = 0.5;
+        private const double TagLikedMultiplier = 1.1;
+        private const double TagVeryLikedMultiplier = 1.5;
+        private const double TagFavoriteMultiplier = 2;
 
         private static Random random = new Random();
 
@@ -70,16 +70,52 @@ namespace BitShuva.Models
         /// </remarks>
         public SongPickReasons PickSong(IList<Songs_RankStandings.Result> songsWithRanking)
         {
+            var songWeights = BuildSongWeightsTable(songsWithRanking);
+
+            // Pick a number at random from zero to total song weights, and choose that song.
+            var totalSongWeights = songWeights.Values.Sum(w => w.Weight);
+            var randomNumber = random.NextDouble() * totalSongWeights;
+            var runningWeight = 0.0;
+            var chosenSongId = default(string);
+            foreach (var pair in songWeights)
+            {
+                runningWeight += pair.Value.Weight;
+                if (randomNumber <= runningWeight)
+                {
+                    chosenSongId = pair.Key;
+                    break;
+                }
+            }
+
+            // TODO: We should roll the song pick reasons into the table above, rather than re-fetching the reasons in GetSongPickReasons.
+            return GetSongPickReasons(chosenSongId, songsWithRanking);
+        }
+
+        /// <summary>
+        /// Builds a dictionary containing Song ID keys and weight values.
+        /// The weight values are determined by song popularity, song like, artist like, album like, and tag like.
+        /// </summary>
+        /// <param name="songsWithRanking">Songs grouped by community rank standing.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Based off of the song weights algorithm described here:
+        /// http://stackoverflow.com/questions/3345788/algorithm-for-picking-thumbed-up-items/3345838#3345838
+        /// 
+        /// The song weights algorithm is loosely based on the more general Multiplicative Weight Update Algorithm (MWUA), described here:
+        /// https://jeremykun.com/2017/02/27/the-reasonable-effectiveness-of-the-multiplicative-weights-update-algorithm/
+        /// </remarks>
+        internal Dictionary<string, SongWeight> BuildSongWeightsTable(IList<Songs_RankStandings.Result> songsWithRanking)
+        {
             // Generate a table containing all the songs. The table will be a dictionary of SongID keys and weight values.
             // Each song takes up N weight, where N starts out as 1, but can grow or shrink depending on whether that song/artist/album/tags is liked or disliked.
             var totalSongCount = songsWithRanking.Sum(s => s.SongIds.Count);
-            var songWeights = new Dictionary<string, double>(totalSongCount);
+            var songWeights = new Dictionary<string, SongWeight>(totalSongCount);
             foreach (var ranking in songsWithRanking)
             {
                 var rankingMultipler = GetWeightMultiplier(ranking.Standing);
                 foreach (var songId in ranking.SongIds)
                 {
-                    songWeights[songId] = 1 * rankingMultipler;
+                    songWeights[songId] = SongWeight.Default().WithCommunityRankMultiplier(rankingMultipler);
                 }
             }
 
@@ -90,7 +126,7 @@ namespace BitShuva.Models
                 if (songWeights.TryGetValue(likedSong.SongId, out var existingWeight))
                 {
                     var songMultiplier = GetSongLikeDislikeMultiplier(likedSong);
-                    songWeights[likedSong.SongId] = existingWeight * songMultiplier;
+                    songWeights[likedSong.SongId] = existingWeight.WithSongMultiplier(songMultiplier);
                 }
             }
 
@@ -105,7 +141,7 @@ namespace BitShuva.Models
                     {
                         if (songWeights.TryGetValue(pref.SongId, out var existingWeight))
                         {
-                            songWeights[pref.SongId] = existingWeight * artistMultiplier;
+                            songWeights[pref.SongId] = existingWeight.WithArtistMultiplier(artistMultiplier);
                         }
                     }
                 }
@@ -122,47 +158,86 @@ namespace BitShuva.Models
                     {
                         if (songWeights.TryGetValue(pref.SongId, out var existingWeight))
                         {
-                            songWeights[pref.SongId] = existingWeight * albumMultiplier;
+                            songWeights[pref.SongId] = existingWeight.WithAlbumMultiplier(albumMultiplier);
                         }
                     }
                 }
             }
 
             // Finally, adjust the weight based on whether we like the tags of the song or not.
-            var tagPrefs = this.Tags.GroupBy(t => t.Name);
-            foreach (var tag in tagPrefs)
+            var tagLikeDislikeDifferences = CreateTagLikeDislikeDifferences(this.Tags);
+            var songTags = this.Tags.GroupBy(t => t.SongId);
+            var songsWithTagMultipliers = songTags.Select(s => (SongId: s.Key, TagsMultiplier: GetCumulativeTagMultiplier(s.Key, s, tagLikeDislikeDifferences)));
+            foreach (var pref in songsWithTagMultipliers)
             {
-                var tagMultiplier = GetTagMultiplier(tag);
-                if (tagMultiplier != 1.0)
+                if (songWeights.TryGetValue(pref.SongId, out var existingWeight))
                 {
-                    foreach (var pref in tag)
-                    {
-                        if (songWeights.TryGetValue(pref.SongId, out var existingWeight))
-                        {
-                            songWeights[pref.SongId] = existingWeight * tagMultiplier;
-                        }
-                    }
+                    songWeights[pref.SongId] = existingWeight.WithTagMultiplier(pref.TagsMultiplier);
                 }
             }
 
-            // We've now completed creating our table of all songs, weighted by popularity and user preference.
-            // Pick a number at random from zero to total song weights, and choose that song.
-            var totalSongWeights = songWeights.Values.Sum();
-            var randomNumber = random.NextDouble() * totalSongWeights;
-            var runningWeight = 0.0;
-            var chosenSongId = default(string);
-            foreach (var pair in songWeights)
+            return songWeights;
+        }
+
+        /// <summary>
+        /// Creates a dictionary of tag name keys and like/dislike sum values. (Sum: a tag like = 1, a tag dislike = -1).
+        /// </summary>
+        /// <remarks>
+        /// For example, given the following tags: 
+        ///    { Tag: "worship", LikeDislikeCount: 1, SongId: "songs/777" } // user liked song/777 which is tagged "worship"
+        ///    { Tag: "worship", LikeDislikeCount: -1, SongId: "songs/666" } // user disliked song/666, which is tagged "worship"
+        ///    { Tag: "male vocal", LikeDislikeCount: 1, SongId: "songs/444" } // user liked song/444, which is taggged "male vocal"
+        ///    
+        /// The output will be a dictionary containing these pairs:
+        ///     { Key: "worship", Value: 0 } // 0 because 1 + -1 = 0
+        ///     { Key: "male vocal", Value: 1 }
+        /// </remarks>
+        /// <param name="tags">All tag like/dislikes.</param>
+        /// <returns></returns>
+        private static Dictionary<string, int> CreateTagLikeDislikeDifferences(List<LikeDislikeCount> tags)
+        {
+            return tags.GroupBy(t => t.Name)
+                .ToDictionary(t => t.Key, i => i.Sum(l => l.LikeCount - l.DislikeCount));
+        }
+
+        /// <summary>
+        /// Gets a song rank multiplier for a song given the multipliers for the tags for the song.
+        /// </summary>
+        private static double GetCumulativeTagMultiplier(string songId, IEnumerable<LikeDislikeCount> songTagLikes, Dictionary<string, int> tagLikeDislikeDifferences)
+        {
+            var songTagLikeDifferences = songTagLikes
+                .GroupBy(t => t.Name)
+                .Select(group => (Tag: group.Key, LikeDislikeDifference: tagLikeDislikeDifferences.GetValueOrNull(group.Key).GetValueOrDefault()));
+            
+            double DifferenceToMultiplier(int difference)
             {
-                runningWeight += pair.Value;
-                if (randomNumber <= runningWeight)
+                const int veryDislikedDiff = -10; // Sum of likes and dislikes = -10? Consider the tag very disliked.
+                const int dislikedDiff = -5;
+                const int likedDiff = 5;
+                const int veryLikedDiff = 10;
+                const int favoriteDiff = 20;
+                switch (difference)
                 {
-                    chosenSongId = pair.Key;
-                    break;
+                    case int i when (i >= favoriteDiff): return TagFavoriteMultiplier;
+                    case int i when (i >= veryLikedDiff): return TagVeryLikedMultiplier;
+                    case int i when (i >= likedDiff): return TagLikedMultiplier;
+                    case int i when (i <= veryDislikedDiff): return TagVeryDislikedMultiplier;
+                    case int i when (i <= dislikedDiff): return TagDislikedMultiplier;
+                    default: return 1; // The tag is neither liked nor disliked. Return a neutral multiplier.
                 }
+            };
+            
+
+            var runningMultiplier = 1.0;
+            foreach (var tagInfo in songTagLikeDifferences)
+            {
+                var tagMultiplier = DifferenceToMultiplier(tagInfo.LikeDislikeDifference);
+                runningMultiplier *= tagMultiplier;
             }
 
-            // TODO: We should roll the song pick reasons into the table above, rather than re-fetching the reasons in GetSongPickReasons.
-            return GetSongPickReasons(chosenSongId, songsWithRanking);
+            // Clamp the multiplier.
+            var clamped = runningMultiplier.Clamp(TagVeryDislikedMultiplier, TagFavoriteMultiplier);
+            return clamped;
         }
 
         private SongPickReasons GetSongPickReasons(string songId, IList<Songs_RankStandings.Result> songsWithRanking)
@@ -215,7 +290,7 @@ namespace BitShuva.Models
                 case int i when (i >= likedDiff): return TagLikedMultiplier;
                 case int i when (i <= veryDislikedDiff): return TagVeryDislikedMultiplier;
                 case int i when (i <= dislikedDiff): return TagDislikedMultiplier;
-                default: return 1;
+                default: return 1; // The tag is neither liked nor disliked. Return a neutral multiplier.
             }
         }
 

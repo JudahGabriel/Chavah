@@ -22,6 +22,7 @@ namespace BitShuva.Controllers
         {
             _logger = logger;
         }
+
         [HttpGet]
         [Route("GetRecentPlays")]
         public async Task<IEnumerable<Song>> GetRecentPlays(int count)
@@ -141,7 +142,6 @@ namespace BitShuva.Controllers
             dbSong.Lyrics = song.Lyrics;
 
             await this.DbSession.StoreAsync(dbSong);
-            await this.DbSession.SaveChangesAsync();
 
             return dbSong;
         }
@@ -161,6 +161,8 @@ namespace BitShuva.Controllers
 
             var query = makeQuery()(searchText + "*");
             var results = await query.ToListAsync();
+            
+            // No results? See if we can suggest some near matches.
             if (results.Count == 0)
             {
                 var suggestResults = await makeQuery()(searchText + "*").SuggestAsync();
@@ -168,6 +170,7 @@ namespace BitShuva.Controllers
                 var firstSuggestion = suggestions.FirstOrDefault();
                 if (firstSuggestion != null)
                 {
+                    // Run the query for that suggestion.
                     var newQuery = makeQuery();
                     var suggestedResults = await newQuery(firstSuggestion).ToListAsync();
                     return suggestedResults.Select(r => r.ToDto());
@@ -177,14 +180,50 @@ namespace BitShuva.Controllers
             return results.Select(r => r.ToDto());
         }
 
+        /// <summary>
+        /// Used for debugging: generates a user's song preferences table as a list of strings. Includes performance measurements.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<UserSongPreferences> GetPrefsDebug(string email)
+        public async Task<List<string>> GetPrefsDebug(string email)
         {
+            var stopWatch = new System.Diagnostics.Stopwatch();
+            stopWatch.Start();
+
             var userId = "ApplicationUsers/" + email;
             var userPreferences = await DbSession.Query<Like, Likes_SongPreferences>()
                 .As<UserSongPreferences>()
                 .FirstOrDefaultAsync(u => u.UserId == userId);
-            return userPreferences;
+
+            var userPrefsTime = stopWatch.Elapsed;
+            stopWatch.Restart();
+
+            if (userPreferences == null)
+            {
+                userPreferences = new UserSongPreferences();
+            }
+
+            var songsWithRanking = await this.DbSession.Query<Song, Songs_RankStandings>()
+                    .As<Songs_RankStandings.Result>()
+                    .ToListAsync();
+            var rankingTime = stopWatch.Elapsed;
+            stopWatch.Restart();
+
+            var table = userPreferences.BuildSongWeightsTable(songsWithRanking);
+
+            var tableTime = stopWatch.Elapsed;
+            stopWatch.Stop();
+
+            var songsOrderedByWeight = table
+                .Select(s => (SongId: s.Key, Weight: s.Value.Weight, ArtistMultiplier: s.Value.ArtistMultiplier, AlbumMultiplier: s.Value.AlbumMultiplier, SongMultipler: s.Value.SongMultiplier, TagMultiplier: s.Value.TagMultiplier, RankMultiplier: s.Value.CommunityRankMultiplier))
+                .OrderByDescending(s => s.Weight)
+                .Select(s => $"Song ID {s.SongId}, Weight {s.Weight}, Artist multiplier: {s.ArtistMultiplier}, Album multipler: {s.AlbumMultiplier}, Song multiplier: {s.SongMultipler}, Tag multiplier {s.TagMultiplier}, Rank multiplier: {s.RankMultiplier}")
+                .ToList();
+
+            songsOrderedByWeight.Insert(0, $"Performance statistics: Total query time {tableTime + rankingTime + userPrefsTime}. Querying user prefs {userPrefsTime}, querying ranking {rankingTime}, building table {tableTime}");
+
+            return songsOrderedByWeight;
         }
 
         /// <summary>
@@ -231,12 +270,7 @@ namespace BitShuva.Controllers
                 return await this.PickRandomSong();
             }
 
-            var song = await DbSession.LoadAsync<Song>(songPick.SongId);
-            if (song == null)
-            {
-                await _logger.Warn($"Chose a song that no longer exists.", songPick);
-            }
-            
+            var song = await DbSession.LoadNonNull<Song>(songPick.SongId);            
             var songLikeDislike = userPreferences.Songs.FirstOrDefault(s => s.SongId == song.Id);
             var songLikeStatus = songLikeDislike != null && songLikeDislike.LikeCount > 0 ?
                 LikeStatus.Like : songLikeDislike != null && songLikeDislike.DislikeCount > 0 ?
