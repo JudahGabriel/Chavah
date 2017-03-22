@@ -75,12 +75,11 @@ namespace BitShuva.Controllers
             {
                 return new PagedList<Song>();
             }
-
-            var stats = default(RavenQueryStatistics);
+            
             var likedSongIds = await this.DbSession
                 .Query<Like>()
                 .Customize(x => x.Include<Like>(l => l.SongId))
-                .Statistics(out stats)
+                .Statistics(out var stats)
                 .Where(l => l.Status == LikeStatus.Like && l.UserId == user.Id)
                 .OrderByDescending(l => l.Date)
                 .Select(l => l.SongId)

@@ -75,9 +75,10 @@ namespace BitShuva.Controllers
                     
             }
 
-            var viewModel = new HomeViewModel();
-            viewModel.Embed = embed;
-            
+            var viewModel = new HomeViewModel
+            {
+                Embed = embed
+            };
             var userName = User.Identity.Name;
             ApplicationUser currentUser = null;
 

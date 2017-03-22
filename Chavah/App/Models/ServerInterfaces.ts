@@ -129,16 +129,11 @@
 
     export interface ISongPickReasons {
         songId: string;
-        likedArtist: boolean;
-        lovedArtist: boolean;
-        likedAlbum: boolean;
-        lovedAlbum: boolean;
-        likedSong: boolean;
-        likedTags: string[];
-        lovedTags: string[];
+        artist: LikeLevel;
+        album: LikeLevel;
+        songThumbedUp: boolean;
+        ranking: LikeLevel;
+        similar: LikeLevel;
         soleReason: SongPick | null;
-        bestRanking: boolean;
-        greatRanking: boolean;
-        goodRanking: boolean;
     }
 }

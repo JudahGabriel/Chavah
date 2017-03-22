@@ -59,7 +59,7 @@ namespace BitShuva.Models
         /// <summary>
         /// Picks a song based on the user's preferences, given a list of songs by community ranking.
         /// </summary>
-        /// <param name="songsWithRanking"></param>
+        /// <param name="songsWithRanking">Songs grouped by community rank standing.</param>
         /// <returns></returns>
         /// <remarks>
         /// Based off of the song weights algorithm described here:
@@ -70,25 +70,35 @@ namespace BitShuva.Models
         /// </remarks>
         public SongPickReasons PickSong(IList<Songs_RankStandings.Result> songsWithRanking)
         {
+            // The song picking algorithm is inside BuildSongWeightsTable.
             var songWeights = BuildSongWeightsTable(songsWithRanking);
 
             // Pick a number at random from zero to total song weights, and choose that song.
             var totalSongWeights = songWeights.Values.Sum(w => w.Weight);
             var randomNumber = random.NextDouble() * totalSongWeights;
             var runningWeight = 0.0;
-            var chosenSongId = default(string);
+            var chosenSong = default(KeyValuePair<string, SongWeight>);
             foreach (var pair in songWeights)
             {
                 runningWeight += pair.Value.Weight;
                 if (randomNumber <= runningWeight)
                 {
-                    chosenSongId = pair.Key;
+                    chosenSong = pair;
                     break;
                 }
             }
 
-            // TODO: We should roll the song pick reasons into the table above, rather than re-fetching the reasons in GetSongPickReasons.
-            return GetSongPickReasons(chosenSongId, songsWithRanking);
+            // Return an object containing the song choice and the reasons for choosing it.
+            var chosenSongWeight = chosenSong.Value;
+            return new SongPickReasons
+            {
+                SongId = chosenSong.Key,
+                Album = MultiplierToLikeLevel(chosenSongWeight.AlbumMultiplier, AlbumFavoriteMultiplier, AlbumVeryLikedMultiplier, AlbumLikedMultiplier),
+                Artist = MultiplierToLikeLevel(chosenSongWeight.ArtistMultiplier, ArtistFavoriteMultiplier, ArtistVeryLikedMultiplier, ArtistLikedMultiplier),
+                Similar = MultiplierToLikeLevel(chosenSongWeight.TagMultiplier, TagFavoriteMultiplier, TagVeryLikedMultiplier, TagLikedMultiplier),
+                Ranking = MultiplierToLikeLevel(chosenSongWeight.CommunityRankMultiplier, BestRankingMultipler, GreatRankingMultipler, GoodRankingMultipler),
+                SongThumbedUp = chosenSongWeight.SongMultiplier == SongLikedMultipler
+            };
         }
 
         /// <summary>
@@ -240,38 +250,15 @@ namespace BitShuva.Models
             return clamped;
         }
 
-        private SongPickReasons GetSongPickReasons(string songId, IList<Songs_RankStandings.Result> songsWithRanking)
+        private static LikeLevel MultiplierToLikeLevel(double multiplier, double favoriteMultiplier, double loveMultiplier, double likeMultiplier)
         {
-            var sum = new Func<LikeDislikeCount, int>(a => a.LikeCount - a.DislikeCount);
-            var artistDiff = this.Artists
-                .Where(a => a.SongId == songId).Sum(sum);
-            var albumDiff = this.Albums
-                .Where(a => a.SongId == songId).Sum(sum);
-            var songDiff = this.Songs
-                .Where(s => s.SongId == songId).Sum(sum);
-            var tagDiffs = this.Tags
-                .Where(t => t.SongId == songId)
-                .GroupBy(t => t.Name)
-                .Select(t => (tag: t.Key, sum: t.Sum(sum)));
-            var isBestStanding = songsWithRanking.Any(r => r.Standing == CommunityRankStanding.Best && r.SongIds.Contains(songId));
-            var isGreatStanding = !isBestStanding && songsWithRanking.Any(r => r.Standing == CommunityRankStanding.Great && r.SongIds.Contains(songId));
-            var isGoodStanding = !isBestStanding && !isGreatStanding && songsWithRanking.Any(r => r.Standing == CommunityRankStanding.Good && r.SongIds.Contains(songId));
-            var like = 1;
-            var love = 5;
-            return new SongPickReasons
+            switch (multiplier)
             {
-                LikedAlbum = albumDiff < love && albumDiff >= like,
-                LovedAlbum = albumDiff >= love,
-                LikedArtist = artistDiff < love && artistDiff >= like,
-                LovedArtist = artistDiff >= love,
-                LikedSong = songDiff > 0,
-                SongId = songId,
-                LikedTags = tagDiffs.Where(t => t.sum < love && t.sum >= like).Select(t => t.tag).ToList(),
-                LovedTags = tagDiffs.Where(t => t.sum >= love).Select(t => t.tag).ToList(),
-                BestRanking = isBestStanding,
-                GreatRanking = isGreatStanding,
-                GoodRanking = isGoodStanding
-            };
+                case double v when (v == favoriteMultiplier): return LikeLevel.Favorite;
+                case double v when (v == loveMultiplier): return LikeLevel.Love;
+                case double v when (v == likeMultiplier): return LikeLevel.Like;
+                default: return LikeLevel.NotSpecified;
+            }
         }
 
         private static double GetTagMultiplier(IGrouping<string, LikeDislikeCount> tag)
@@ -298,8 +285,8 @@ namespace BitShuva.Models
         {
             var likeDislikeDifference = album.Sum(a => a.LikeCount - a.DislikeCount);
             const int veryDislikedDiff = -4;
-            const int dislikedDiff = -1;
-            const int likedDiff = 1;
+            const int dislikedDiff = -2;
+            const int likedDiff = 2;
             const int veryLikedDiff = 4;
             const int favoriteDiff = 10;
 

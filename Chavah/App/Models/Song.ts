@@ -213,40 +213,43 @@ namespace BitShuva.Chavah {
                     }
                 }
 
-                // There is zero or more reasons we played this.
+                // There are zero or more reasons we played this.
                 var reasons: string[] = [];
-                if (this.reasonsPlayed.bestRanking) {
+                if (this.reasonsPlayed.ranking === LikeLevel.Favorite) {
                     reasons.push("it's one of the highest ranked songs on Chavah");
-                } else if (this.reasonsPlayed.greatRanking) {
+                } else if (this.reasonsPlayed.ranking === LikeLevel.Love) {
                     reasons.push("it's got a great community ranking");
-                } else if (this.reasonsPlayed.goodRanking) {
+                } else if (this.reasonsPlayed.ranking === LikeLevel.Like) {
                     reasons.push("it's got a good community ranking");
                 }
 
-                if (this.reasonsPlayed.lovedArtist) {
-                    reasons.push(`you love ${this.artist} and have thumbed-up an abundance of ${this.artist} songs`)
-                } else if (this.reasonsPlayed.likedArtist) {
+                if (this.reasonsPlayed.artist === LikeLevel.Favorite) {
+                    reasons.push(`${this.artist} is one of your favorite artists`);
+                } else if (this.reasonsPlayed.artist === LikeLevel.Love) {
+                    reasons.push(`you love ${this.artist} and have thumbed-up an abundance of ${this.artist} songs`);
+                } else if (this.reasonsPlayed.artist === LikeLevel.Like) {
                     reasons.push(`you like ${this.artist}`);
                 }
 
-                if (this.reasonsPlayed.lovedAlbum) {
+                if (this.reasonsPlayed.album === LikeLevel.Favorite) {
+                    reasons.push(`you like nearly all the songs on ${this.album}`);
+                }
+                if (this.reasonsPlayed.album === LikeLevel.Love) {
                     reasons.push(`you love ${this.album}`);
-                } else if (this.reasonsPlayed.likedAlbum) {
+                } else if (this.reasonsPlayed.album === LikeLevel.Like) {
                     reasons.push(`you like ${this.album}`);
                 }
 
-                if (this.reasonsPlayed.likedSong) {
+                if (this.reasonsPlayed.songThumbedUp) {
                     reasons.push("you like this song");
                 }
 
-                if (this.reasonsPlayed.lovedTags.length > 0) {
-                    var randomLovedTags = Song.shuffle(this.reasonsPlayed.lovedTags.concat([]));
-                    var lovedText = randomLovedTags.slice(0, 3).join(", ");
-                    reasons.push(`you love similiar songs (songs with ${lovedText}, etc.)`);
-                } else if (this.reasonsPlayed.likedTags.length > 0) {
-                    var randomLikedTags = Song.shuffle(this.reasonsPlayed.likedTags.concat([]));
-                    var likedText = randomLikedTags.slice(0, 3).join(", ");
-                    reasons.push(`you like similiar songs (songs with ${likedText}, etc.)`);
+                if (this.reasonsPlayed.similar === LikeLevel.Favorite) {
+                    reasons.push("it's similar to some of your favorite songs");
+                } else if (this.reasonsPlayed.similar === LikeLevel.Love) {
+                    reasons.push("you love similiar songs");
+                } else if (this.reasonsPlayed.similar === LikeLevel.Like) {
+                    reasons.push("you like similiar songs");
                 }
 
                 // We're going to join all the reasons together into a single, comma-delimited string.
@@ -295,18 +298,13 @@ namespace BitShuva.Chavah {
 
         static createEmptySongPickReasons(songId: string): Server.ISongPickReasons {
             return {
-                likedAlbum: false,
-                likedArtist: false,
-                likedSong: false,
-                likedTags: [],
-                lovedAlbum: false,
-                lovedArtist: false,
-                lovedTags: [],
-                bestRanking: false,
-                goodRanking: false,
-                greatRanking: false,
-                soleReason: null,
-                songId: songId
+                album: LikeLevel.NotSpecified,
+                artist: LikeLevel.NotSpecified,
+                ranking: LikeLevel.NotSpecified,
+                similar: LikeLevel.NotSpecified,
+                songThumbedUp: false,
+                songId: songId,
+                soleReason: null
             };
         }
 
