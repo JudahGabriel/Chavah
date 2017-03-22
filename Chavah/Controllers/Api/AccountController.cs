@@ -232,7 +232,7 @@ namespace BitShuva.Controllers
             var confirmResult = await UserManager.ConfirmEmailAsync(userId, confirmCode);
             if (!confirmResult.Succeeded)
             {
-                await _logger.Error("Unable to confirm email", null, (Email: email, ConfirmCode: confirmCode, Result: confirmResult));
+                await _logger.Error("Unable to confirm email", null, (Email: email, ConfirmCode: confirmCode, Result: confirmResult.Errors));
             }
 
             await _logger.Info("Successfully confirmed new account", email);
