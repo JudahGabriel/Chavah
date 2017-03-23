@@ -700,6 +700,7 @@
     <TypeScriptCompile Include="App\Models\Song.ts" />
     <TypeScriptCompile Include="App\Models\SongLike.ts" />
     <TypeScriptCompile Include="App\Polyfills\Array.ts" />
+    <TypeScriptCompile Include="App\Polyfills\MediaSession.ts" />
     <TypeScriptCompile Include="App\Polyfills\String.ts" />
     <TypeScriptCompile Include="App\Services\AdminScriptsService.ts" />
     <TypeScriptCompile Include="App\Services\AlbumApiService.ts" />
