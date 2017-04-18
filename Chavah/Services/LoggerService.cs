@@ -51,30 +51,30 @@ namespace BitShuva.Services
                 Level = logLevel,
                 Details = details
             };
-            
+
             // Newing up our own session here. Needed because we're calling .SaveChanges and we don't want to commit other in-progress changes.
-            using (var session = RavenContext.Db.OpenAsyncSession())
+            try
             {
-                // See if we have an existing LogSummary for this log.
-                var logSummaryId = LogSummary.GetIdForLog(log);
-                var logSummary = await session.LoadAsync<LogSummary>(logSummaryId);
-                if (logSummary == null)
+                using (var session = RavenContext.Db.OpenAsyncSession())
                 {
-                    logSummary = new LogSummary();
-                }
+                    // See if we have an existing LogSummary for this log.
+                    var logSummaryId = LogSummary.GetIdForLog(log);
+                    var logSummary = await session.LoadAsync<LogSummary>(logSummaryId);
+                    if (logSummary == null)
+                    {
+                        logSummary = new LogSummary();
+                    }
 
-                logSummary.AddLog(log);
+                    logSummary.AddLog(log);
 
-                try
-                {
                     await session.StoreAsync(logSummary);
                     session.AddRavenExpiration(logSummary, DateTime.UtcNow.AddMonths(1));
                     await session.SaveChangesAsync();
                 }
-                catch (Exception)
-                {
-                    // Can't save the log? Eat the exception; we're likely disconnected from the database.
-                }
+            }
+            catch
+            {
+                // Can't save the log? Eat the exception; we're likely disconnected from the database.
             }
 
             return log;

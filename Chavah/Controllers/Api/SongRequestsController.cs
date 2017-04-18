@@ -125,11 +125,11 @@ namespace BitShuva.Controllers
         private async Task<bool> HasManyRecentSongRequestsFromUser(string userId)
         {
             var recent = DateTime.Now.Subtract(TimeSpan.FromMinutes(30));
-            var many = 2;
+            const int maxInHalfHour = 2;
             var recentSongRequestsFromUser = await this.DbSession
                 .Query<SongRequest>()
                 .CountAsync(s => s.UserId == userId && s.DateTime >= recent);
-            return recentSongRequestsFromUser >= many;
+            return recentSongRequestsFromUser >= maxInHalfHour;
         }
 
         private async Task<SongRequest> AddUserToSongRequestPlayedList(SongRequest req, string userId)

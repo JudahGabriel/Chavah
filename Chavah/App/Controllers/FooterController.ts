@@ -58,7 +58,7 @@
                 // Setup media session handlers so that a native play/pause/next buttons do the same thing as our footer's play/pause/next.
                 this.setupMediaSessionHandlers();
 
-                // Listen for when the song changes so that we show the song info on the 
+                // Listen for when the song changes so that we show the song info on the phone lock screen.
                 this.audioPlayer.song.subscribe(songOrNull => this.updateMediaSession(songOrNull));
             }
         }
