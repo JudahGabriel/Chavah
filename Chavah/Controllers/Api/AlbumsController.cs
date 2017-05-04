@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Optional;
 using Optional.Async;
+using BitShuva.Services;
 
 namespace BitShuva.Controllers
 {
@@ -103,9 +104,10 @@ namespace BitShuva.Controllers
 
             // Put all the songs on the CDN.
             var songNumber = 1;
+            var uploadService = new SongUploadService();
             foreach (var albumSong in album.Songs)
             {
-                var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
+                //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
                 var song = new Song
                 {
                     Album = album.Name,
@@ -117,9 +119,10 @@ namespace BitShuva.Controllers
                     Number = songNumber,
                     PurchaseUri = album.PurchaseUrl,
                     UploadDate = DateTime.UtcNow,
-                    Uri = songUriCdn
+                    Uri = null
                 };
                 await this.DbSession.StoreAsync(song);
+                uploadService.QueueMp3Upload(albumSong, album, songNumber, song.Id);
                 songNumber++;
             }
 

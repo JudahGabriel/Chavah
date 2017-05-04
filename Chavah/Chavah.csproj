@@ -334,6 +334,7 @@
     <Compile Include="Models\LogSummary.cs" />
     <Compile Include="Models\SongPickReasons.cs" />
     <Compile Include="Models\SongWeight.cs" />
+    <Compile Include="Services\SongUploadService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\AlbumService.cs" />
     <Compile Include="Interfaces\IAlbumService.cs" />

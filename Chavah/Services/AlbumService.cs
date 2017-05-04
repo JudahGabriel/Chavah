@@ -1,4 +1,5 @@
-﻿using BitShuva.Interfaces;
+﻿using BitShuva.Common;
+using BitShuva.Interfaces;
 using BitShuva.Models;
 using Raven.Client;
 using System;
