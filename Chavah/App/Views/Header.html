@@ -3,34 +3,38 @@
     <div class="pull-right login">
         <br class="visible-xs-block visible-sm-block" />
         <br class="visible-xs-block visible-sm-block" />
-        <div class="btn-group" ng-show="vm.currentUserName">
+        <div class="btn-group">
             <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <h4>
+                <h4 ng-show="vm.currentUserName">
                     <i class="fa fa-user-circle"></i> 
                     {{vm.currentUserName}} 
                     <span class="caret"></span>
                 </h4>
+                <h4 ng-hide="vm.currentUserName">
+                    <i class="fa fa-bars"></i>
+                </h4>
             </button>
             <ul class="dropdown-menu">
+                <li ng-show="vm.currentUserName">
+                    <a href="#/profile">Profile</a>
+                </li>
                 <li>
-                    <a href="#/profile">
-                        <h5>
-                            <strong>{{vm.currentUserName}}</strong>
-                        </h5>
-                        <small>
-                            View my profile
-                        </small>
-                    </a>
+                    <a href="#/about">About Chavah &amp; legal</a>
                 </li>
                 <li role="separator" class="divider"></li>
-                <li><a href="javascript:void(0)" ng-click="vm.signOut()">Sign out</a></li>
+                <li ng-hide="vm.currentUserName">
+                    <a href="#/signin"><i class="fa fa-sign-in"></i> Sign In</a>
+                </li>
+                <li ng-show="vm.currentUserName">
+                    <a href="javascript:void(0)" ng-click="vm.signOut()">Sign out</a>
+                </li>
             </ul>
         </div>
-        <a class="btn btn-link" href="#/signin" ng-hide="vm.currentUserName">
+        <!--<a class="btn btn-link" href="#/signin" ng-hide="vm.currentUserName">
             <h4>
                 <i class="fa fa-sign-in"></i> Sign in
             </h4>
-        </a>
+        </a>-->
     </div>
     <div class="title">
         <a href="#/">

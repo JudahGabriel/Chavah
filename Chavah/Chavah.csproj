@@ -384,11 +384,13 @@
     <Content Include="App\Views\Donate.html" />
     <Content Include="App\Views\DonateSuccess.html" />
     <Content Include="App\Views\DonateCancelled.html" />
+    <Content Include="App\Views\Legal.html" />
     <Content Include="App\Views\PromptSignIn.html" />
     <Content Include="App\Views\ShareThanks.html" />
     <Content Include="Content\images\FavIcon192.png" />
     <Content Include="Content\images\FavIcon48.png" />
     <Content Include="Content\images\FavIcon96.png" />
+    <Content Include="Content\images\judah.jpg" />
     <Content Include="Content\offers\Micha%27el Eliyahu BenDavid - Kol Yonah - 10 - Rejoice in Yah.mp3" />
     <Content Include="Scripts\es6-promise.js" />
     <Content Include="App\Views\ConfirmEmail.html" />
@@ -477,7 +479,6 @@
     <Content Include="Content\styles\bootstrap.flatly.css">
       <DependentUpon>bootstrap.flatly.less</DependentUpon>
     </Content>
-    <Content Include="Content\images\About.jpg" />
     <Content Include="Content\images\backgroundFlowers.png" />
     <Content Include="Content\images\backgroundTrees.png" />
     <Content Include="Content\images\Buy.png" />
@@ -649,7 +650,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\Account\" />
     <Folder Include="Views\Admin\" />
-    <Folder Include="Views\Legacy\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

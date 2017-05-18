@@ -69,3 +69,7 @@ header .subtitle .btn-link {
   padding-left: 2px;
   padding-top: 3px;
 }
+header .dropdown-menu {
+  left: auto !important;
+  right: 0;
+}
