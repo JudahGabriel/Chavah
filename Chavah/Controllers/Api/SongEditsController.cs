@@ -22,6 +22,7 @@ namespace BitShuva.Controllers
         {
             _logger = logger;
         }
+
         [Route("Edit")]
         [HttpPost]
         public async Task<SongEdit> EditSong(Song song)
@@ -44,10 +45,16 @@ namespace BitShuva.Controllers
                 {
                     songEdit.Apply(existingSong);
                 }
-                else
+                else // the user isn't an admin.
                 {
+                    // Store the song edit and await admin approval.
                     await DbSession.StoreAsync(songEdit);
-                    
+
+                    // Notify admins that a new song edit needs approval.
+                    var admins = await DbSession.Query<ApplicationUser>()
+                        .Where(u => u.Roles.Contains(ApplicationUser.AdminRole))
+                        .ToListAsync();
+                    admins.ForEach(a => a.AddNotification(Notification.SongEditsNeedApproval()));
                 }
             }
 
@@ -78,6 +85,13 @@ namespace BitShuva.Controllers
                 songEdit.Status = SongEditStatus.Approved;
                 await DbSession.StoreAsync(songEdit);
                 await _logger.Info("Applied song edit", songEdit);
+
+                // Notify the user.
+                var user = await DbSession.LoadAsync<ApplicationUser>(songEdit.UserId);
+                if (user != null)
+                {
+                    user.AddNotification(Notification.SongEditApproved(song));
+                }
             }
 
             return songEdit;

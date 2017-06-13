@@ -48,7 +48,7 @@ namespace BitShuva.Controllers
                     result = await base.ExecuteAsync(controllerContext, cancellationToken);
                 }
                 catch (Exception error)
-                    when (!(error is TaskCanceledException)) // We don't care if it's just a TaskCancelledException.
+                    when (!(error is TaskCanceledException) && (!error.Message.Contains("A task was cancelled", StringComparison.InvariantCultureIgnoreCase))) // We don't care if it's just a TaskCancelledException.
                 {
                     await TryLogSaveChangesError(error, $"Error executing controller action {controllerContext.Request?.RequestUri}", SessionToken);
                     throw; // Throw, because we don't want to try to save changes below.

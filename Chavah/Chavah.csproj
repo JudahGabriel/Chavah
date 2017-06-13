@@ -302,6 +302,7 @@
     <Compile Include="Controllers\Api\TestController.cs" />
     <Compile Include="Controllers\Api\UsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IftttController.cs" />
     <Compile Include="Controllers\OffersController.cs" />
     <Compile Include="Controllers\RavenController.cs" />
     <Compile Include="Controllers\StreamController.cs" />
@@ -334,6 +335,7 @@
     <Compile Include="Models\LogSummary.cs" />
     <Compile Include="Models\SongPickReasons.cs" />
     <Compile Include="Models\SongWeight.cs" />
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Services\SongUploadService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\AlbumService.cs" />
@@ -387,6 +389,8 @@
     <Content Include="App\Views\Legal.html" />
     <Content Include="App\Views\PromptSignIn.html" />
     <Content Include="App\Views\ShareThanks.html" />
+    <Content Include="App\Views\SongEditApproved.html" />
+    <Content Include="App\Views\Welcome.html" />
     <Content Include="Content\images\FavIcon192.png" />
     <Content Include="Content\images\FavIcon48.png" />
     <Content Include="Content\images\FavIcon96.png" />
@@ -676,6 +680,7 @@
     <TypeScriptCompile Include="App\Controllers\ResetPasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\ShareThanksController.ts" />
     <TypeScriptCompile Include="App\Controllers\SignInController.ts" />
+    <TypeScriptCompile Include="App\Controllers\SongEditApprovedController.ts" />
     <TypeScriptCompile Include="App\Controllers\SongListController.ts" />
     <TypeScriptCompile Include="App\Controllers\EditSongController.ts" />
     <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />

@@ -136,4 +136,13 @@
         similar: LikeLevel;
         soleReason: SongPick | null;
     }
+
+    export interface INotification {
+        title: string;
+        url: string;
+        isUnread: boolean;
+        sourceName: string;
+        imageUrl: string | null;
+        date: string;
+    }
 }

@@ -3,7 +3,7 @@
     <div class="pull-right login">
         <br class="visible-xs-block visible-sm-block" />
         <br class="visible-xs-block visible-sm-block" />
-        <div class="btn-group">
+        <div class="btn-group profile-btn">
             <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <h4 ng-show="vm.currentUserName">
                     <i class="fa fa-user-circle"></i> 
@@ -30,11 +30,28 @@
                 </li>
             </ul>
         </div>
-        <!--<a class="btn btn-link" href="#/signin" ng-hide="vm.currentUserName">
-            <h4>
-                <i class="fa fa-sign-in"></i> Sign in
-            </h4>
-        </a>-->
+        <div class="btn-group notifications-btn" ng-show="vm.notifications.length > 0">
+            <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-click="vm.markNotificationsAsRead()" uib-tooltip="Notifications">
+                <h4>
+                    <i class="fa fa-globe"></i>
+                    <span class="badge" ng-show="vm.unreadNotificationCount > 0">{{vm.unreadNotificationCount}}</span>
+                </h4>
+            </button>
+            <ul class="dropdown-menu">
+                <li ng-repeat="notification in vm.notifications" ng-class="{ unread: notification.isUnread }">
+                    <a href="#" ng-href="{{notification.url}}" target="_blank">
+                        <img class="img-responsive source-img pull-left" ng-src="{{notification.imageUrl}}" ng-show="notification.imageUrl" />
+                        <span class="description">
+                            <strong>{{notification.title}}</strong>
+                            <br />
+                            <span class="text-muted">via</span>
+                            {{notification.sourceName}}
+                        </span>
+                        <span class="clearfix"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
     <div class="title">
         <a href="#/">

@@ -367,13 +367,7 @@ namespace BitShuva.Controllers
             {
                 user.TotalPlays++;
                 user.LastSeen = DateTime.UtcNow;
-                user.RecentSongIds.Insert(0, songId);
-                if (user.RecentSongIds.Count > 10)
-                {
-                    user.RecentSongIds = user.RecentSongIds
-                        .Take(10)
-                        .ToList();
-                }
+                user.AddRecentSong(songId);
             }
 
             var song = await this.DbSession.LoadAsync<Song>(songId);

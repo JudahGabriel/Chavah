@@ -17,7 +17,7 @@ namespace BitShuva.Controllers
         /// Returns an M3U file. Used for streaming services such as TuneIn radio.
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> TuneInV2()
+        public ActionResult TuneInV2()
         {
             // The M3U file will contain a single URL:
             // The URL to our GetNextSong() action.
@@ -27,11 +27,7 @@ namespace BitShuva.Controllers
             // M3U format is very simple: https://en.wikipedia.org/wiki/M3U
             var m3uBuilder = new StringBuilder();
             m3uBuilder.AppendLine("# EXTM3U"); // The header
-            //foreach (var song in songs)
-            //{
-            //    m3uBuilder.AppendLine($"# EXTINF:0, {song.Artist} - {song.Name}");
-            //    m3uBuilder.AppendLine(song.Uri.AbsoluteUri);
-            //}
+
             var getNextSongUrl = this.Url.Action(nameof(GetNextSong), "Stream", null, this.Request.Url.Scheme);
             m3uBuilder.AppendLine(getNextSongUrl);
 

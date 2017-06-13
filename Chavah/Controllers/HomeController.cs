@@ -21,9 +21,9 @@ namespace BitShuva.Controllers
         private IAlbumService _albumService;
         private IUserService _userService;
 
-        //TODO: move this to the web.config?
-        private string _radioUrl = @"https://messianicradio.com";
-        private string _blogUrl = @"http://blog.messianicradio.com/feeds/posts/default";
+        //TODO: move this to the web.config?\
+        private const string _radioUrl = "https://messianicradio.com";
+        private const string _blogUrl = @"http://blog.messianicradio.com/feeds/posts/default";
 
         public HomeController(ILoggerService logger,
                               ISongService songService,
@@ -38,10 +38,10 @@ namespace BitShuva.Controllers
         
         /// <summary>
         /// Urls like "http://messianicradio.com?song=songs/32" need to load the server-rendered Razor 
-        ///           page with info about that song.
-        ///           This is used for social media sites like Facebook and Twitter which show images, title, 
-        ///           and description from the loaded page.
-        ///  In addition it serves Json back for http://messianicradio.com?user=email
+        /// page with info about that song.
+        /// This is used for social media sites like Facebook and Twitter which show images, title, 
+        /// and description from the loaded page.
+        /// In addition it serves Json back for http://messianicradio.com?user=email
         /// </summary>
         /// <param name="user"></param>
         /// <param name="artist"></param>
@@ -53,13 +53,12 @@ namespace BitShuva.Controllers
         public async Task<ActionResult> Index(string user=null, 
                                               string artist = null,
                                               string album = null,
-                                              string song=null,
+                                              string song = null,
                                               bool embed = false)
         {
             if (user != null)
             {
                 //return user information for the feed.
-
                 var userDb = await _userService.GetUser(user);
                 if (userDb == null)
                 {
@@ -72,29 +71,28 @@ namespace BitShuva.Controllers
 
                     return Json(userDb, JsonRequestBehavior.AllowGet);
                 }
-                    
             }
 
             var viewModel = new HomeViewModel
             {
                 Embed = embed
             };
+
             var userName = User.Identity.Name;
             ApplicationUser currentUser = null;
-
             if (!string.IsNullOrEmpty(userName))
             {
                 currentUser = await _userService.GetUser(userName);
             }
 
-            viewModel.PageTitle = "Chavah Messianic Radio";
-            viewModel.PageDescription = "Internet radio for Yeshua's disciples";
+            if (currentUser != null)
+            {
+                viewModel.UserEmail = currentUser.Email;
+                viewModel.Jwt = currentUser.Jwt;
+                viewModel.UserRoles = currentUser.Roles;
+                viewModel.Notifications = currentUser.Notifications;
+            }          
 
-            viewModel.UserEmail = currentUser != null ? currentUser.Email : "";
-            viewModel.Jwt = currentUser != null ? currentUser.Jwt : "";
-            viewModel.UserRoles = currentUser != null ? currentUser.Roles : new List<string>();
-
-            
             //get the query
             var firstValidQuery = new[] { artist, album, song }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
 
@@ -138,7 +136,6 @@ namespace BitShuva.Controllers
         }
 
         [Route("home/embed")]
-        //[Route("durandal/embed")]
         public async Task<ActionResult> Embed(string user = null,
                               string artist = null,
                               string album = null,
@@ -155,27 +152,6 @@ namespace BitShuva.Controllers
         public ActionResult About()
         {
             return View();
-        }
-        
-        [Route("account/registeredusers")]
-        [HttpGet]
-        public async Task<ActionResult> RegisteredUsers()
-        {
-            var lastRegisteredUsers = await _userService.RegisteredUsers(100);
-
-            var feedItems = from user in lastRegisteredUsers
-                            select new SyndicationItem(
-                                id: user.Email,
-                                lastUpdatedTime: user.RegistrationDate,
-                                title: user.Email,
-                                content: $"A new user registered on Chavah on {user.RegistrationDate} with email address {user.Email}",
-                                itemAlternateLink: new Uri($"{_radioUrl}/?user={Uri.EscapeUriString(user.Email)}")
-                            );
-
-            var feed = new SyndicationFeed("Chavah Messianic Radio", 
-                                           "The most recent registered users at Chavah Messianic Radio", 
-                                           new Uri(_radioUrl), feedItems) { Language = "en-US" };
-            return new RssActionResult { Feed = feed };
         }
 
         [Route("GetLatestBlogPost")]

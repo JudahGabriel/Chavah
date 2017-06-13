@@ -15,23 +15,39 @@ namespace BitShuva.Models
     public class ApplicationUser : IdentityUser
     {
         public const string AdminRole = "Admin";
+        public const int MaxNotifications = 10;
+        public const int MaxRecentSongs = 10;
 
         public ApplicationUser()
         {
-            //this.Preferences = new UserSongPreferences();
         }
         
         public int TotalPlays { get; set; }
-
-        //[Obsolete("This is no longer used. Please use the Likes_SongPreferences index instead.")]
-        //public UserSongPreferences Preferences { get; set; }
-
         public DateTime RegistrationDate { get; set; }
         public DateTime LastSeen { get; set; }
         public int TotalSongRequests { get; set; }
         public bool RequiresPasswordReset { get; set; }
         public List<string> RecentSongIds { get; set; } = new List<string>();
         public string Jwt { get; set; }
+        public List<Notification> Notifications { get; set; } = new List<Notification>();
+
+        public void AddNotification(Notification notification)
+        {
+            this.Notifications.Insert(0, notification);
+            if (this.Notifications.Count > MaxNotifications)
+            {
+                this.Notifications.RemoveAt(MaxNotifications);
+            }
+        }
+
+        public void AddRecentSong(string songId)
+        {
+            this.RecentSongIds.Insert(0, songId);
+            if (this.RecentSongIds.Count > MaxRecentSongs)
+            {
+                this.RecentSongIds.RemoveAt(MaxRecentSongs);
+            }
+        }
 
         public ApplicationUser Clone()
         {

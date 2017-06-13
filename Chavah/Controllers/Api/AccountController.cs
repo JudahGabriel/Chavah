@@ -8,6 +8,7 @@ using System.Web.Http;
 using System.Threading.Tasks;
 using BitShuva.Services;
 using BitShuva.Interfaces;
+using System.Collections.Generic;
 
 namespace BitShuva.Controllers
 {
@@ -146,6 +147,22 @@ namespace BitShuva.Controllers
             return user;           
         }
 
+        [Route("ClearNotifications")]
+        [HttpPost]
+        public async Task<int> ClearNotifications()
+        {
+            var user = await this.GetCurrentUser();
+            if (user != null)
+            {
+                var count = user.Notifications.Count;
+                user.Notifications.ForEach(n => n.IsUnread = false);
+
+                return count;
+            }
+
+            return 0;
+        }
+
         [Route("Register")]
         [HttpPost]
         [AllowAnonymous]
@@ -236,6 +253,10 @@ namespace BitShuva.Controllers
             }
 
             await _logger.Info("Successfully confirmed new account", email);
+
+            // Add a welcome notification for the user.
+            user.AddNotification(Notification.Welcome());
+
             return new ConfirmEmailResult
             {
                 Success = confirmResult.Succeeded,

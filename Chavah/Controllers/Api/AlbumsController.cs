@@ -41,6 +41,16 @@ namespace BitShuva.Controllers
             return DbSession.LoadAsync<Album>(id);
         }
 
+        [Route("GetAlbumArtBySongId")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetBySongId(string songId)
+        {
+            var song = await DbSession.LoadNonNull<Song>(songId);
+            var response = Request.CreateResponse(HttpStatusCode.Moved);
+            response.Headers.Location = song.AlbumArtUri;
+            return response;
+        }
+
         [Route("GetByArtistAlbum")]
         [HttpGet]
         public Task<Album> GetByArtistAlbum(string artist, string album)
