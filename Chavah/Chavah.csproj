@@ -21,7 +21,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
     <TypeScriptSourceMap>False</TypeScriptSourceMap>
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
     <TargetFrameworkProfile />
@@ -370,6 +370,12 @@
     <Content Include="Content\images\FavIcon48.png" />
     <Content Include="Content\images\FavIcon96.png" />
     <Content Include="Content\offers\Micha%27el Eliyahu BenDavid - Kol Yonah - 10 - Rejoice in Yah.mp3" />
+    <Content Include="Content\styles\app\editSong.css">
+      <DependentUpon>editSong.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\editSong.min.css">
+      <DependentUpon>editSong.css</DependentUpon>
+    </Content>
     <Content Include="Scripts\es6-promise.js" />
     <Content Include="App\Views\ConfirmEmail.html" />
     <Content Include="App\Views\CreatePassword.html" />
@@ -571,6 +577,7 @@
     <Content Include="Content\styles\nprogress.less" />
     <Content Include="ConnectionStrings.Release.Secrets.config" />
     <Content Include="ConnectionStrings.Debug.Secrets.config" />
+    <Content Include="Content\styles\app\editSong.less" />
     <None Include="Properties\PublishProfiles\bitshuva.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />

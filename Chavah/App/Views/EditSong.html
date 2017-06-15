@@ -1,4 +1,4 @@
-﻿<section class="submit-lyrics-page" ng-controller="EditSongController as vm">
+﻿<section class="edit-song-page" ng-controller="EditSongController as vm">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-offset-2">
             <h3>Submit song lyrics and tags <br /><small class="text-muted">Thanks for helping us out and making Chavah better</small></h3>
@@ -28,9 +28,16 @@
                             <textarea class="form-control" ng-model="vm.song.lyrics" rows="15" placeholder="Type the lyrics here" trigger-focus="vm.isLyricsFocused"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="tagsInput"><i class="fa fa-tag"></i> Tags</label>
-                            <input type="text" class="form-control" id="tagsInput" placeholder="piano, violin, male vocal, hebrew, psalms" ng-model="vm.tagsCsv">
-                            <p class="help-block"><i class="fa fa-info-circle"></i> Optional. Comma-separated list of song tags. Example: piano, male vocal, worship, hebrew, psalms</p>
+                            <label for="tagsInput"><i class="fa fa-tags"></i> Tags</label>
+                            <div class="tags-container">
+                                <div class="tag" ng-repeat="tag in vm.tags">
+                                    <i class="fa fa-tag"></i> 
+                                    {{tag}}
+                                    <button type="button" class="close" data-dismiss="modal" ng-click="vm.removeTag(tag)" aria-hidden="true" title="Remove tag">×</button>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" id="tagsInput" placeholder="piano, violin, male vocal, hebrew, psalms" ng-model="vm.tagsInput" ng-change="vm.tagsInputChanged()">
+                            <p class="help-block"><i class="fa fa-info-circle"></i> Optional. Song tags; characteristics about the song. Example: piano, male vocal, worship, hebrew, psalms</p>
                         </div>
 
                         <button class="btn btn-primary" ng-click="vm.submit()" ng-disabled="vm.isSaving"><i class="fa fa-save"></i> Submit</button>

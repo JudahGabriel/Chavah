@@ -54,5 +54,9 @@
   {
     "outputFile": "Content/styles/nprogress.css",
     "inputFile": "Content/styles/nprogress.less"
+  },
+  {
+    "outputFile": "Content/styles/app/editSong.css",
+    "inputFile": "Content/styles/app/editSong.less"
   }
 ]

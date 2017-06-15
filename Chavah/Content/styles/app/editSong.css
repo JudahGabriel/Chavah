@@ -1,0 +1,10 @@
+﻿.edit-song-page .tag {
+  display: inline-block;
+  padding: 10px;
+  background-color: white;
+  margin-right: 5px;
+}
+.edit-song-page .tag .close {
+  color: black;
+  margin-left: 5px;
+}
