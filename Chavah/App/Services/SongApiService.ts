@@ -5,14 +5,6 @@
 
         constructor(private httpApi: HttpApiService) {
         }
-        
-        //getSong(): ng.IPromise<Song> {
-        //    return this.httpApi.query("/api/songs/get", null, SongApiService.songConverter);
-        //}
-
-        //getSongBatch(): ng.IPromise<Song[]> {
-        //    return this.httpApi.query("/api/songs/batch", null, SongApiService.songListConverter);
-        //}
 
         chooseSong(): ng.IPromise<Song> {
             return this.httpApi.query("/api/songs/chooseSong", null, SongApiService.songConverter);
@@ -107,6 +99,13 @@
 
         songFailed(error: AudioErrorInfo): ng.IPromise<any> {
             return this.httpApi.post("/api/songs/audiofailed", error);
+        }
+
+        searchTags(search: string): ng.IPromise<string[]> {
+            var args = {
+                search: search
+            };
+            return this.httpApi.query("/api/songs/searchTags", args);
         }
 
         private static songListConverter(songs: Server.ISong[]): Song[] {

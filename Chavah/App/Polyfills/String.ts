@@ -19,7 +19,9 @@ if (!String.prototype.endsWith) {
             position = subjectString.length;
         }
 
-        position -= searchString.length;
+        if (position !== undefined && position !== null) {
+            position -= searchString.length;
+        }
         var lastIndex = subjectString.indexOf(searchString, position);
         return lastIndex !== -1 && lastIndex === position;
     };

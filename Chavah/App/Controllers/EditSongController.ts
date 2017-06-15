@@ -38,6 +38,10 @@
             }
         }
 
+        searchTags(search: string): ng.IPromise<string[]> {
+            return this.songApi.searchTags(search);
+        }
+
         songLoaded(song: Song | null) {
             this.song = song;
             if (song) {
@@ -61,10 +65,21 @@
             }
         }
 
+        autoCompleteTagSelected(tag: string) {
+            this.addTag(tag);
+            this.tagsInput = "";
+        }
+
         addTag(tag: string) {
             var tagLowered = tag.toLowerCase().trim();
             if (!this.tags.includes(tagLowered)) {
                 this.tags.push(tagLowered);
+            }
+        }
+
+        tagsEnterKeyPressed() {
+            if (this.tagsInput.length > 1) {
+                this.autoCompleteTagSelected(this.tagsInput);
             }
         }
 
