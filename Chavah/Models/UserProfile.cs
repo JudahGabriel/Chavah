@@ -14,24 +14,24 @@ namespace BitShuva.Models
 
         public UserProfile(ApplicationUser user, List<string> favoriteSongNames)
 	    {
-            this.DislikedSongCount = user.Preferences.Songs.Count(s => s.DislikeCount > 0);
-            this.EmailAddress = user.Email;
-            this.FavoriteAlbums = user.Preferences
-                .Albums
-                .OrderByDescending(a => a.LikeCount - a.DislikeCount)
-                .Take(5)
-                .ToList();
-            this.FavoriteArtists = user.Preferences
-                .Artists
-                .OrderByDescending(a => a.LikeCount - a.DislikeCount)
-                .Take(5)
-                .ToList();
-            this.FavoriteSongs = favoriteSongNames;
-            this.LikedSongCount = user.Preferences.Songs.Count(s => s.LikeCount > 0);
-            this.TotalPlays = user.TotalPlays;
-            this.RegistrationDate = user.RegistrationDate;
+            //this.DislikedSongCount = user.Preferences.Songs.Count(s => s.DislikeCount > 0);
+            //this.EmailAddress = user.Email;
+            //this.FavoriteAlbums = user.Preferences
+            //    .Albums
+            //    .OrderByDescending(a => a.LikeCount - a.DislikeCount)
+            //    .Take(5)
+            //    .ToList();
+            //this.FavoriteArtists = user.Preferences
+            //    .Artists
+            //    .OrderByDescending(a => a.LikeCount - a.DislikeCount)
+            //    .Take(5)
+            //    .ToList();
+            //this.FavoriteSongs = favoriteSongNames;
+            //this.LikedSongCount = user.Preferences.Songs.Count(s => s.LikeCount > 0);
+            //this.TotalPlays = user.TotalPlays;
+            //this.RegistrationDate = user.RegistrationDate;
 
-            this.Rank = CalculateRank();
+            //this.Rank = CalculateRank();
 	    }
 
         public DateTime RegistrationDate { get; set; }

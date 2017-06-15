@@ -12,6 +12,7 @@ namespace BitShuva.Controllers
         {
             _logger = logger;
         }
+
         public FileResult KolYonahFreeDownload()
         {
             _logger.Info("Free Kol Yonah download has been downloaded", Request.UserAgent);

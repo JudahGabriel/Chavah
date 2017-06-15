@@ -16,10 +16,11 @@
         static $inject = ["songApi"];
         
         constructor(private songApi: SongApiService) {
+            // Commented out: finding out about audio errors on the client turns out to not be very useful; it's often caused by client-side issues outside our control (bad internet connection, etc.)
             // Listen for audio errors.
-            this.audioErrors
-                .throttle(10000) // If the CDN is down, we don't want to submit thousands of errors. Throttle it.
-                .subscribe(val => this.submitAudioError(val))
+            //this.audioErrors
+            //    .throttle(10000) // If the CDN is down, we don't want to submit thousands of errors. Throttle it.
+            //    .subscribe(val => this.submitAudioError(val));
         }
         
         initialize(audio: HTMLAudioElement) {

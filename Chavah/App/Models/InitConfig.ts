@@ -5,6 +5,7 @@
         redirect: string | null;
         userEmail: string | null;
         userRoles: string[];
+        notifications: Server.INotification[];
         jwt: string;
         embed: Boolean;
     }

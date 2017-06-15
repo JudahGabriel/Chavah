@@ -250,7 +250,7 @@ namespace BitShuva.Common
                 .Replace('ó', 'o')
                 .Replace('í', 'i')
                 .Replace('á', 'a');
-            var isAscii = new Func<char, bool>(c => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ',' || c == '.');
+            var isAscii = new Func<char, bool>(c => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ',' || c == '.' || c == '(' || c == ')');
             if (lower.All(c => isAscii(c) || char.IsNumber(c) || c == ' ' || c == '_' || c == '+'))
             {
                 return lower;

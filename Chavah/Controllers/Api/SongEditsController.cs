@@ -22,6 +22,7 @@ namespace BitShuva.Controllers
         {
             _logger = logger;
         }
+
         [Route("Edit")]
         [HttpPost]
         public async Task<SongEdit> EditSong(Song song)
@@ -32,14 +33,7 @@ namespace BitShuva.Controllers
                 throw NewUnauthorizedException();
             }
 
-            var existingSong = await this.DbSession.LoadAsync<Song>(song.Id);
-            if (existingSong == null)
-            {
-                string ex = $"Couldn't find: {song.Id}";
-                await _logger.Warn(ex);
-                throw new InvalidOperationException(ex);
-            }
-
+            var existingSong = await this.DbSession.LoadNonNull<Song>(song.Id);
             var songEdit = new SongEdit(existingSong, song)
             {
                 UserId = user.Id
@@ -50,12 +44,17 @@ namespace BitShuva.Controllers
                 if (user.IsAdmin())
                 {
                     songEdit.Apply(existingSong);
-                    await _logger.Info("Applied song edit", songEdit);
-                    //await ChavahLog.Info(DbSession, "Applied song edit", songEdit);
                 }
-                else
+                else // the user isn't an admin.
                 {
+                    // Store the song edit and await admin approval.
                     await DbSession.StoreAsync(songEdit);
+
+                    // Notify admins that a new song edit needs approval.
+                    var admins = await DbSession.Query<ApplicationUser>()
+                        .Where(u => u.Roles.Contains(ApplicationUser.AdminRole))
+                        .ToListAsync();
+                    admins.ForEach(a => a.AddNotification(Notification.SongEditsNeedApproval()));
                 }
             }
 
@@ -85,6 +84,14 @@ namespace BitShuva.Controllers
                 songEdit.Apply(song);
                 songEdit.Status = SongEditStatus.Approved;
                 await DbSession.StoreAsync(songEdit);
+                await _logger.Info("Applied song edit", songEdit);
+
+                // Notify the user.
+                var user = await DbSession.LoadAsync<ApplicationUser>(songEdit.UserId);
+                if (user != null)
+                {
+                    user.AddNotification(Notification.SongEditApproved(song));
+                }
             }
 
             return songEdit;

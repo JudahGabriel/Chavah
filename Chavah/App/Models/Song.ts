@@ -22,7 +22,8 @@ namespace BitShuva.Chavah {
         artistInfo: Server.IArtist;
         tags: string[];
         purchaseUri: string;
-        reasonPlayed: SongPick;
+        //reasonPlayed: SongPick;
+        reasonsPlayed: Server.ISongPickReasons | null;
 
         albumSwatchBackground = "white";
         albumSwatchForeground = "black";
@@ -41,6 +42,7 @@ namespace BitShuva.Chavah {
         private _facebookShareUrl: string | null;
         private _googlePlusShareUrl: string | null;
         private _twitterShareUrl: string | null;
+        private _reasonPlayedText: string | null;
 
         static readonly defaultSwatch: ISwatch = {
             getBodyTextColor: () => "black",
@@ -90,33 +92,18 @@ namespace BitShuva.Chavah {
         }
 
         get reasonPlayedText(): string {
-
-            // "we played this song because {{text}}"
-            switch (this.reasonPlayed) {
-                case SongPick.BestRank: return "it's one of the highest ranked songs on Chavah";
-                case SongPick.GoodRank: return "it's got a good ranking";
-                case SongPick.GreatRank: return "it's got great ranking";
-                case SongPick.LikedAlbum: return `you like other songs on the ${this.album} album`;
-                case SongPick.LikedArtist: return `you like other ${this.artist} songs`;
-                case SongPick.LikedSong: return "you like this song";
-                case SongPick.NormalRank: return "it's got an average ranking. Occasionally, Chavah will play songs with average rank to better understand what kind of music you like";
-                case SongPick.PoorRank: return "we give even poorly ranked songs a chance";
-                case SongPick.SomeoneRequestedSong: return "it was requested by a listener";
-                case SongPick.SongFromAlbumRequested: return `you asked to hear another song from the ${this.album} album`;
-                case SongPick.SongFromArtistRequested: return `you asked to hear another song from ${this.artist}`;
-                case SongPick.VeryPoorRank: return "...well, even the lowest-ranked songs will get played sometimes :-)";
-                case SongPick.YouRequestedSong: return "you asked Chavah to play it";
-                case SongPick.RandomSong:
-                default:
-                    return "Chavah plays random songs from time to time to see what kind of music you like";
+            if (!this._reasonPlayedText) {
+                this._reasonPlayedText = this.createReasonPlayedText();
             }
+
+            return this._reasonPlayedText;
         }
 
         get facebookShareUrl(): string {
             if (!this._facebookShareUrl) {
                 var name = `${this.artist} - ${this.name}`.replace(new RegExp("&", 'g'), "and"); // Yes, replace ampersand. Even though we escape it via encodeURIComponent, Facebook barfs on it.
                 var url = `https://messianicradio.com?song=${this.id}`;
-                var albumArtUrl = `https://messianicradio.com/api/albums/art/get?artist=${encodeURIComponent(this.artist)}&Album=${encodeURIComponent(this.album)}`;
+                var albumArtUrl = `https://messianicradio.com/api/albums/art/forSong?songId=${this.id}`;
                 this._facebookShareUrl = "https://www.facebook.com/dialog/feed?app_id=256833604430846" +
                     `&link=${url}` +
                     `&picture=${encodeURIComponent(albumArtUrl)}` +
@@ -197,8 +184,128 @@ namespace BitShuva.Chavah {
                 tags: [],
                 totalPlays: 0,
                 uri: "",
-                reasonPlayed: SongPick.RandomSong
+                reasonsPlayed: this.createEmptySongPickReasons("songs/0")
             });
+        }
+
+        setSolePickReason(reason: SongPick) {
+            this.reasonsPlayed = Song.createEmptySongPickReasons(this.id);
+            this.reasonsPlayed.soleReason = reason;
+        }
+
+        private createReasonPlayedText(): string {
+            // "we played this song because {{text}}"
+
+            var randomReason = "Chavah plays random songs from time to time to see what kind of music you like";
+            if (this.reasonsPlayed) {
+
+                // If there's a sole reason, just list that.
+                if (this.reasonsPlayed.soleReason !== null) {
+                    switch (this.reasonsPlayed.soleReason) {
+                        case SongPick.SomeoneRequestedSong: return "it was requested by a listener";
+                        case SongPick.SongFromAlbumRequested: return `you asked to hear another song from the ${this.album} album`;
+                        case SongPick.SongFromArtistRequested: return `you asked to hear another song from ${this.artist}`;
+                        case SongPick.VeryPoorRank: return "...well, even the lowest-ranked songs will get played sometimes :-)";
+                        case SongPick.YouRequestedSong: return "you asked Chavah to play it";
+                        case SongPick.RandomSong:
+                        default:
+                            return randomReason;
+                    }
+                }
+
+                // There are zero or more reasons we played this.
+                var reasons: string[] = [];
+                if (this.reasonsPlayed.ranking === LikeLevel.Favorite) {
+                    reasons.push("it's one of the highest ranked songs on Chavah");
+                } else if (this.reasonsPlayed.ranking === LikeLevel.Love) {
+                    reasons.push("it's got a great community ranking");
+                } else if (this.reasonsPlayed.ranking === LikeLevel.Like) {
+                    reasons.push("it's got a good community ranking");
+                }
+
+                if (this.reasonsPlayed.artist === LikeLevel.Favorite) {
+                    reasons.push(`${this.artist} is one of your favorite artists`);
+                } else if (this.reasonsPlayed.artist === LikeLevel.Love) {
+                    reasons.push(`you love ${this.artist} and have thumbed-up an abundance of ${this.artist} songs`);
+                } else if (this.reasonsPlayed.artist === LikeLevel.Like) {
+                    reasons.push(`you like ${this.artist}`);
+                }
+
+                if (this.reasonsPlayed.album === LikeLevel.Favorite) {
+                    reasons.push(`you like nearly all the songs on ${this.album}`);
+                }
+                if (this.reasonsPlayed.album === LikeLevel.Love) {
+                    reasons.push(`you love ${this.album}`);
+                } else if (this.reasonsPlayed.album === LikeLevel.Like) {
+                    reasons.push(`you like ${this.album}`);
+                }
+
+                if (this.reasonsPlayed.songThumbedUp) {
+                    reasons.push("you like this song");
+                }
+
+                if (this.reasonsPlayed.similar === LikeLevel.Favorite) {
+                    reasons.push("it's similar to some of your favorite songs");
+                } else if (this.reasonsPlayed.similar === LikeLevel.Love) {
+                    reasons.push("you love similiar songs");
+                } else if (this.reasonsPlayed.similar === LikeLevel.Like) {
+                    reasons.push("you like similiar songs");
+                }
+
+                // We're going to join all the reasons together into a single, comma-delimited string.
+                // e.g. "We played this song because you like this song, you love Ted Pearce, and it's one of the top-ranked songs on Chavah.
+
+                // No reasons? 
+                if (reasons.length === 0) {
+                    return `you might like it`;
+                }
+
+                if (reasons.length === 1) {
+                    return reasons[0];
+                }
+
+                if (reasons.length === 2) {
+                    return reasons.join(" and ");
+                }
+
+                // Append "and" to the last reason if there's more than one.
+                reasons[reasons.length - 1] = "and " + reasons[reasons.length - 1];
+                return reasons.join(", ");
+            }
+
+            return randomReason;
+        }
+
+        // Shuffles an array. Should be moved to a utility class, or maybe just bite the bullet and include lodash.
+        static shuffle<T>(array: T[]): T[] {
+            var currentIndex = array.length, temporaryValue, randomIndex;
+
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+
+            return array;
+        }
+
+        static createEmptySongPickReasons(songId: string): Server.ISongPickReasons {
+            return {
+                album: LikeLevel.NotSpecified,
+                artist: LikeLevel.NotSpecified,
+                ranking: LikeLevel.NotSpecified,
+                similar: LikeLevel.NotSpecified,
+                songThumbedUp: false,
+                songId: songId,
+                soleReason: null
+            };
         }
 
         //private getColorClass() {

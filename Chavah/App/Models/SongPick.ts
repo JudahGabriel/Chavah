@@ -10,6 +10,7 @@
         LikedArtist,
         LikedAlbum,
         LikedSong,
+        LikedTag,
         SongFromAlbumRequested,
         SongFromArtistRequested,
         YouRequestedSong,

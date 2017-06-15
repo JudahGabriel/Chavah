@@ -15,20 +15,39 @@ namespace BitShuva.Models
     public class ApplicationUser : IdentityUser
     {
         public const string AdminRole = "Admin";
+        public const int MaxNotifications = 10;
+        public const int MaxRecentSongs = 10;
 
         public ApplicationUser()
         {
-            this.Preferences = new UserSongPreferences();
         }
         
         public int TotalPlays { get; set; }
-        public UserSongPreferences Preferences { get; set; }
         public DateTime RegistrationDate { get; set; }
         public DateTime LastSeen { get; set; }
         public int TotalSongRequests { get; set; }
         public bool RequiresPasswordReset { get; set; }
         public List<string> RecentSongIds { get; set; } = new List<string>();
         public string Jwt { get; set; }
+        public List<Notification> Notifications { get; set; } = new List<Notification>();
+
+        public void AddNotification(Notification notification)
+        {
+            this.Notifications.Insert(0, notification);
+            if (this.Notifications.Count > MaxNotifications)
+            {
+                this.Notifications.RemoveAt(MaxNotifications);
+            }
+        }
+
+        public void AddRecentSong(string songId)
+        {
+            this.RecentSongIds.Insert(0, songId);
+            if (this.RecentSongIds.Count > MaxRecentSongs)
+            {
+                this.RecentSongIds.RemoveAt(MaxRecentSongs);
+            }
+        }
 
         public ApplicationUser Clone()
         {
@@ -36,7 +55,6 @@ namespace BitShuva.Models
             {
                 Id = this.Id,
                 LastSeen = this.LastSeen,
-                Preferences = this.Preferences,
                 TotalSongRequests = this.TotalSongRequests,
                 RegistrationDate = this.RegistrationDate,
                 RequiresPasswordReset = this.RequiresPasswordReset,
@@ -60,8 +78,6 @@ namespace BitShuva.Models
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
             var userIdentity = await manager.CreateIdentityAsync(this, authenticationType);
-            //TODO: Add custom user claims here
-
             return userIdentity;
         }
     }

@@ -39,7 +39,7 @@
         tags: string[];
         artistImages: string[];
         purchaseUri: string;
-        reasonPlayed: SongPick;
+        reasonsPlayed: Server.ISongPickReasons | null;
     }
 
     export interface IUpDownVotes {
@@ -125,5 +125,24 @@
         success: boolean;
         errorMessage: string;
         invalidEmail: boolean;
+    }
+
+    export interface ISongPickReasons {
+        songId: string;
+        artist: LikeLevel;
+        album: LikeLevel;
+        songThumbedUp: boolean;
+        ranking: LikeLevel;
+        similar: LikeLevel;
+        soleReason: SongPick | null;
+    }
+
+    export interface INotification {
+        title: string;
+        url: string;
+        isUnread: boolean;
+        sourceName: string;
+        imageUrl: string | null;
+        date: string;
     }
 }

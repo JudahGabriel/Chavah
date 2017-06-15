@@ -45,6 +45,10 @@
             return signOutTask;
         }
 
+        clearNotifications(): ng.IPromise<number> {
+            return this.httpApi.post("/api/accounts/clearNotifications", null);
+        }
+
         register(email: string, password: string): ng.IPromise<Server.IRegisterResults> {
             var escapedEmail = encodeURIComponent(email);
             var escapedPassword = encodeURIComponent(password);

@@ -29,9 +29,10 @@
             this.audioPlayer.initialize(audio);
             this.volume = audio.volume;
 
+            // Notify the scope when the audio status changes.
             this.audioPlayer.status
                 .debounce(100)
-                .subscribe(status => this.audioStatusChanged(status)); // Notify the scope when the audio status changes.
+                .subscribe(status => this.audioStatusChanged(status)); 
 
             // Update the track time. We don't use angular for this, because of the constant (per second) update.
             this.audioPlayer.playedTimeText
@@ -48,6 +49,18 @@
                 .subscribe(percent => $(".footer .trackbar").width(percent + "%"));
 
             $scope.$watch(() => this.volume, () => audio.volume = this.volume);
+
+            // MediaSession:
+            // This is a new browser API being adopted on some mobile platforms (at the time of this writing, Android), 
+            // which shows media information above the 
+            // For more info, see https://developers.google.com/web/updates/2017/02/media-session#set_metadata
+            if ('mediaSession' in navigator) {
+                // Setup media session handlers so that a native play/pause/next buttons do the same thing as our footer's play/pause/next.
+                this.setupMediaSessionHandlers();
+
+                // Listen for when the song changes so that we show the song info on the phone lock screen.
+                this.audioPlayer.song.subscribe(songOrNull => this.updateMediaSession(songOrNull));
+            }
         }
 
         get likesCurrentSong(): boolean {
@@ -179,6 +192,10 @@
         }
 
         getFormattedTime(totalSeconds: number): string {
+            if (isNaN(totalSeconds)) {
+                return "00";
+            }
+
             var minutes = Math.floor(totalSeconds / 60);
             var seconds = Math.floor(totalSeconds - (minutes * 60));
             var zeroPaddedSeconds = seconds < 10 ? "0" : "";
@@ -194,6 +211,36 @@
                 case AudioStatus.Paused: return "Paused";
                 case AudioStatus.Playing: return "";
                 case AudioStatus.Stalled: return "Stalled...";
+            }
+        }
+
+        private setupMediaSessionHandlers() {
+            try {
+                var mediaSession = navigator["mediaSession"] as any;
+                mediaSession.setActionHandler("play", () => this.playPause());
+                mediaSession.setActionHandler("pause", () => this.playPause());
+                mediaSession.setActionHandler("nexttrack", () => this.playNextSong());
+            } catch (error) {
+                // Can't setup media session action handlers? No worries. Continue as normal.
+            }
+        }
+
+        private updateMediaSession(song: Song | null) {
+            if (song) {
+                var metadata: IMediaMetadata = {
+                    album: song.album,
+                    artist: song.artist,
+                    title: song.name,
+                    artwork: [
+                        { src: song.albumArtUri, sizes: "300x300", type: "image/jpg" }
+                    ]
+                }
+
+                try {
+                    navigator["mediaSession"].metadata = new window["MediaMetadata"](metadata);
+                } catch (error) {
+                    // Can't update the media session? No worries; eat the error and proceed as normal.
+                }
             }
         }
     }

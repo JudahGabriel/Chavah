@@ -121,6 +121,7 @@
                 redirect: "@Model.Redirect",
                 userEmail: "@Model.UserEmail",
                 userRoles: "@string.Join(",", Model.UserRoles)".split(","),
+                notifications: @Html.Raw(Model.NotificationsToJsArray()),
                 jwt: "@Model.Jwt",
                 embed: @(Model.Embed ? bool.TrueString.ToLower() : bool.FalseString.ToLower())
             };

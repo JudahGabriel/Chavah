@@ -42,6 +42,9 @@
             .when("/mylikes", createRoute("/App/Views/MyLikes.html"))
             .when("/edit/songs/:id", createRoute("/App/Views/EditSong.html"))
             .when("/sharethanks/:artist?", createRoute("/App/Views/ShareThanks.html"))
+            .when("/about", createRoute("/App/Views/Legal.html"))
+            .when("/welcome", createRoute("/App/Views/Welcome.html"))
+            .when("/songeditapproved/:artist/:songName", createRoute("/App/Views/SongEditApproved.html"))
 
             // Sign in
             .when("/promptsignin", createRoute("/App/Views/PromptSignIn.html"))

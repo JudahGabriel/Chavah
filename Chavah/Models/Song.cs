@@ -30,10 +30,13 @@ namespace BitShuva.Models
         public List<string> Genres { get; set; }
         public string Lyrics { get; set; }
         public int TotalPlays { get; set; }
-
-        #region Functions
+        
+        [Obsolete("Use the new ReasonsPlayed instead")]
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public SongPick ReasonPlayed { get; set; }
+
+        [Raven.Imports.Newtonsoft.Json.JsonIgnore]
+        public SongPickReasons ReasonsPlayed { get; set; }
 
         public static Song FromFileName(string fileName)
         {
@@ -101,6 +104,16 @@ namespace BitShuva.Models
         /// <returns></returns>
         public Song ToDto(LikeStatus likeStatus, SongPick playedReason)
         {
+            return ToDto(likeStatus, SongPickReasons.FromSoleReason(playedReason));
+        }
+
+        /// <summary>
+        /// Creates a new song object that's ready to be sent as a data transfer object over to the client.
+        /// </summary>
+        /// <param name="likeStatus">The like status for the song.</param>
+        /// <returns></returns>
+        public Song ToDto(LikeStatus likeStatus, SongPickReasons pickReasons)
+        {
             return new Song
             {
                 Album = this.Album,
@@ -118,7 +131,7 @@ namespace BitShuva.Models
                 Tags = this.Tags,
                 Lyrics = this.Lyrics,
                 TotalPlays = this.TotalPlays,
-                ReasonPlayed = playedReason
+                ReasonsPlayed = pickReasons
             };
         }
 
@@ -135,8 +148,7 @@ namespace BitShuva.Models
         public Uri GetSongShareLink()
         {
             //TODO: move to station configuraitons
-            return new Uri("http://messianicradio.com/?song=" + this.Id);
+            return new Uri("https://messianicradio.com/?song=" + this.Id);
         }
-        #endregion
     }
 }

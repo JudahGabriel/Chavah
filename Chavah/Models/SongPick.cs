@@ -17,9 +17,10 @@ namespace BitShuva.Models
         LikedArtist,
         LikedAlbum,
         LikedSong,
+        LikedTag,
         SongFromAlbumRequested,
         SongFromArtistRequested,
         YouRequestedSong,
-        SomeoneRequestedSong
+        SomeoneRequestedSong,
     }
 }

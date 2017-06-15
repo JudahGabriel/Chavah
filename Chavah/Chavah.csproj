@@ -125,6 +125,12 @@
       <HintPath>..\packages\Optional.3.2.0\lib\net452\Optional.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Optional.Collections, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.Collections.1.1.0\lib\net452\Optional.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Optional.Utilities, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.Utilities.1.1.0\lib\net452\Optional.Utilities.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
@@ -180,6 +186,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -270,8 +279,12 @@
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\IEnumerableExtensions.cs" />
     <Compile Include="Common\Match.cs" />
+    <Compile Include="Common\Optional\AsyncOption.cs" />
+    <Compile Include="Common\Optional\AsyncOptionExtensions.cs" />
+    <Compile Include="Common\Optional\TaskTransformationExtensions.cs" />
     <Compile Include="Common\Range.cs" />
     <Compile Include="Common\RavenDbUnitOfWorkAttribute.cs" />
+    <Compile Include="Common\RavenExtensions.cs" />
     <Compile Include="Common\RavenNLogTarget.cs" />
     <Compile Include="Common\JwtSession.cs" />
     <Compile Include="Common\RssActionResult.cs" />
@@ -289,6 +302,7 @@
     <Compile Include="Controllers\Api\TestController.cs" />
     <Compile Include="Controllers\Api\UsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IftttController.cs" />
     <Compile Include="Controllers\OffersController.cs" />
     <Compile Include="Controllers\RavenController.cs" />
     <Compile Include="Controllers\StreamController.cs" />
@@ -310,11 +324,19 @@
     <Compile Include="Models\Artist.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\AudioErrorInfo.cs" />
+    <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\CommentThread.cs" />
     <Compile Include="Models\CommunityRankStanding.cs" />
     <Compile Include="Models\ConfirmEmailResult.cs" />
     <Compile Include="Interfaces\ISongService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Models\Indexes\Likes_SongPreferences.cs" />
+    <Compile Include="Models\LikeLevel.cs" />
+    <Compile Include="Models\LogSummary.cs" />
+    <Compile Include="Models\SongPickReasons.cs" />
+    <Compile Include="Models\SongWeight.cs" />
+    <Compile Include="Models\Notification.cs" />
+    <Compile Include="Services\SongUploadService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\AlbumService.cs" />
     <Compile Include="Interfaces\IAlbumService.cs" />
@@ -364,11 +386,15 @@
     <Content Include="App\Views\Donate.html" />
     <Content Include="App\Views\DonateSuccess.html" />
     <Content Include="App\Views\DonateCancelled.html" />
+    <Content Include="App\Views\Legal.html" />
     <Content Include="App\Views\PromptSignIn.html" />
     <Content Include="App\Views\ShareThanks.html" />
+    <Content Include="App\Views\SongEditApproved.html" />
+    <Content Include="App\Views\Welcome.html" />
     <Content Include="Content\images\FavIcon192.png" />
     <Content Include="Content\images\FavIcon48.png" />
     <Content Include="Content\images\FavIcon96.png" />
+    <Content Include="Content\images\judah.jpg" />
     <Content Include="Content\offers\Micha%27el Eliyahu BenDavid - Kol Yonah - 10 - Rejoice in Yah.mp3" />
     <Content Include="Content\styles\app\editSong.css">
       <DependentUpon>editSong.less</DependentUpon>
@@ -463,7 +489,6 @@
     <Content Include="Content\styles\bootstrap.flatly.css">
       <DependentUpon>bootstrap.flatly.less</DependentUpon>
     </Content>
-    <Content Include="Content\images\About.jpg" />
     <Content Include="Content\images\backgroundFlowers.png" />
     <Content Include="Content\images\backgroundTrees.png" />
     <Content Include="Content\images\Buy.png" />
@@ -600,13 +625,12 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\fastclick.js" />
     <Content Include="Scripts\angular-local-storage.min.js.map" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-2.2.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.2.4.js" />
     <Content Include="Scripts\jquery-2.2.4.min.js" />
     <Content Include="Scripts\jquery-transit-0.9.9.js" />
     <Content Include="Scripts\modernizr-production.js" />
-    <Content Include="Scripts\moment-with-locales.js" />
-    <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\nprogress.js" />
@@ -628,6 +652,7 @@
     <Content Include="Views\Web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -637,7 +662,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\Account\" />
     <Folder Include="Views\Admin\" />
-    <Folder Include="Views\Legacy\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -664,6 +688,7 @@
     <TypeScriptCompile Include="App\Controllers\ResetPasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\ShareThanksController.ts" />
     <TypeScriptCompile Include="App\Controllers\SignInController.ts" />
+    <TypeScriptCompile Include="App\Controllers\SongEditApprovedController.ts" />
     <TypeScriptCompile Include="App\Controllers\SongListController.ts" />
     <TypeScriptCompile Include="App\Controllers\EditSongController.ts" />
     <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />
@@ -676,6 +701,7 @@
     <TypeScriptCompile Include="App\Models\AudioErrorInfo.ts" />
     <TypeScriptCompile Include="App\Models\AudioStatus.ts" />
     <TypeScriptCompile Include="App\Models\CommunityRankStanding.ts" />
+    <TypeScriptCompile Include="App\Models\LikeLevel.ts" />
     <TypeScriptCompile Include="App\Models\SongEditStatus.ts" />
     <TypeScriptCompile Include="App\Models\SongPick.ts" />
     <TypeScriptCompile Include="App\Models\User.ts" />
@@ -688,6 +714,7 @@
     <TypeScriptCompile Include="App\Models\Song.ts" />
     <TypeScriptCompile Include="App\Models\SongLike.ts" />
     <TypeScriptCompile Include="App\Polyfills\Array.ts" />
+    <TypeScriptCompile Include="App\Polyfills\MediaSession.ts" />
     <TypeScriptCompile Include="App\Polyfills\String.ts" />
     <TypeScriptCompile Include="App\Services\AdminScriptsService.ts" />
     <TypeScriptCompile Include="App\Services\AlbumApiService.ts" />

@@ -12,6 +12,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Optional;
+using Optional.Async;
+using BitShuva.Services;
 
 namespace BitShuva.Controllers
 {
@@ -36,6 +39,16 @@ namespace BitShuva.Controllers
         public Task<Album> Get(string id)
         {
             return DbSession.LoadAsync<Album>(id);
+        }
+
+        [Route("GetAlbumArtBySongId")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetBySongId(string songId)
+        {
+            var song = await DbSession.LoadNonNull<Song>(songId);
+            var response = Request.CreateResponse(HttpStatusCode.Moved);
+            response.Headers.Location = song.AlbumArtUri;
+            return response;
         }
 
         [Route("GetByArtistAlbum")]
@@ -101,9 +114,10 @@ namespace BitShuva.Controllers
 
             // Put all the songs on the CDN.
             var songNumber = 1;
+            var uploadService = new SongUploadService();
             foreach (var albumSong in album.Songs)
             {
-                var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
+                //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
                 var song = new Song
                 {
                     Album = album.Name,
@@ -115,9 +129,10 @@ namespace BitShuva.Controllers
                     Number = songNumber,
                     PurchaseUri = album.PurchaseUrl,
                     UploadDate = DateTime.UtcNow,
-                    Uri = songUriCdn
+                    Uri = null
                 };
                 await this.DbSession.StoreAsync(song);
+                uploadService.QueueMp3Upload(albumSong, album, songNumber, song.Id);
                 songNumber++;
             }
 
@@ -225,19 +240,30 @@ namespace BitShuva.Controllers
         public async Task<HttpResponseMessage> GetAlbumArt(string artist, string album)
         {
             var redirectUri = default(Uri);
-            var existingAlbum = await this.DbSession.Query<Album>()
-                .FirstOrDefaultAsync(a => a.Artist == artist && a.Name == album);
-            if (existingAlbum != null && existingAlbum.AlbumArtUri != null)
-            {
-                redirectUri = existingAlbum.AlbumArtUri;
-            }
-            else
+            await this.DbSession.Query<Album>()
+                .FirstOrNoneAsync(a => a.Artist == artist && a.Name == album)
+                .ToAsyncOption()
+                .Map(a => a.AlbumArtUri)
+                .MatchSome(uri => redirectUri = uri);
+            
+            if (redirectUri == null)
             {
                 // We don't have an album for this. See if we have a matching song.
-                var matchingSong = await this.DbSession.Query<Song>().FirstOrDefaultAsync(s => s.Album == album && s.Artist == artist);
-                if (matchingSong != null && matchingSong.AlbumArtUri != null)
+                await this.DbSession.Query<Song>()
+                    .FirstOrNoneAsync(s => s.Album == album && s.Artist == artist)
+                    .ToAsyncOption()
+                    .Map(s => s.AlbumArtUri)
+                    .MatchSome(uri => redirectUri = uri);
+                
+                if (redirectUri == null)
                 {
-                    redirectUri = matchingSong.AlbumArtUri;
+                    // We can't find album art with this artist and album, nor any song with this album and artist.
+                    // See if we have an album by that name.
+                    await DbSession.Query<Album>()
+                        .FirstOrNoneAsync(a => a.Name == album)
+                        .ToAsyncOption()
+                        .Map(a => a.AlbumArtUri)
+                        .MatchSome(uri => redirectUri = uri);
                 }
             }
 
@@ -249,6 +275,21 @@ namespace BitShuva.Controllers
             }
 
             throw new Exception("Unable to find any matching album art for " + artist + " - " + album);
+        }
+
+        /// <summary>
+        /// Gets the album art for a particular song. Used in the UI by Facebook song share.
+        /// </summary>
+        /// <param name="songId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("art/forSong")]
+        public async Task<HttpResponseMessage> GetArtForSong(string songId)
+        {
+            var song = await DbSession.LoadNonNull<Song>(songId);
+            var response = Request.CreateResponse(HttpStatusCode.Moved);
+            response.Headers.Location = song.AlbumArtUri;
+            return response; ;
         }
 
         [HttpGet]

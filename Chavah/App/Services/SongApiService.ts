@@ -5,13 +5,21 @@
 
         constructor(private httpApi: HttpApiService) {
         }
+        
+        //getSong(): ng.IPromise<Song> {
+        //    return this.httpApi.query("/api/songs/get", null, SongApiService.songConverter);
+        //}
 
-        getSong(): ng.IPromise<Song> {
-            return this.httpApi.query("/api/songs/get", null, SongApiService.songConverter);
+        //getSongBatch(): ng.IPromise<Song[]> {
+        //    return this.httpApi.query("/api/songs/batch", null, SongApiService.songListConverter);
+        //}
+
+        chooseSong(): ng.IPromise<Song> {
+            return this.httpApi.query("/api/songs/chooseSong", null, SongApiService.songConverter);
         }
 
-        getSongBatch(): ng.IPromise<Song[]> {
-            return this.httpApi.query("/api/songs/batch", null, SongApiService.songListConverter);
+        chooseSongBatch(): ng.IPromise<Song[]> {
+            return this.httpApi.query("/api/songs/chooseSongBatch", null, SongApiService.songListConverter);
         }
 
         getSongById(id: string, songPickReason?: SongPick): ng.IPromise<Song | null> {
@@ -19,7 +27,7 @@
             if (songPickReason != null) {
                 task.then(song => {
                     if (song) {
-                        song.reasonPlayed = songPickReason;
+                        song.setSolePickReason(songPickReason);
                     }
                 });
             }

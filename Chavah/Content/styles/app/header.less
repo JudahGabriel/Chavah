@@ -45,7 +45,7 @@ header {
             text-decoration: none;
         }
     }
-    
+
     .title .hebrew {
         font-size: 48px;
     }
@@ -66,6 +66,64 @@ header {
             text-shadow: 1px 1px 2px #eeeeee, -1px -1px 2px #eeeeee, 1px -1px 2px #eeeeee, -1px 1px 2px #eeeeee;
             padding-left: 2px;
             padding-top: 3px;
+        }
+    }
+
+    .dropdown-menu {
+        // Left auto and right zero. Otherwise, the drop down menu is obscured off to the right side of the screen.
+        left: auto !important;
+        right: 0;
+    }
+
+    .notifications-btn {
+        &.open {
+            button {
+                color: white;
+            }
+        }
+
+        button {
+            text-decoration: none;
+        }
+
+        .dropdown-menu {
+            min-width: 350px;
+
+            @media (max-width: @screen-xs-max) {
+                max-width: 300px;
+            }
+
+            li {
+                border-bottom: 1px solid @gray-lighter;
+                border-top: 1px solid @gray-lighter;
+                padding-bottom: 5px;
+                padding-top: 5px;
+                margin-top: -1px;
+                transition: background-color linear 1s;
+                
+                .description {
+                    white-space: normal;
+                }
+
+                img {
+                    max-width: 50px;
+                    max-height: 50px;
+                    margin-right: 10px;
+                    box-shadow: 0 0 5px 0 @gray-light;
+                    vertical-align: text-top;
+                }
+
+                &.unread {
+                    background-color: @gray-light;
+                }
+            }
+        }
+
+        .badge {
+            background-color: red;
+            position: absolute;
+            top: 15px;
+            right: 0;
         }
     }
 }

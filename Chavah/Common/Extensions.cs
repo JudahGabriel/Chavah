@@ -7,12 +7,15 @@ using System.Diagnostics.Contracts;
 using System.Collections.Concurrent;
 using BitShuva.Models;
 using System.Text;
+using System.Threading.Tasks;
+using Optional;
+using Optional.Async;
 
 namespace BitShuva.Common
 {
     public static class Extensions
     {
-        public static double MinMax(this double value, double min, double max)
+        public static double Clamp(this double value, double min, double max)
         {
             var valMinned = Math.Max(value, min);
             var valMinnedAndMaxed = Math.Min(valMinned, max);
@@ -41,9 +44,12 @@ namespace BitShuva.Common
         /// </returns>
         public static LikeStatus StatusOrNone(this Like like)
         {
-            return Match.Value(like)
-                .With(default(Like), LikeStatus.None)
-                .With(l => l != null, l => l.Status);
+            if (like == null)
+            {
+                return LikeStatus.None;
+            }
+
+            return like.Status;
         }
 
         /// <summary>
@@ -105,16 +111,22 @@ namespace BitShuva.Common
         }
 
         /// <summary>
-        /// Adds an expiration time to the raven document for the specified object.
-        /// The database must support the expiration bundle for this to have any effect.
-        /// The object set to expire must have already been .Store'd before calling this method.
+        /// Attempts to get the value from a dictionary. If not found, Nullable will be returned.
         /// </summary>
-        /// <param name="session">The raven document session.</param>
-        /// <param name="objectToExpire">The object to expire.</param>
-        /// <param name="dateTime">The expiration date time.</param>
-        public static void AddRavenExpiration(this Raven.Client.IAsyncDocumentSession session, object objectToExpire, DateTime dateTime)
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="dictionary"></param>
+        /// <param name="key">The key whose value to find.</param>
+        /// <returns></returns>
+        public static TValue? GetValueOrNull<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+            where TValue: struct
         {
-            session.Advanced.GetMetadataFor(objectToExpire)["Raven-Expiration-Date"] = new Raven.Json.Linq.RavenJValue(dateTime);
+            if(dictionary.TryGetValue(key, out var val))
+            {
+                return val;
+            }
+
+            return default(TValue?);
         }
 
         public static List<Tuple<TKey, TValue>> TryRemoveMultiple<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, int maxRemove)
@@ -133,6 +145,16 @@ namespace BitShuva.Common
             }
 
             return results;
+        }
+
+        /// <summary>
+        /// Evaluates a specified function, based on whether a value is present or not.
+        /// </summary>
+        /// <param name="some">The function to evaluate if the value is present.</param>
+        /// <returns>The result of the evaluated function.</returns>
+        public static Task MatchSome<T>(this AsyncOption<T> option, Action<T> some)
+        {
+            return option.Match(some, () => { });
         }
     }
 }

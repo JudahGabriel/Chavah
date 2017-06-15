@@ -69,3 +69,48 @@ header .subtitle .btn-link {
   padding-left: 2px;
   padding-top: 3px;
 }
+header .dropdown-menu {
+  left: auto !important;
+  right: 0;
+}
+header .notifications-btn.open button {
+  color: white;
+}
+header .notifications-btn button {
+  text-decoration: none;
+}
+header .notifications-btn .dropdown-menu {
+  min-width: 350px;
+}
+@media (max-width: 767px) {
+  header .notifications-btn .dropdown-menu {
+    max-width: 300px;
+  }
+}
+header .notifications-btn .dropdown-menu li {
+  border-bottom: 1px solid #ecf0f1;
+  border-top: 1px solid #ecf0f1;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  margin-top: -1px;
+  transition: background-color linear 1s;
+}
+header .notifications-btn .dropdown-menu li .description {
+  white-space: normal;
+}
+header .notifications-btn .dropdown-menu li img {
+  max-width: 50px;
+  max-height: 50px;
+  margin-right: 10px;
+  box-shadow: 0 0 5px 0 #b4bcc2;
+  vertical-align: text-top;
+}
+header .notifications-btn .dropdown-menu li.unread {
+  background-color: #b4bcc2;
+}
+header .notifications-btn .badge {
+  background-color: red;
+  position: absolute;
+  top: 15px;
+  right: 0;
+}

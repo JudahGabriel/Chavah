@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataProtection;
 using Raven.Client;
 using RavenDB.AspNet.Identity;
 using System;
@@ -24,16 +25,18 @@ namespace BitShuva.Models
         }
 
         public IAsyncDocumentSession DbSession { get; private set; }
+        public static UserStore<ApplicationUser> UserStore { get; private set; }
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
             var dbSession = context.Get<IAsyncDocumentSession>();
             var userStore = new UserStore<ApplicationUser>(dbSession);
+            UserStore = userStore;
             var manager = new ApplicationUserManager(userStore);
             //TODO: remove this dependecies thru IoC
             manager.EmailService = new SendGridEmailService();
             manager.DbSession = dbSession;
-
+            
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
