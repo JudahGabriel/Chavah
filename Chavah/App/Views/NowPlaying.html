@@ -78,17 +78,17 @@
 
             <!--Song tags -->
             <div class="text-center">
-                <h4 ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
-                    <i class="fa fa-tags"></i>
-                    <span class="sr-only">Song traits</span>
-                    <span ng-show="vm.currentSong.tags && vm.currentSong.tags.length">
-                        {{vm.currentSong.tags.join(', ')}}
-                    </span>
-                    <span ng-hide="vm.currentSong.tags && vm.currentSong.tags.length">
-                        <a class="submit-lyrics" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
-                            Submit tags for this song
-                        </a>
-                    </span>
+                <span class="sr-only">Song traits</span>
+                <h4 class="tag" ng-click="vm.playSongWithTag(tag)" ng-repeat="tag in vm.currentSong.tags" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchDarker, 'color': vm.currentSong.albumSwatchLighter } : {}" ng-attr-uib-tooltip="{{ 'Click to play another ' + tag + ' song' }}">
+                    <i class="fa fa-tag"></i> {{tag}}
+                </h4>
+
+                <!--No tags-->
+                <h4 class="tag" ng-hide="vm.currentSong.tags.length">
+                    <a class="submit-lyrics" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                        <i class="fa fa-tags"></i>
+                        Submit tags for this song
+                    </a>
                 </h4>
             </div>
 

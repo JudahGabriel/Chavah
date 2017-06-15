@@ -393,6 +393,22 @@ namespace BitShuva.Controllers
 
             return await this.GetSongDto(songOrNull, SongPick.SongFromAlbumRequested);
         }
+
+        [Route("getByTag")]
+        public async Task<Song> GetByTag(string tag)
+        {
+            var songOrNull = await this.DbSession
+                    .Query<Song>()
+                    .Customize(c => c.RandomOrdering())
+                    .FirstOrDefaultAsync(s => s.Tags.Contains(tag));
+            if (songOrNull == null)
+            {
+                await _logger.Warn("Couldn't find song with tag", tag);
+                return null;
+            }
+
+            return await this.GetSongDto(songOrNull, SongPick.SongWithTagRequested);
+        }
         
         [Route("getByAlbum")]
         public async Task<Song> GetSongByAlbum(string album)

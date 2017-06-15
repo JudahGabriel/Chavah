@@ -45,8 +45,17 @@
             return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
+        getSongWithTag(tag: string): ng.IPromise<Song | null> {
+            var url = "/api/songs/getByTag";
+            var args = {
+                tag: tag
+            };
+
+            return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
+        }
+
         getSongByArtist(artist: string): ng.IPromise<Song | null> {
-            var url = "/api/songs/getByArtist/";
+            var url = "/api/songs/getByArtist";
             var args = {
                 artist: artist
             };

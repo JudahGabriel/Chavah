@@ -95,6 +95,11 @@
             this.playSongWhenFinishedLoading(task);
         }
 
+        playSongWithTag(tag: string) {
+            var task = this.songApi.getSongWithTag(tag);
+            this.playSongWhenFinishedLoading(task);
+        }
+
         playSongWhenFinishedLoading(task: ng.IPromise<Song | null>) {
             var currentSong = this.song.getValue();
             this.pause();

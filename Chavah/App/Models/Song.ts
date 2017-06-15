@@ -205,6 +205,7 @@ namespace BitShuva.Chavah {
                         case SongPick.SomeoneRequestedSong: return "it was requested by a listener";
                         case SongPick.SongFromAlbumRequested: return `you asked to hear another song from the ${this.album} album`;
                         case SongPick.SongFromArtistRequested: return `you asked to hear another song from ${this.artist}`;
+                        case SongPick.SongWithTagRequested: return `you asked to hear another song with this tag`;
                         case SongPick.VeryPoorRank: return "...well, even the lowest-ranked songs will get played sometimes :-)";
                         case SongPick.YouRequestedSong: return "you asked Chavah to play it";
                         case SongPick.RandomSong:

@@ -196,3 +196,11 @@
   top: -4px;
   left: -1px;
 }
+.now-playing-page .tag {
+  padding: 10px;
+  margin-right: 10px;
+  margin-bottom: 0;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 3px;
+}

@@ -39,10 +39,10 @@
                                    uib-typeahead="tag for tag in vm.searchTags($viewValue) | limitTo:8"
                                            typeahead-min-length="1"
                                            typeahead-show-hint="true"
-                                           typeahead-select-on-exact="true"
-                                           typeahead-select-on-blur="true"
+                                           typeahead-select-on-exact="false"
+                                           typeahead-select-on-blur="false"
                                            typeahead-editable="true"
-                                           typeahead-focus-first="true"
+                                           typeahead-focus-first="false"
                                            typeahead-on-select="vm.autoCompleteTagSelected($item)"
                                            enter-handler="vm.tagsEnterKeyPressed()">
                             <p class="help-block"><i class="fa fa-info-circle"></i> Optional. Song tags; characteristics about the song. Example: piano, male vocal, worship, hebrew, psalms</p>

@@ -212,6 +212,10 @@
             }
         }
 
+        playSongWithTag(tag: string) {
+            this.audioPlayer.playSongWithTag(tag);
+        }
+
         playSongInUrlQuery(): boolean {
             // Does the user want us to play a certain song/album/artist?
             var songId = this.getUrlQueryOrNull("song");
