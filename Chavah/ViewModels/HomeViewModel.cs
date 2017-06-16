@@ -25,7 +25,7 @@ namespace BitShuva.ViewModels
         public string Redirect { get; set; }
         public bool Embed { get; set; }
         public string PageTitle { get; set; } = "Chavah Messianic Radio";
-        public string PageDescription { get; set; } = "Internet radio for Yeshua's disciples";
+        public string PageDescription { get; set; } = "Music for Yeshua's disciples";
         public string DescriptiveImageUrl { get; set; }
         //to abstract Song to SongViewModel possible
         public Song Song { get; set; }

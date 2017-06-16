@@ -103,8 +103,8 @@ namespace BitShuva.Controllers
 
             try
             {
-                var patchOperation = RavenContext.Db.DatabaseCommands.UpdateByIndex("Raven/DocumentsByEntityName", query, patch, options);
-                await patchOperation.WaitForCompletionAsync();
+                RavenContext.Db.DatabaseCommands.UpdateByIndex("Raven/DocumentsByEntityName", query, patch, options);
+                //await patchOperation.WaitForCompletionAsync();
             }
             catch (Exception error)
             {
@@ -112,7 +112,7 @@ namespace BitShuva.Controllers
                 throw;
             }
 
-            return Json(notification, JsonRequestBehavior.AllowGet);
+            return Json(notification);
         }
     }
 }
