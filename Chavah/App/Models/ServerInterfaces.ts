@@ -145,4 +145,15 @@
         imageUrl: string | null;
         date: string;
     }
+
+    export interface ILogSummary {
+        id: string;
+        message: string;
+        exception: string;
+        level: LogLevel;
+        firstOccurrence: string;
+        lastOccurrence: string;
+        occurrences: any[];
+        occurrencesCount: number;
+    }
 }

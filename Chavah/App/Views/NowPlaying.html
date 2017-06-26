@@ -7,7 +7,7 @@
                         <h4 class="song-list-title">
                             <a href="#/trending">Trending</a>
                         </h4>
-                        <div ng-include="songList" ng-if="true" onload="songs = vm.trending"></div>
+                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.trending"></div>
                     </div>
                 </div>
                 <br />
@@ -16,7 +16,7 @@
                         <h4 class="song-list-title">
                             <a href="#/popular">Popular</a>
                         </h4>
-                        <div ng-include="songList" ng-if="true" onload="songs = vm.popular"></div>
+                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.popular"></div>
                     </div>
                 </div>
             </div>
@@ -83,8 +83,16 @@
                     <i class="fa fa-tag"></i> {{tag}}
                 </h4>
 
+                <!--Edit tags when we have 1 or more.-->
+                <a class="btn btn-link edit-tags-btn" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-show="vm.currentSong.tags.length > 1" uib-tooltip="Add or change the tags for this song" style="padding-left: 0; padding-right: 0;">
+                    <span class="fa-stack fa-lg" aria-hidden="true">
+                        <i class="fa fa-tags fa-stack-2x" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}"></i>
+                        <i class="fa fa-pencil fa-stack-1x" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchLighter } : { 'color': 'white' }"></i>
+                    </span>
+                </a>
+
                 <!--No tags-->
-                <h4 class="tag" ng-hide="vm.currentSong.tags.length">
+                <h4 ng-hide="vm.currentSong.tags.length">
                     <a class="submit-lyrics" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
                         <i class="fa fa-tags"></i>
                         Submit tags for this song
@@ -195,7 +203,7 @@
                         <h4 class="song-list-title">
                             <a href="#/recentsongs">Recent</a>
                         </h4>
-                        <div ng-include="songList" ng-if="true" onload="songs = vm.recent"></div>
+                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.recent"></div>
                     </div>
                 </div>
                 <br />
@@ -204,7 +212,7 @@
                         <h4 class="song-list-title">
                             <a href="#/mylikes">Likes</a>
                         </h4>
-                        <div ng-include="songList" ng-if="true" onload="songs = vm.likes"></div>
+                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.likes"></div>
                     </div>
                 </div>
             </div>

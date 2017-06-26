@@ -1,7 +1,7 @@
 ﻿@import "../variables.less";
 
 .now-playing-page {
-    
+
     .songs-container {
         /*position: absolute;
         top: 0;
@@ -12,12 +12,10 @@
         margin: auto;
         height: 365px;
         margin-top: 20px;
-
         // on very large screens, shift the songs to the right a bit.
         @media (min-width: 1400px) {
             padding-left: 20px;
         }
-
         // on tiny screens, shrink things down a bit
         @media (max-width: @screen-xs-max) {
             height: 290px;
@@ -28,8 +26,8 @@
     }
 
     .song {
-		min-width: 300px;
-		display: inline-block;
+        min-width: 300px;
+        display: inline-block;
         /*border: 1px solid gray;*/
         background-color: white;
         padding: 5px;
@@ -41,33 +39,33 @@
         cursor: pointer;
 
         @widthOnXs: 250px;
+
         @media (max-width: @screen-xs-max) {
             top: 20px;
             min-width: @widthOnXs;
         }
-        
+
         &:nth-child(1) {
             z-index: 5;
             -webkit-box-reflect: below 18px -webkit-gradient( linear, left bottom, left top, from(rgba(255,255,255,0.25)), color-stop(0.3, transparent) );
-	    }
+        }
 
-	    &:nth-child(2) {
+        &:nth-child(2) {
             z-index: 4;
-            transform: scale(.9) translateX(-50px) translateY(10px);
+            transform: scale(.9) translateX(-50px) translateY(-5px) rotateZ(-10deg);
             opacity: .9;
-	    }
+        }
 
-	    &:nth-child(3) {
+        &:nth-child(3) {
             z-index: 3;
-            transform: scale(.8) translateX(-100px);
+            transform: scale(.8) translateX(-100px) rotateZ(-15deg);
             opacity: .7;
         }
 
         &:nth-child(4) {
             z-index: 2;
-            transform: scale(.7) translateX(-160px);
+            transform: scale(.7) translateX(-160px) rotateZ(-22deg);
             opacity: .5;
-
             // On small screens and tablets in portrait mode, don't show this one.
             @media (max-width: 768px) {
                 display: none;
@@ -76,15 +74,14 @@
 
         &:nth-child(5) {
             z-index: 1;
-            transform: scale(.6) translateX(-240px);
+            transform: scale(.6) translateX(-240px) rotateZ(-30deg);
             opacity: .3;
-
             // On small screens and tablets in portrait mode, don't show this one.
             @media (max-width: 768px) {
                 display: none;
             }
         }
-        
+
         &:nth-child(6) {
             z-index: 0;
             transform: scale(.5) translateX(-300px);
@@ -137,7 +134,7 @@
             width: 100%;
             white-space: normal;
         }
-	}
+    }
 
     .current-song-artist, .current-song-album {
         cursor: pointer;
@@ -235,5 +232,11 @@
         display: inline-block;
         cursor: pointer;
         border-radius: 3px;
+    }
+
+    .edit-tags-btn {
+        .fa-tags {
+            color: rgb(44, 62, 80);
+        }
     }
 }

@@ -43,6 +43,19 @@ namespace BitShuva.Common
         }
 
         /// <summary>
+        /// Loads a possibly null document as an Option.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="session"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static async Task<Option<T>> LoadOption<T>(this IAsyncDocumentSession session, string id)
+        {
+            var doc = await session.LoadAsync<T>(id);
+            return doc.SomeNotNull();
+        }
+
+        /// <summary>
         /// Returns the first match as an Option. If there is no match, Option.None will be returned.
         /// </summary>
         /// <typeparam name="T"></typeparam>

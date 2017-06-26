@@ -5,14 +5,19 @@
         currentEdit: Server.ISongEdit | null = null;
         isSaving = false;
         hasLoaded = false;
-        currentEditOldCsv = "";
-        currentEditNewCsv = "";
+        tagsInput: string = "";
 
         static $inject = [
-            "songEditApi"
+            "songApi",
+            "songEditApi",
+            "tagApi"
         ];
 
-        constructor(private songEditApi: SongEditService) {
+        constructor(
+            private songApi: SongApiService,
+            private songEditApi: SongEditService,
+            private tagApi: TagService) {
+
             this.songEditApi.getPendingEdits(20)
                 .then(results => this.pendingEditsLoaded(results));
         }
@@ -25,21 +30,12 @@
 
         setCurrentEdit(songEdit: Server.ISongEdit | null) {
             this.currentEdit = songEdit;
-            if (songEdit) {
-                this.currentEditNewCsv = songEdit.newTags.join(", ").toLowerCase();
-                this.currentEditOldCsv = songEdit.oldTags.join(", ");
-            }
         }
 
         approve() {
             var edit = this.currentEdit;
             if (!this.isSaving && edit) {
                 this.isSaving = true;
-                edit.newTags = this.currentEditNewCsv
-                    .split(",")
-                    .filter(c => !!c)
-                    .map(c => c.trim())
-                    .filter(c => c.length > 0);
                 this.songEditApi.approve(edit)
                     .then(results => this.removeSongEdit(results.id))
                     .finally(() => this.isSaving = false);
@@ -65,6 +61,50 @@
             if (this.currentEdit && this.currentEdit.id === editId) {
                 this.setCurrentEdit(this.pendingEdits[0]);
             }
+        }
+
+        removeTag(tag: string) {
+            if (this.currentEdit) {
+                var index = this.currentEdit.newTags.indexOf(tag);
+                if (index >= 0) {
+                    this.currentEdit.newTags.splice(index, 1);
+                }
+            }
+        }
+
+        autoCompleteTagSelected(tag: string) {
+            this.addTag(tag);
+            this.tagsInput = "";
+        }
+
+        addTag(tag: string) {
+            if (this.currentEdit) {
+                var tagLowered = tag.toLowerCase().trim();
+                if (!this.currentEdit.newTags.includes(tagLowered) && tagLowered.length > 1) {
+                    this.currentEdit.newTags.push(tagLowered);
+                }
+            }
+        }
+
+        tagsInputChanged() {
+            // If the user typed a comma, add any existing tag
+            if (this.tagsInput.includes(",")) {
+                var tags = this.tagsInput.split(",");
+                this.tagsInput = "";
+                tags
+                    .filter(t => t && t.length > 1)
+                    .forEach(t => this.addTag(t));
+            }
+        }
+
+        tagsEnterKeyPressed() {
+            if (this.tagsInput.length > 1) {
+                this.autoCompleteTagSelected(this.tagsInput);
+            }
+        }
+
+        searchTags(search: string): ng.IPromise<string[]> {
+            return this.tagApi.searchTags(search);
         }
     }
 

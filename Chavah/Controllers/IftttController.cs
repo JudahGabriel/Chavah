@@ -60,6 +60,7 @@ namespace BitShuva.Controllers
             return new RssActionResult { Feed = feed };
         }
         
+
         [HttpPost]
         public async Task<ActionResult> CreateNotification(string secretToken, string title, string imgUrl, string sourceName, string url)
         {

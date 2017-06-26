@@ -201,7 +201,7 @@
                 };
                 this.isUploading = true;
                 this.albumApi.upload(album)
-                    .then(albumId => this.appNav.editAlbum(albumId))
+                    .then(albumId => this.appNav.editAlbum(album.artist, album.name))
                     .finally(() => this.isUploading = false);
             }
         }

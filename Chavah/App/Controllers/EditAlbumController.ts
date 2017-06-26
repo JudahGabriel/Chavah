@@ -19,24 +19,15 @@
             private $q: ng.IQService) {
 
             // We allow the user to pass in:
-            // -an album ID (Albums/777) 
-            // -an artist/ album combo (Lamb | The Sacrifice)
-            // -nothing (create new album)
-            var albumId = $routeParams["id"];
-            if (albumId === "new") {
-                this.album = this.createNewAlbum();
+            // - An album and artist: /#/admin/album/lamb/sacrifice
+            // - Nothing (will create a new album): /#/admin/album/create
+            var artist = $routeParams["artist"] as string;
+            var album = $routeParams["album"] as string;
+            if (artist && album) {
+                this.albumApi.getByArtistAndAlbumName(artist, album)
+                    .then(result => this.albumLoaded(result));
             } else {
-                var isArtistAlbum = albumId.indexOf("|") > 0;
-                if (isArtistAlbum) {
-                    var artistAndAlbum = albumId.split("|");
-                    var artist = artistAndAlbum
-                    this.albumApi.getByArtistAndAlbumName(artistAndAlbum[0], artistAndAlbum[1])
-                        .then(result => this.albumLoaded(result));
-                } else {
-                    // We're passed in an actual album ID
-                    this.albumApi.get("Albums/" + albumId)
-                        .then(result => this.albumLoaded(result));
-                }
+                this.createNewAlbum();
             }
         }
 
@@ -62,6 +53,8 @@
                     this.loadCanvasSafeAlbumArt(album.albumArtUri)
                         .then(img => this.populateColorSwatches(img));
                 }
+            } else {
+                this.appNav.createAlbum();
             }
         }
         

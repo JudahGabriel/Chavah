@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using BitShuva.Services;
 using BitShuva.Interfaces;
 using System.Collections.Generic;
+using Optional;
 
 namespace BitShuva.Controllers
 {
@@ -36,6 +37,15 @@ namespace BitShuva.Controllers
         [HttpPost]
         public async Task<SignInResult> SignIn(string email, string password, bool staySignedIn)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                return new SignInResult
+                {
+                    ErrorMessage = "Bad user name or password",
+                    Status = SignInStatus.Failure
+                };
+            }
+
             // Require the user to have a confirmed email before they can log on.
             var user = await UserManager.FindAsync(email, password);
             if (user == null)
@@ -181,9 +191,10 @@ namespace BitShuva.Controllers
             }
 
             // The user doesn't exist yet. Try and register him.
+            var emailLower = email.ToLowerInvariant();
             var user = new ApplicationUser
             {
-                Id = "ApplicationUsers/" + email.ToLower(),
+                Id = "ApplicationUsers/" + emailLower,
                 UserName = email,
                 Email = email,
                 LastSeen = DateTime.UtcNow,
@@ -193,10 +204,18 @@ namespace BitShuva.Controllers
             if (creteUserResult.Succeeded)
             {
                 // Send confirmation email.
-                var confirmToken = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                await UserManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken, Request.RequestUri));
+                var confirmToken = new AccountToken //await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                {
+                    Id = $"AccountTokens/Confirm/{emailLower}",
+                    ApplicationUserId = user.Id,
+                    Token = Guid.NewGuid().ToString()
+                };
+                await DbSession.StoreAsync(confirmToken);
+                DbSession.AddRavenExpiration(confirmToken, DateTime.UtcNow.AddDays(14));
 
-                await _logger.Info($"Sending new user confirmation email", (Email: email, ConfirmToken: confirmToken));
+                await UserManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken.Token, Request.RequestUri));
+
+                await _logger.Info($"Sending new user confirmation email", (Email: email, ConfirmToken: confirmToken.Token));
                 //await ChavahLog.Info(DbSession, $"Sending confirmation email to {email}", new { confirmToken = confirmToken });
                 return new RegisterResults
                 {
@@ -225,7 +244,8 @@ namespace BitShuva.Controllers
             //var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             // Make sure the user exists.
-            var userId = "ApplicationUsers/" + email;
+            var emailLower = email.ToLowerInvariant();
+            var userId = "ApplicationUsers/" + emailLower;
             var user = await DbSession.LoadAsync<ApplicationUser>(userId);
             if (user == null)
             {
@@ -235,7 +255,7 @@ namespace BitShuva.Controllers
                     ErrorMessage = "Couldn't find a user with that email."
                 };
             }
-
+            
             // We've seen some users click the confirm link multiple times.
             // If the user is already confirmed, just play along and say it's ok.
             if (user.IsEmailConfirmed)
@@ -246,21 +266,46 @@ namespace BitShuva.Controllers
                 };
             }
 
-            var confirmResult = await UserManager.ConfirmEmailAsync(userId, confirmCode);
-            if (!confirmResult.Succeeded)
+            var regTokenId = $"AccountTokens/Confirm/{emailLower}";
+            var regToken = await DbSession.LoadOption<AccountToken>(regTokenId);
+            var isSameCode = regToken.Map(t => string.Equals(t.Token, confirmCode, StringComparison.InvariantCultureIgnoreCase)).ValueOr(false);
+            var isSameUser = regToken.Map(t => string.Equals(t.ApplicationUserId, userId, StringComparison.InvariantCultureIgnoreCase)).ValueOr(false);
+            var isValidToken = isSameCode && isSameUser;
+            var errorMessage = default(string);
+            if (isValidToken)
             {
-                await _logger.Error("Unable to confirm email", null, (Email: email, ConfirmCode: confirmCode, Result: string.Join(", ", confirmResult.Errors)));
+                user.IsEmailConfirmed = true;
+                await _logger.Info("Successfully confirmed new account", email);
+
+                // Add a welcome notification for the user.
+                user.AddNotification(Notification.Welcome());
+            }
+            else if (!regToken.HasValue)
+            {
+                errorMessage = "Tried to confirm email, but couldn't find the registration token for this user.";
+                await _logger.Warn(errorMessage, regTokenId);
+            }
+            else if (!isSameCode)
+            {
+                errorMessage = "Tried to confirm email, but the confirmation code was wrong.";
+                await _logger.Warn(errorMessage, (expected: regToken.Map(t => t.Token).ValueOr(""), actual: confirmCode));
+            }
+            else
+            {
+                errorMessage = "Tried to confirm email, but the confirmation code was for an incorrect user.";
+                await _logger.Error(errorMessage, null, (expected: regToken.Map(t => t.ApplicationUserId).ValueOr(""), actual: email));
             }
 
-            await _logger.Info("Successfully confirmed new account", email);
-
-            // Add a welcome notification for the user.
-            user.AddNotification(Notification.Welcome());
+            //var confirmResult = await UserManager.ConfirmEmailAsync(userId, confirmCode);
+            //if (!confirmResult.Succeeded)
+            //{
+            //    await _logger.Error("Unable to confirm email", null, (Email: email, ConfirmCode: confirmCode, Result: string.Join(", ", confirmResult.Errors)));
+            //}
 
             return new ConfirmEmailResult
             {
-                Success = confirmResult.Succeeded,
-                ErrorMessage = string.Join(",", confirmResult.Errors)
+                Success = isValidToken,
+                ErrorMessage = errorMessage
             };
         }
 
@@ -324,8 +369,7 @@ namespace BitShuva.Controllers
 
             if (!passwordResetResult.Succeeded)
             {
-                await _logger.Warn($"Unable to reset password", (Email: email, Code: passwordResetCode, Result: passwordResetResult));
-                //await ChavahLog.Warn(DbSession, $"Unable to reset password for {email} using code {passwordResetCode}", passwordResetResult);
+                await _logger.Warn($"Unable to reset password", (Email: email, Code: passwordResetCode, Errors: string.Join(", ", passwordResetResult.Errors)));
             }
 
             return new ResetPasswordResult

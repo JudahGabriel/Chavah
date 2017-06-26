@@ -15,9 +15,9 @@ namespace BitShuva.Models
         private const double VeryPoorRankingMultipler = 0.1;
         private const double PoorRankingMultipler = 0.5;
         private const double NormalRankingMultiplier = 1;
-        private const double GoodRankingMultipler = 1.5;
-        private const double GreatRankingMultipler = 2;
-        private const double BestRankingMultipler = 3;
+        private const double GoodRankingMultipler = 2;
+        private const double GreatRankingMultipler = 3;
+        private const double BestRankingMultipler = 4;
 
         private const double SongDislikedMultiplier = 0.1;
         private const double SongLikedMultipler = 2;

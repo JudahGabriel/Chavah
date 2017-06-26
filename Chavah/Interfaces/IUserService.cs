@@ -7,7 +7,6 @@ namespace BitShuva.Interfaces
     public interface IUserService
     {
         Task<ApplicationUser> GetUser(string idenityName);
-
         Task<IList<ApplicationUser>> RegisteredUsers(int take);
     }
 }

@@ -27,7 +27,8 @@
         songRequestModal: "/App/Views/RequestSongModal.html",
         songRequestResult: "/App/Views/Templates/SongRequestResult.html",
         headerPartial: "/App/Views/Header.html",
-        footerPartial: "/App/Views/Footer.html"
+        footerPartial: "/App/Views/Footer.html",
+        adminSidebar: "/App/Views/Templates/AdminSidebar.html"
     };
     App.constant("templatePaths", templatePaths);
 
@@ -62,10 +63,14 @@
             .when("/donatecancelled", createRoute("/App/Views/DonateCancelled.html"))
 
             // Admin
-            .when("/admin/albums/upload", createRoute("/App/Views/UploadAlbum.html", true))
-            .when("/admin/albums/:id", createRoute("/App/Views/EditAlbum.html", true))
+            .when("/admin", createRoute("/App/Views/UploadAlbum.html", true))
+            .when("/admin/album/upload", createRoute("/App/Views/UploadAlbum.html", true))
+            .when("/admin/album/create", createRoute("/App/Views/EditAlbum.html", true))
+            .when("/admin/album/:artist/:album", createRoute("/App/Views/EditAlbum.html", true))
             .when("/admin/artists/:artistName?", createRoute("/App/Views/EditArtist.html", true))
-            .when("/admin/songedits", createRoute("/App/views/ApproveSongEdits.html", true))
+            .when("/admin/songedits", createRoute("/App/Views/ApproveSongEdits.html", true))
+            .when("/admin/tags", createRoute("/App/Views/TagEditor.html", true))
+            .when("/admin/logs", createRoute("/App/Views/LogEditor.html", true))
 
             .otherwise({
                 redirectTo: "/nowplaying"
@@ -73,31 +78,42 @@
     }]);
 
     App.run([
-        "templatePaths", "accountApi", "appNav", "adminScripts", "$rootScope",
-        (templatePaths: TemplatePaths, accountApi: AccountService, appNav: AppNavService, adminScripts: AdminScriptsService, $rootScope: ng.IRootScopeService) => {
-        
-        // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.
-        for (var prop in templatePaths) {
-            $rootScope[prop] = templatePaths[prop];
-        }
+        "templatePaths", "accountApi", "appNav", "adminScripts", "$rootScope", "$location",
+        (templatePaths: TemplatePaths,
+            accountApi: AccountService,
+            appNav: AppNavService,
+            adminScripts: AdminScriptsService,
+            $rootScope: ng.IRootScopeService,
+            $location: ng.ILocationService) => {
 
-        // Hide the splash UI.
-        $(".splash").remove();
+            // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.
+            $rootScope["Partials"] = templatePaths;
 
-        $rootScope.$on("$routeChangeStart", (_e: ng.IAngularEvent, next: any) => {
-            var route: AppRoute = next["$$route"];
-            
-            // If we're an admin route, load the admin-specific scripts.
-            if (route && route.isAdmin) {
-                adminScripts.install();
-                
-                // Also, cancel navigation if we're not an admin user.
-                if (!accountApi.isSignedIn) {
-                    appNav.nowPlaying();
+            // Hide the splash UI.
+            $(".splash").remove();
+
+            $rootScope.$on("$routeChangeSuccess", (e: ng.IAngularEvent, next: any) => {
+                // Let Google Analytics know about our route change.
+                var ga = window["ga"];
+                if (ga) {
+                    ga("send", "pageview", $location.path());
                 }
-            }
-        });
-    }]);
+            });
+
+            $rootScope.$on("$routeChangeStart", (_e: ng.IAngularEvent, next: any) => {
+                var route: AppRoute = next["$$route"];
+
+                // If we're an admin route, load the admin-specific scripts.
+                if (route && route.isAdmin) {
+                    adminScripts.install();
+
+                    // Also, cancel navigation if we're not an admin user.
+                    if (!accountApi.isSignedIn) {
+                        appNav.nowPlaying();
+                    }
+                }
+            });
+        }]);
 
     // Setup Fastclick to remove the 300ms click delay on mobile browsers.
     document.addEventListener("DOMContentLoaded", () => FastClick.attach(document.body), false);

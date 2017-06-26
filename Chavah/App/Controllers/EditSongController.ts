@@ -9,10 +9,12 @@
         tags: string[] = [];
         readonly isAdmin: boolean;
         isLyricsFocused = true;
+        tagPlaceholder = "piano, violin, male vocal, hebrew, psalms";
 
         static $inject = [
             "songApi",
             "songEditApi",
+            "tagApi",
             "accountApi",
             "appNav",
             "$routeParams"
@@ -21,6 +23,7 @@
         constructor(
             private songApi: SongApiService,
             private songEditApi: SongEditService,
+            private tagApi: TagService,
             accountApi: AccountService,
             appNav: AppNavService,
             $routeParams: ng.route.IRouteParamsService) {
@@ -39,13 +42,16 @@
         }
 
         searchTags(search: string): ng.IPromise<string[]> {
-            return this.songApi.searchTags(search);
+            return this.tagApi.searchTags(search);
         }
 
         songLoaded(song: Song | null) {
             this.song = song;
             if (song) {
                 this.tags = song.tags || [];
+                if (this.tags.length > 0) {
+                    this.tagPlaceholder = "";
+                }
             }
         }
 
@@ -72,8 +78,9 @@
 
         addTag(tag: string) {
             var tagLowered = tag.toLowerCase().trim();
-            if (!this.tags.includes(tagLowered)) {
+            if (!this.tags.includes(tagLowered) && tagLowered.length > 1) {
                 this.tags.push(tagLowered);
+                this.tagPlaceholder = "";
             }
         }
 

@@ -49,8 +49,8 @@
             this.$location.url(`/password/${encodeURIComponent(email)}`);
         }
 
-        editAlbum(albumId: string) {
-            this.$location.url(`/admin/${albumId}`);
+        editAlbum(artist: string, album: string) {
+            this.$location.url(`/admin/album/${artist}/${album}`);
         }
 
         getEditSongUrl(songId: string): string {
@@ -65,6 +65,10 @@
             });
 
             return requestSongDialog;
+        }
+
+        createAlbum() {
+            this.$location.url("/admin/album/create")
         }
 
         /**

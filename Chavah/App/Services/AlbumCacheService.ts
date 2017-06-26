@@ -6,6 +6,9 @@
     export class AlbumCacheService {
 
         cache: Album[] = [];
+        private static cacheKey = "album-art-cache";
+        private static hasAttemptedRehydratedCache = false;
+        songIdsWithNoAlbum: string[] = [];
 
         static $inject = [
             "albumApi",
@@ -17,12 +20,20 @@
         }
 
         getAlbumsForSongs(songs: Song[]): ng.IPromise<Album[]> {
+            if (!AlbumCacheService.hasAttemptedRehydratedCache) {
+                var rehydrated = AlbumCacheService.tryRehydrateCache();
+                if (rehydrated) {
+                    this.cache = rehydrated;
+                }
+            }
+
             var songsNeedingAlbum: Song[] = [];
             var songsWithAlbumInCache: Song[] = [];
             var albumsForSongs: Album[] = [];
-            songs.forEach(s => {
+            var songsToFetch = songs.filter(s => !this.songIdsWithNoAlbum.includes(s.id));
+            songsToFetch.forEach(s => {
                 // Do we have it in the cache? 
-                var cachedAlbum = this.cache.find(a => a.name == s.album && (a.artist === s.artist || a.isVariousArtists));
+                var cachedAlbum = this.getAlbumForSong(s);
                 if (cachedAlbum) {
                     songsWithAlbumInCache.push(s);
                     albumsForSongs.push(cachedAlbum);
@@ -47,18 +58,55 @@
                 .then(results => {
                     deferredResult.resolve(albumsForSongs.concat(results));
                     this.addToCache(results);
+
+                    // Are there any songs that didn't come back with an album?
+                    var songsWithoutAlbumIds = songsToFetch
+                        .filter(s => !this.cacheHasAlbumForSong(s))
+                        .map(s => s.id);
+                    this.songIdsWithNoAlbum.push(...songsWithoutAlbumIds);
                 });
 
             return deferredResult.promise;
         }
 
+        private getAlbumForSong(song: Song): Album | null {
+            return this.cache.find(album => album.name == song.album && (album.artist === song.artist || album.isVariousArtists));
+        }
+
+        private cacheHasAlbumForSong(song: Song): boolean {
+            return !!this.getAlbumForSong(song);
+        }
+
         private addToCache(albums: Album[]) {
-            albums.forEach(a => {
-                var isInCache = this.cache.some(cached => cached.id === a.id);
-                if (!isInCache) {
-                    this.cache.push(a);
+            var albumsNotInCache = albums.filter(a => !this.cache.some(cached => cached.id === a.id));
+            this.cache.push(...albumsNotInCache);
+            AlbumCacheService.tryStoreCacheInLocalStorage(this.cache);
+        }
+
+        private static tryStoreCacheInLocalStorage(cache: Album[]) {
+            try {
+                var data = JSON.stringify(cache);
+                localStorage.setItem(AlbumCacheService.cacheKey, data);
+            } catch (error) {
+                console.log("Unable to save album cache to local storage.");
+            }
+        }
+
+        private static tryRehydrateCache(): Album[] | null {
+            AlbumCacheService.hasAttemptedRehydratedCache = true;
+            try {
+                var cacheJson = localStorage.getItem(AlbumCacheService.cacheKey);
+                if (cacheJson) {
+                    var rawCacheItems: Server.IAlbum[] = JSON.parse(cacheJson);
+                    if (rawCacheItems) {
+                        return rawCacheItems.map(r => new Album(r));
+                    }
                 }
-            })
+            } catch (error) {
+                console.log("Unable to rehydrate album art cache.", error);
+            }
+
+            return null;
         }
     }
 

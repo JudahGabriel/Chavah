@@ -27,7 +27,7 @@ namespace BitShuva
                 //Vibrant = "https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/1.0.0/Vibrant.min.js",
                 TinyColor = "https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js",
                 //ES6Promise = "https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.0.5/es6-promise.min.js"
-                //Lodash = "https://cdn.jsdelivr.net/lodash/4.13.1/lodash.min.js"
+                Lodash = "https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"
             };
 
             bundles.Add(new ScriptBundle("~/bundles/jquery", cdns.JQuery).Include("~/Scripts/jquery-{version}.js"));
@@ -42,11 +42,11 @@ namespace BitShuva
             bundles.Add(new ScriptBundle("~/bundles/fastclick", cdns.FastClick).Include("~/Scripts/fastclick.js"));
             bundles.Add(new ScriptBundle("~/bundles/nprogress", cdns.NProgress).Include("~/Scripts/nprogress.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/rx-lite", cdns.RxLite).Include("~/Scripts/rx.lite.js"));
+            bundles.Add(new ScriptBundle("~/bundles/lodash", cdns.Lodash).Include("~/Scripts/lodash.js"));
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include("~/Scripts/modernizr-production.js"));
             //bundles.Add(new ScriptBundle("~/bundles/vibrant", cdns.Vibrant).Include("~/Scripts/vibrant.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/tinycolor", cdns.TinyColor).Include("~/Scripts/tinycolor.min.js"));
             //bundles.Add(new ScriptBundle("~/bundles/es6promise", cdns.ES6Promise).Include("~/Scripts/es6-promise.js"));
-            //bundles.Add(new ScriptBundle("~/bundles/lodash", cdns.Lodash).Include("~/Scripts/lodash.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/app")
                 .Include("~/App/Polyfills/*.js", "~/App/Common/*.js", "~/App/Models/*.js") // Include polyfills, common, and models before any other app code.

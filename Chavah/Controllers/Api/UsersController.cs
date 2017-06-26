@@ -12,6 +12,7 @@ using System.Web.Http;
 using Optional;
 using Microsoft.AspNet.Identity.Owin;
 using BitShuva.Services;
+using System.Collections.Generic;
 
 namespace BitShuva.Controllers
 {
@@ -20,72 +21,26 @@ namespace BitShuva.Controllers
     public class UsersController : RavenApiController
     {
         static DateTime startTime = DateTime.UtcNow;
-        static ConcurrentDictionary<string, DateTime> allUsers = new ConcurrentDictionary<string, DateTime>();
 
         [HttpGet]
-        [Route("recent/mins/{minutes}")]
-        public RecentUserSummary Recent(int minutes)
+        [Route("getRecent")]
+        public async Task<RecentUserSummary> GetRecent(int minutes)
         {
             var recent = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(minutes));
-            var recentUsers = allUsers.Where(u => u.Value >= recent).ToList();
-            var loggedInUsers = recentUsers
-                .Where(u => u.Key.Contains("@"))
-                .Select(u => u.Key)
-                .ToList();
-            var anonymousUsers = recentUsers
-                .Where(u => !loggedInUsers.Contains(u.Key) && !u.Key.StartsWith("cookieless", StringComparison.InvariantCultureIgnoreCase))
-                .Select(u => u.Key)
-                .ToList();
-            var cookielessUsers = recentUsers
-                .Where(u => u.Key.StartsWith("cookieless", StringComparison.InvariantCultureIgnoreCase))
-                .Select(u => u.Key)
-                .ToList();
+            var loggedInUsers = await DbSession.Query<ApplicationUser>()
+                .Where(u => u.LastSeen >= recent)
+                .Select(u => u.Email)
+                .ToListAsync();
+            
             return new RecentUserSummary
             {
-                Summary = string.Format("{0} total: {1} logged in, {2} anonymous, {3} cookieless", recentUsers.Count, loggedInUsers.Count, anonymousUsers.Count, cookielessUsers.Count),
+                Summary = $"{loggedInUsers.Count} logged in",
                 LoggedIn = loggedInUsers,
-                Anonymous = anonymousUsers,
-                Cookieless = cookielessUsers,
-                TotalSinceBeginning = allUsers.Count,
+                Anonymous = new List<string>(),
+                Cookieless = new List<string>(),
+                TotalSinceBeginning = loggedInUsers.Count,
                 BeginningTime = DateTime.UtcNow.Subtract(startTime)
             };
-        }
-
-        [HttpGet]
-        [Route("ping")]
-        public async Task Ping()
-        {
-            var user = await this.GetCurrentUser();
-            var sessionId = "";
-            if (user != null && !string.IsNullOrEmpty(user.Email))
-            {
-                sessionId = user.Email;
-            }
-            else
-            {
-                var sessionCookies = this.Request.Headers.GetCookies("SessionId");
-                if (sessionCookies != null && sessionCookies.Count > 0 && sessionCookies[0].Cookies.Count > 0)
-                {
-                    sessionId = sessionCookies[0].Cookies[0].Value;
-                }
-            }
-
-            if (string.IsNullOrEmpty(sessionId))
-            {
-                var id = Guid.NewGuid().ToString();
-                var cookie = new System.Web.HttpCookie("SessionId") { Value = id };
-                System.Web.HttpContext.Current.Response.SetCookie(cookie);
-                sessionId = "CookielessUser_" + id;
-            }
-
-            allUsers.AddOrUpdate(sessionId, DateTime.UtcNow, (id, date) => DateTime.UtcNow);
-        }
-
-        [HttpGet]
-        [Route("AuthenticatedName")]
-        public string AuthenticatedName()
-        {
-            return this.User.Identity.Name;
         }
         
         //[HttpGet]

@@ -6,5 +6,6 @@
         songRequestResult: string;
         headerPartial: string;
         footerPartial: string;
+        adminSidebar: string;
     }
 }

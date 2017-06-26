@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Raven.Client;
+using Raven.Client.Linq;
 using System.Text;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,48 @@ namespace BitShuva.Controllers
 
             var m3uBytes = Encoding.UTF8.GetBytes(m3uBuilder.ToString());
             return File(m3uBytes, "application/vnd.apple.mpegurl", "ChavahTuneInStream.m3u");
+        }
+
+        /// <summary>
+        /// Returns an M3U file. Used for streaming services such as TuneIn radio.
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ShabbatMusic() 
+        {
+            // The M3U file will contain a single URL:
+            // The URL to our GetNextSong() action.
+            // That method will intelligently pick a song.
+
+            // Build the M3U file.
+            // M3U format is very simple: https://en.wikipedia.org/wiki/M3U
+            var m3uBuilder = new StringBuilder();
+            m3uBuilder.AppendLine("# EXTM3U"); // The header
+
+            var getNextSongUrl = this.Url.Action(nameof(GetNextShabbatSong), "Stream", null, this.Request.Url.Scheme);
+            m3uBuilder.AppendLine(getNextSongUrl);
+
+            var m3uBytes = Encoding.UTF8.GetBytes(m3uBuilder.ToString());
+            return File(m3uBytes, "application/vnd.apple.mpegurl", "ChavahTuneInStream.m3u");
+        }
+
+        public async Task<ActionResult> GetNextShabbatSong()
+        {
+            var goodShabbatTags = new[]
+            {
+                "shabbat",
+                "peaceful",
+                "beautiful",
+                "soft",
+                "prayer",
+                "liturgy",
+                "instrumental",
+                "blessing"
+            };
+            var song = await DbSession.Query<Song>()
+                .Customize(x => x.RandomOrdering())
+                .Where(s => s.CommunityRankStanding != CommunityRankStanding.Poor && s.CommunityRankStanding != CommunityRankStanding.VeryPoor && s.Tags.ContainsAny(goodShabbatTags))
+                .FirstOrDefaultAsync();
+            return Redirect(song.Uri.ToString());
         }
 
         public async Task<ActionResult> GetNextSong()

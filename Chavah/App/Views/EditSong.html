@@ -35,7 +35,7 @@
                                     <button type="button" class="close" data-dismiss="modal" ng-click="vm.removeTag(tag)" aria-hidden="true" title="Remove tag">×</button>
                                 </div>
                             </div>
-                            <input type="text" class="form-control" id="tagsInput" placeholder="piano, violin, male vocal, hebrew, psalms" ng-model="vm.tagsInput" ng-change="vm.tagsInputChanged()"
+                            <input type="text" class="form-control" id="tagsInput" ng-attr-placeholder="{{vm.tagPlaceholder}}" ng-model="vm.tagsInput" ng-change="vm.tagsInputChanged()"
                                    uib-typeahead="tag for tag in vm.searchTags($viewValue) | limitTo:8"
                                            typeahead-min-length="1"
                                            typeahead-show-hint="true"

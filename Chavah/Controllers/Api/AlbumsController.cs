@@ -15,6 +15,7 @@ using System.Web.Http;
 using Optional;
 using Optional.Async;
 using BitShuva.Services;
+using System.Collections.Concurrent;
 
 namespace BitShuva.Controllers
 {
@@ -25,6 +26,7 @@ namespace BitShuva.Controllers
         public AlbumsController(ILoggerService logger) : base(logger)
         {
         }
+
         /// <summary>
         /// Uploads the album art for a song. The album art will be applied to all songs matching the artist and album.
         /// </summary>
@@ -32,8 +34,6 @@ namespace BitShuva.Controllers
         /// <param name="fileName">The file name. Used for extracting the extension.</param>
         /// <param name="artist">The artist this album art applies to.</param>
         /// <param name="album">The name of the album this album art applies to.</param>
-
-
         [Route("Get")]
         [HttpGet]
         public Task<Album> Get(string id)
@@ -58,8 +58,7 @@ namespace BitShuva.Controllers
             return DbSession.Query<Album>()
                 .FirstOrDefaultAsync(a => a.Name == album && (a.Artist == artist || a.IsVariousArtists));
         }
-
-        #region Admin
+        
         [HttpPost]
         [Route("changeArt")]
         public async Task<Album> ChangeArt(string albumId, string artUri)
@@ -160,12 +159,13 @@ namespace BitShuva.Controllers
             await this.DbSession.SaveChangesAsync();
             return existingAlbum.Id;
         }
-        #endregion
 
         [Route("GetAlbumsForSongs")]
         [HttpGet]
         public async Task<IList<Album>> GetAlbumsForSongs(string songIdsCsv)
         {
+            // TODO: we might want to implement a song ID => album ID cache. That would save us a lot of work.
+
             if (string.IsNullOrEmpty(songIdsCsv))
             {
                 throw new ArgumentNullException(nameof(songIdsCsv));
@@ -173,16 +173,19 @@ namespace BitShuva.Controllers
 
             const int maxAlbumArtFetch = 30;
             var songIds = songIdsCsv.Split(',')
-                .Where(s => s != null && s.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase)) // Somehow, some users are calling this with ApplicationUsers/[current email].
+                .Where(s => !string.IsNullOrWhiteSpace(s) && s.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase)) // Somehow, some users are calling this with ApplicationUsers/[current email].
                 .Take(maxAlbumArtFetch);
+
             var songs = await DbSession.LoadAsync<Song>(songIds);
-            var albumNames = songs
-                .Where(s => s != null && !string.IsNullOrEmpty(s.Album))
+            var songsWithAlbums = songs
+                .Where(s => s != null && !string.IsNullOrEmpty(s.Album));
+            var albumNames = songsWithAlbums
                 .Select(s => s.Album)
                 .ToList();
             var albums = await DbSession.Query<Album>()
                 .Where(a => a.Name.In(albumNames))
                 .ToListAsync();
+
             return albums;
         }
 

@@ -48,17 +48,17 @@
 }
 .now-playing-page .song:nth-child(2) {
   z-index: 4;
-  transform: scale(0.9) translateX(-50px) translateY(10px);
+  transform: scale(0.9) translateX(-50px) translateY(-5px) rotateZ(-10deg);
   opacity: .9;
 }
 .now-playing-page .song:nth-child(3) {
   z-index: 3;
-  transform: scale(0.8) translateX(-100px);
+  transform: scale(0.8) translateX(-100px) rotateZ(-15deg);
   opacity: .7;
 }
 .now-playing-page .song:nth-child(4) {
   z-index: 2;
-  transform: scale(0.7) translateX(-160px);
+  transform: scale(0.7) translateX(-160px) rotateZ(-22deg);
   opacity: .5;
 }
 @media (max-width: 768px) {
@@ -68,7 +68,7 @@
 }
 .now-playing-page .song:nth-child(5) {
   z-index: 1;
-  transform: scale(0.6) translateX(-240px);
+  transform: scale(0.6) translateX(-240px) rotateZ(-30deg);
   opacity: .3;
 }
 @media (max-width: 768px) {
@@ -203,4 +203,7 @@
   display: inline-block;
   cursor: pointer;
   border-radius: 3px;
+}
+.now-playing-page .edit-tags-btn .fa-tags {
+  color: #2c3e50;
 }

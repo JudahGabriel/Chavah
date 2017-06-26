@@ -498,17 +498,6 @@ namespace BitShuva.Controllers
             await _logger.Error("Audio playback failed", null, errorInfo);
             return errorInfo;
         }
-
-        [HttpGet]
-        [Route("searchTags")]
-        public async Task<IEnumerable<string>> SearchTags(string search)
-        {
-            var result = await DbSession.Query<Songs_Tags.Result, Songs_Tags>()
-                .Search(i => i.Name, search + "*", 1, SearchOptions.Guess, EscapeQueryOptions.AllowPostfixWildcard)
-                .Take(10)
-                .ToListAsync();
-            return result.Select(r => r.Name);
-        }
         
         private async Task<Song> PickRandomSong()
         {

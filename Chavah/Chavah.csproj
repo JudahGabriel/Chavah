@@ -293,12 +293,14 @@
     <Compile Include="Controllers\Api\AlbumsController.cs" />
     <Compile Include="Controllers\Api\ArtistsController.cs" />
     <Compile Include="Controllers\Api\LikesController.cs" />
+    <Compile Include="Controllers\Api\LogsController.cs" />
     <Compile Include="Controllers\Api\PlaylistsController.cs" />
     <Compile Include="Controllers\Api\RavenApiController.cs" />
     <Compile Include="Controllers\Api\SongEditsController.cs" />
     <Compile Include="Controllers\Api\SongRequestsController.cs" />
     <Compile Include="Controllers\Api\SongsController.cs" />
     <Compile Include="Controllers\Api\StationsController.cs" />
+    <Compile Include="Controllers\Api\TagsController.cs" />
     <Compile Include="Controllers\Api\TestController.cs" />
     <Compile Include="Controllers\Api\UsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -334,9 +336,11 @@
     <Compile Include="Models\Indexes\Songs_Tags.cs" />
     <Compile Include="Models\LikeLevel.cs" />
     <Compile Include="Models\LogSummary.cs" />
+    <Compile Include="Models\AccountToken.cs" />
     <Compile Include="Models\SongPickReasons.cs" />
     <Compile Include="Models\SongWeight.cs" />
     <Compile Include="Models\Notification.cs" />
+    <Compile Include="Services\CollectionPatchService.cs" />
     <Compile Include="Services\SongUploadService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\AlbumService.cs" />
@@ -366,7 +370,6 @@
     <Compile Include="Models\Station.cs" />
     <Compile Include="Models\StationSongChoice.cs" />
     <Compile Include="Models\Transformers\SongNameTransformer.cs" />
-    <Compile Include="Models\User.cs" />
     <Compile Include="Models\AlbumDupe.cs" />
     <Compile Include="Models\UserProfile.cs" />
     <Compile Include="Models\UserSongPreferences.cs" />
@@ -388,20 +391,35 @@
     <Content Include="App\Views\DonateSuccess.html" />
     <Content Include="App\Views\DonateCancelled.html" />
     <Content Include="App\Views\Legal.html" />
+    <Content Include="App\Views\LogEditor.html" />
     <Content Include="App\Views\PromptSignIn.html" />
     <Content Include="App\Views\ShareThanks.html" />
     <Content Include="App\Views\SongEditApproved.html" />
+    <Content Include="App\Views\TagEditor.html" />
+    <Content Include="App\Views\Templates\AdminSidebar.html" />
     <Content Include="App\Views\Welcome.html" />
     <Content Include="Content\images\FavIcon192.png" />
     <Content Include="Content\images\FavIcon48.png" />
     <Content Include="Content\images\FavIcon96.png" />
     <Content Include="Content\images\judah.jpg" />
     <Content Include="Content\offers\Micha%27el Eliyahu BenDavid - Kol Yonah - 10 - Rejoice in Yah.mp3" />
+    <Content Include="Content\styles\app\adminSidebar.css">
+      <DependentUpon>adminSidebar.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\adminSidebar.min.css">
+      <DependentUpon>adminSidebar.css</DependentUpon>
+    </Content>
     <Content Include="Content\styles\app\editSong.css">
       <DependentUpon>editSong.less</DependentUpon>
     </Content>
     <Content Include="Content\styles\app\editSong.min.css">
       <DependentUpon>editSong.css</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\tagEditor.css">
+      <DependentUpon>tagEditor.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\tagEditor.min.css">
+      <DependentUpon>tagEditor.css</DependentUpon>
     </Content>
     <Content Include="Scripts\es6-promise.js" />
     <Content Include="App\Views\ConfirmEmail.html" />
@@ -604,6 +622,8 @@
     <Content Include="ConnectionStrings.Release.Secrets.config" />
     <Content Include="ConnectionStrings.Debug.Secrets.config" />
     <Content Include="Content\styles\app\editSong.less" />
+    <Content Include="Content\styles\app\adminSidebar.less" />
+    <Content Include="Content\styles\app\tagEditor.less" />
     <None Include="Properties\PublishProfiles\bitshuva.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />
@@ -631,6 +651,10 @@
     <Content Include="Scripts\jquery-2.2.4.js" />
     <Content Include="Scripts\jquery-2.2.4.min.js" />
     <Content Include="Scripts\jquery-transit-0.9.9.js" />
+    <Content Include="Scripts\lodash.core.js" />
+    <Content Include="Scripts\lodash.core.min.js" />
+    <Content Include="Scripts\lodash.js" />
+    <Content Include="Scripts\lodash.min.js" />
     <Content Include="Scripts\modernizr-production.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
@@ -672,6 +696,8 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="App\App.ts" />
+    <TypeScriptCompile Include="App\Common\List.ts" />
+    <TypeScriptCompile Include="App\Common\PagedList.ts" />
     <TypeScriptCompile Include="App\Common\TemplatePaths.ts" />
     <TypeScriptCompile Include="App\Controllers\ApproveSongEditsController.ts" />
     <TypeScriptCompile Include="App\Controllers\ConfirmEmailController.ts" />
@@ -682,6 +708,7 @@
     <TypeScriptCompile Include="App\Controllers\FooterController.ts" />
     <TypeScriptCompile Include="App\Controllers\ForgotPasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\HeaderController.ts" />
+    <TypeScriptCompile Include="App\Controllers\LogEditorController.ts" />
     <TypeScriptCompile Include="App\Controllers\NowPlayingController.ts" />
     <TypeScriptCompile Include="App\Controllers\PasswordController.ts" />
     <TypeScriptCompile Include="App\Controllers\RegisterController.ts" />
@@ -692,6 +719,7 @@
     <TypeScriptCompile Include="App\Controllers\SongEditApprovedController.ts" />
     <TypeScriptCompile Include="App\Controllers\SongListController.ts" />
     <TypeScriptCompile Include="App\Controllers\EditSongController.ts" />
+    <TypeScriptCompile Include="App\Controllers\TagEditorController.ts" />
     <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />
     <TypeScriptCompile Include="App\Controllers\UploadAlbumController.ts" />
     <TypeScriptCompile Include="App\Directives\AudioStatusChanged.ts" />
@@ -704,6 +732,7 @@
     <TypeScriptCompile Include="App\Models\AudioStatus.ts" />
     <TypeScriptCompile Include="App\Models\CommunityRankStanding.ts" />
     <TypeScriptCompile Include="App\Models\LikeLevel.ts" />
+    <TypeScriptCompile Include="App\Models\LogLevel.ts" />
     <TypeScriptCompile Include="App\Models\SongEditStatus.ts" />
     <TypeScriptCompile Include="App\Models\SongPick.ts" />
     <TypeScriptCompile Include="App\Models\User.ts" />
@@ -728,11 +757,13 @@
     <TypeScriptCompile Include="App\Services\LikeApiService.ts" />
     <TypeScriptCompile Include="App\Services\LoadingProgressService.ts" />
     <TypeScriptCompile Include="App\Services\AccountService.ts" />
+    <TypeScriptCompile Include="App\Services\LogService.ts" />
     <TypeScriptCompile Include="App\Services\SongBatchService.ts" />
     <TypeScriptCompile Include="App\Services\SongEditService.ts" />
     <TypeScriptCompile Include="App\Services\SongRequestService.ts" />
     <TypeScriptCompile Include="App\Services\SongApiService.ts" />
     <TypeScriptCompile Include="App\Services\StationIdentifierService.ts" />
+    <TypeScriptCompile Include="App\Services\TagService.ts" />
     <TypeScriptCompile Include="Models\Album.cs.d.ts">
       <DependentUpon>Album.cs</DependentUpon>
     </TypeScriptCompile>
@@ -744,9 +775,6 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="Models\PagedList.cs.d.ts">
       <DependentUpon>PagedList.cs</DependentUpon>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="Models\User.cs.d.ts">
-      <DependentUpon>User.cs</DependentUpon>
     </TypeScriptCompile>
     <TypeScriptCompile Include="Models\UserProfile.cs.d.ts">
       <DependentUpon>UserProfile.cs</DependentUpon>
@@ -767,6 +795,7 @@
     <TypeScriptCompile Include="Scripts\typings\bootstrap\bootstrap.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\fastclick\fastclick.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\lodash\lodash.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\modernizr\modernizr.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\moment\moment.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\nprogress\NProgress.d.ts" />

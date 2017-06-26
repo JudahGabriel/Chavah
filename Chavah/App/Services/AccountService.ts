@@ -77,6 +77,12 @@
                     this.setAuthLocalStorage(result.jsonWebToken);
                     this.currentUser = new User(result.email!, result.roles);
                     this.signedIn.onNext(true);
+
+                    // If we have Google Analytics, notify about the signed in user.
+                    var ga = window["ga"];
+                    if (ga) {
+                        ga("set", "userId", result.email);
+                    }
                 } else {
                     this.setAuthLocalStorage(result.jsonWebToken);
                     this.currentUser = null;

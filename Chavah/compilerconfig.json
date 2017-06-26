@@ -58,5 +58,13 @@
   {
     "outputFile": "Content/styles/app/editSong.css",
     "inputFile": "Content/styles/app/editSong.less"
+  },
+  {
+    "outputFile": "Content/styles/app/adminSidebar.css",
+    "inputFile": "Content/styles/app/adminSidebar.less"
+  },
+  {
+    "outputFile": "Content/styles/app/tagEditor.css",
+    "inputFile": "Content/styles/app/tagEditor.less"
   }
 ]

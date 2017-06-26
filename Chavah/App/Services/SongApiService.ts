@@ -110,13 +110,6 @@
             return this.httpApi.post("/api/songs/audiofailed", error);
         }
 
-        searchTags(search: string): ng.IPromise<string[]> {
-            var args = {
-                search: search
-            };
-            return this.httpApi.query("/api/songs/searchTags", args);
-        }
-
         private static songListConverter(songs: Server.ISong[]): Song[] {
             return songs.map(r => SongApiService.songConverter(r));
         }
