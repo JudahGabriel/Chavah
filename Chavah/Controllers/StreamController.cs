@@ -69,7 +69,8 @@ namespace BitShuva.Controllers
                 "prayer",
                 "liturgy",
                 "instrumental",
-                "blessing"
+                "blessing",
+                "hymn"
             };
             var song = await DbSession.Query<Song>()
                 .Customize(x => x.RandomOrdering())

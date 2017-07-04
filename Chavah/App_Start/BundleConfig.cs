@@ -6,10 +6,7 @@ namespace BitShuva
     public class BundleConfig
     {
         public static void RegisterBundles(BundleCollection bundles)
-        {
-            //bundles.IgnoreList.Clear();
-            //AddDefaultIgnorePatterns(bundles.IgnoreList);
-            
+        {            
             var cdns = new
             {
                 JQuery = "https://code.jquery.com/jquery-2.2.4.min.js",

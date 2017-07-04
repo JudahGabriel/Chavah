@@ -1,5 +1,11 @@
 ﻿<section class="footer" ng-controller="FooterController as vm">
     <div class="trackbar"></div>
+    <!--The buffering indicator-->
+    <div class="progress buffering" ng-show="vm.isBuffering">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+            <span class="sr-only">Buffering...</span>
+        </div>
+    </div>
     <div class="song-controls">
         <div class="pull-left">
             <div class="audio-status"></div>
@@ -33,31 +39,5 @@
         
     </div>
 </section>
-
-<!--<div style="width: 100%;">
-    <a target="_blank" data-bind="text: latestBlogPostTitle, attr: { href: latestBlogPostHref }" href="http://blog.messianicradio.com/2015/07/please-help-rabbi-ed-rothman.html" title="Lastest news from the Chavah blog">Please help Rabbi Ed Rothman</a>
-    <span>&nbsp;|&nbsp;</span>
-    <a href="http://www.facebook.com/pages/Chavah-Messianic-Radio/134887069882254" target="_blank" title="Like us on Facebook">
-        <i class="fa fa-facebook"></i>
-    </a>
-    <span>&nbsp;|&nbsp;</span>
-    <a href="https://twitter.com/intent/user?screen_name=MessianicRadio" target="_blank" title="Follow @MessianicRadio on Twitter">
-        <i class="fa fa-twitter"></i>
-    </a>
-    <span>&nbsp;|&nbsp;</span>
-    <a href="mailto:judahgabriel@gmail.com" title="Email us"><i class="fa fa-envelope"></i></a>
-    <span>&nbsp;|&nbsp;</span>
-    <a href="#about" target="_blank" title="About Chavah Messianic Radio">
-        <i class="fa fa-info-circle"></i>
-    </a>
-    <span>&nbsp;|&nbsp;</span>
-    <a href="http://judahgabriel.blogspot.com" target="_blank" title="Kineti - blog of Judah Gabriel Himango, author of Chavah Messianic Radio">Kineti</a>
-    <span>&nbsp;|&nbsp;</span>
-    <a href="http://messianicchords.com" target="_blank" title="Our sister site, MessianicChords.com: Lyrics and guitar chords to Messianic music">MessianicChords</a>
-    <span>&nbsp;|&nbsp;</span>
-    <a href="http://messianicchords.com" target="_blank" title="Messianic Jewish teaching from our friend Yisrael Avraham">YeshuaRadio</a>
-    <span>&nbsp;|&nbsp;</span>
-    <a href="http://www.tabernacleofdavidministries.com/" target="_blank" title="The Chavah family attends Tabernacle of David in Burnsville, Minnesota. Come worship with us!">In Minnesota? Join us for shabbat</a>
-</div>-->
 
 <audio id="audio"></audio>

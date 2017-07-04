@@ -66,5 +66,13 @@
   {
     "outputFile": "Content/styles/app/tagEditor.css",
     "inputFile": "Content/styles/app/tagEditor.less"
+  },
+  {
+    "outputFile": "Content/styles/app/trending.css",
+    "inputFile": "Content/styles/app/trending.less"
+  },
+  {
+    "outputFile": "Content/styles/app/goBack.css",
+    "inputFile": "Content/styles/app/goBack.less"
   }
 ]

@@ -42,6 +42,12 @@ namespace BitShuva.Common
             return doc;
         }
 
+        public static async Task<IEnumerable<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
+        {
+            var docs = await session.LoadAsync<T>(ids);
+            return docs.Where(d => d != null);
+        }
+
         /// <summary>
         /// Loads a possibly null document as an Option.
         /// </summary>

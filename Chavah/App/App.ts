@@ -28,12 +28,14 @@
         songRequestResult: "/App/Views/Templates/SongRequestResult.html",
         headerPartial: "/App/Views/Header.html",
         footerPartial: "/App/Views/Footer.html",
-        adminSidebar: "/App/Views/Templates/AdminSidebar.html"
+        adminSidebar: "/App/Views/Templates/AdminSidebar.html",
+        goBack: "/App/Views/Templates/GoBack.html"
     };
     App.constant("templatePaths", templatePaths);
 
-    App.config(["$routeProvider", ($routeProvider: ng.route.IRouteProvider) => {
+    App.config(["$routeProvider", "$locationProvider", ($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {
         $routeProvider.caseInsensitiveMatch = true;
+        $locationProvider.hashPrefix('');
         $routeProvider
             .when("/nowplaying", createRoute("/App/Views/NowPlaying.html"))
             .when("/trending", createRoute("/App/Views/Trending.html"))
@@ -78,13 +80,18 @@
     }]);
 
     App.run([
-        "templatePaths", "accountApi", "appNav", "adminScripts", "$rootScope", "$location",
-        (templatePaths: TemplatePaths,
+        "templatePaths", "accountApi", "appNav", "adminScripts", "$rootScope", "$location", "$q",
+            (templatePaths: TemplatePaths,
             accountApi: AccountService,
             appNav: AppNavService,
             adminScripts: AdminScriptsService,
             $rootScope: ng.IRootScopeService,
-            $location: ng.ILocationService) => {
+            $location: ng.ILocationService,
+            $q: ng.IQService) => {
+
+            // Use Angular's Q object as Promise. This is needed to make async/await work properly with the UI.
+            // See http://stackoverflow.com/a/41825004/536
+            window["Promise"] = $q;
 
             // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.
             $rootScope["Partials"] = templatePaths;

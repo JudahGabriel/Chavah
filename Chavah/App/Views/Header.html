@@ -31,7 +31,7 @@
             </ul>
         </div>
         <div class="btn-group notifications-btn" ng-show="vm.notifications.length > 0">
-            <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-click="vm.markNotificationsAsRead()" uib-tooltip="Notifications">
+            <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-click="vm.markNotificationsAsRead()" uib-tooltip="Notifications" uib-popover="You have unread notifications" popover-placement="bottom-right" popover-trigger="none" popover-is-open="vm.isNotificationPopoverOpened">
                 <h4>
                     <i class="fa fa-globe"></i>
                     <span class="badge" ng-show="vm.unreadNotificationCount > 0">{{vm.unreadNotificationCount}}</span>

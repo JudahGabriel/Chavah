@@ -78,13 +78,13 @@
 
             <!--Song tags -->
             <div class="text-center">
-                <span class="sr-only">Song traits</span>
-                <h4 class="tag" ng-click="vm.playSongWithTag(tag)" ng-repeat="tag in vm.currentSong.tags" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchDarker, 'color': vm.currentSong.albumSwatchLighter } : {}" ng-attr-uib-tooltip="{{ 'Click to play another ' + tag + ' song' }}">
+                <span class="sr-only">Song tags</span>
+                <h4 class="tag" role="button" ng-click="vm.playSongWithTag(tag)" ng-repeat="tag in vm.currentSong.tags" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}" ng-attr-uib-tooltip="{{ 'Click to play another ' + tag + ' song' }}">
                     <i class="fa fa-tag"></i> {{tag}}
                 </h4>
 
                 <!--Edit tags when we have 1 or more.-->
-                <a class="btn btn-link edit-tags-btn" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-show="vm.currentSong.tags.length > 1" uib-tooltip="Add or change the tags for this song" style="padding-left: 0; padding-right: 0;">
+                <a class="btn btn-link edit-tags-btn" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-show="vm.currentSong.tags.length > 1" uib-tooltip="Add or change the tags for this song">
                     <span class="fa-stack fa-lg" aria-hidden="true">
                         <i class="fa fa-tags fa-stack-2x" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}"></i>
                         <i class="fa fa-pencil fa-stack-1x" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchLighter } : { 'color': 'white' }"></i>

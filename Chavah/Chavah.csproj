@@ -386,6 +386,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\Polyfills\TsLib.js" />
     <Content Include="App\Views\ApproveSongEdits.html" />
     <Content Include="App\Views\Donate.html" />
     <Content Include="App\Views\DonateSuccess.html" />
@@ -397,6 +398,7 @@
     <Content Include="App\Views\SongEditApproved.html" />
     <Content Include="App\Views\TagEditor.html" />
     <Content Include="App\Views\Templates\AdminSidebar.html" />
+    <Content Include="App\Views\Templates\GoBack.html" />
     <Content Include="App\Views\Welcome.html" />
     <Content Include="Content\images\FavIcon192.png" />
     <Content Include="Content\images\FavIcon48.png" />
@@ -415,11 +417,23 @@
     <Content Include="Content\styles\app\editSong.min.css">
       <DependentUpon>editSong.css</DependentUpon>
     </Content>
+    <Content Include="Content\styles\app\goBack.css">
+      <DependentUpon>goBack.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\goBack.min.css">
+      <DependentUpon>goBack.css</DependentUpon>
+    </Content>
     <Content Include="Content\styles\app\tagEditor.css">
       <DependentUpon>tagEditor.less</DependentUpon>
     </Content>
     <Content Include="Content\styles\app\tagEditor.min.css">
       <DependentUpon>tagEditor.css</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\trending.css">
+      <DependentUpon>trending.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\trending.min.css">
+      <DependentUpon>trending.css</DependentUpon>
     </Content>
     <Content Include="Scripts\es6-promise.js" />
     <Content Include="App\Views\ConfirmEmail.html" />
@@ -624,6 +638,8 @@
     <Content Include="Content\styles\app\editSong.less" />
     <Content Include="Content\styles\app\adminSidebar.less" />
     <Content Include="Content\styles\app\tagEditor.less" />
+    <Content Include="Content\styles\app\trending.less" />
+    <Content Include="Content\styles\app\goBack.less" />
     <None Include="Properties\PublishProfiles\bitshuva.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />
@@ -675,6 +691,7 @@
     <Content Include="WebAppManifest.json" />
     <Content Include="Web.config" />
     <Content Include="Views\Web.config" />
+    <Content Include="tsconfig.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>

@@ -11,7 +11,10 @@
         isLoading = false;
         noItemsText = "There are no results";
 
-        constructor(private fetcher: (skip: number, take: number) => ng.IPromise<Server.IPagedList<T>>, private readonly cacheKey?: string) {
+        constructor(
+            private fetcher: (skip: number, take: number) => ng.IPromise<Server.IPagedList<T>>,
+            private readonly cacheKey?: string,
+            private readonly afterFetch?: (items: T[]) => void) {
             if (cacheKey) {
                 this.rehydrateCachedItems(cacheKey);
             }
@@ -48,6 +51,10 @@
                             this.items.push(...results.items);
                             this.itemsTotalCount = results.total;
                             this.skip += results.items.length;
+
+                            if (this.afterFetch) {
+                                this.afterFetch(this.items);
+                            }
                         }
                     })
                     .finally(() => this.isLoading = false);
@@ -59,6 +66,9 @@
                 var cachedJson = window.localStorage.getItem(cacheKey);
                 if (cachedJson) {
                     this.items = JSON.parse(cachedJson);
+                    if (this.afterFetch) {
+                        this.afterFetch(this.items);
+                    }
                 }
             } catch (error) {
                 console.log("Failed to rehydrated cached items for cacheKey", cacheKey, error);

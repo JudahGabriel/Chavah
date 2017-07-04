@@ -3,6 +3,7 @@
 
         volumeShown = false;
         volume = 1;
+        isBuffering = false;
 
         static $inject = [
             "audioPlayer",
@@ -188,6 +189,7 @@
                 this.playNextSong();
             }
 
+            this.isBuffering = status === AudioStatus.Buffering || status === AudioStatus.Stalled;
             this.$scope.$applyAsync();
         }
 

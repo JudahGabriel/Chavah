@@ -114,3 +114,7 @@ header .notifications-btn .badge {
   top: 15px;
   right: 0;
 }
+header .notifications-btn .popover {
+  margin-top: -7px;
+  margin-right: 7px;
+}

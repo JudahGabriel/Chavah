@@ -204,6 +204,10 @@
   cursor: pointer;
   border-radius: 3px;
 }
+.now-playing-page .edit-tags-btn {
+  padding-left: 0;
+  padding-right: 0;
+}
 .now-playing-page .edit-tags-btn .fa-tags {
   color: #2c3e50;
 }

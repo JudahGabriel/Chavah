@@ -72,11 +72,12 @@
             return this.httpApi.query(url, args, SongApiService.songListConverter);
         }
 
-        getTrendingSongs(count: number): ng.IPromise<Song[]> {
+        getTrendingSongs(skip: number, take: number): ng.IPromise<Server.IPagedList<Song>> {
             var args = {
-                count: count
+                skip: skip,
+                take: take
             };
-            return this.httpApi.query("/api/songs/trending", args, SongApiService.songListConverter);
+            return this.httpApi.query("/api/songs/getTrending", args, SongApiService.songPagedListConverter);
         }
 
         getPopularSongs(count: number): ng.IPromise<Song[]> {
@@ -108,6 +109,15 @@
 
         songFailed(error: AudioErrorInfo): ng.IPromise<any> {
             return this.httpApi.post("/api/songs/audiofailed", error);
+        }
+
+        private static songPagedListConverter(dto: Server.IPagedList<Server.ISong>): Server.IPagedList<Song> {
+            return {
+                items: dto.items.map(s => new Song(s)),
+                skip: dto.skip,
+                take: dto.take,
+                total: dto.total
+            };
         }
 
         private static songListConverter(songs: Server.ISong[]): Song[] {

@@ -444,6 +444,36 @@ namespace BitShuva.Controllers
             return null;
         }
 
+        [Route("getTrending")]
+        public async Task<PagedList<Song>> GetTrending(int skip, int take)
+        {
+            var recentLikedSongIds = await this.DbSession
+                .Query<Like>()
+                .Statistics(out var stats)
+                .Customize(x => x.Include<Like>(l => l.SongId))
+                .Where(l => l.Status == LikeStatus.Like)
+                .OrderByDescending(l => l.Date)
+                .Select(l => l.SongId)
+                .Skip(skip)
+                .Take(take + 10)
+                .ToListAsync();
+            var distinctSongIds = recentLikedSongIds
+                .Distinct()
+                .Take(take);
+
+            var matchingSongs = await this.DbSession.LoadWithoutNulls<Song>(distinctSongIds);
+            return new PagedList<Song>
+            {
+                Items = matchingSongs
+                    .Select(s => s.ToDto())
+                    .ToList(),
+                Skip = skip,
+                Take = take,
+                Total = stats.TotalResults
+            };
+        }
+
+        [Obsolete("Delete this after July 4th 2017")]
         [Route("trending")]
         public async Task<IEnumerable<Song>> GetTrendingSongs(int count)
         {

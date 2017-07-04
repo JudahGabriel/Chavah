@@ -133,8 +133,8 @@
         }
 
         setupRecurringFetches() {
-            var songFetchesTask = this.songApi.getTrendingSongs(3)
-                .then(results => this.updateSongList(this.trending, results))
+            var songFetchesTask = this.songApi.getTrendingSongs(0, 3)
+                .then(results => this.updateSongList(this.trending, results.items))
                 .then(() => this.songApi.getPopularSongs(3))
                 .then(results => this.updateSongList(this.popular, results))
                 .then(() => this.songApi.getLikes(3))
