@@ -34,7 +34,7 @@ namespace Chava.Tests.Api
         {
             //act 
             var actionResult = await _controller.Get();
-            var response = actionResult as OkNegotiatedContentResult<IList<Songs_RankStandings.Results>>;
+            var response = actionResult as OkNegotiatedContentResult<IList<Songs_RankStandings.Result>>;
 
             //assert
             Assert.NotNull(response);
