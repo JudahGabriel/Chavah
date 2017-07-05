@@ -22,7 +22,7 @@ namespace Chava.Tests.Services
             // Arrange
             _documentStore = new InMemoryDocumentStore().Store;
             _session = _documentStore.OpenAsyncSession();
-            _logger = new LoggerService(_session);
+            _logger = new LoggerService();
         }
         #endregion
 
