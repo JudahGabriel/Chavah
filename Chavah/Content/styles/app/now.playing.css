@@ -146,7 +146,7 @@
 .now-playing-page .song-list-title {
   text-transform: lowercase;
   text-align: center;
-  opacity: .7;
+  color: #2f3d58;
 }
 .now-playing-page .expander {
   opacity: .9;

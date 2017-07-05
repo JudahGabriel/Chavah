@@ -11,8 +11,12 @@
                 <div class="col-xs-12 col-sm-8">
                     <form ng-show="vm.song && !vm.isSaveSuccess && !vm.isSaveFail">
                         <div class="form-group" ng-show="vm.isAdmin">
-                            <label for="nameInput">Song name</label>
+                            <label for="nameInput">Name</label>
                             <input type="text" class="form-control" id="nameInput" placeholder="Song name" ng-model="vm.song.name">
+                        </div>
+                        <div class="form-group" ng-show="vm.isAdmin">
+                            <label for="nameInput">Hebrew name</label>
+                            <input type="text" class="form-control" id="nameInput" placeholder="Song name" ng-model="vm.song.hebrewName">
                         </div>
                         <div class="form-group" ng-show="vm.isAdmin">
                             <label for="artistInput">Artist</label>

@@ -1,5 +1,5 @@
 ﻿<section class="footer" ng-controller="FooterController as vm">
-    <div class="trackbar"></div>
+    <div class="trackbar" ng-hide="vm.isBuffering"></div>
     <!--The buffering indicator-->
     <div class="progress buffering" ng-show="vm.isBuffering">
         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">

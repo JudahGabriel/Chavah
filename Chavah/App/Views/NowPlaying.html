@@ -5,7 +5,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <h4 class="song-list-title">
-                            <a href="#/trending">Trending</a>
+                            <a href="#/trending"><i class="fa fa-line-chart"></i> Trending</a>
                         </h4>
                         <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.trending"></div>
                     </div>
@@ -39,6 +39,9 @@
 
             <h1 class="text-center current-song-name" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
                 {{vm.currentSong.name}}
+            </h1>
+            <h1 class="text-center current-song-name" ng-show="vm.currentSong.hebrewName" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                {{vm.currentSong.hebrewName}}
             </h1>
             <div class="text-center">
                 <button class="btn btn-link current-song-artist" ng-click="vm.playSongFromCurrentArtist()" uib-tooltip="Click to play another {{vm.currentSong.artist}} song" tooltip-placement="right" role="button">

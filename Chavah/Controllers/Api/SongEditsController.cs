@@ -40,7 +40,7 @@ namespace BitShuva.Controllers
             };
             if (songEdit.HasAnyChanges())
             {
-                // Is the current user an admin? If so, apply the change straight away.
+                // Admins don't need approval; apply the change straight away.
                 if (user.IsAdmin())
                 {
                     songEdit.Apply(existingSong);

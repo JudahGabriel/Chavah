@@ -15,6 +15,7 @@ namespace BitShuva.Models
         }
 
         public string Name { get; set; }
+        public string HebrewName { get; set; }
         public int Number { get; set; }
         public string Album { get; set; }
         public string Artist { get; set; }
@@ -31,10 +32,6 @@ namespace BitShuva.Models
         public string Lyrics { get; set; }
         public int TotalPlays { get; set; }
         
-        [Obsolete("Use the new ReasonsPlayed instead")]
-        [Raven.Imports.Newtonsoft.Json.JsonIgnore]
-        public SongPick ReasonPlayed { get; set; }
-
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public SongPickReasons ReasonsPlayed { get; set; }
 

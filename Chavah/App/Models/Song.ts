@@ -1,6 +1,7 @@
 namespace BitShuva.Chavah {
     export class Song implements Server.ISong {
         name: string;
+        hebrewName: string | null;
         album: string;
         artist: string;
         artistImages: string[];

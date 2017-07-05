@@ -18,11 +18,13 @@
     </div>
 
     <div class="scroller">
-        <button class="btn btn-default" ng-click="vm.previous()" ng-disabled="!vm.canGoPrevious" uib-tooltip="Show previous trending song">
-            <i class="fa fa-5x fa-caret-left"></i>
-        </button>
-        <button class="btn btn-default pull-right" ng-click="vm.next()" ng-disabled="!vm.canGoNext" uib-tooltip="Show next trending song">
-            <i class="fa fa-5x fa-caret-right"></i>
-        </button>
+        <div class="buttons-container">
+            <button class="btn btn-default" ng-click="vm.previous()" ng-disabled="!vm.canGoPrevious" uib-tooltip="Show previous trending song">
+                <i class="fa fa-caret-left"></i>
+            </button>
+            <button class="btn btn-default pull-right" ng-click="vm.next()" ng-disabled="!vm.canGoNext" uib-tooltip="Show next trending song">
+                <i class="fa fa-caret-right"></i>
+            </button>
+        </div>
     </div>
 </section>

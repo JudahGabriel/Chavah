@@ -37,6 +37,7 @@
         $routeProvider.caseInsensitiveMatch = true;
         $locationProvider.hashPrefix('');
         $routeProvider
+            .when("/", createRoute("/App/Views/NowPlaying.html"))
             .when("/nowplaying", createRoute("/App/Views/NowPlaying.html"))
             .when("/trending", createRoute("/App/Views/Trending.html"))
             .when("/profile", createRoute("/App/Views/Profile.html"))
