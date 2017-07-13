@@ -50,7 +50,7 @@ namespace Chava.Tests.Controllers
             #endregion
 
             #region IoC Controller
-            var logService = new LoggerService(_session);
+            var logService = new LoggerService();
             var songService = new SongService(_session);
             var albumService = new AlbumService(_session);
             var userService = new UserService(_session);
@@ -180,16 +180,16 @@ namespace Chava.Tests.Controllers
 
         #endregion
 
-        [Fact]
-        public async Task RegisteredUsersSuccefulTest()
-        {
-            //Act
-            var result = await _controller.RegisteredUsers() as RssActionResult;
-            //Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.Feed);
-            Assert.Equal(3,result.Feed.Items.Count());
+        //[Fact]
+        //public async Task RegisteredUsersSuccefulTest()
+        //{
+        //    //Act
+        //    var result = await _controller.RegisteredUsers() as RssActionResult;
+        //    //Assert
+        //    Assert.NotNull(result);
+        //    Assert.NotNull(result.Feed);
+        //    Assert.Equal(3,result.Feed.Items.Count());
 
-        }
+        //}
     }
 }
