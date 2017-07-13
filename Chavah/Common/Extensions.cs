@@ -156,5 +156,47 @@ namespace BitShuva.Common
         {
             return option.Match(some, () => { });
         }
+
+        /// <summary>
+        /// Finds the index of the character matching the specified predicate.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public static int IndexWhere(this string input, Func<char, bool> predicate)
+        {
+            for (var i = 0; i < input.Length; i++)
+            {
+                if (predicate(input[i]))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Takes a string that starts with English but may end in Hebrew.
+        /// Input: "Adonai Li אדוני לי"
+        /// Output: (english: Adonai Li, hebrew: אדוני לי)
+        /// </summary>
+        /// <param name="input">The input, which may contain English and Hebrew letters.</param>
+        /// <returns></returns>
+        public static (string english, string hebrew) GetEnglishAndHebrew(this string input)
+        {
+            const int aleph = 1488;
+            const int tav = 1514;
+            var isHebrewLetter = new Func<char, bool>(c => c >= aleph && c <= tav);
+            var firstHebrewLetterIndex = input.IndexWhere(isHebrewLetter);
+            if (firstHebrewLetterIndex == -1)
+            {
+                return (english: input, hebrew: string.Empty);
+            }
+
+            var english = input.Substring(0, firstHebrewLetterIndex).Trim();
+            var hebrew = input.Substring(firstHebrewLetterIndex).Trim();
+            return (english, hebrew);
+        }
     }
 }

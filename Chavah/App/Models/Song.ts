@@ -25,6 +25,7 @@ namespace BitShuva.Chavah {
         purchaseUri: string;
         //reasonPlayed: SongPick;
         reasonsPlayed: Server.ISongPickReasons | null;
+        albumId: string | null;
 
         albumSwatchBackground = "white";
         albumSwatchForeground = "black";

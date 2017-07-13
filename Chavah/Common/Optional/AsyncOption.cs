@@ -32,7 +32,7 @@ namespace Optional.Async
         /// <returns>The awaiter.</returns>
         public ConfiguredTaskAwaitable<Option<T>>.ConfiguredTaskAwaiter GetAwaiter()
         {
-            return optionTask.ConfigureAwait(false).GetAwaiter();
+            return optionTask.ConfigureAwait(AsyncOption.continueOnCapturedContext).GetAwaiter();
         }
 
         /// <summary>
@@ -216,6 +216,35 @@ namespace Optional.Async
         }
 
         /// <summary>
+        /// Evaluates a specified action, based on whether a value is present or not.
+        /// </summary>
+        /// <param name="some">The action to evaluate if the value is present.</param>
+        public Task MatchSome(Action<T> some)
+        {
+            return this.Match(some, () => { });
+        }
+
+        /// <summary>
+        /// Evaluates a specified function, based on whether a value is present or not.
+        /// </summary>
+        /// <param name="some">The function to evaluate if the value is present.</param>
+        /// <returns>The result of the evaluated function.</returns>
+        public Task MatchSome(Func<T, Task> some)
+        {
+            return Match(some, () => Task.FromResult(0));
+        }
+
+        /// <summary>
+        /// Evaluates a specified function, based on whether a value is present or not.
+        /// </summary>
+        /// <param name="some">The function to evaluate if the value is present.</param>
+        /// <returns>The result of the evaluated function.</returns>
+        public Task<TResult> MatchSome<TResult>(Func<T, Task<TResult>> some)
+        {
+            return Match(some, () => Task.FromResult(default(TResult)));
+        }
+
+        /// <summary>
         /// Transforms the inner value in an async optional.
         /// If the instance is empty, an empty optional is returned.
         /// </summary>
@@ -392,7 +421,7 @@ namespace Optional.Async
         /// <returns>The awaiter.</returns>
         public ConfiguredTaskAwaitable<Option<T, TException>>.ConfiguredTaskAwaiter GetAwaiter()
         {
-            return optionTask.ConfigureAwait(false).GetAwaiter();
+            return optionTask.ConfigureAwait(AsyncOption.continueOnCapturedContext).GetAwaiter();
         }
 
         /// <summary>
@@ -698,6 +727,11 @@ namespace Optional.Async
     /// </summary>
     public static class AsyncOption
     {
+        /// <summary>
+        /// JGH: I've added this to the original source so that we can continue on the captured sync context. This is needed in ASP.NET callbacks so that the request resumes on the original synchronization context (i.e. the correct thread).
+        /// </summary>
+        internal const bool continueOnCapturedContext = true;
+
         /// <summary>
         /// Wraps an existing value in an async optional.
         /// </summary>

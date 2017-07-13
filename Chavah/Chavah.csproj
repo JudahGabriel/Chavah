@@ -332,11 +332,14 @@
     <Compile Include="Models\ConfirmEmailResult.cs" />
     <Compile Include="Interfaces\ISongService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
+    <Compile Include="Models\DatabaseSchemaVersion.cs" />
     <Compile Include="Models\Indexes\Likes_SongPreferences.cs" />
     <Compile Include="Models\Indexes\Songs_Tags.cs" />
     <Compile Include="Models\LikeLevel.cs" />
     <Compile Include="Models\LogSummary.cs" />
     <Compile Include="Models\AccountToken.cs" />
+    <Compile Include="Models\Patches\PatchBase.cs" />
+    <Compile Include="Models\Patches\01-SongsHaveAlbumIds.cs" />
     <Compile Include="Models\SongPickReasons.cs" />
     <Compile Include="Models\SongWeight.cs" />
     <Compile Include="Models\Notification.cs" />
@@ -370,7 +373,6 @@
     <Compile Include="Models\Station.cs" />
     <Compile Include="Models\StationSongChoice.cs" />
     <Compile Include="Models\Transformers\SongNameTransformer.cs" />
-    <Compile Include="Models\AlbumDupe.cs" />
     <Compile Include="Models\UserProfile.cs" />
     <Compile Include="Models\UserSongPreferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -462,15 +464,6 @@
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
-    <Content Include="Content\soundEffects\Silence1.mp3" />
-    <Content Include="Content\soundEffects\Silence2.mp3" />
-    <Content Include="Content\soundEffects\SongRequest10.mp3" />
-    <Content Include="Content\soundEffects\SongRequest8.mp3" />
-    <Content Include="Content\soundEffects\SongRequest9.mp3" />
-    <Content Include="Content\soundEffects\StationId3.mp3" />
-    <Content Include="Content\soundEffects\StationId4.mp3" />
-    <Content Include="Content\soundEffects\StationId5.mp3" />
-    <Content Include="Content\soundEffects\StationId6.mp3" />
     <Content Include="Content\styles\app\edit.artist.css">
       <DependentUpon>edit.artist.less</DependentUpon>
     </Content>
@@ -574,20 +567,6 @@
       <DependentUpon>bootstrap.flatly.tweaks.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\bootswatch.css" />
-    <Content Include="Content\soundEffects\shabbatAnnouncement1.mp3" />
-    <Content Include="Content\soundEffects\shabbatAnnouncement2.mp3" />
-    <Content Include="Content\soundEffects\shabbatAnnouncement3.mp3" />
-    <Content Include="Content\soundEffects\shabbatAnnouncement4.mp3" />
-    <Content Include="Content\soundEffects\shabbatAnnouncement5.mp3" />
-    <Content Include="Content\soundEffects\SongRequest1.mp3" />
-    <Content Include="Content\soundEffects\SongRequest2.mp3" />
-    <Content Include="Content\soundEffects\SongRequest3.mp3" />
-    <Content Include="Content\soundEffects\SongRequest4.mp3" />
-    <Content Include="Content\soundEffects\SongRequest5.mp3" />
-    <Content Include="Content\soundEffects\SongRequest6.mp3" />
-    <Content Include="Content\soundEffects\SongRequest7.mp3" />
-    <Content Include="Content\soundEffects\StationId1.mp3" />
-    <Content Include="Content\soundEffects\StationId2.mp3" />
     <Content Include="Content\styles\nprogress.css">
       <DependentUpon>nprogress.less</DependentUpon>
     </Content>

@@ -32,6 +32,9 @@ body {
   max-height: 300px;
   overflow-y: auto;
 }
+.hebrew {
+  font-family: David, 'EB Garamond', serif;
+}
 .account-page .account-form {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 30px;

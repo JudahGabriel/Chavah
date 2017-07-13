@@ -76,7 +76,7 @@ namespace BitShuva.Controllers.Api
                 { "newTag", newTag }
             };
             var patch = new CollectionPatchService("Songs", patchScript, patchVariables);
-            await patch.Execute();
+            await patch.ExecuteAsync();
 
             return newTag;
         }
@@ -104,7 +104,7 @@ namespace BitShuva.Controllers.Api
                 { "tag", tag }
             };
             var patch = new CollectionPatchService("Songs", patchScript, patchVariables);
-            await patch.Execute();
+            await patch.ExecuteAsync();
         }
     }
 }

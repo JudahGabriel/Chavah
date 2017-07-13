@@ -178,6 +178,11 @@ namespace BitShuva.Common
             // a dumb file server with a big pipe.
 
             var tempFileDirectory = HostingEnvironment.MapPath("~/App_Data");
+            if (!Directory.Exists(tempFileDirectory))
+            {
+                Directory.CreateDirectory(tempFileDirectory);
+            }
+
             var tempFilePath = Path.Combine(tempFileDirectory, Path.GetRandomFileName());
             using (var downloader = new System.Net.WebClient())
             {

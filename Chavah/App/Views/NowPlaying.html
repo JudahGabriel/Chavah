@@ -40,7 +40,7 @@
             <h1 class="text-center current-song-name" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
                 {{vm.currentSong.name}}
             </h1>
-            <h1 class="text-center current-song-name" ng-show="vm.currentSong.hebrewName" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+            <h1 class="text-center current-song-name hebrew" ng-show="vm.currentSong.hebrewName" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
                 {{vm.currentSong.hebrewName}}
             </h1>
             <div class="text-center">
@@ -87,7 +87,7 @@
                 </h4>
 
                 <!--Edit tags when we have 1 or more.-->
-                <a class="btn btn-link edit-tags-btn" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-show="vm.currentSong.tags.length > 1" uib-tooltip="Add or change the tags for this song">
+                <a class="btn btn-link edit-tags-btn" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-show="vm.currentSong.tags.length >= 1" uib-tooltip="Add or change the tags for this song">
                     <span class="fa-stack fa-lg" aria-hidden="true">
                         <i class="fa fa-tags fa-stack-2x" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}"></i>
                         <i class="fa fa-pencil fa-stack-1x" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchLighter } : { 'color': 'white' }"></i>

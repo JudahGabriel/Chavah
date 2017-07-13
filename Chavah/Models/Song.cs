@@ -31,6 +31,7 @@ namespace BitShuva.Models
         public List<string> Genres { get; set; }
         public string Lyrics { get; set; }
         public int TotalPlays { get; set; }
+        public string AlbumId { get; set; }
         
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public SongPickReasons ReasonsPlayed { get; set; }
@@ -120,6 +121,7 @@ namespace BitShuva.Models
                 Id = this.Id,
                 SongLike = likeStatus,
                 Name = this.Name,
+                HebrewName = this.HebrewName,
                 Number = this.Number,
                 Uri = this.Uri,
                 AlbumArtUri = this.AlbumArtUri,

@@ -86,6 +86,7 @@ namespace BitShuva.Controllers
 
         [Route("Save")]
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<Album> Save(Album album)
         {
             if (string.IsNullOrEmpty(album.Artist) || string.IsNullOrEmpty(album.Name))
@@ -97,43 +98,37 @@ namespace BitShuva.Controllers
                 album.Id = null;
             }
 
-            await RequireAdminUser();
+            // Are we trying to create a new album? Verify we don't already have an album for this name+artist combo.
+            var isCreatingNew = string.IsNullOrEmpty(album.Id);
+            if (isCreatingNew)
+            {   
+                var existingAlbum = await DbSession.Query<Album>()
+                    .FirstOrNoneAsync(a => a.Name == album.Name && a.Artist == album.Artist);
+                existingAlbum.MatchSome(a => throw new ArgumentException($"There's already an album with this name and artist: {a.Id}"));
+            }
+            
             await DbSession.StoreAsync(album);
+
+            // If we're creating a new album, update the songs that belong to this album.
+            if (isCreatingNew)
+            {
+                var songsForAlbum = await DbSession.Query<Song>()
+                    .Where(s => s.AlbumId == null && s.Album == album.Name && (s.Artist == album.Artist || album.IsVariousArtists))
+                    .Take(50)
+                    .ToListAsync();
+                songsForAlbum.ForEach(s => s.AlbumId = album.Id);
+            }
+
             return album;
         }
 
         [HttpPost]
         [Route("upload")]
+        [Authorize]
         public async Task<string> Upload(AlbumUpload album)
         {
-            await this.RequireAdminUser();
-
             // Put the album art on the CDN.
             var albumArtUriCdn = await CdnManager.UploadAlbumArtToCdn(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
-
-            // Put all the songs on the CDN.
-            var songNumber = 1;
-            var uploadService = new SongUploadService();
-            foreach (var albumSong in album.Songs)
-            {
-                //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
-                var song = new Song
-                {
-                    Album = album.Name,
-                    Artist = album.Artist,
-                    AlbumArtUri = albumArtUriCdn,
-                    CommunityRankStanding = CommunityRankStanding.Normal,
-                    Genres = album.Genres.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                    Name = albumSong.FileName,
-                    Number = songNumber,
-                    PurchaseUri = album.PurchaseUrl,
-                    UploadDate = DateTime.UtcNow,
-                    Uri = null
-                };
-                await this.DbSession.StoreAsync(song);
-                uploadService.QueueMp3Upload(albumSong, album, songNumber, song.Id);
-                songNumber++;
-            }
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()
@@ -156,6 +151,33 @@ namespace BitShuva.Controllers
                 await this.DbSession.StoreAsync(existingAlbum);
             }
 
+            // Put all the songs on the CDN.
+            var songNumber = 1;
+            var uploadService = new SongUploadService();
+            foreach (var albumSong in album.Songs)
+            {
+                //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
+                var songName = albumSong.FileName.GetEnglishAndHebrew();
+                var song = new Song
+                {
+                    Album = album.Name,
+                    Artist = album.Artist,
+                    AlbumArtUri = albumArtUriCdn,
+                    CommunityRankStanding = CommunityRankStanding.Normal,
+                    Genres = album.Genres.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
+                    Name = songName.english,
+                    HebrewName = songName.hebrew,
+                    Number = songNumber,
+                    PurchaseUri = album.PurchaseUrl,
+                    UploadDate = DateTime.UtcNow,
+                    Uri = null,
+                    AlbumId = existingAlbum.Id
+                };
+                await this.DbSession.StoreAsync(song);
+                uploadService.QueueMp3Upload(albumSong, album, songNumber, song.Id);
+                songNumber++;
+            }
+
             await this.DbSession.SaveChangesAsync();
             return existingAlbum.Id;
         }
@@ -176,17 +198,11 @@ namespace BitShuva.Controllers
                 .Where(s => !string.IsNullOrWhiteSpace(s) && s.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase)) // Somehow, some users are calling this with ApplicationUsers/[current email].
                 .Take(maxAlbumArtFetch);
 
-            var songs = await DbSession.LoadAsync<Song>(songIds);
-            var songsWithAlbums = songs
-                .Where(s => s != null && !string.IsNullOrEmpty(s.Album));
-            var albumNames = songsWithAlbums
-                .Select(s => s.Album)
-                .ToList();
-            var albums = await DbSession.Query<Album>()
-                .Where(a => a.Name.In(albumNames))
-                .ToListAsync();
-
-            return albums;
+            var songs = await DbSession
+                .Include<Song>(s => s.AlbumId)
+                .LoadAsync<Song>(songIds);
+            var albums = await DbSession.LoadWithoutNulls<Album>(songs.Select(s => s.AlbumId));
+            return albums.ToList();
         }
 
         /// <summary>

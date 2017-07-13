@@ -12,50 +12,50 @@ namespace Optional.Async
     {
         public static async Task<TResult> Map<TResult>(this Task task, Func<TResult> mapping)
         {
-            await task.ConfigureAwait(false);
+            await task.ConfigureAwait(AsyncOption.continueOnCapturedContext);
             return mapping();
         }
 
         public static async Task Map(this Task task, Action mapping)
         {
-            await task.ConfigureAwait(false);
+            await task.ConfigureAwait(AsyncOption.continueOnCapturedContext);
             mapping();
         }
 
         public static async Task<TResult> Map<T, TResult>(this Task<T> task, Func<T, TResult> mapping)
         {
-            var value = await task.ConfigureAwait(false);
+            var value = await task.ConfigureAwait(AsyncOption.continueOnCapturedContext);
             return mapping(value);
         }
 
         public static async Task Map<T>(this Task<T> task, Action<T> mapping)
         {
-            var value = await task.ConfigureAwait(false);
+            var value = await task.ConfigureAwait(AsyncOption.continueOnCapturedContext);
             mapping(value);
         }
 
         public static async Task FlatMap(this Task task, Func<Task> mapping)
         {
-            await task.ConfigureAwait(false);
-            await mapping().ConfigureAwait(false);
+            await task.ConfigureAwait(AsyncOption.continueOnCapturedContext);
+            await mapping().ConfigureAwait(AsyncOption.continueOnCapturedContext);
         }
-        
+
         public static async Task<TResult> FlatMap<TResult>(this Task task, Func<Task<TResult>> mapping)
         {
-            await task.ConfigureAwait(false);
-            return await mapping().ConfigureAwait(false);
+            await task.ConfigureAwait(AsyncOption.continueOnCapturedContext);
+            return await mapping().ConfigureAwait(AsyncOption.continueOnCapturedContext);
         }
 
         public static async Task FlatMap<T>(this Task<T> task, Func<T, Task> mapping)
         {
-            var value = await task.ConfigureAwait(false);
-            await mapping(value).ConfigureAwait(false);
+            var value = await task.ConfigureAwait(AsyncOption.continueOnCapturedContext);
+            await mapping(value).ConfigureAwait(AsyncOption.continueOnCapturedContext);
         }
-        
+
         public static async Task<TResult> FlatMap<T, TResult>(this Task<T> task, Func<T, Task<TResult>> mapping)
         {
-            var value = await task.ConfigureAwait(false);
-            return await mapping(value).ConfigureAwait(false);
+            var value = await task.ConfigureAwait(AsyncOption.continueOnCapturedContext);
+            return await mapping(value).ConfigureAwait(AsyncOption.continueOnCapturedContext);
         }
     }
 }

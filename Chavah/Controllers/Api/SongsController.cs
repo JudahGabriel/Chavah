@@ -9,6 +9,7 @@ using System.Web.Http;
 using System.Threading.Tasks;
 using BitShuva.Models.Indexes;
 using BitShuva.Interfaces;
+using BitShuva.Services;
 
 namespace BitShuva.Controllers
 {
@@ -97,17 +98,23 @@ namespace BitShuva.Controllers
             };
         }
 
-        [HttpDelete]
-        [Route("admin/delete/{*songId}")]
+        [HttpPost]
+        [Authorize(Roles = ApplicationUser.AdminRole)]
+        [Route("delete")]
         public async Task Delete(string songId)
         {
-            await this.RequireAdminUser();
-
             var song = await this.DbSession.LoadAsync<Song>(songId);
             if (song != null)
             {
                 this.DbSession.Delete(song);
-                await this.DbSession.SaveChangesAsync();
+
+                // Remove any likes of this song.
+                var songLikeIds = await this.DbSession.Query<Like>()
+                    .Where(l => l.SongId == songId)
+                    .Take(1000)
+                    .Select(l => l.Id)
+                    .ToListAsync();
+                songLikeIds.ForEach(id => DbSession.Delete(id));
 
                 try
                 {

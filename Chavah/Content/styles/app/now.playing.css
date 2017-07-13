@@ -123,6 +123,9 @@
   width: 100%;
   white-space: normal;
 }
+.now-playing-page .current-song-name {
+  margin-top: 0;
+}
 .now-playing-page .current-song-artist,
 .now-playing-page .current-song-album {
   cursor: pointer;
@@ -203,6 +206,8 @@
   display: inline-block;
   cursor: pointer;
   border-radius: 3px;
+  background-color: #2f3d58;
+  color: #e9dd9a;
 }
 .now-playing-page .edit-tags-btn {
   padding-left: 0;
