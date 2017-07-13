@@ -53,10 +53,17 @@ namespace BitShuva.Controllers
 
         [Route("GetByArtistAlbum")]
         [HttpGet]
-        public Task<Album> GetByArtistAlbum(string artist, string album)
+        public async Task<Album> GetByArtistAlbum(string artist, string album)
         {
-            return DbSession.Query<Album>()
-                .FirstOrDefaultAsync(a => a.Name == album && (a.Artist == artist || a.IsVariousArtists));
+            var matchingAlbum = await DbSession.Query<Album>()
+                .FirstOrNoneAsync(a => a.Name == album && a.Artist == artist);
+            if (!matchingAlbum.HasValue)
+            {
+                return await DbSession.Query<Album>()
+                    .FirstOrDefaultAsync(a => a.IsVariousArtists && a.Name == album);
+            }
+
+            return matchingAlbum.ValueOr(default(Album));
         }
         
         [HttpPost]
@@ -75,8 +82,7 @@ namespace BitShuva.Controllers
             album.AlbumArtUri = albumArtUri;
 
             // Update the songs on this album.
-            var songsOnAlbum = await this.DbSession
-                .Query<Song>()
+            var songsOnAlbum = await this.DbSession.Query<Song>()
                 .Where(s => s.Artist == album.Artist && s.Album == album.Name)
                 .ToListAsync();
             songsOnAlbum.ForEach(s => s.AlbumArtUri = albumArtUri);
@@ -93,18 +99,19 @@ namespace BitShuva.Controllers
             {
                 throw new ArgumentException("Album must have a name and artist.");
             }
-            if (album.Id == "")
+            if (album.Id?.Length == 0)
             {
                 album.Id = null;
             }
 
-            // Are we trying to create a new album? Verify we don't already have an album for this name+artist combo.
+            // Are we trying to create a new album? If we already have an album for album name + artist combo, use that one.
             var isCreatingNew = string.IsNullOrEmpty(album.Id);
             if (isCreatingNew)
-            {   
+            {
                 var existingAlbum = await DbSession.Query<Album>()
                     .FirstOrNoneAsync(a => a.Name == album.Name && a.Artist == album.Artist);
-                existingAlbum.MatchSome(a => throw new ArgumentException($"There's already an album with this name and artist: {a.Id}"));
+                existingAlbum
+                    .MatchSome(a => throw new ArgumentException($"There's already an album for {a.Artist} - {a.Name}: {a.Id}"));
             }
             
             await DbSession.StoreAsync(album);
@@ -113,7 +120,8 @@ namespace BitShuva.Controllers
             if (isCreatingNew)
             {
                 var songsForAlbum = await DbSession.Query<Song>()
-                    .Where(s => s.AlbumId == null && s.Album == album.Name && (s.Artist == album.Artist || album.IsVariousArtists))
+                    .Where(s => s.AlbumId == null)
+                    .Where(album.SongMatchesAlbumNameAndArtistCriteria())
                     .Take(50)
                     .ToListAsync();
                 songsForAlbum.ForEach(s => s.AlbumId = album.Id);
@@ -322,5 +330,6 @@ namespace BitShuva.Controllers
                 .Select(s => $"{s.Artist} - {s.Album} - {s.Number} - {s.Name}: http://messianicradio.com/?song={s.Id}")
                 .ToList();
         }
+        
     }
 }

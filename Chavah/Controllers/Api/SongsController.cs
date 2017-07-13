@@ -388,8 +388,7 @@ namespace BitShuva.Controllers
         [HttpGet]
         public async Task<Song> GetByArtistAndAlbum(string artist, string album)
         {
-            var songOrNull = await this.DbSession
-                    .Query<Song>()
+            var songOrNull = await this.DbSession.Query<Song>()
                     .Customize(c => c.RandomOrdering())
                     .FirstOrDefaultAsync(s => s.Album == album && s.Artist == artist);
             if (songOrNull == null)
@@ -421,8 +420,7 @@ namespace BitShuva.Controllers
         public async Task<Song> GetSongByAlbum(string album)
         {
             var albumUnescaped = Uri.UnescapeDataString(album);
-            var songOrNull = await this.DbSession
-                    .Query<Song>()
+            var songOrNull = await this.DbSession.Query<Song>()
                     .Customize(c => c.RandomOrdering())
                     .FirstOrDefaultAsync(s => s.Album == albumUnescaped);
             if (songOrNull != null)
@@ -438,8 +436,7 @@ namespace BitShuva.Controllers
         public async Task<Song> GetByArtist(string artist)
         {
             var artistUnescaped = Uri.UnescapeDataString(artist);
-            var songOrNull = await this.DbSession
-                .Query<Song>()
+            var songOrNull = await this.DbSession.Query<Song>()
                 .Customize(c => c.RandomOrdering())
                 .FirstOrDefaultAsync(s => s.Artist == artistUnescaped);
 
@@ -506,8 +503,7 @@ namespace BitShuva.Controllers
         public async Task<IEnumerable<Song>> GetTopSongs(int count)
         {
             var randomSpotInTop70 = new Random().Next(0, 70);
-            var songs = await this.DbSession
-                .Query<Song>()
+            var songs = await this.DbSession.Query<Song, Songs_GeneralQuery>()
                 .Customize(x => x.RandomOrdering())
                 .OrderByDescending(s => s.CommunityRank)
                 .Skip(randomSpotInTop70)
@@ -520,8 +516,7 @@ namespace BitShuva.Controllers
         [Route("heavenly70")]
         public async Task<IEnumerable<Song>> GetHeavenly70()
         {
-            return await this.DbSession
-                .Query<Song>()
+            return await this.DbSession.Query<Song, Songs_GeneralQuery>()
                 .OrderByDescending(s => s.CommunityRank)
                 .Take(70)
                 .ToListAsync();
@@ -538,8 +533,7 @@ namespace BitShuva.Controllers
         
         private async Task<Song> PickRandomSong()
         {
-            return await this.DbSession
-                .Query<Song>()
+            return await this.DbSession.Query<Song>()
                 .Customize(c => c.RandomOrdering())
                 .FirstAsync();
         }

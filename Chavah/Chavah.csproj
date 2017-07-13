@@ -343,6 +343,7 @@
     <Compile Include="Models\DatabaseSchemaVersion.cs" />
     <Compile Include="Models\Indexes\Likes_SongPreferences.cs" />
     <Compile Include="Models\Indexes\Songs_Tags.cs" />
+    <Compile Include="Models\Indexes\Songs_GeneralQuery.cs" />
     <Compile Include="Models\LikeLevel.cs" />
     <Compile Include="Models\LogSummary.cs" />
     <Compile Include="Models\AccountToken.cs" />

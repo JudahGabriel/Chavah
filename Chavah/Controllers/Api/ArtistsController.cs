@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
+using BitShuva.Models.Indexes;
 
 namespace BitShuva.Controllers
 {
@@ -54,10 +55,15 @@ namespace BitShuva.Controllers
         [AllowAnonymous]
         public async Task<dynamic> Rank(string artistName)
         {
-            var songsByArtist = await this.DbSession.Query<Song>().Where(s => s.Artist == artistName).ToListAsync();
+            var songsByArtist = await this.DbSession.Query<Song, Songs_GeneralQuery>()
+                .Where(s => s.Artist == artistName)
+                .ToListAsync();
             if (songsByArtist.Count == 128)
             {
-                var additionalSongs = await this.DbSession.Query<Song>().Where(s => s.Artist == artistName).Skip(128).ToListAsync();
+                var additionalSongs = await this.DbSession.Query<Song>()
+                    .Where(s => s.Artist == artistName)
+                    .Skip(128)
+                    .ToListAsync();
                 additionalSongs.ForEach(s => songsByArtist.Add(s));
             }
 
