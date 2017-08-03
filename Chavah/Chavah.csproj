@@ -347,6 +347,7 @@
     <Compile Include="Models\LikeLevel.cs" />
     <Compile Include="Models\LogSummary.cs" />
     <Compile Include="Models\AccountToken.cs" />
+    <Compile Include="Models\Patches\02-AlbumSongCount.cs" />
     <Compile Include="Models\Patches\PatchBase.cs" />
     <Compile Include="Models\Patches\01-SongsHaveAlbumIds.cs" />
     <Compile Include="Models\SongPickReasons.cs" />
@@ -398,6 +399,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\Polyfills\TsLib.js" />
+    <Content Include="App\Views\Albums.html" />
     <Content Include="App\Views\ApproveSongEdits.html" />
     <Content Include="App\Views\Donate.html" />
     <Content Include="App\Views\DonateSuccess.html" />
@@ -421,6 +423,12 @@
     </Content>
     <Content Include="Content\styles\app\adminSidebar.min.css">
       <DependentUpon>adminSidebar.css</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\albums.css">
+      <DependentUpon>albums.less</DependentUpon>
+    </Content>
+    <Content Include="Content\styles\app\albums.min.css">
+      <DependentUpon>albums.css</DependentUpon>
     </Content>
     <Content Include="Content\styles\app\editSong.css">
       <DependentUpon>editSong.less</DependentUpon>
@@ -628,6 +636,7 @@
     <Content Include="Content\styles\app\tagEditor.less" />
     <Content Include="Content\styles\app\trending.less" />
     <Content Include="Content\styles\app\goBack.less" />
+    <Content Include="Content\styles\app\albums.less" />
     <None Include="Properties\PublishProfiles\bitshuva.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.v3.pubxml" />
     <None Include="Properties\PublishProfiles\Chavah on BitShuva.pubxml" />
@@ -704,6 +713,7 @@
     <TypeScriptCompile Include="App\Common\List.ts" />
     <TypeScriptCompile Include="App\Common\PagedList.ts" />
     <TypeScriptCompile Include="App\Common\TemplatePaths.ts" />
+    <TypeScriptCompile Include="App\Controllers\AlbumsController.ts" />
     <TypeScriptCompile Include="App\Controllers\ApproveSongEditsController.ts" />
     <TypeScriptCompile Include="App\Controllers\ConfirmEmailController.ts" />
     <TypeScriptCompile Include="App\Controllers\CreatePasswordController.ts" />

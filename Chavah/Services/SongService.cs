@@ -1,5 +1,6 @@
 ﻿using BitShuva.Interfaces;
 using BitShuva.Models;
+using BitShuva.Models.Indexes;
 using Raven.Client;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace BitShuva.Services
         public async Task<Song> GetMatchingSongAsync(System.Linq.Expressions.Expression<Func<Song, bool>> predicate)
         {
             return await _session
-               .Query<Song>()
+               .Query<Song, Songs_GeneralQuery>()
                .Customize(x => x.RandomOrdering())
                .Where(predicate)
                .OrderBy(s => s.Id)

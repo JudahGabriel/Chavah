@@ -70,7 +70,8 @@
         }
 
         private getAlbumForSong(song: Song): Album | null {
-            return this.cache.find(album => album.name == song.album && (album.artist === song.artist || album.isVariousArtists));
+            return this.cache.find(album => album.id === song.albumId || // Check by album ID
+                (album.name == song.album && (album.artist === song.artist || album.isVariousArtists))); // Fallback: check by album name and artist name. (If album is various artists, check only on album name)
         }
 
         private cacheHasAlbumForSong(song: Song): boolean {

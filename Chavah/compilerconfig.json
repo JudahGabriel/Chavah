@@ -74,5 +74,9 @@
   {
     "outputFile": "Content/styles/app/goBack.css",
     "inputFile": "Content/styles/app/goBack.less"
+  },
+  {
+    "outputFile": "Content/styles/app/albums.css",
+    "inputFile": "Content/styles/app/albums.less"
   }
 ]

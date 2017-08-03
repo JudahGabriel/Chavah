@@ -20,12 +20,19 @@
 
             // We allow the user to pass in:
             // - An album and artist: /#/admin/album/lamb/sacrifice
+            // - An album ID: /#/admin/album/albums/221
             // - Nothing (will create a new album): /#/admin/album/create
             var artist = $routeParams["artist"] as string;
             var album = $routeParams["album"] as string;
             if (artist && album) {
-                this.albumApi.getByArtistAndAlbumName(artist, album)
-                    .then(result => this.albumLoaded(result));
+                var isAlbumId = artist.toLowerCase() === "albums";
+                if (isAlbumId) {
+                    this.albumApi.get(`${artist}/${album}`)
+                        .then(result => this.albumLoaded(result));
+                } else {
+                    this.albumApi.getByArtistAndAlbumName(artist, album)
+                        .then(result => this.albumLoaded(result));
+                }
             } else {
                 this.createNewAlbum();
             }
@@ -41,7 +48,8 @@
                 mutedColor: "",
                 name: "[new album]",
                 id: "",
-                textShadowColor: ""
+                textShadowColor: "",
+                songCount: 0
             });
         }
 
@@ -133,6 +141,10 @@
         }
 
         loadCanvasSafeAlbumArt(imgUrl: string): ng.IPromise<HTMLImageElement> {
+            if (!imgUrl) {
+                throw new Error("imgUrl must not be null or undefined");
+            }
+
             var deferred = this.$q.defer<HTMLImageElement>();
             var img = document.createElement("img");
             img.src = "/api/albums/art/imageOnDomain?imageUrl=" + encodeURIComponent(imgUrl);

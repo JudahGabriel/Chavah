@@ -72,7 +72,7 @@ namespace BitShuva.Controllers
                 "blessing",
                 "hymn"
             };
-            var song = await DbSession.Query<Song>()
+            var song = await DbSession.Query<Song, Songs_GeneralQuery>()
                 .Customize(x => x.RandomOrdering())
                 .Where(s => s.CommunityRankStanding != CommunityRankStanding.Poor && s.CommunityRankStanding != CommunityRankStanding.VeryPoor && s.Tags.ContainsAny(goodShabbatTags))
                 .FirstOrDefaultAsync();

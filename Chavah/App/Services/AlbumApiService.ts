@@ -33,6 +33,15 @@
             return this.httpApi.query<Server.IAlbum | null>("/api/albums/get", args, AlbumApiService.albumSelector);
         }
 
+        getAll(skip: number, take: number, search: string | null): ng.IPromise<Server.IPagedList<Album>> {
+            var args = {
+                skip: skip,
+                take: take,
+                search: search
+            };
+            return this.httpApi.query("/api/albums/getAll", args, AlbumApiService.albumPagedListSelector);
+        }
+
         getByArtistAndAlbumName(artist: string, album: string): ng.IPromise<Album | null> {
             var args = {
                 artist: artist,
@@ -57,6 +66,13 @@
             return this.httpApi.query("/api/albums/GetAlbumsForSongs", args, AlbumApiService.albumArraySelector);
         }
 
+        deleteAlbum(albumId: string): ng.IPromise<any> {
+            var args = {
+                albumId: albumId
+            };
+            return this.httpApi.postUriEncoded("/api/albums/delete", args);
+        }
+
         static albumSelector(serverObj: Server.IAlbum | null): Album | null {
             if (serverObj) {
                 return new Album(serverObj);
@@ -67,6 +83,15 @@
 
         static albumArraySelector(serverObjs: Server.IAlbum[]): Album[] {
             return serverObjs.map(s => AlbumApiService.albumSelector(s)!);
+        }
+
+        static albumPagedListSelector(serverObj: Server.IPagedList<Server.IAlbum>): Server.IPagedList<Album> {
+            return {
+                items: AlbumApiService.albumArraySelector(serverObj.items),
+                skip: serverObj.skip,
+                take: serverObj.take,
+                total: serverObj.total
+            }
         }
     }
 

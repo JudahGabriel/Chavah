@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using BitShuva.Models.Indexes;
 using BitShuva.Interfaces;
 using BitShuva.Services;
+using Optional.Async;
 
 namespace BitShuva.Controllers
 {
@@ -388,7 +389,7 @@ namespace BitShuva.Controllers
         [HttpGet]
         public async Task<Song> GetByArtistAndAlbum(string artist, string album)
         {
-            var songOrNull = await this.DbSession.Query<Song>()
+            var songOrNull = await this.DbSession.Query<Song, Songs_GeneralQuery>()
                     .Customize(c => c.RandomOrdering())
                     .FirstOrDefaultAsync(s => s.Album == album && s.Artist == artist);
             if (songOrNull == null)
@@ -403,8 +404,7 @@ namespace BitShuva.Controllers
         [Route("getByTag")]
         public async Task<Song> GetByTag(string tag)
         {
-            var songOrNull = await this.DbSession
-                    .Query<Song>()
+            var songOrNull = await this.DbSession.Query<Song, Songs_GeneralQuery>()
                     .Customize(c => c.RandomOrdering())
                     .FirstOrDefaultAsync(s => s.Tags.Contains(tag));
             if (songOrNull == null)
@@ -412,7 +412,7 @@ namespace BitShuva.Controllers
                 await _logger.Warn("Couldn't find song with tag", tag);
                 return null;
             }
-
+            
             return await this.GetSongDto(songOrNull, SongPick.SongWithTagRequested);
         }
         
@@ -420,7 +420,7 @@ namespace BitShuva.Controllers
         public async Task<Song> GetSongByAlbum(string album)
         {
             var albumUnescaped = Uri.UnescapeDataString(album);
-            var songOrNull = await this.DbSession.Query<Song>()
+            var songOrNull = await this.DbSession.Query<Song, Songs_GeneralQuery>()
                     .Customize(c => c.RandomOrdering())
                     .FirstOrDefaultAsync(s => s.Album == albumUnescaped);
             if (songOrNull != null)
@@ -436,7 +436,7 @@ namespace BitShuva.Controllers
         public async Task<Song> GetByArtist(string artist)
         {
             var artistUnescaped = Uri.UnescapeDataString(artist);
-            var songOrNull = await this.DbSession.Query<Song>()
+            var songOrNull = await this.DbSession.Query<Song, Songs_GeneralQuery>()
                 .Customize(c => c.RandomOrdering())
                 .FirstOrDefaultAsync(s => s.Artist == artistUnescaped);
 
@@ -533,7 +533,7 @@ namespace BitShuva.Controllers
         
         private async Task<Song> PickRandomSong()
         {
-            return await this.DbSession.Query<Song>()
+            return await this.DbSession.Query<Song, Songs_GeneralQuery>()
                 .Customize(c => c.RandomOrdering())
                 .FirstAsync();
         }

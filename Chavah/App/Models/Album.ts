@@ -9,6 +9,7 @@
         mutedColor: string;
         textShadowColor: string;
         isVariousArtists: boolean;
+        songCount: number;
 
         isSaving = false;
 

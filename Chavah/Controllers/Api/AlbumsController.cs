@@ -16,6 +16,7 @@ using Optional;
 using Optional.Async;
 using BitShuva.Services;
 using System.Collections.Concurrent;
+using BitShuva.Models.Indexes;
 
 namespace BitShuva.Controllers
 {
@@ -34,11 +35,33 @@ namespace BitShuva.Controllers
         /// <param name="fileName">The file name. Used for extracting the extension.</param>
         /// <param name="artist">The artist this album art applies to.</param>
         /// <param name="album">The name of the album this album art applies to.</param>
-        [Route("Get")]
+        [Route("get")]
         [HttpGet]
         public Task<Album> Get(string id)
         {
             return DbSession.LoadAsync<Album>(id);
+        }
+
+        [Route("getAll")]
+        [HttpGet]
+        public async Task<PagedList<Album>> GetAll(int skip, int take, string search)
+        {
+            var query = string.IsNullOrWhiteSpace(search) ?
+                DbSession.Query<Album>() :
+                DbSession.Query<Album>().Where(a => a.Name.StartsWith(search) || a.Artist.StartsWith(search));
+            var albums = await query
+                .Statistics(out var stats)
+                .OrderBy(a => a.Name)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+            return new PagedList<Album>
+            {
+                Items = albums,
+                Skip = skip,
+                Take = take,
+                Total = stats.TotalResults
+            };
         }
 
         [Route("GetAlbumArtBySongId")]
@@ -82,7 +105,7 @@ namespace BitShuva.Controllers
             album.AlbumArtUri = albumArtUri;
 
             // Update the songs on this album.
-            var songsOnAlbum = await this.DbSession.Query<Song>()
+            var songsOnAlbum = await this.DbSession.Query<Song, Songs_GeneralQuery>()
                 .Where(s => s.Artist == album.Artist && s.Album == album.Name)
                 .ToListAsync();
             songsOnAlbum.ForEach(s => s.AlbumArtUri = albumArtUri);
@@ -119,7 +142,7 @@ namespace BitShuva.Controllers
             // If we're creating a new album, update the songs that belong to this album.
             if (isCreatingNew)
             {
-                var songsForAlbum = await DbSession.Query<Song>()
+                var songsForAlbum = await DbSession.Query<Song, Songs_GeneralQuery>()
                     .Where(s => s.AlbumId == null)
                     .Where(album.SongMatchesAlbumNameAndArtistCriteria())
                     .Take(50)
@@ -153,13 +176,14 @@ namespace BitShuva.Controllers
             existingAlbum.MutedColor = album.MutedColor;
             existingAlbum.Name = album.Name;
             existingAlbum.TextShadowColor = album.TextShadowColor;
+            existingAlbum.SongCount = album.Songs.Count + existingAlbum.SongCount;
 
             if (string.IsNullOrEmpty(existingAlbum.Id))
             {
                 await this.DbSession.StoreAsync(existingAlbum);
             }
 
-            // Put all the songs on the CDN.
+            // Store the songs in the DB.
             var songNumber = 1;
             var uploadService = new SongUploadService();
             foreach (var albumSong in album.Songs)
@@ -182,6 +206,8 @@ namespace BitShuva.Controllers
                     AlbumId = existingAlbum.Id
                 };
                 await this.DbSession.StoreAsync(song);
+
+                // Queue the songs to be uploaded to the CDN.
                 uploadService.QueueMp3Upload(albumSong, album, songNumber, song.Id);
                 songNumber++;
             }
@@ -224,6 +250,11 @@ namespace BitShuva.Controllers
         [Route("art/imageondomain")]
         public async Task<HttpResponseMessage> ImageOnDomain(string imageUrl)
         {
+            if (string.IsNullOrWhiteSpace(imageUrl))
+            {
+                throw new ArgumentNullException(nameof(imageUrl));
+            }
+
             var response = new HttpResponseMessage();
             using (var webClient = new WebClient())
             {
@@ -276,7 +307,7 @@ namespace BitShuva.Controllers
             if (redirectUri == null)
             {
                 // We don't have an album for this. See if we have a matching song.
-                await this.DbSession.Query<Song>()
+                await this.DbSession.Query<Song, Songs_GeneralQuery>()
                     .FirstOrNoneAsync(s => s.Album == album && s.Artist == artist)
                     .ToAsyncOption()
                     .Map(s => s.AlbumArtUri)
@@ -320,10 +351,10 @@ namespace BitShuva.Controllers
         }
 
         [HttpGet]
-        [Route("songlisting")]
+        [Route("songListing")]
         public async Task<List<string>> SongListing(string artist, string album)
         {
-            var songs = await DbSession.Query<Song>()
+            var songs = await DbSession.Query<Song, Songs_GeneralQuery>()
                 .Where(s => s.Artist == artist && s.Album == album)
                 .ToListAsync();
             return songs
@@ -331,5 +362,19 @@ namespace BitShuva.Controllers
                 .ToList();
         }
         
+        [HttpPost]
+        [Route("delete")]
+        [Authorize(Roles = "Admin")]
+        public async Task Delete(string albumId)
+        {
+            var album = await DbSession.LoadNonNull<Album>(albumId);
+            DbSession.Delete(album);
+
+            // Any songs with this album as the album ID should be set to null.
+            var songsWithAlbum = await DbSession.Query<Song, Songs_GeneralQuery>()
+                .Where(s => s.AlbumId == albumId)
+                .ToListAsync();
+            songsWithAlbum.ForEach(s => s.AlbumId = "");
+        }
     }
 }

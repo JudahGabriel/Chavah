@@ -60,7 +60,7 @@ namespace BitShuva.Controllers
                 .ToListAsync();
             if (songsByArtist.Count == 128)
             {
-                var additionalSongs = await this.DbSession.Query<Song>()
+                var additionalSongs = await this.DbSession.Query<Song, Songs_GeneralQuery>()
                     .Where(s => s.Artist == artistName)
                     .Skip(128)
                     .ToListAsync();

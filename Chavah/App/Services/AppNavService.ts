@@ -49,8 +49,14 @@
             this.$location.url(`/password/${encodeURIComponent(email)}`);
         }
 
+        editAlbumById(albumId: string) {
+            this.$location.url("/admin/album/" + albumId);
+        }
+
         editAlbum(artist: string, album: string) {
-            this.$location.url(`/admin/album/${artist}/${album}`);
+            var escapedArtist = encodeURIComponent(artist);
+            var escapedAlbum = encodeURIComponent(album);
+            this.$location.url(`/admin/album/${escapedArtist}/${escapedAlbum}`);
         }
 
         getEditSongUrl(songId: string): string {

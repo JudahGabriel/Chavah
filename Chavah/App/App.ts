@@ -66,7 +66,8 @@
             .when("/donatecancelled", createRoute("/App/Views/DonateCancelled.html"))
 
             // Admin
-            .when("/admin", createRoute("/App/Views/UploadAlbum.html", true))
+            .when("/admin", createRoute("/App/Views/Albums.html", true))
+            .when("/admin/albums", createRoute("/App/Views/Albums.html", true))
             .when("/admin/album/upload", createRoute("/App/Views/UploadAlbum.html", true))
             .when("/admin/album/create", createRoute("/App/Views/EditAlbum.html", true))
             .when("/admin/album/:artist/:album", createRoute("/App/Views/EditAlbum.html", true))
@@ -115,9 +116,9 @@
                 if (route && route.isAdmin) {
                     adminScripts.install();
 
-                    // Also, cancel navigation if we're not an admin user.
+                    // Also, cancel navigation if we're not an admin user and redirect to sign-in.
                     if (!accountApi.isSignedIn) {
-                        appNav.nowPlaying();
+                        appNav.signIn();
                     }
                 }
             });

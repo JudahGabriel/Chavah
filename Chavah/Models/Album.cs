@@ -16,6 +16,7 @@ namespace BitShuva.Models
         public string MutedColor { get; set; }
         public string TextShadowColor { get; set; }
         public bool IsVariousArtists { get; set; }
+        public int SongCount { get; set; }
 
         public System.Linq.Expressions.Expression<Func<Song, bool>> SongMatchesAlbumNameAndArtistCriteria()
         {

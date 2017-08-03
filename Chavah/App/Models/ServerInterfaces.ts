@@ -107,6 +107,7 @@
         mutedColor: string;
         textShadowColor: string;
         isVariousArtists: boolean;
+        songCount: number;
     }
 
     export interface IRegisterResults {
