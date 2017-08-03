@@ -68,7 +68,7 @@ namespace BitShuva.Services
                     logSummary.AddLog(log);
 
                     await session.StoreAsync(logSummary);
-                    session.AddRavenExpiration(logSummary, DateTime.UtcNow.AddMonths(1));
+                    session.SetRavenExpiration(logSummary, DateTime.UtcNow.AddMonths(1));
                     await session.SaveChangesAsync();
                 }
             }

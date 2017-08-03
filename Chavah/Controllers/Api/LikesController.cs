@@ -94,7 +94,7 @@ namespace BitShuva.Controllers
                     };
 
                     await this.DbSession.StoreAsync(activity);
-                    this.DbSession.AddRavenExpiration(activity, DateTime.UtcNow.AddDays(7));
+                    this.DbSession.SetRavenExpiration(activity, DateTime.UtcNow.AddDays(7));
                 }
             }
 

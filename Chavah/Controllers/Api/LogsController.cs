@@ -43,7 +43,7 @@ namespace BitShuva.Controllers.Api
                 throw new ArgumentException("ID must specify a LogSummary");
             }
 
-            var log = await DbSession.LoadNonNull<LogSummary>(id);
+            var log = await DbSession.LoadNotNullAsync<LogSummary>(id);
             DbSession.Delete(log);
         }
     }

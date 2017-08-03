@@ -89,7 +89,7 @@ namespace BitShuva.Controllers
                         UserId = user.Id
                     };
                     await this.DbSession.StoreAsync(songRequest);
-                    this.DbSession.AddRavenExpiration(songRequest, requestExpiration);
+                    this.DbSession.SetRavenExpiration(songRequest, requestExpiration);
 
                     // Store an activity for the song request.
                     var activity = new Activity
@@ -100,7 +100,7 @@ namespace BitShuva.Controllers
                         MoreInfoUri = song.GetSongShareLink()
                     };
                     await this.DbSession.StoreAsync(activity);
-                    this.DbSession.AddRavenExpiration(activity, requestExpiration);
+                    this.DbSession.SetRavenExpiration(activity, requestExpiration);
                 }
             }
         }

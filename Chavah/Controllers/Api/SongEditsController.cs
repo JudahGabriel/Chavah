@@ -33,7 +33,7 @@ namespace BitShuva.Controllers
                 throw NewUnauthorizedException();
             }
 
-            var existingSong = await this.DbSession.LoadNonNull<Song>(song.Id);
+            var existingSong = await this.DbSession.LoadNotNullAsync<Song>(song.Id);
             var songEdit = new SongEdit(existingSong, song)
             {
                 UserId = user.Id

@@ -22,11 +22,6 @@ namespace BitShuva.Common
             return valMinnedAndMaxed;
         }
 
-        public static bool Contains(this string value, string substring, StringComparison comparison)
-        {
-            return value.IndexOf(substring, comparison) != -1;
-        }
-
         public static double Range(this Random random, double max)
         {
             return random.NextDouble() * max;
@@ -72,11 +67,6 @@ namespace BitShuva.Common
             return new Uri(builder.ToString());
         }
 
-        public static bool IsAny(this string text, StringComparison comparison, params string[] others)
-        {
-            return others.Any(s => string.Equals(text, s, comparison));
-        }
-
         /// <summary>
         /// Converts 1 to "1st", 2 to "2nd", etc.
         /// </summary>
@@ -108,95 +98,6 @@ namespace BitShuva.Common
                 default:
                     return number.ToString() + "th";
             }
-        }
-
-        /// <summary>
-        /// Attempts to get the value from a dictionary. If not found, Nullable will be returned.
-        /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary"></param>
-        /// <param name="key">The key whose value to find.</param>
-        /// <returns></returns>
-        public static TValue? GetValueOrNull<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
-            where TValue: struct
-        {
-            if(dictionary.TryGetValue(key, out var val))
-            {
-                return val;
-            }
-
-            return default(TValue?);
-        }
-
-        public static List<Tuple<TKey, TValue>> TryRemoveMultiple<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, int maxRemove)
-        {
-            var keys = dictionary.Keys.Take(maxRemove).ToList();
-            var results = new List<Tuple<TKey, TValue>>();
-            while (keys.Count > 0)
-            {
-                var key = keys[0];
-                keys.RemoveAt(0);
-                var val = default(TValue);
-                if (dictionary.TryRemove(key, out val))
-                {
-                    results.Add(Tuple.Create(key, val));
-                }
-            }
-
-            return results;
-        }
-
-        /// <summary>
-        /// Evaluates a specified function, based on whether a value is present or not.
-        /// </summary>
-        /// <param name="some">The function to evaluate if the value is present.</param>
-        /// <returns>The result of the evaluated function.</returns>
-        public static Task MatchSome<T>(this AsyncOption<T> option, Action<T> some)
-        {
-            return option.Match(some, () => { });
-        }
-
-        /// <summary>
-        /// Finds the index of the character matching the specified predicate.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public static int IndexWhere(this string input, Func<char, bool> predicate)
-        {
-            for (var i = 0; i < input.Length; i++)
-            {
-                if (predicate(input[i]))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        /// <summary>
-        /// Takes a string that starts with English but may end in Hebrew.
-        /// Input: "Adonai Li אדוני לי"
-        /// Output: (english: Adonai Li, hebrew: אדוני לי)
-        /// </summary>
-        /// <param name="input">The input, which may contain English and Hebrew letters.</param>
-        /// <returns></returns>
-        public static (string english, string hebrew) GetEnglishAndHebrew(this string input)
-        {
-            const int aleph = 1488;
-            const int tav = 1514;
-            var isHebrewLetter = new Func<char, bool>(c => c >= aleph && c <= tav);
-            var firstHebrewLetterIndex = input.IndexWhere(isHebrewLetter);
-            if (firstHebrewLetterIndex == -1)
-            {
-                return (english: input, hebrew: string.Empty);
-            }
-
-            var english = input.Substring(0, firstHebrewLetterIndex).Trim();
-            var hebrew = input.Substring(firstHebrewLetterIndex).Trim();
-            return (english, hebrew);
         }
     }
 }

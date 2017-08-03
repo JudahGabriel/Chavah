@@ -10,6 +10,7 @@ using BitShuva.Common;
 using BitShuva.Models;
 using Microsoft.AspNet.Identity.Owin;
 using BitShuva.Interfaces;
+using Optional;
 
 namespace BitShuva.Controllers
 {
@@ -50,7 +51,11 @@ namespace BitShuva.Controllers
                 catch (Exception error)
                     when (!(error is TaskCanceledException) && (!error.Message.Contains("A task was canceled", StringComparison.InvariantCultureIgnoreCase))) // We don't care if it's just a TaskCancelledException.
                 {
-                    await TryLogSaveChangesError(error, $"Error executing controller action {controllerContext.Request?.RequestUri}", SessionToken);
+                    var actionDescriptor = controllerContext.Request.GetActionDescriptor();
+                    var controllerName = actionDescriptor.ControllerDescriptor.ControllerName;
+                    var actionName = actionDescriptor.ActionName;
+                    var requestDetails = await RequestDetails.FromHttpRequest(controllerContext.Request, this.SessionToken.SomeNotNull());
+                    await _logger.Error($"Error executing action {controllerName}/{actionName}.", error.ToDetailedString(), requestDetails);
                     throw; // Throw, because we don't want to try to save changes below.
                 }
 

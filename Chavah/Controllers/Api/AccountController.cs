@@ -211,7 +211,7 @@ namespace BitShuva.Controllers
                     Token = Guid.NewGuid().ToString()
                 };
                 await DbSession.StoreAsync(confirmToken);
-                DbSession.AddRavenExpiration(confirmToken, DateTime.UtcNow.AddDays(14));
+                DbSession.SetRavenExpiration(confirmToken, DateTime.UtcNow.AddDays(14));
 
                 await UserManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken.Token, Request.RequestUri));
 
@@ -267,7 +267,7 @@ namespace BitShuva.Controllers
             }
 
             var regTokenId = $"AccountTokens/Confirm/{emailLower}";
-            var regToken = await DbSession.LoadOption<AccountToken>(regTokenId);
+            var regToken = await DbSession.LoadOptionAsync<AccountToken>(regTokenId);
             var isSameCode = regToken.Map(t => string.Equals(t.Token, confirmCode, StringComparison.InvariantCultureIgnoreCase)).ValueOr(false);
             var isSameUser = regToken.Map(t => string.Equals(t.ApplicationUserId, userId, StringComparison.InvariantCultureIgnoreCase)).ValueOr(false);
             var isValidToken = isSameCode && isSameUser;

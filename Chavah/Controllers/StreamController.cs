@@ -95,7 +95,7 @@ namespace BitShuva.Controllers
             }
 
             var songPick = userPreferences.PickSong(songsWithRanking);
-            var song = await DbSession.LoadNonNull<Song>(songPick.SongId);
+            var song = await DbSession.LoadNotNullAsync<Song>(songPick.SongId);
             return Redirect(song.Uri.ToString());
         }
     }
