@@ -54,17 +54,24 @@
             return this.httpApi.post("/api/albums/save", album, AlbumApiService.albumSelector);
         }
 
-        getAlbumsForSongs(songIds: string[]): ng.IPromise<Album[]> {
-            var songIdsCsv = songIds.join(",");
-            if (songIdsCsv.length === 0) {
-                return this.$q.resolve<Album[]>([]);
-            }
-
+        getAlbums(albumIds: string[]): ng.IPromise<Album[]> {
             var args = {
-                songIdsCsv: songIdsCsv
+                albumIdsCsv: albumIds.join(",")
             };
-            return this.httpApi.query("/api/albums/GetAlbumsForSongs", args, AlbumApiService.albumArraySelector);
+            return this.httpApi.query("/api/albums/getAlbums", args, AlbumApiService.albumArraySelector);
         }
+
+        //getAlbumsForSongs(songIds: string[]): ng.IPromise<Album[]> {
+        //    var songIdsCsv = songIds.join(",");
+        //    if (songIdsCsv.length === 0) {
+        //        return this.$q.resolve<Album[]>([]);
+        //    }
+
+        //    var args = {
+        //        songIdsCsv: songIdsCsv
+        //    };
+        //    return this.httpApi.query("/api/albums/GetAlbumsForSongs", args, AlbumApiService.albumArraySelector);
+        //}
 
         deleteAlbum(albumId: string): ng.IPromise<any> {
             var args = {

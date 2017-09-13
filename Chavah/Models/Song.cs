@@ -32,6 +32,7 @@ namespace BitShuva.Models
         public string Lyrics { get; set; }
         public int TotalPlays { get; set; }
         public string AlbumId { get; set; }
+        // Add a property here? It should probably be added to .ToDto()
         
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public SongPickReasons ReasonsPlayed { get; set; }
@@ -130,7 +131,8 @@ namespace BitShuva.Models
                 Tags = this.Tags,
                 Lyrics = this.Lyrics,
                 TotalPlays = this.TotalPlays,
-                ReasonsPlayed = pickReasons
+                ReasonsPlayed = pickReasons,
+                AlbumId = this.AlbumId
             };
         }
 

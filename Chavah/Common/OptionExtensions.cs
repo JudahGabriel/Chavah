@@ -30,5 +30,28 @@ namespace BitShuva.Common
         {
             return option.Match(some, () => { });
         }
+
+        /// <summary>
+        /// Converts a Nullable&lt;T&gt; to an Option&lt;T&gt; instance.
+        /// </summary>
+        /// <param name="value">The Nullable&lt;T&gt; instance.</param>
+        /// <returns>The Option&lt;T&gt; instance.</returns>
+        public static Option<T> ToOption<T>(this T? value) where T : struct =>
+            value.HasValue ? Option.Some(value.Value) : Option.None<T>();
+
+        /// <summary>
+        /// Combines .Map with .NotNull. Maps the value of the option using the mapper. If the result of the map is null, none will be returned.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TMap"></typeparam>
+        /// <param name="option"></param>
+        /// <param name="mapper"></param>
+        /// <returns></returns>
+        public static Option<TMap> FlatMap<T, TMap>(this Option<T> option, Func<T, TMap> mapper)
+        {
+            return option
+                .Map(mapper)
+                .NotNull();
+        }
     }
 }

@@ -216,8 +216,20 @@ namespace BitShuva.Controllers
             return existingAlbum.Id;
         }
 
+        [Route("getAlbums")]
+        [HttpGet]
+        public Task<IList<Album>> GetAlbums(string albumIdsCsv)
+        {
+            var max = 20;
+            var validIds = albumIdsCsv.Split(new[] { "," }, max, StringSplitOptions.RemoveEmptyEntries)
+                .Where(id => id.StartsWith("albums/", StringComparison.InvariantCultureIgnoreCase))
+                .Distinct();
+            return DbSession.LoadWithoutNulls<Album>(validIds);
+        }
+
         [Route("GetAlbumsForSongs")]
         [HttpGet]
+        [Obsolete("Use GetAlbums instead. Delete this method after 8/3/2017")]
         public async Task<IList<Album>> GetAlbumsForSongs(string songIdsCsv)
         {
             // TODO: we might want to implement a song ID => album ID cache. That would save us a lot of work.
@@ -332,7 +344,8 @@ namespace BitShuva.Controllers
                 return response;
             }
 
-            throw new Exception("Unable to find any matching album art for " + artist + " - " + album);
+            await this._logger.Warn("Unable to find matching album art.", (artist, album));
+            return Request.CreateResponse(HttpStatusCode.NotFound);
         }
 
         /// <summary>

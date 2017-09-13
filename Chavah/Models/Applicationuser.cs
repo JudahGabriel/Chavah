@@ -15,7 +15,7 @@ namespace BitShuva.Models
     public class ApplicationUser : IdentityUser
     {
         public const string AdminRole = "Admin";
-        public const int MaxNotifications = 10;
+        public const int MaxNotifications = 5;
         public const int MaxRecentSongs = 10;
 
         public ApplicationUser()

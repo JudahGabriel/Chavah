@@ -29,7 +29,7 @@
         playStationIdAnnouncement() {
             var announcementNumbers = [1, 2, 3, 4, 5, 6];
             var songRequestName = "StationId" + announcementNumbers[Math.floor(Math.random() * announcementNumbers.length)] + ".mp3";
-            var songUrl = "http://bitshuvafiles01.com/chavah/soundEffects/" + songRequestName;
+            var songUrl = "https://bitshuvafiles01.com/chavah/soundEffects/" + songRequestName;
             this.audioPlayer.playNewUri(songUrl);
         }
     }

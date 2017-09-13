@@ -34,7 +34,7 @@
             $scope: ng.IScope) {
 
             this.audioPlayer.song.subscribeOnNext(song => this.nextSongBeginning(song));
-            this.audioPlayer.songCompleted.subscribe(song => this.songCompleted(song));
+            this.audioPlayer.songCompleted.throttle(5000).subscribe(song => this.songCompleted(song));
             this.songBatch.songsBatch.subscribeOnNext(() => this.songs = this.getSongs());
             
             // Recent plays we fetch once, at init. Afterwards, we update it ourselves.
@@ -127,7 +127,7 @@
 
         populateSongsWithAlbumColors(albums: Album[]) {
             albums.forEach(a => {
-                var songsForAlbum = this.getAllSongsOnScreen().filter(s => s.albumArtUri === a.albumArtUri);
+                var songsForAlbum = this.getAllSongsOnScreen().filter(s => s.albumId && s.albumId.toLowerCase() === a.id.toLowerCase());
                 songsForAlbum.forEach(s => s.updateAlbumArtColors(a));
             });
         }

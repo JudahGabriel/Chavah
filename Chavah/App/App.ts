@@ -17,7 +17,7 @@
             isAdmin: isAdmin
         };
     }
-    
+
     var initConfig: InitConfig = window["BitShuva.Chavah.InitConfig"];
     App.constant("initConfig", initConfig);
 
@@ -32,49 +32,88 @@
         goBack: "/App/Views/Templates/GoBack.html"
     };
     App.constant("templatePaths", templatePaths);
+    
+    var views = {
+        nowPlaying: "/App/Views/NowPlaying.html",
+        trending: "/App/Views/Trending.html",
+        profile: "/App/Views/Profile.html",
+        popular: "/App/Views/Popular.html",
+        recent: "/App/Views/RecentSongs.html",
+        myLikes: "/App/Views/MyLikes.html",
+        editSong: "/App/Views/EditSong.html",
+        shareThanks: "/App/Views/ShareThanks.html",
+        about: "/App/Views/Legal.html",
+        welcome: "/App/Views/Welcome.html",
+        songEditApproved: "/App/Views/SongEditApproved.html",
+
+        // Sign in
+        promptSignIn: "/App/Views/PromptSignIn.html",
+        signIn: "/App/Views/SignIn.html",
+        password: "/App/Views/Password.html",
+        forgotPassword: "/App/Views/ForgotPassword.html",
+        createPassword: "/App/Views/CreatePassword.html",
+        register: "/App/Views/Register.html",
+        confirmEmail: "/App/Views/ConfirmEmail.html",
+        resetPassword: "/App/Views/ResetPassword.html",
+
+        // Donate
+        donate: "/App/Views/Donate.html",
+        donateSuccess: "/App/Views/DonateSuccess.html",
+        donateCancelled: "/App/Views/DonateCancelled.html",
+
+        // Admin
+        albums: "/App/Views/Albums.html",
+        uploadAlbum: "/App/Views/UploadAlbum.html",
+        createAlbum: "/App/Views/EditAlbum.html",
+        editAlbum: "/App/Views/EditAlbum.html",
+        editArtist: "/App/Views/EditArtist.html",
+        songEdits: "/App/Views/ApproveSongEdits.html",
+        tags: "/App/Views/TagEditor.html",
+        logs: "/App/Views/LogEditor.html"
+    };
 
     App.config(["$routeProvider", "$locationProvider", ($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {
         $routeProvider.caseInsensitiveMatch = true;
         $locationProvider.hashPrefix('');
         $routeProvider
-            .when("/", createRoute("/App/Views/NowPlaying.html"))
-            .when("/nowplaying", createRoute("/App/Views/NowPlaying.html"))
-            .when("/trending", createRoute("/App/Views/Trending.html"))
-            .when("/profile", createRoute("/App/Views/Profile.html"))
-            .when("/popular", createRoute("/App/Views/Popular.html"))
-            .when("/recent", createRoute("/App/Views/RecentSongs.html"))
-            .when("/mylikes", createRoute("/App/Views/MyLikes.html"))
-            .when("/edit/songs/:id", createRoute("/App/Views/EditSong.html"))
-            .when("/sharethanks/:artist?", createRoute("/App/Views/ShareThanks.html"))
-            .when("/about", createRoute("/App/Views/Legal.html"))
-            .when("/welcome", createRoute("/App/Views/Welcome.html"))
-            .when("/songeditapproved/:artist/:songName", createRoute("/App/Views/SongEditApproved.html"))
+            .when("/", createRoute(views.nowPlaying))
+            .when("/nowplaying", createRoute(views.nowPlaying))
+            .when("/trending", createRoute(views.trending))
+            .when("/profile", createRoute(views.profile))
+            .when("/popular", createRoute(views.popular))
+            .when("/recent", createRoute(views.recent))
+            .when("/mylikes", createRoute(views.myLikes))
+            .when("/edit/songs/:id", createRoute(views.editSong))
+            .when("/sharethanks/:artist?", createRoute(views.shareThanks))
+            .when("/about", createRoute(views.about))
+            .when("/welcome", createRoute(views.welcome))
+            .when("/songeditapproved/:artist/:songName", createRoute(views.songEditApproved))
 
             // Sign in
-            .when("/promptsignin", createRoute("/App/Views/PromptSignIn.html"))
-            .when("/signin", createRoute("/App/Views/SignIn.html"))
-            .when("/password/:email", createRoute("/App/Views/Password.html"))
-            .when("/forgotpassword", createRoute("/App/Views/ForgotPassword.html"))
-            .when("/createpassword/:email", createRoute("/App/Views/CreatePassword.html"))
-            .when("/register/:email?", createRoute("/App/Views/Register.html"))
-            .when("/confirmemail/:email/:confirmCode", createRoute("/App/Views/ConfirmEmail.html"))
-            .when("/resetpassword/:email/:confirmCode", createRoute("/App/Views/ResetPassword.html"))
+            .when("/promptsignin", createRoute(views.promptSignIn))
+            .when("/signin", createRoute(views.signIn))
+            .when("/password/:email", createRoute(views.password))
+            .when("/forgotpassword", createRoute(views.forgotPassword))
+            .when("/createpassword/:email", createRoute(views.createPassword))
+            .when("/register/:email?", createRoute(views.register))
+            .when("/confirmemail/:email/:confirmCode", createRoute(views.confirmEmail))
+            .when("/resetpassword/:email/:confirmCode", createRoute(views.resetPassword))
 
             // Donate
-            .when("/donate/:artist?", createRoute("/App/Views/Donate.html"))
-            .when("/donatesuccess", createRoute("/App/Views/DonateSuccess.html"))
-            .when("/donatecancelled", createRoute("/App/Views/DonateCancelled.html"))
+            .when("/donate/:artist?", createRoute(views.donate))
+            .when("/donatesuccess", createRoute(views.donateSuccess))
+            .when("/donatecancelled", createRoute(views.donateCancelled))
 
             // Admin
-            .when("/admin", createRoute("/App/Views/Albums.html", true))
-            .when("/admin/albums", createRoute("/App/Views/Albums.html", true))
-            .when("/admin/album/upload", createRoute("/App/Views/UploadAlbum.html", true))
-            .when("/admin/album/create", createRoute("/App/Views/EditAlbum.html", true))
-            .when("/admin/album/:artist/:album", createRoute("/App/Views/EditAlbum.html", true))
-            .when("/admin/artists/:artistName?", createRoute("/App/Views/EditArtist.html", true))
-            .when("/admin/songedits", createRoute("/App/Views/ApproveSongEdits.html", true))
-            .when("/admin/tags", createRoute("/App/Views/TagEditor.html", true))
-            .when("/admin/logs", createRoute("/App/Views/LogEditor.html", true))
+            .when("/admin", createRoute(views.albums, true))
+            .when("/admin/albums", createRoute(views.albums, true))
+            .when("/admin/album/upload", createRoute(views.uploadAlbum, true))
+            .when("/admin/album/create", createRoute(views.createAlbum, true))
+            .when("/admin/album/:artist/:album", createRoute(views.editAlbum, true))
+            .when("/admin/artists/:artistName?", createRoute(views.editArtist, true))
+            .when("/admin/songedits", createRoute(views.songEdits, true))
+            .when("/admin/tags", createRoute(views.tags, true))
+            .when("/admin/logs", createRoute(views.logs, true))
 
             .otherwise({
                 redirectTo: "/nowplaying"
@@ -82,14 +121,20 @@
     }]);
 
     App.run([
-        "templatePaths", "accountApi", "appNav", "adminScripts", "$rootScope", "$location", "$q",
-            (templatePaths: TemplatePaths,
-            accountApi: AccountService,
-            appNav: AppNavService,
-            adminScripts: AdminScriptsService,
-            $rootScope: ng.IRootScopeService,
-            $location: ng.ILocationService,
-            $q: ng.IQService) => {
+        "templatePaths",
+        "accountApi",
+        "appNav",
+        "adminScripts",
+        "$rootScope",
+        "$location",
+        "$q",
+        (templatePaths: TemplatePaths,
+        accountApi: AccountService,
+        appNav: AppNavService,
+        adminScripts: AdminScriptsService,
+        $rootScope: ng.IRootScopeService,
+        $location: ng.ILocationService,
+        $q: ng.IQService) => {
 
             // Use Angular's Q object as Promise. This is needed to make async/await work properly with the UI.
             // See http://stackoverflow.com/a/41825004/536
@@ -122,9 +167,21 @@
                     }
                 }
             });
+
+            // Install our service worker if available.
+            // We use it to cache our views so that the UI will always be available.
+            // Commented out: Service Worker is so unstable, tools so immature. Come back in a few months and see if it's in better shape.
+            //if ('serviceWorker' in navigator) {
+            //    window.addEventListener("load", () => {
+            //        console.log("zanz page loaded, registering service worker.");
+            //        navigator["serviceWorker"].register("/ServiceWorker.js?test=4").then(
+            //            registration => console.log("ServiceWorker registration successful with scope: ", registration.scope),
+            //            err => console.log("ServiceWorker registration failed: ", err)
+            //        );
+            //    });
+            //}
         }]);
 
     // Setup Fastclick to remove the 300ms click delay on mobile browsers.
     document.addEventListener("DOMContentLoaded", () => FastClick.attach(document.body), false);
 }
-  

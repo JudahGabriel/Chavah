@@ -115,5 +115,43 @@ namespace BitShuva.Common
         {
             return value.IndexOf(substring, comparison) != -1;
         }
+
+        /// <summary>
+        /// Gets a deterministic hash code. Since string.GetHashCode is not deterministic, returning different results in different app contexts, this offers a deterministic alternative.
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Based on https://stackoverflow.com/a/5155015/536 
+        /// </remarks>
+        public static int GetDeterministicHashCode(this string text)
+        {
+            return GetDeterministicHashCode(new[] { text });
+        }
+
+        /// <summary>
+        /// Gets a deterministic hash code. Since string.GetHashCode is not deterministic, returning different results in different app contexts, this offers a deterministic alternative.
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Based on https://stackoverflow.com/a/5155015/536 
+        /// </remarks>
+        public static int GetDeterministicHashCode(this IEnumerable<string> lines)
+        {
+            unchecked
+            {
+                var hash = 23;
+                foreach (var line in lines)
+                {
+                    foreach (char c in line)
+                    {
+                        hash = hash * 31 + c;
+                    }
+                }
+
+                return hash;
+            }
+        }
     }
 }

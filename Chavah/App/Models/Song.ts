@@ -145,7 +145,7 @@ namespace BitShuva.Chavah {
         }
 
         getEmbedCode(): string {
-            return `<iframe style="border-top: medium none; height: 558px; border-right: medium none; width: 350px; border-bottom: medium none; border-left: medium none" src="http://messianicradio.com/home/embed?song=${this.id}" scrolling="none"></iframe>`;
+            return `<iframe style="border-top: medium none; height: 558px; border-right: medium none; width: 350px; border-bottom: medium none; border-left: medium none" src="https://messianicradio.com/home/embed?song=${this.id}" scrolling="none"></iframe>`;
         }
         
         updateFrom(other: Song) {

@@ -50,10 +50,12 @@ namespace BitShuva.Common
         /// <param name="session"></param>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public static async Task<IEnumerable<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
+        public static async Task<IList<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
         {
             var result = await session.LoadAsync<T>(ids);
-            return result.Where(item => item != null);
+            return result
+                .Where(item => item != null)
+                .ToList();
         }
 
         /// <summary>

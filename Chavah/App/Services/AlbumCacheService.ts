@@ -8,7 +8,6 @@
         cache: Album[] = [];
         private static cacheKey = "album-art-cache";
         private static hasAttemptedRehydratedCache = false;
-        songIdsWithNoAlbum: string[] = [];
 
         static $inject = [
             "albumApi",
@@ -27,55 +26,41 @@
                 }
             }
 
-            var songsNeedingAlbum: Song[] = [];
-            var songsWithAlbumInCache: Song[] = [];
+            var albumIdCacheMisses: string[] = [];
             var albumsForSongs: Album[] = [];
-            var songsToFetch = songs.filter(s => !this.songIdsWithNoAlbum.includes(s.id));
-            songsToFetch.forEach(s => {
+            var albumIdsToFetch = _.uniq(songs
+                .filter(s => !!s.albumId)
+                .map(s => s.albumId!));
+            albumIdsToFetch.forEach(albumId => {
                 // Do we have it in the cache? 
-                var cachedAlbum = this.getAlbumForSong(s);
+                var cachedAlbum = this.getCachedAlbum(albumId);
                 if (cachedAlbum) {
-                    songsWithAlbumInCache.push(s);
                     albumsForSongs.push(cachedAlbum);
                 } else {
-                    songsNeedingAlbum.push(s);
+                    albumIdCacheMisses.push(albumId);
                 }
             });
 
             // If everthing's in the cache, just return that.            
-            var allInCache = songsNeedingAlbum.length === 0;
+            var allInCache = albumIdCacheMisses.length === 0;
             if (allInCache) {
                 return this.$q.resolve(albumsForSongs);
             }
 
             // At least some songs need their album fetched.
             var deferredResult = this.$q.defer<Album[]>();
-            var songIdsNeedingAlbum = songsNeedingAlbum.map(s => s.id);
-            if (songIdsNeedingAlbum.length === 0) {
-                deferredResult.resolve([]);
-            }
-            this.albumApi.getAlbumsForSongs(songIdsNeedingAlbum)
+            this.albumApi.getAlbums(_.uniq(albumIdCacheMisses))
                 .then(results => {
-                    deferredResult.resolve(albumsForSongs.concat(results));
                     this.addToCache(results);
-
-                    // Are there any songs that didn't come back with an album?
-                    var songsWithoutAlbumIds = songsToFetch
-                        .filter(s => !this.cacheHasAlbumForSong(s))
-                        .map(s => s.id);
-                    this.songIdsWithNoAlbum.push(...songsWithoutAlbumIds);
+                    deferredResult.resolve(albumsForSongs.concat(results));
                 });
 
             return deferredResult.promise;
         }
 
-        private getAlbumForSong(song: Song): Album | null {
-            return this.cache.find(album => album.id === song.albumId || // Check by album ID
-                (album.name == song.album && (album.artist === song.artist || album.isVariousArtists))); // Fallback: check by album name and artist name. (If album is various artists, check only on album name)
-        }
-
-        private cacheHasAlbumForSong(song: Song): boolean {
-            return !!this.getAlbumForSong(song);
+        private getCachedAlbum(albumId: string): Album | null {
+            var albumIdLowered = albumId.toLowerCase();
+            return this.cache.find(album => album.id.toLowerCase() === albumIdLowered);
         }
 
         private addToCache(albums: Album[]) {

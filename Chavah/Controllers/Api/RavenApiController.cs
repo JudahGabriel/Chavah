@@ -18,7 +18,7 @@ namespace BitShuva.Controllers
     {
 
         private ApplicationUser currentUser;
-        private ILoggerService _logger;
+        protected ILoggerService _logger;
         public IAsyncDocumentSession DbSession { get; private set; }
         public SessionToken SessionToken { get; set; }
 
@@ -35,6 +35,7 @@ namespace BitShuva.Controllers
         {
             base.Initialize(controllerContext);
             DbSession = controllerContext.Request.GetOwinContext().Get<IAsyncDocumentSession>();
+            DbSession.Advanced.WaitForIndexesAfterSaveChanges(TimeSpan.FromSeconds(30), throwOnTimeout: false);
         }
 
         public async override Task<HttpResponseMessage> ExecuteAsync(
@@ -51,17 +52,21 @@ namespace BitShuva.Controllers
                 catch (Exception error)
                     when (!(error is TaskCanceledException) && (!error.Message.Contains("A task was canceled", StringComparison.InvariantCultureIgnoreCase))) // We don't care if it's just a TaskCancelledException.
                 {
-                    var actionDescriptor = controllerContext.Request.GetActionDescriptor();
-                    var controllerName = actionDescriptor.ControllerDescriptor.ControllerName;
-                    var actionName = actionDescriptor.ActionName;
-                    var requestDetails = await RequestDetails.FromHttpRequest(controllerContext.Request, this.SessionToken.SomeNotNull());
+                    var actionDescriptor = controllerContext?.Request?.GetActionDescriptor();
+                    var controllerName = actionDescriptor?.ControllerDescriptor?.ControllerName ?? string.Empty;
+                    var actionName = actionDescriptor?.ActionName ?? string.Empty;
+
+                    var requestDetails = default(RequestDetails);
+                    if (controllerContext?.Request != null)
+                    {
+                        requestDetails = await RequestDetails.FromHttpRequest(controllerContext.Request, this.SessionToken.SomeNotNull());
+                    }
                     await _logger.Error($"Error executing action {controllerName}/{actionName}.", error.ToDetailedString(), requestDetails);
                     throw; // Throw, because we don't want to try to save changes below.
                 }
 
                 try
                 {
-                    DbSession.Advanced.WaitForIndexesAfterSaveChanges(TimeSpan.FromSeconds(5), false);
                     await DbSession.SaveChangesAsync();
                 }
                 catch (Exception error)

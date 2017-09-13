@@ -14,7 +14,8 @@ namespace BitShuva.Models
         public string ImageUrl { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;
 
-        private const string chavahAuthorImageUrl = "http://lh3.googleusercontent.com/-MnT1oNhnDRo/AAAAAAAAAAI/AAAAAAAADHk/QUllcYnPVVo/s512-c/photo.jpg";
+        private const string chavahAuthorImageUrl = "https://bitshuvafiles01.com/chavah/judah.jpg";
+        private const string chavahSystemNotificationImage = "https://bitshuvafiles01.com/chavah/chavah-blog.jpg";
 
         public static Notification Welcome()
         {
@@ -44,7 +45,7 @@ namespace BitShuva.Models
         {
             return new Notification
             {
-                ImageUrl = chavahAuthorImageUrl,
+                ImageUrl = chavahSystemNotificationImage,
                 Title = $"New song edits awaiting your approval",
                 Url = $"/#/admin/songedits",
                 IsUnread = true,

@@ -288,12 +288,12 @@ namespace BitShuva.Controllers
             else if (!isSameCode)
             {
                 errorMessage = "Tried to confirm email, but the confirmation code was wrong.";
-                await _logger.Warn(errorMessage, (expected: regToken.Map(t => t.Token).ValueOr(""), actual: confirmCode));
+                await _logger.Warn(errorMessage, (expected: regToken.FlatMap(t => t.Token).ValueOr(""), actual: confirmCode));
             }
             else
             {
                 errorMessage = "Tried to confirm email, but the confirmation code was for an incorrect user.";
-                await _logger.Error(errorMessage, null, (expected: regToken.Map(t => t.ApplicationUserId).ValueOr(""), actual: email));
+                await _logger.Error(errorMessage, null, (expected: regToken.FlatMap(t => t.ApplicationUserId).ValueOr(""), actual: email));
             }
 
             //var confirmResult = await UserManager.ConfirmEmailAsync(userId, confirmCode);

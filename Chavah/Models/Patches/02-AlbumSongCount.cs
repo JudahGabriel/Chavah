@@ -24,13 +24,13 @@ namespace BitShuva.Models.Patches
             var albumIdSongCounts = new Dictionary<string, (Album album, int songCount)>(600);
             using (var dbSession = db.OpenSession())
             {
-                var albumStream = dbSession.Advanced.Stream<Album>("Albums/");
+                var albumStream = dbSession.Advanced.Stream<Album>("albums/");
                 while (albumStream.MoveNext())
                 {
                     albumIdSongCounts.Add(albumStream.Current.Document.Id, (albumStream.Current.Document, 0));
                 }
                 
-                var songStream = dbSession.Advanced.Stream<Song>("Songs/");
+                var songStream = dbSession.Advanced.Stream<Song>("songs/");
                 while (songStream.MoveNext())
                 {
                     var albumId = songStream.Current.Document.AlbumId;

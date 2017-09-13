@@ -22,13 +22,14 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
     <TypeScriptSourceMap>False</TypeScriptSourceMap>
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
     <TargetFrameworkProfile />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -785,6 +786,7 @@
     <TypeScriptCompile Include="App\Services\SongApiService.ts" />
     <TypeScriptCompile Include="App\Services\StationIdentifierService.ts" />
     <TypeScriptCompile Include="App\Services\TagService.ts" />
+    <TypeScriptCompile Include="ServiceWorker.ts" />
     <TypeScriptCompile Include="Models\Album.cs.d.ts">
       <DependentUpon>Album.cs</DependentUpon>
     </TypeScriptCompile>

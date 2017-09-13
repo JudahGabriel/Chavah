@@ -58,7 +58,7 @@
         <meta name="msapplication-notification" content="frequency=30;polling-uri=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=1;polling-uri2=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=2;polling-uri3=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=3;polling-uri4=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=4;polling-uri5=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=5; cycle=1" />
 
         @* Web app manifest. Browsers use this to install the app to the desktop if the users wants to. *@
-        @* Commented out: we need to get this working. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/ *@
+        @* Commented out: this won't work until our service worker supports offline fetch. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/ *@
         @*<link rel="manifest" href="/WebAppManifest.json" />*@
 
         @* Twitter card *@
@@ -69,7 +69,7 @@
             // Show a Twitter summary card with the song info.
             <meta name="twitter:card" content="summary" />
             @*<meta name="twitter:card" content="summary_large_image" />*@ 
-            <meta name="twitter:url" content="http://messianicradio.com@(Model.Song.GetSongShareLink())" />
+            <meta name="twitter:url" content="https://messianicradio.com@(Model.Song.GetSongShareLink())" />
             <meta name="twitter:title" content="@Model.Song.Name by @Model.Song.Artist" />
             <meta name="twitter:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
             <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
@@ -78,10 +78,10 @@
         {
             // Show a Twitter summary card for Chavah itself, rather than for a song.
             <meta name="twitter:card" content="summary" />
-            <meta name="twitter:url" content="http://messianicradio.com" />
+            <meta name="twitter:url" content="https://messianicradio.com" />
             <meta name="twitter:title" content="Chavah Messianic Radio" />
             <meta name="twitter:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
-            <meta name="twitter:image" content="http://messianicradio.com/content/images/chavahLogoTwitterCard.png" />
+            <meta name="twitter:image" content="https://messianicradio.com/content/images/chavahLogoTwitterCard.png" />
         }
 
         <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css'>

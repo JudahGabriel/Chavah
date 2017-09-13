@@ -46,7 +46,7 @@
                 this.hasPlayedRequestAnnouncement = true;
                 var songRequestNumbers = [1, 3, 4, 5, 6, 7, 8, 9, 10];
                 var songRequestName = "SongRequest" + songRequestNumbers[Math.floor(Math.random() * songRequestNumbers.length)] + ".mp3";
-                var songRequestUrl = "http://bitshuvafiles01.com/chavah/soundEffects/" + songRequestName;
+                var songRequestUrl = "https://bitshuvafiles01.com/chavah/soundEffects/" + songRequestName;
                 this.audioPlayer.playNewUri(songRequestUrl);
             }
             else {

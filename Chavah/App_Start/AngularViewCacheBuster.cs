@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BitShuva.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -47,12 +48,12 @@ namespace BitShuva
             return line;
         }
 
-        int GetHashCodeForHtmlContents(string filePath)
+        private int GetHashCodeForHtmlContents(string filePath)
         {
             var directoryPath = VirtualPathUtility.ToAbsolute(filePath);
             var root = AppDomain.CurrentDomain.BaseDirectory;
             var absolutePath = System.IO.Path.Combine(root, directoryPath.Replace("/App/", "App/").Replace("/", "\\"));
-            return System.IO.File.ReadAllText(absolutePath).GetHashCode();
+            return System.IO.File.ReadLines(absolutePath).GetDeterministicHashCode();
         }
     }
 }

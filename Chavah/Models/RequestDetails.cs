@@ -22,7 +22,7 @@ namespace BitShuva.Models
             {
                 Method = request.Method?.Method,
                 Uri = request.RequestUri?.ToString(),
-                UserId = sessionToken.Map(t => t.UserId).ValueOrDefault(),
+                UserId = sessionToken.FlatMap(t => t.UserId).ValueOrDefault(),
                 Headers = request.Headers != null ? JsonConvert.SerializeObject(request.Headers.ToDictionary(a => a.Key, a => string.Join(";", a.Value))) : string.Empty
             };
 
