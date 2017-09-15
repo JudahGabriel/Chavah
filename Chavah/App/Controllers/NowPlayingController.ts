@@ -9,6 +9,7 @@
         isFetchingAlbums = false;
         currentSong: Song | null;
         recurringFetchHandle: number | null;
+        disposed = new Rx.Subject<boolean>();
 
         static $inject = [
             "songApi",
@@ -18,8 +19,7 @@
             "initConfig",
             "appNav",
             "accountApi",
-            "$q",
-            "$scope"
+            "$q"
         ];
 
         constructor(
@@ -30,12 +30,11 @@
             private initConfig: InitConfig,
             private appNav: AppNavService,
             private accountApi: AccountService,
-            private $q: ng.IQService,
-            $scope: ng.IScope) {
+            private $q: ng.IQService) {
 
-            this.audioPlayer.song.subscribeOnNext(song => this.nextSongBeginning(song));
-            this.audioPlayer.songCompleted.throttle(5000).subscribe(song => this.songCompleted(song));
-            this.songBatch.songsBatch.subscribeOnNext(() => this.songs = this.getSongs());
+            this.audioPlayer.song.takeUntil(this.disposed).subscribeOnNext(song => this.nextSongBeginning(song));
+            this.audioPlayer.songCompleted.takeUntil(this.disposed).throttle(5000).subscribe(song => this.songCompleted(song));
+            this.songBatch.songsBatch.takeUntil(this.disposed).subscribeOnNext(() => this.songs = this.getSongs());
             
             // Recent plays we fetch once, at init. Afterwards, we update it ourselves.
             this.fetchRecentPlays();
@@ -55,8 +54,6 @@
                     }
                 }
             }
-
-            $scope.$on("$destroy", () => this.dispose());
         }
 
         get currentArtistDonateUrl(): string {
@@ -92,10 +89,12 @@
             return "#";
         }
 
-        dispose() {
+        $onDestroy() {
             if (this.recurringFetchHandle) {
                 clearTimeout(this.recurringFetchHandle);
             }
+
+            this.disposed.onNext(true);
         }
         
         getSongs(): Song[] {
