@@ -1,6 +1,7 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using CoreFtp;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -16,19 +17,24 @@ using System.Web;
 
 namespace BitShuva.Chavah.Common
 {
+    /// <summary>
+    /// Uploads files to our CDN. Our CDN hosts our media files, like MP3 audio files and album art files.
+    /// </summary>
     public class CdnManager
     {
         private readonly IOptions<CdnSettings> cdnSettings;
         private readonly ILogger logger;
+        private readonly IHostingEnvironment hostingEnv;
 
         private const string musicDirectoryName = "music";
         private const string albumArtDirectoryName = "album-art";
         private const string artistImagesDirectoryName = "artist-images";
 
-        public CdnManager(IOptions<CdnSettings> cdnSettings, ILogger logger)
+        public CdnManager(IOptions<CdnSettings> cdnSettings, ILogger logger, IHostingEnvironment hostingEnv)
         {
             this.cdnSettings = cdnSettings;
             this.logger = logger;
+            this.hostingEnv = hostingEnv;
         }
 
         public Uri FtpAddress => new Uri(cdnSettings.Value.FtpHost);
@@ -36,10 +42,10 @@ namespace BitShuva.Chavah.Common
         public Uri FtpMusic => this.FtpWorkingDirectory.Combine(cdnSettings.Value.MusicDirectory);
         //public Uri FtpAlbumArt => this.FtpAddress.Combine("album-art");
         //public Uri FtpArtistImages => this.FtpAddress.Combine("artist-images");
-        public Uri CdnAddress => new Uri(cdnSettings.Value.HttpPath);
-        public Uri CdnMusic => this.CdnAddress.Combine(cdnSettings.Value.MusicDirectory);
-        //public Uri CdnAlbumArt => this.CdnAddress.Combine("album-art");
-        //public Uri CdnArtistImages => this.CdnAddress.Combine("artist-images");
+        public Uri HttpHost => new Uri(cdnSettings.Value.HttpPath);
+        public Uri HttpMusic => this.HttpHost.Combine(cdnSettings.Value.MusicDirectory);
+        public Uri HttpAlbumArt => this.HttpHost.Combine(cdnSettings.Value.AlbumArtDirectory);
+        public Uri HttpArtistImages => this.HttpHost.Combine(cdnSettings.Value.ArtistImagesDirectory);
         
         /// <summary>
         /// Uploads the song to the CDN.
@@ -76,7 +82,7 @@ namespace BitShuva.Chavah.Common
                         await sourceStream.CopyToAsync(destinationStream);
                     }
 
-                    return this.CdnMusic.Combine(artistDirectory, fileName);
+                    return this.HttpMusic.Combine(artistDirectory, fileName);
                 }
             }
             catch (Exception error)
@@ -106,7 +112,7 @@ namespace BitShuva.Chavah.Common
             var tempDownloadedFile = default(string);
             try
             {
-                tempDownloadedFile = await CdnManager.DownloadFileLocally(tempHttpAddress);
+                tempDownloadedFile = await DownloadFileLocally(tempHttpAddress);
                 return await UploadAlbumArtToCdn(GetAlphaNumericEnglish(artist), GetAlphaNumericEnglish(album), tempDownloadedFile, fileExtension);
             }
             finally
@@ -134,24 +140,24 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Uploads a local file to the album art directory on the CDN.
         /// </summary>
-        /// <param name="localFileName">The file name, including extension, for the file. This will be the name of the file placed in the CDN.</param>
-        /// <param name="filePath">The path to the contents of the file.</param>
+        /// <param name="destinationFileName">The file name, including extension, for the file. This will be the name of the file placed in the CDN.</param>
+        /// <param name="sourceFilePath">The path to the contents of the file.</param>
         /// <returns></returns>
-        private async Task<Uri> UploadAlbumArtToCdn(string localFileName, string filePath)
+        private async Task<Uri> UploadAlbumArtToCdn(string destinationFileName, string sourceFilePath)
         {
             using (var ftpConnection = await CreateFtpConnection())
             {
-                var localFileNameLower = localFileName.ToLowerInvariant();
+                var fileNameLower = destinationFileName.ToLowerInvariant();
                 
                 // Switch to the album art directory.
                 await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings.Value.AlbumArtDirectory);
-                using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(localFileNameLower))
-                using (var sourceStream = File.OpenRead(filePath))
+                using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(fileNameLower))
+                using (var sourceStream = File.OpenRead(sourceFilePath))
                 {
                     await sourceStream.CopyToAsync(destinationStream);
                 }
 
-                return albumArtUri.Combine(fileName);
+                return this.HttpAlbumArt.Combine(fileNameLower);
             }
         }
 
@@ -160,18 +166,24 @@ namespace BitShuva.Chavah.Common
         /// </summary>
         /// <param name="tempHttpPath">The temporary HTTP path where the image currently resides. This file will be donwloaded and moved to the CDN.</param>
         /// <returns>The new HTTP URI to the image on the CDN.</returns>
-        public static async Task<Uri> UploadArtistImage(Uri tempHttpPath, string fileName)
+        public async Task<Uri> UploadArtistImage(Uri tempHttpPath, string fileName)
         {
-            var ftpConnection = CreateFtpConnection();
-            var ftpFileUri = ftpArtistImagesDirectory.Combine(fileName);
-            using (var destinationStream = ftpConnection.OpenWrite(ftpFileUri))
-            using (var webClient = new WebClient())
-            using (var sourceStream = await new WebClient().OpenReadTaskAsync(tempHttpPath))
+            using (var ftpConnection = await CreateFtpConnection())
             {
-                await sourceStream.CopyToAsync(destinationStream);
-            }
+                // Switch to the artist images directory.
+                await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings.Value.ArtistImagesDirectory);
+                var safeFileName = GetAlphaNumericEnglish(System.IO.Path.GetFileNameWithoutExtension(fileName));
 
-            return artistImagesUri.Combine(fileName);
+                // Copy the temporary HTTP path to the FTP destination.
+                using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(safeFileName))
+                using (var webClient = new WebClient())
+                using (var sourceStream = await webClient.OpenReadTaskAsync(tempHttpPath))
+                {
+                    await sourceStream.CopyToAsync(destinationStream);
+                }
+
+                return this.HttpAlbumArt.Combine(fileName);
+            }
         }
 
         /// <summary>
@@ -179,18 +191,15 @@ namespace BitShuva.Chavah.Common
         /// </summary>
         /// <param name="httpUrl">The URL of the file to download.</param>
         /// <returns>A task containing the downloaded file name..</returns>
-        public static async Task<string> DownloadFileLocally(Uri httpUrl)
+        private async Task<string> DownloadFileLocally(Uri httpUrl)
         {
-            // Pull it down from http. Ideally, our CDN would do this, but the CDN is currently
-            // a dumb file server with a big pipe.
-
-            var tempFileDirectory = HostingEnvironment.MapPath("~/App_Data");
-            if (!Directory.Exists(tempFileDirectory))
+            var appData = System.IO.Path.Combine(hostingEnv.ContentRootPath, "App_Data");
+            if (!Directory.Exists(appData))
             {
-                Directory.CreateDirectory(tempFileDirectory);
+                Directory.CreateDirectory(appData);
             }
 
-            var tempFilePath = Path.Combine(tempFileDirectory, Path.GetRandomFileName());
+            var tempFilePath = Path.Combine(appData, Path.GetRandomFileName());
             using (var downloader = new System.Net.WebClient())
             {
                 await downloader.DownloadFileTaskAsync(httpUrl, tempFilePath);
@@ -199,26 +208,28 @@ namespace BitShuva.Chavah.Common
             return tempFilePath;
         }
 
-        /// <summary>
-        /// Deletes the song's MP3 file on the CDN.
-        /// </summary>
-        /// <param name="song"></param>
-        public static void DeleteFromCdn(Song song)
-        {
-            var connection = CreateFtpConnection();
-            var artistFolder = GetAlphaNumericEnglish(song.Artist);
-            var songFileName = GetCdnSafeSongFileName(song.Artist, song.Album, song.Number, song.Name);
-            var songUri = ftpMusicDirectory.Combine(artistFolder, songFileName);
-            connection.DeleteFile(songUri);
-        }
+        ///// <summary>
+        ///// Deletes the song's MP3 file on the CDN.
+        ///// </summary>
+        ///// <param name="song"></param>
+        //public Task DeleteFromCdn(Song song)
+        //{
+        //    using (var connection = await CreateFtpConnection())
+        //    {
+        //        var artistFolder = GetAlphaNumericEnglish(song.Artist);
+        //        var songFileName = GetCdnSafeSongFileName(song.Artist, song.Album, song.Number, song.Name);
+        //        var songUri = ftpMusicDirectory.Combine(artistFolder, songFileName);
+        //        connection.DeleteFile(songUri);
+        //    }
+        //}
 
-        public static Uri DefaultAlbumArtUri
-        {
-            get
-            {
-                return albumArtUri.Combine("default.jpg");
-            }
-        }
+        //public static Uri DefaultAlbumArtUri
+        //{
+        //    get
+        //    {
+        //        return albumArtUri.Combine("default.jpg");
+        //    }
+        //}
 
         private async Task<FtpClient> CreateFtpConnection()
         {
