@@ -62,9 +62,10 @@ namespace BitShuva.Chavah.Common
             foreach (var path in paths)
             {
                 builder.Append('/');
-                builder.Append(path);
+                builder.Append(path.Trim('/'));
             }
-            return new Uri(builder.ToString());
+
+            return new Uri(builder.ToString(), uri.IsAbsoluteUri);
         }
 
         /// <summary>

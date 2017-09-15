@@ -1,8 +1,8 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using CoreFtp;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-////using NLog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -19,23 +19,25 @@ namespace BitShuva.Chavah.Common
     public class CdnManager
     {
         private readonly IOptions<CdnSettings> cdnSettings;
+        private readonly ILogger logger;
 
         private const string musicDirectoryName = "music";
         private const string albumArtDirectoryName = "album-art";
         private const string artistImagesDirectoryName = "artist-images";
 
-        public CdnManager(IOptions<CdnSettings> cdnSettings)
+        public CdnManager(IOptions<CdnSettings> cdnSettings, ILogger logger)
         {
             this.cdnSettings = cdnSettings;
+            this.logger = logger;
         }
 
         public Uri FtpAddress => new Uri(cdnSettings.Value.FtpHost);
-        public Uri FtpWorkingDirectory => new Uri(cdnSettings.Value.FtpWorkingDirectory);
+        public Uri FtpWorkingDirectory => new Uri(cdnSettings.Value.FtpWorkingDirectory, UriKind.Relative);
         public Uri FtpMusic => this.FtpWorkingDirectory.Combine(cdnSettings.Value.MusicDirectory);
         //public Uri FtpAlbumArt => this.FtpAddress.Combine("album-art");
         //public Uri FtpArtistImages => this.FtpAddress.Combine("artist-images");
-        //public Uri CdnAddress => new Uri(cdnSettings.Value.HttpPath);
-        //public Uri CdnMusic => this.CdnAddress.Combine("music");
+        public Uri CdnAddress => new Uri(cdnSettings.Value.HttpPath);
+        public Uri CdnMusic => this.CdnAddress.Combine(cdnSettings.Value.MusicDirectory);
         //public Uri CdnAlbumArt => this.CdnAddress.Combine("album-art");
         //public Uri CdnArtistImages => this.CdnAddress.Combine("artist-images");
         
@@ -48,36 +50,40 @@ namespace BitShuva.Chavah.Common
         public async Task<Uri> UploadMp3ToCdn(Uri tempHttpAddress, string artist, string album, int songNumber, string songName)
         {
             var tempDownloadedFile = default(string);
-            //var fileName = GetCdnSafeSongFileName(artist, album, songNumber, songName);
-            //var fileMp3Uri = this.FtpMusic.Combine(artist, fileName);
             try
             {
                 tempDownloadedFile = await DownloadFileLocally(tempHttpAddress);
-                var ftpConnection = await CreateFtpConnection();
-
-                // Inside the music directory, create the artist directory as needed.
-                await ftpConnection.ChangeWorkingDirectoryAsync(this.FtpWorkingDirectory.ToString());
-                try
+                using (var ftpConnection = await CreateFtpConnection())
                 {
-                    await ftpConnection.CreateDirectoryAsync(GetAlphaNumericEnglish(artist));
+
+                    // Inside the music directory, create the artist directory as needed.
+                    await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings.Value.MusicDirectory);
+                    var musicArtistDirs = await ftpConnection.ListDirectoriesAsync();
+                    var artistDirectory = GetAlphaNumericEnglish(artist);
+                    var hasArtistDirectory = musicArtistDirs.Any(m => m.Name == artistDirectory);
+                    if (!hasArtistDirectory)
+                    {
+                        await ftpConnection.CreateDirectoryAsync(artistDirectory);
+                    }
+
+                    // Move into the artist directory and store the file.
+                    var fileName = GetCdnSafeSongFileName(artist, album, songNumber, songName);
+                    await ftpConnection.ChangeWorkingDirectoryAsync(artistDirectory);
+
+                    using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(fileName))
+                    using (var sourceStream = File.OpenRead(tempDownloadedFile))
+                    {
+                        await sourceStream.CopyToAsync(destinationStream);
+                    }
+
+                    return this.CdnMusic.Combine(artistDirectory, fileName);
                 }
-                catch (Exception error)
-                {
-                    // Some FTPs don't report DirectoryExists correctly, then fail on CreateDirectory of existing.
-                }
-
-                using (var destinationStream = ftpConnection.OpenWrite(fileMp3Uri))
-                using (var sourceStream = File.OpenRead(tempDownloadedFile))
-                {
-                    await sourceStream.CopyToAsync(destinationStream);
-                }                
-
-                return musicUri.Combine(artist, fileName);
             }
             catch (Exception error)
             {
-                var errorMessage = $"Unable to upload MP3 to CDN. Attempted to upload \"{fileName}\" to {fileMp3Uri}. See inner exception for details.";
-                throw new Exception(errorMessage, error);
+                var errorMessage = "Unable to upload MP3 to CDN. {songInfo}";
+                logger.LogError(errorMessage, error, (artist, album, songName));
+                throw;
             }
             finally
             {
@@ -95,13 +101,13 @@ namespace BitShuva.Chavah.Common
         /// <param name="tempHttpAddress">The temporary HTTP address where the album art can be downloaded.</param>
         /// <param name="fileExtension">The desired file extension for the file on the CDN.</param>
         /// <returns>A task that represents the async operation.</returns>
-        public static async Task<Uri> UploadAlbumArtToCdn(Uri tempHttpAddress, string artist, string album, string fileExtension)
+        public async Task<Uri> UploadAlbumArtToCdn(Uri tempHttpAddress, string artist, string album, string fileExtension)
         {
             var tempDownloadedFile = default(string);
             try
             {
                 tempDownloadedFile = await CdnManager.DownloadFileLocally(tempHttpAddress);
-                return await UploadAlbumArtToCdn(artist, album, tempDownloadedFile, fileExtension);
+                return await UploadAlbumArtToCdn(GetAlphaNumericEnglish(artist), GetAlphaNumericEnglish(album), tempDownloadedFile, fileExtension);
             }
             finally
             {
@@ -119,7 +125,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="filePath">The fully qualified path to a local file.</param>
         /// <param name="fileExtension">The desired file extension for the file on the CDN.</param>
         /// <returns>The HTTP URI to the file on the CDN.</returns>
-        private static async Task<Uri> UploadAlbumArtToCdn(string artist, string album, string filePath, string fileExtension)
+        private async Task<Uri> UploadAlbumArtToCdn(string artist, string album, string filePath, string fileExtension)
         {
             var fullFileName = string.Join(string.Empty, artist, " - ", album, fileExtension).ToLowerInvariant();
             return await UploadAlbumArtToCdn(fullFileName, filePath);
@@ -128,31 +134,25 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Uploads a local file to the album art directory on the CDN.
         /// </summary>
-        /// <param name="fullFileName">The file name, including extension, for the file. This will be the name of the file placed in the CDN.</param>
+        /// <param name="localFileName">The file name, including extension, for the file. This will be the name of the file placed in the CDN.</param>
         /// <param name="filePath">The path to the contents of the file.</param>
         /// <returns></returns>
-        private static async Task<Uri> UploadAlbumArtToCdn(string fullFileName, string filePath)
+        private async Task<Uri> UploadAlbumArtToCdn(string localFileName, string filePath)
         {
-            var ftpConnection = CreateFtpConnection();
-            var fileName = fullFileName.ToLowerInvariant();
-            var ftpFileUri = ftpAlbumArtDirectory.Combine(fileName);
-            try
+            using (var ftpConnection = await CreateFtpConnection())
             {
-                using (var destinationStream = ftpConnection.OpenWrite(ftpFileUri))
+                var localFileNameLower = localFileName.ToLowerInvariant();
+                
+                // Switch to the album art directory.
+                await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings.Value.AlbumArtDirectory);
+                using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(localFileNameLower))
+                using (var sourceStream = File.OpenRead(filePath))
                 {
-                    using (var sourceStream = File.OpenRead(filePath))
-                    {
-                        await sourceStream.CopyToAsync(destinationStream);
-                    }
+                    await sourceStream.CopyToAsync(destinationStream);
                 }
-            }
-            catch (Exception error)
-            {
-                Console.WriteLine(error.ToString());
-                throw;
-            }
 
-            return albumArtUri.Combine(fileName);
+                return albumArtUri.Combine(fileName);
+            }
         }
 
         /// <summary>

@@ -22,7 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chava.Tests", "Chava.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bitshuva.Server", "Bitshuva.Server\Bitshuva.Server.csproj", "{5E75A8CC-310C-4120-80D4-48FDDA348E4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chavah.NetCore", "Chavah.NetCore\Chavah.NetCore.csproj", "{F1AEC0AF-E797-4DE1-B5F4-7F706E15E641}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chavah.NetCore", "Chavah.NetCore\Chavah.NetCore.csproj", "{F1AEC0AF-E797-4DE1-B5F4-7F706E15E641}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
