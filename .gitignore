@@ -266,3 +266,5 @@ paket-files/
 /Chavah/AppSettings.Debug.Secrets.config
 /Chavah/ConnnectionStrings.Debug.Secrets.config
 /ConnectionStrings.Debug.Secrets.config
+/Chavah.NetCore/appsettings.json
+/Chavah.NetCore/appsettings.Development.json
