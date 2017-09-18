@@ -1,24 +1,26 @@
-﻿using BitShuva.Interfaces;
-using BitShuva.Models;
-using System.Web.Mvc;
+﻿using BitShuva.Chavah.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
-    public class OffersController : RavenController
+    public class OffersController : Controller
     {
-        private ILoggerService _logger;
+        private readonly ILogger<OffersController> logger;
+        private readonly IHostingEnvironment host;
 
-        public OffersController(ILoggerService logger)
+        public OffersController(IHostingEnvironment host, ILogger<OffersController> logger)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.host = host;
         }
 
-        public FileResult KolYonahFreeDownload()
+        public IActionResult KolYonahFreeDownload()
         {
-            _logger.Info("Free Kol Yonah download has been downloaded", Request.UserAgent);
-            //ChavahLog.Info(this.DbSession, "Free Kol Yonah download has been downloaded", Request.UserAgent);
-            var filePath = Server.MapPath("~/Content/offers/Micha'el Eliyahu BenDavid - Kol Yonah - 10 - Rejoice in Yah.mp3");
-            return File(filePath, "audio/mpeg", "Rejoice in Yah.mp3");
+            Request.Headers.TryGetValue("User-Agent", out var userAgent);
+            logger.LogInformation("Free Kol Yonah download has been downloaded. User agent {userAgent}", userAgent);
+            return Redirect("https://bitshuvafiles01.com/chavah/music/Micha'el%20Eliyahu%20BenDavid/Micha_el%20Eliyahu%20BenDavid%20-%20Kol%20Yonah%20-%2010%20-%20Rejoice%20in%20Yah.mp3");
         }
     }
 }

@@ -1,24 +1,32 @@
-﻿using BitShuva.Models;
+﻿using BitShuva.Chavah.Models;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Mvc;
 using Raven.Client;
 using Raven.Client.Linq;
 using System.Text;
 using System;
 using System.Collections.Generic;
-using BitShuva.Models.Indexes;
-using BitShuva.Common;
+using BitShuva.Chavah.Models.Indexes;
+using BitShuva.Chavah.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
     public class StreamController : RavenController
     {
+        public StreamController(
+            IAsyncDocumentSession dbSession, 
+            ILogger<StreamController> logger)
+            : base(dbSession, logger)
+        {
+        }
+
         /// <summary>
         /// Returns an M3U file. Used for streaming services such as TuneIn radio.
         /// </summary>
         /// <returns></returns>
-        public ActionResult TuneInV2()
+        public IActionResult TuneInV2()
         {
             // The M3U file will contain a single URL:
             // The URL to our GetNextSong() action.
@@ -29,7 +37,7 @@ namespace BitShuva.Controllers
             var m3uBuilder = new StringBuilder();
             m3uBuilder.AppendLine("# EXTM3U"); // The header
 
-            var getNextSongUrl = this.Url.Action(nameof(GetNextSong), "Stream", null, this.Request.Url.Scheme);
+            var getNextSongUrl = this.Url.Action(nameof(GetNextSong), "Stream", null, this.Request.Scheme);
             m3uBuilder.AppendLine(getNextSongUrl);
 
             var m3uBytes = Encoding.UTF8.GetBytes(m3uBuilder.ToString());
@@ -51,7 +59,7 @@ namespace BitShuva.Controllers
             var m3uBuilder = new StringBuilder();
             m3uBuilder.AppendLine("# EXTM3U"); // The header
 
-            var getNextSongUrl = this.Url.Action(nameof(GetNextShabbatSong), "Stream", null, this.Request.Url.Scheme);
+            var getNextSongUrl = this.Url.Action(nameof(GetNextShabbatSong), "Stream", null, this.Request.Scheme);
             m3uBuilder.AppendLine(getNextSongUrl);
 
             var m3uBytes = Encoding.UTF8.GetBytes(m3uBuilder.ToString());
@@ -66,6 +74,7 @@ namespace BitShuva.Controllers
                 "peaceful",
                 "beautiful",
                 "soft",
+                "slow",
                 "prayer",
                 "liturgy",
                 "instrumental",
