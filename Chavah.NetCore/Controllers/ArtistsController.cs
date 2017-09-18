@@ -1,18 +1,19 @@
-﻿using BitShuva.Models;
-using BitShuva.Common;
+﻿using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Indexes;
+using BitShuva.Chavah.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using BitShuva.Models.Indexes;
 
 namespace BitShuva.Controllers
 {
-    [JwtSession]
-    [RoutePrefix("api/artists")]
+    //[JwtSession]
+    [Route("api/artists")]
     public class ArtistsController : RavenApiController
     {
         [Route("getByName")]

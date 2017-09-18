@@ -1,17 +1,15 @@
-﻿using BitShuva.Models;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Raven.Client;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
-using Raven.Client;
-using Optional;
-using BitShuva.Common;
 
 namespace BitShuva.Controllers.Api
 {
-    [RoutePrefix("api/logs")]
+    [Route("api/logs")]
     [Authorize(Roles = "Admin")]
     public class LogsController : RavenApiController
     {

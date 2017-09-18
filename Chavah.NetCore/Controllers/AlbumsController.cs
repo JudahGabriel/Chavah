@@ -1,6 +1,11 @@
-﻿using BitShuva.Common;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Indexes;
+using BitShuva.Chavah.Services;
 using BitShuva.Interfaces;
-using BitShuva.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Optional.Async;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
@@ -11,17 +16,11 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Web.Http;
-using Optional;
-using Optional.Async;
-using BitShuva.Services;
-using System.Collections.Concurrent;
-using BitShuva.Models.Indexes;
 
 namespace BitShuva.Controllers
 {
-    [JwtSession]
-    [RoutePrefix("api/albums")]
+    //[JwtSession]
+    [Route("api/albums")]
     public class AlbumsController : RavenApiController
     {
         public AlbumsController(ILoggerService logger) : base(logger)
@@ -69,7 +68,7 @@ namespace BitShuva.Controllers
         public async Task<HttpResponseMessage> GetBySongId(string songId)
         {
             var song = await DbSession.LoadNotNullAsync<Song>(songId);
-            var response = Request.CreateResponse(HttpStatusCode.Moved);
+            var response = new HttpResponseMessage(HttpStatusCode.Moved);
             response.Headers.Location = song.AlbumArtUri;
             return response;
         }
@@ -339,13 +338,13 @@ namespace BitShuva.Controllers
 
             if (redirectUri != null)
             {
-                var response = Request.CreateResponse(HttpStatusCode.Moved);
+                var response = new HttpResponseMessage(HttpStatusCode.Moved);
                 response.Headers.Location = redirectUri;
                 return response;
             }
 
             await this._logger.Warn("Unable to find matching album art.", (artist, album));
-            return Request.CreateResponse(HttpStatusCode.NotFound);
+            return new HttpResponseMessage(HttpStatusCode.NotFound);
         }
 
         /// <summary>
@@ -358,7 +357,7 @@ namespace BitShuva.Controllers
         public async Task<HttpResponseMessage> GetArtForSong(string songId)
         {
             var song = await DbSession.LoadNotNullAsync<Song>(songId);
-            var response = Request.CreateResponse(HttpStatusCode.Moved);
+            var response = new HttpResponseMessage(HttpStatusCode.Moved);
             response.Headers.Location = song.AlbumArtUri;
             return response; ;
         }

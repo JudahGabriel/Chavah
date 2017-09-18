@@ -1,20 +1,15 @@
-﻿using BitShuva.Common;
-using BitShuva.Models;
-using BitShuva.Models.Indexes;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Indexes;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
-using Raven.Client.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
 
 namespace BitShuva.Controllers
 {
-    [JwtSession]
-    [RoutePrefix("api/likes")]
+    //[JwtSession]
+    [Route("api/likes")]
     public class LikesController : RavenApiController
     {
         [HttpPost]

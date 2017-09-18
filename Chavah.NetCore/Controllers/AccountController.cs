@@ -1,6 +1,7 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -133,7 +134,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task<AppUser> GetUserWithEmail(string email)
         {
             //TODO: have POCO object to be send back to the app requester
-            var user = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + email);
+            var user = await DbSession.LoadAsync<AppUser>("ApplicationUsers/" + email);
             if (user != null)
             {
                 // Remove the user from the session, as we're going to clear out the password hash for security reasons before sending it to the user.
@@ -167,7 +168,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task<RegisterResults> Register(string email, string password)
         {
             // See if we're already registered.
-            var existingUser = await UserManager.FindByEmailAsync(email.ToLower());
+            var existingUser = await userManager.FindByEmailAsync(email.ToLower());
             if (existingUser != null)
             {
                 return new RegisterResults
@@ -180,7 +181,7 @@ namespace BitShuva.Chavah.Controllers
 
             // The user doesn't exist yet. Try and register him.
             var emailLower = email.ToLowerInvariant();
-            var user = new ApplicationUser
+            var user = new AppUser
             {
                 Id = "ApplicationUsers/" + emailLower,
                 UserName = email,
@@ -188,7 +189,7 @@ namespace BitShuva.Chavah.Controllers
                 LastSeen = DateTime.UtcNow,
                 RegistrationDate = DateTime.UtcNow
             };
-            var creteUserResult = await UserManager.CreateAsync(user, password);
+            var creteUserResult = await userManager.CreateAsync(user, password);
             if (creteUserResult.Succeeded)
             {
                 // Send confirmation email.
@@ -201,9 +202,9 @@ namespace BitShuva.Chavah.Controllers
                 await DbSession.StoreAsync(confirmToken);
                 DbSession.SetRavenExpiration(confirmToken, DateTime.UtcNow.AddDays(14));
 
-                await UserManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken.Token, Request.RequestUri));
+                await userManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken.Token, Request.RequestUri));
 
-                await _logger.Info($"Sending new user confirmation email", (Email: email, ConfirmToken: confirmToken.Token));
+                logger.LogInformation($"Sending new user confirmation email", (Email: email, ConfirmToken: confirmToken.Token));
                 //await ChavahLog.Info(DbSession, $"Sending confirmation email to {email}", new { confirmToken = confirmToken });
                 return new RegisterResults
                 {
@@ -213,7 +214,7 @@ namespace BitShuva.Chavah.Controllers
             else
             {
                 // Registration failed.
-                await _logger.Warn("Register new user failed.", creteUserResult);
+                logger.LogWarning("Register new user failed.", creteUserResult);
                 //await ChavahLog.Warn(DbSession, "Register new user failed.", creteUserResult);
                 return new RegisterResults
                 {
@@ -234,7 +235,7 @@ namespace BitShuva.Chavah.Controllers
             // Make sure the user exists.
             var emailLower = email.ToLowerInvariant();
             var userId = "ApplicationUsers/" + emailLower;
-            var user = await DbSession.LoadAsync<ApplicationUser>(userId);
+            var user = await DbSession.LoadAsync<AppUser>(userId);
             if (user == null)
             {
                 return new ConfirmEmailResult
@@ -263,7 +264,7 @@ namespace BitShuva.Chavah.Controllers
             if (isValidToken)
             {
                 user.IsEmailConfirmed = true;
-                await _logger.Info("Successfully confirmed new account", email);
+                logger.LogInformation("Successfully confirmed new account", email);
 
                 // Add a welcome notification for the user.
                 user.AddNotification(Notification.Welcome());
@@ -271,17 +272,17 @@ namespace BitShuva.Chavah.Controllers
             else if (!regToken.HasValue)
             {
                 errorMessage = "Tried to confirm email, but couldn't find the registration token for this user.";
-                await _logger.Warn(errorMessage, regTokenId);
+                logger.LogWarning(errorMessage, regTokenId);
             }
             else if (!isSameCode)
             {
                 errorMessage = "Tried to confirm email, but the confirmation code was wrong.";
-                await _logger.Warn(errorMessage, (expected: regToken.FlatMap(t => t.Token).ValueOr(""), actual: confirmCode));
+                logger.LogWarning(errorMessage, (expected: regToken.FlatMap(t => t.Token).ValueOr(""), actual: confirmCode));
             }
             else
             {
                 errorMessage = "Tried to confirm email, but the confirmation code was for an incorrect user.";
-                await _logger.Error(errorMessage, null, (expected: regToken.FlatMap(t => t.ApplicationUserId).ValueOr(""), actual: email));
+                logger.LogError(errorMessage, null, (expected: regToken.FlatMap(t => t.ApplicationUserId).ValueOr(""), actual: email));
             }
 
             //var confirmResult = await UserManager.ConfirmEmailAsync(userId, confirmCode);
@@ -305,10 +306,10 @@ namespace BitShuva.Chavah.Controllers
         public async Task<ResetPasswordResult> SendResetPasswordEmail(string email)
         {
             var userId = "ApplicationUsers/" + email.ToLower();
-            var user = await DbSession.LoadAsync<ApplicationUser>(userId);
+            var user = await DbSession.LoadAsync<AppUser>(userId);
             if (user == null)
             {
-                await _logger.Warn($"Tried to reset password, but couldn't find user with that email.", email);
+                logger.LogWarning($"Tried to reset password, but couldn't find user with that email.", email);
                 //await ChavahLog.Warn(DbSession, $"Tried to reset password for {email}, but couldn't find user with that email.");
                 return new ResetPasswordResult
                 {
@@ -319,11 +320,11 @@ namespace BitShuva.Chavah.Controllers
             }
 
             //var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var passwordResetCode = await UserManager.GeneratePasswordResetTokenAsync(userId);
+            var passwordResetCode = await userManager.GeneratePasswordResetTokenAsync(user);
             var mailMessage = SendGridEmailService.ResetPassword(email, passwordResetCode, Request.RequestUri);
-            await UserManager.SendEmailAsync(userId, mailMessage.Subject, mailMessage.Body);
+            await userManager.SendEmailAsync(userId, mailMessage.Subject, mailMessage.Body);
 
-            await _logger.Info($"Sending reset password email", (Email: email, ResetCode: passwordResetCode));
+            logger.LogInformation($"Sending reset password email", (Email: email, ResetCode: passwordResetCode));
             return new ResetPasswordResult
             {
                 Success = true,
@@ -340,10 +341,10 @@ namespace BitShuva.Chavah.Controllers
         public async Task<ResetPasswordResult> ResetPassword(string email, string passwordResetCode, string newPassword)
         {
             var userId = "ApplicationUsers/" + email.ToLower();
-            var user = await DbSession.LoadAsync<ApplicationUser>(userId);
+            var user = await DbSession.LoadAsync<AppUser>(userId);
             if (user == null)
             {
-                await _logger.Warn($"Attempted to reset password, but couldn't find a user with that email", email);
+                logger.LogWarning($"Attempted to reset password, but couldn't find a user with that email", email);
                 //await ChavahLog.Warn(DbSession, $"Attempted to reset password {email}, but couldn't find a user with that email.");
                 return new ResetPasswordResult
                 {
@@ -353,11 +354,11 @@ namespace BitShuva.Chavah.Controllers
             }
 
             //var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var passwordResetResult = await UserManager.ResetPasswordAsync(userId, passwordResetCode, newPassword);
+            var passwordResetResult = await userManager.ResetPasswordAsync(user, passwordResetCode, newPassword);
 
             if (!passwordResetResult.Succeeded)
             {
-                await _logger.Warn($"Unable to reset password", (Email: email, Code: passwordResetCode, Errors: string.Join(", ", passwordResetResult.Errors)));
+               logger.LogWarning($"Unable to reset password", (Email: email, Code: passwordResetCode, Errors: string.Join(", ", passwordResetResult.Errors)));
             }
 
             return new ResetPasswordResult

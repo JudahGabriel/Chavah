@@ -1,19 +1,16 @@
-﻿using BitShuva.Common;
+﻿using BitShuva.Chavah.Models;
 using BitShuva.Interfaces;
-using BitShuva.Models;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
 using Raven.Client.Linq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
 
 namespace BitShuva.Controllers
 {
-    [JwtSession]
-    [RoutePrefix("api/stations")]
+    //[JwtSession]
+    [Route("api/stations")]
     public class StationsController : RavenApiController
     {
         private ILoggerService _logger;

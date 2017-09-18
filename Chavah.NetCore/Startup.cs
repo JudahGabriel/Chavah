@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Services;
 using RavenDB.Identity;
 using Raven.Client;
 using BitShuva.Chavah.Models.Transformers;

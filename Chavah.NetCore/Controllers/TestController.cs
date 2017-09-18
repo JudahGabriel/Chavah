@@ -1,18 +1,14 @@
-﻿using BitShuva.Models;
-using BitShuva.Models.Indexes;
+﻿using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Indexes;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
 
 namespace BitShuva.Controllers
 {
-    [RoutePrefix("api/test")]
-    public class TestController : ApiController
+    [Route("api/test")]
+    public class TestController : Controller
     {
         private readonly IAsyncDocumentSession session;
 
@@ -27,7 +23,7 @@ namespace BitShuva.Controllers
         /// <returns></returns>
         [Route("")]
         [HttpGet]
-        public async Task<IHttpActionResult> Get()
+        public async Task<IActionResult> Get()
         {
             // This queries the Songs_RankStandings index, which will reduce the results.
             var songRankStandings = await session
@@ -41,9 +37,9 @@ namespace BitShuva.Controllers
         [Authorize]
         [Route("User")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetUserInfo()
+        public async Task<IActionResult> GetUserInfo()
         {
-            var user = await session.LoadAsync<ApplicationUser>("ApplicationUsers/" + this.User.Identity.Name);
+            var user = await session.LoadAsync<AppUser>("ApplicationUsers/" + this.User.Identity.Name);
 
             return Ok(user);
         }

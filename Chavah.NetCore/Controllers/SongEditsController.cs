@@ -1,19 +1,17 @@
-﻿using BitShuva.Common;
-using BitShuva.Models;
-using System;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Raven.Client;
+using Raven.Client.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
-using Raven.Client;
-using Raven.Client.Linq;
-using BitShuva.Interfaces;
 
 namespace BitShuva.Controllers
 {
-    [RoutePrefix("api/songEdits")]
-    [JwtSession]
+    [Route("api/songEdits")]
+    //[JwtSession]
     public class SongEditsController : RavenApiController
     {
         private ILoggerService _logger;
@@ -51,8 +49,8 @@ namespace BitShuva.Controllers
                     await DbSession.StoreAsync(songEdit);
 
                     // Notify admins that a new song edit needs approval.
-                    var admins = await DbSession.Query<ApplicationUser>()
-                        .Where(u => u.Roles.Contains(ApplicationUser.AdminRole))
+                    var admins = await DbSession.Query<AppUser>()
+                        .Where(u => u.Roles.Contains(AppUser.AdminRole))
                         .ToListAsync();
                     admins.ForEach(a => a.AddNotification(Notification.SongEditsNeedApproval()));
                 }
@@ -87,7 +85,7 @@ namespace BitShuva.Controllers
                 await _logger.Info("Applied song edit", songEdit);
 
                 // Notify the user.
-                var user = await DbSession.LoadAsync<ApplicationUser>(songEdit.UserId);
+                var user = await DbSession.LoadAsync<AppUser>(songEdit.UserId);
                 if (user != null)
                 {
                     user.AddNotification(Notification.SongEditApproved(song));

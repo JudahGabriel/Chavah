@@ -1,17 +1,16 @@
-﻿using BitShuva.Models.Indexes;
-using BitShuva.Services;
-using Raven.Abstractions.Data;
+﻿using BitShuva.Chavah.Models.Indexes;
+using BitShuva.Chavah.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
 
 namespace BitShuva.Controllers.Api
 {
-    [RoutePrefix("api/tags")]
+    [Route("api/tags")]
     public class TagsController : RavenApiController
     {
         [Authorize(Roles = "Admin")]
