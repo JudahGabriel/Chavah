@@ -1,4 +1,5 @@
 ﻿using Raven.Abstractions.Data;
+using Raven.Client;
 using Raven.Client.Connection;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,11 @@ namespace BitShuva.Chavah.Services
 {
     public class CollectionPatchService
     {
-        public CollectionPatchService(string collection, string script, Dictionary<string, object> scriptTemplateVariables)
+        private readonly IDocumentStore db;
+
+        public CollectionPatchService(IDocumentStore db, string collection, string script, Dictionary<string, object> scriptTemplateVariables)
         {
+            this.db = db;
             this.Collection = collection;
             this.Script = script;
             this.ScriptTemplateVariables = scriptTemplateVariables;
@@ -42,7 +46,7 @@ namespace BitShuva.Chavah.Services
             };
             var query = new IndexQuery { Query = $"Tag:{this.Collection}" };
             var options = new BulkOperationOptions { AllowStale = true };
-            return RavenContext.Db.DatabaseCommands.UpdateByIndex("Raven/DocumentsByEntityName", query, patch, options);
+            return db.DatabaseCommands.UpdateByIndex("Raven/DocumentsByEntityName", query, patch, options);
         }
     }
 }
