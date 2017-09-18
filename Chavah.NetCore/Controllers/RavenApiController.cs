@@ -1,20 +1,16 @@
-﻿using Raven.Client;
+﻿using BitShuva.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Optional;
+using Raven.Client;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Controllers;
-using BitShuva.Common;
-using BitShuva.Models;
-using Microsoft.AspNet.Identity.Owin;
-using BitShuva.Interfaces;
-using Optional;
 
 namespace BitShuva.Controllers
 {
-    public abstract class RavenApiController : ApiController
+    public abstract class RavenApiController : Controller
     {
         private ApplicationUser currentUser;
         protected ILoggerService _logger;

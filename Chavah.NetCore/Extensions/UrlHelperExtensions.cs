@@ -1,4 +1,4 @@
-using BitShuva.Chavah.Controllers.Api;
+using BitShuva.Chavah.Controllers;
 
 namespace Microsoft.AspNetCore.Mvc
 {

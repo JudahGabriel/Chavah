@@ -1,23 +1,16 @@
-﻿using BitShuva.Models;
-using BitShuva.Models.Transformers;
-using BitShuva.Common;
+﻿using BitShuva.Chavah.Models;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web.Http;
-using Optional;
-using Microsoft.AspNet.Identity.Owin;
-using BitShuva.Services;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BitShuva.Controllers
 {
-    [RoutePrefix("api/users")]
-    [JwtSession]
+    [Route("api/users")]
+    //[JwtSession]
     public class UsersController : RavenApiController
     {
         static DateTime startTime = DateTime.UtcNow;
@@ -27,7 +20,7 @@ namespace BitShuva.Controllers
         public async Task<RecentUserSummary> GetRecent(int minutes)
         {
             var recent = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(minutes));
-            var loggedInUsers = await DbSession.Query<ApplicationUser>()
+            var loggedInUsers = await DbSession.Query<AppUser>()
                 .Where(u => u.LastSeen >= recent)
                 .Select(u => u.Email)
                 .ToListAsync();

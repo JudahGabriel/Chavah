@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,10 @@ namespace BitShuva.Services
 {
     public class SendGridEmailService : IIdentityMessageService
     {
+        public SendGridEmailService(IOptions options)
+        {
+            this.options = options;
+        }
         public static IdentityMessage ConfirmEmail(string toEmail, string confirmationCode, Uri hostUri)
         {
             var subject = "Chavah Messianic Radio - confirm your email";
