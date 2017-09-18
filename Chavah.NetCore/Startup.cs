@@ -4,14 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using BitShuva.Chavah.Data;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
 using RavenDB.Identity;
+using Raven.Client;
+using BitShuva.Chavah.Models.Transformers;
+using Raven.Client.Indexes;
+using cloudscribe.Syndication.Models.Rss;
+using BitShuva.Chavah.Common;
 
 namespace BitShuva.Chavah
 {
@@ -35,6 +38,16 @@ namespace BitShuva.Chavah
                 .AddRavenDb(Configuration.GetConnectionString("RavenDbConnection")) // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession() // Create a RavenDB IAsyncDocumentSession for each request.
                 .AddRavenDbIdentity<AppUser>(); // Use Raven for users and roles. AppUser is your class, a simple DTO to hold user data. See https://github.com/JudahGabriel/RavenDB.Identity/blob/master/Sample/Models/AppUser.cs
+
+            // Install our RavenDB indexes and transformers.
+            // TODO: Move this into a helper function, maybe an extension on services?
+            var db = services.BuildServiceProvider()
+                .GetRequiredService<IDocumentStore>();
+            IndexCreation.CreateIndexes(typeof(Startup).Assembly, db);
+            new SongNameTransformer().Execute(db);
+
+            // Add RSS feed services.
+            services.AddScoped<IChannelProvider, RssChannelProvider>();
 
             services.AddMvc();
         }

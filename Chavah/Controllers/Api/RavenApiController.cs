@@ -16,7 +16,6 @@ namespace BitShuva.Controllers
 {
     public abstract class RavenApiController : ApiController
     {
-
         private ApplicationUser currentUser;
         protected ILoggerService _logger;
         public IAsyncDocumentSession DbSession { get; private set; }

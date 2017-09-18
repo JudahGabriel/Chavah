@@ -19,7 +19,6 @@ namespace BitShuva.Controllers
     {
         private readonly ApplicationUserManager UserManager;
         private readonly ApplicationSignInManager SignInManager;
-        private ILoggerService _logger;
 
         public AccountController(ApplicationUserManager userManager, 
                                  ApplicationSignInManager signInManager,
@@ -30,7 +29,7 @@ namespace BitShuva.Controllers
             //this.authenticationManager = authenticationManager;
 
             //logger serivce
-            _logger = logger;
+            //_logger = logger;
         }
 
         [Route("SignIn")]
