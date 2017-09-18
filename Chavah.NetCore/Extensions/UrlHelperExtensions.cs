@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BitShuva.Chavah.Controllers;
+using BitShuva.Chavah.Controllers.Api;
 
 namespace Microsoft.AspNetCore.Mvc
 {

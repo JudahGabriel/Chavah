@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel.Syndication;
-using System.Web;
-using System.Web.Mvc;
+﻿using BitShuva.Chavah.Models.Rss;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.SyndicationFeed;
+using Microsoft.SyndicationFeed.Rss;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Chavah.Common
@@ -12,15 +11,39 @@ namespace Chavah.Common
     {
         public SyndicationFeed Feed { get; set; }
 
-        public override void ExecuteResult(ControllerContext context)
+        public RssActionResult(SyndicationFeed feed)
+        {
+            Feed = feed;
+        }
+        public override void ExecuteResult(ActionContext context)
+        {
+            ExecuteResultAsync(context).GetAwaiter().GetResult();
+        }
+        public async override Task ExecuteResultAsync(ActionContext context)
         {
             context.HttpContext.Response.ContentType = "application/rss+xml";
-
-            Rss20FeedFormatter rssFormatter = new Rss20FeedFormatter(Feed);
-            using (var writer = XmlWriter.Create(context.HttpContext.Response.Output))
+          
+            using (XmlWriter xmlWriter = XmlWriter.Create(context.HttpContext.Response.Body,
+                                   new XmlWriterSettings() { Async = true, Indent = true }))
             {
-                rssFormatter.WriteTo(writer);
+                var writer = new RssFeedWriter(xmlWriter);
+
+                await writer.WriteTitle(Feed.Title);
+                await writer.WriteDescription(Feed.Description);
+                await writer.Write(Feed.Link);
+
+                var languageElement = new SyndicationContent("language");
+                languageElement.Value = Feed.Language;
+                await writer.Write(languageElement);
+
+                foreach (var item in Feed.Items)
+                {
+                    await writer.Write(item);
+                }
+                await writer.WritePubDate(Feed.LastUpdatedTime);
+                await xmlWriter.FlushAsync();
             }
         }
     }
+       
 }

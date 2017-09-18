@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BitShuva.Chavah.Models;
+using System;
 using System.Linq;
-using System.Web;
-using System.Linq.Expressions;
-using System.Diagnostics.Contracts;
-using System.Collections.Concurrent;
-using BitShuva.Chavah.Models;
 using System.Text;
-using System.Threading.Tasks;
-using Optional;
-using Optional.Async;
 
 namespace BitShuva.Chavah.Common
 {
@@ -65,7 +57,7 @@ namespace BitShuva.Chavah.Common
                 builder.Append(path.Trim('/'));
             }
 
-            return new Uri(builder.ToString(), uri.IsAbsoluteUri);
+            return new Uri(builder.ToString());
         }
 
         /// <summary>
