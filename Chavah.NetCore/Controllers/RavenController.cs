@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Raven.Client;
+﻿using Raven.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -13,9 +12,12 @@ namespace BitShuva.Chavah.Controllers
     /// </summary>
     public abstract class RavenController : Controller
     {
-        protected RavenController(IAsyncDocumentSession dbSession)
+        protected readonly ILogger logger;
+
+        protected RavenController(IAsyncDocumentSession dbSession, ILogger logger)
         {
             DbSession = dbSession ?? throw new ArgumentNullException(nameof(dbSession));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             // RavenDB best practice: during save, wait for the indexes to update.
             // This way, Post-Redirect-Get scenarios won't be affected by stale indexes.

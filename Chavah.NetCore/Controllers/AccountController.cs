@@ -1,44 +1,39 @@
-﻿using BitShuva.Common;
-using BitShuva.Models;
-using System;
-using System.Web;
-using Microsoft.AspNet.Identity.Owin;
-using System.Net.Http;
-using System.Web.Http;
-using System.Threading.Tasks;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
 using BitShuva.Services;
-using BitShuva.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Raven.Client;
+using System;
 using System.Collections.Generic;
-using Optional;
+using System.Threading.Tasks;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
-    [RoutePrefix("api/accounts")]
-    [JwtSession]
-    public class AccountController : RavenApiController
+    [Route("api/[controller]")]
+    public class AccountController : RavenController
     {
-        private readonly ApplicationUserManager UserManager;
-        private readonly ApplicationSignInManager SignInManager;
+        private readonly UserManager<AppUser> userManager;
+        private readonly SignInManager<AppUser> signInManager;
 
-        public AccountController(ApplicationUserManager userManager, 
-                                 ApplicationSignInManager signInManager,
-                                 ILoggerService logger) : base(logger)
+        public AccountController(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            IAsyncDocumentSession dbSession, 
+            ILogger<AccountController> logger) 
+            : base(dbSession, logger)
         {
-            this.UserManager = userManager;
-            this.SignInManager = signInManager;
-            //this.authenticationManager = authenticationManager;
-
-            //logger serivce
-            //_logger = logger;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
-        [Route("SignIn")]
         [HttpPost]
-        public async Task<SignInResult> SignIn(string email, string password, bool staySignedIn)
+        public async Task<Models.SignInResult> SignIn(string email, string password, bool staySignedIn)
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                return new SignInResult
+                return new Models.SignInResult
                 {
                     ErrorMessage = "Bad user name or password",
                     Status = SignInStatus.Failure
@@ -46,59 +41,53 @@ namespace BitShuva.Controllers
             }
 
             // Require the user to have a confirmed email before they can log on.
-            var user = await UserManager.FindAsync(email, password);
-            if (user == null)
+            var user = await userManager.FindByEmailAsync(email);
+            var isCorrectPassword = false;
+            if (user != null)
             {
-                await _logger.Info($"Sign in failed; bad user name or password", email);
-                //await ChavahLog.Info(DbSession, "Sign in failed for user " + email + "; bad user name or password.");
-                return new SignInResult
+                isCorrectPassword = await userManager.CheckPasswordAsync(user, password);
+            }
+
+            if (user == null || !isCorrectPassword)
+            {
+                logger.LogInformation("Sign in failed; bad user name or password {email}", email);
+                return new Models.SignInResult
                 {
                     ErrorMessage = "Bad user name or password",
                     Status = SignInStatus.Failure
                 };
             }
 
-            var isEmailConfirmed = await UserManager.IsEmailConfirmedAsync(user.Id);
+            var isEmailConfirmed = await userManager.IsEmailConfirmedAsync(user);
             if (!isEmailConfirmed)
             {
-                return new SignInResult
+                return new Models.SignInResult
                 {
                     Status = SignInStatus.RequiresVerification
                 };
             }
-
-            var jsonWebTokenExpiration = staySignedIn ? DateTime.UtcNow.AddDays(365) : DateTime.UtcNow.AddDays(1);
-            var jsonWebToken = new JsonWebTokenService().WriteToken(user.Email, user.IsAdmin(), jsonWebTokenExpiration);
-            var signInStatus = await SignInManager.PasswordSignInAsync(email, password, staySignedIn, shouldLockout: false);
-
-            var result = new SignInResult
+            
+            var signInResult = await signInManager.PasswordSignInAsync(email, password, staySignedIn, lockoutOnFailure: false);
+            var result = new Models.SignInResult
             {
-                Status = signInStatus,
-                JsonWebToken = signInStatus == SignInStatus.Success ? jsonWebToken : null,
+                Status = SignInStatusFromResult(signInResult),
                 Email = user.Email,
-                Roles = user.Roles
+                Roles = new List<string>(user.Roles)
             };
 
             // If we've successfully signed in, store the json web token in the user.
-            if (signInStatus == SignInStatus.Success)
+            if (result.Status != SignInStatus.Success)
             {
-                user.Jwt = jsonWebToken;
-            }
-            else
-            {
-                await _logger.Info($"Sign in failed", result);
-                //await ChavahLog.Info(DbSession, "Sign in failed for user " + email, signInStatus);
+                logger.LogInformation("Sign in failed with {result}", result);
             }
 
             return result;
         }
 
-        [Route("SignOut")]
         [HttpPost]
-        public void SignOut()
+        public Task SignOut()
         {
-            SignInManager.AuthenticationManager.SignOut();
-            //Request.GetOwinContext().Authentication.SignOut();
+            return signInManager.SignOutAsync();
         }
 
         /// <summary>
@@ -108,40 +97,40 @@ namespace BitShuva.Controllers
         /// <param name="email"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        [Route("CreatePassword")]
+        [HttpPost]
         public async Task CreatePassword(string email, string password)
         {
             // Find the user with that email.
-            await _logger.Info("Migrating user from old system", email);
-            var user = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + email);
+            logger.LogInformation("Migrating user {email} from old system", email);
+            var user = await DbSession.LoadAsync<AppUser>("AppUsers/" + email);
             if (user == null || !user.RequiresPasswordReset || password.Length < 6)
             {
-                throw NewUnauthorizedException();
+                throw new UnauthorizedAccessException();
             }
 
             var userId = "ApplicationUsers/" + email;
-            var removePasswordResult = await UserManager.RemovePasswordAsync(userId);
+            var removePasswordResult = await userManager.RemovePasswordAsync(user);
             if (!removePasswordResult.Succeeded)
             {
                 var errorMessage = "CreatePassword failed because we couldn't remove the old password.";
-                await _logger.Warn(errorMessage, removePasswordResult);
+                logger.LogWarning(errorMessage + "{result}", removePasswordResult);
                 throw new Exception(errorMessage);
             }
 
-            var addPasswordResult = await UserManager.AddPasswordAsync(userId, password);
+            var addPasswordResult = await userManager.AddPasswordAsync(user, password);
             if (!addPasswordResult.Succeeded)
             {
-                string error = $"Unable to set the new password for the user.";
-                await _logger.Warn(error, addPasswordResult);
+                string error = "Unable to set the new password for the user.";
+                logger.LogWarning(error + " {result}", addPasswordResult);
                 throw new Exception(error);
             }
+
             user.RequiresPasswordReset = false;
             user.IsEmailConfirmed = true;
         }
-
-        [Route("GetUserWithEmail")]
+        
         [HttpGet]
-        public async Task<ApplicationUser> GetUserWithEmail(string email)
+        public async Task<AppUser> GetUserWithEmail(string email)
         {
             //TODO: have POCO object to be send back to the app requester
             var user = await DbSession.LoadAsync<ApplicationUser>("ApplicationUsers/" + email);
@@ -376,6 +365,21 @@ namespace BitShuva.Controllers
                 Success = passwordResetResult.Succeeded,
                 ErrorMessage = string.Join(",", passwordResetResult.Errors)
             };
+        }
+
+        private SignInStatus SignInStatusFromResult(Microsoft.AspNetCore.Identity.SignInResult result)
+        {
+            if (result.Succeeded)
+            {
+                return SignInStatus.Success;
+            }
+
+            if (result.IsLockedOut)
+            {
+                return SignInStatus.LockedOut;
+            }
+
+            return SignInStatus.Failure;
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using BitShuva.Chavah.Services;
 
-namespace BitShuva.Chavah.Services
+namespace BitShuva.Chavah.Common
 {
     public static class EmailSenderExtensions
     {
