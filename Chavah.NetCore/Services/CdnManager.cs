@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace BitShuva.Chavah.Common
+namespace BitShuva.Chavah.Services
 {
     /// <summary>
     /// Uploads files to our CDN. Our CDN hosts our media files, like MP3 audio files and album art files.
