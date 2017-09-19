@@ -1,6 +1,7 @@
 ﻿using BitShuva.Chavah.Models;
-using BitShuva.Interfaces;
+using BitShuva.Chavah.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Raven.Client;
 using Raven.Client.Linq;
 using System.Collections.Generic;
@@ -13,11 +14,14 @@ namespace BitShuva.Controllers
     [Route("api/stations")]
     public class StationsController : RavenApiController
     {
-        private ILoggerService _logger;
+        private readonly ILogger<StationsController> logger;
+        private readonly ICdnManagerService cdnManagerService;
 
-        public StationsController(ILoggerService logger)
+        public StationsController(ILogger<StationsController> logger,
+                                  ICdnManagerService cdnManagerService)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.cdnManagerService = cdnManagerService;
         }
         [Route("get")]
         public async Task<IEnumerable<Station>> GetStations()
@@ -39,7 +43,9 @@ namespace BitShuva.Controllers
         {
             var station = await this.DbSession.LoadAsync<Station>(stationId);
             var seed = station.PickRandomSeed();
-            var songsController = new SongsController(_logger) { Request = this.Request };
+
+            //TODO: fix this to proper code!!!
+            var songsController = new SongsController(logger, cdnManagerService) { httpRequest = this.Request };
             var seedType = seed.Item1;
 
             // TODO: implement station.GetSong();

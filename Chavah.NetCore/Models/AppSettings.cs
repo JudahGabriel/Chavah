@@ -3,13 +3,13 @@
 
     public class AppSettings
     {
-        public static Connectionstrings ConnectionStrings { get; set; }
-        public static Logging Logging { get; set; }
-        public static Email Email { get; set; }
-        public static Cdn Cdn { get; set; }
-        public static Filepickr FilePickr { get; set; }
-        public static Ifttt Ifttt { get; set; }
-        public static Jwt Jwt { get; set; }
+        public  Connectionstrings ConnectionStrings { get; set; }
+        public  Logging Logging { get; set; }
+        public  Email Email { get; set; }
+        public  Cdn Cdn { get; set; }
+        public  Filepickr FilePickr { get; set; }
+        public  Ifttt Ifttt { get; set; }
+        public  Jwt Jwt { get; set; }
     }
 
     public class Connectionstrings

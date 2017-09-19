@@ -2,6 +2,7 @@
 using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Raven.Client;
 using System;
 using System.Linq;
@@ -13,6 +14,13 @@ namespace BitShuva.Controllers.Api
     [Authorize(Roles = "Admin")]
     public class LogsController : RavenApiController
     {
+        private readonly ILogger<LogsController> logger;
+
+        public LogsController(ILogger<LogsController> logger)
+        {
+            this.logger = logger;
+        }
+
         [HttpGet]
         [Route("getAll")]
         public async Task<PagedList<LogSummary>> GetAll(int skip, int take)

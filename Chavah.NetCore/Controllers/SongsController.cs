@@ -2,9 +2,10 @@
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Services;
-using BitShuva.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
@@ -18,11 +19,16 @@ namespace BitShuva.Controllers
     //[JwtSession]
     public class SongsController : RavenApiController
     {
-        private ILoggerService _logger;
+        private readonly ILogger logger;
+        private readonly ICdnManagerService cdnManagerService;
 
-        public SongsController(ILoggerService logger)
+        public HttpRequest httpRequest;
+
+        public SongsController(ILogger logger,
+                               ICdnManagerService cdnManagerService)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.cdnManagerService = cdnManagerService;
         }
 
         [HttpGet]
@@ -100,7 +106,7 @@ namespace BitShuva.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = ApplicationUser.AdminRole)]
+        [Authorize(Roles = AppUser.AdminRole)]
         [Route("delete")]
         public async Task Delete(string songId)
         {
@@ -119,11 +125,11 @@ namespace BitShuva.Controllers
 
                 try
                 {
-                    await Task.Run(() => CdnManager.DeleteFromCdn(song));
+                    await cdnManagerService.DeleteFromCdnAsync(song);
                 }
                 catch (Exception error)
                 {
-                    await _logger.Error("Admin deleted song from the database, but we couldn't delete it from the CDN.", error.ToString(), songId);
+                    logger.LogError("Admin deleted song from the database, but we couldn't delete it from the CDN.", error.ToString(), songId);
                     
                     // We eat the exception here, because the song has been deleted from the database. That we didn't remove it from the CDN is a minor inconvenience.
                 }
@@ -273,7 +279,7 @@ namespace BitShuva.Controllers
             var songPick = userPreferences.PickSong(songsWithRanking);
             if (string.IsNullOrEmpty(songPick.SongId))
             {
-                await _logger.Warn("Chose song but ended up with an empty Song ID.", songPick);
+                logger.LogWarning("Chose song but ended up with an empty Song ID.", songPick);
                 return await this.PickRandomSong();
             }
 
@@ -322,7 +328,7 @@ namespace BitShuva.Controllers
                 .ToList();
             if (pickedSongs.Any(s => string.IsNullOrEmpty(s.SongId)))
             {
-                await _logger.Warn("Picked songs for batch, but returned one or more empty song IDs", pickedSongs);
+                logger.LogWarning("Picked songs for batch, but returned one or more empty song IDs", pickedSongs);
             }
 
             // Make a single trip to the database to load all the picked songs.
@@ -332,7 +338,7 @@ namespace BitShuva.Controllers
             var songs = await DbSession.LoadAsync<Song>(pickedSongIds);
             if (songs.Any(s => s == null))
             {
-                await _logger.Warn("Picked songs for batch, but some of the songs came back null.", (SongPicks: pickedSongs, SongIds: pickedSongIds));
+                logger.LogWarning("Picked songs for batch, but some of the songs came back null.", (SongPicks: pickedSongs, SongIds: pickedSongIds));
             }
 
             var songDtos = new List<Song>(songs.Length);
@@ -394,7 +400,7 @@ namespace BitShuva.Controllers
                     .FirstOrDefaultAsync(s => s.Album == album && s.Artist == artist);
             if (songOrNull == null)
             {
-                await _logger.Warn("Couldn't find song by artist and album", (Artist: artist, Album: album));
+                logger.LogWarning("Couldn't find song by artist and album", (Artist: artist, Album: album));
                 return null;
             }
 
@@ -409,7 +415,7 @@ namespace BitShuva.Controllers
                     .FirstOrDefaultAsync(s => s.Tags.Contains(tag));
             if (songOrNull == null)
             {
-                await _logger.Warn("Couldn't find song with tag", tag);
+                logger.LogWarning("Couldn't find song with tag", tag);
                 return null;
             }
             
@@ -527,7 +533,7 @@ namespace BitShuva.Controllers
         public async Task<AudioErrorInfo> AudioFailed(AudioErrorInfo errorInfo)
         {
             errorInfo.UserId = this.SessionToken?.UserId;
-            await _logger.Error("Audio playback failed", null, errorInfo);
+            logger.LogError("Audio playback failed", null, errorInfo);
             return errorInfo;
         }
         

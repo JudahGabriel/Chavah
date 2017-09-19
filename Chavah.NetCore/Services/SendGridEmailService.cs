@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BitShuva.Services
 {
-    public class SendGridEmailService : IIdentityMessageService
+    public class SendGridEmailService : IEmailSender
     {
         private readonly AppSettings appSettings;
 
@@ -15,7 +15,7 @@ namespace BitShuva.Services
         {
             this.appSettings = appSettings.Value;
         }
-        public static IdentityMessage ConfirmEmail(string toEmail, string confirmationCode, Uri hostUri)
+        public IdentityMessage ConfirmEmail(string toEmail, string confirmationCode, Uri hostUri)
         {
             var subject = "Chavah Messianic Radio - confirm your email";
             var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
@@ -31,7 +31,7 @@ namespace BitShuva.Services
             };
         }
 
-        public static IdentityMessage ResetPassword(string toEmail, string resetCode, Uri hostUri)
+        public IdentityMessage ResetPassword(string toEmail, string resetCode, Uri hostUri)
         {
             var subject = "Chavah Messianic Radio - reset your password";
             var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
@@ -49,7 +49,7 @@ namespace BitShuva.Services
 
         public async Task SendAsync(IdentityMessage message)
         {
-            var apiKey = AppSettings.Email.SendGridApiKey;
+            var apiKey = appSettings.Email.SendGridApiKey;
             var client = new SendGrid.SendGridClient(apiKey);
 
             var from = new EmailAddress("chavah@messianicradio.com", "Chavah Messianic Radio");
@@ -66,13 +66,18 @@ namespace BitShuva.Services
             return;
         }
 
-        private static string GetAppUrl(Uri hostUri)
+        public Task SendEmailAsync(string email, string subject, string message)
+        {
+            return Task.CompletedTask;
+        }
+
+        private string GetAppUrl(Uri hostUri)
         {
             var portString = hostUri.Port != 443 && hostUri.Port != 80 ? $":{hostUri.Port}" : "";
             return $"{hostUri.Scheme}://{hostUri.Host}{portString}";
         }
 
-        private static string GetAngularRouteEscapedCode(string input)
+        private string GetAngularRouteEscapedCode(string input)
         {
             // Angular routes don't work with forward slashes, even if escaped. Replace with triple underscore.
             return Uri.EscapeDataString(input.Replace("/", "___"));

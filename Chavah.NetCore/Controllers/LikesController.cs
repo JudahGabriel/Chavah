@@ -2,6 +2,7 @@
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Raven.Client;
 using System;
 using System.Threading.Tasks;
@@ -12,6 +13,14 @@ namespace BitShuva.Controllers
     [Route("api/likes")]
     public class LikesController : RavenApiController
     {
+        private ILogger<LikesController> logger;
+
+        public LikesController(ILogger<LikesController> logger)
+        {
+            this.logger = logger;
+
+        }
+
         [HttpPost]
         [Route("like")]
         public async Task<int> Like(string songId)

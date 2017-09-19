@@ -1,6 +1,6 @@
 ﻿using BitShuva.Chavah.Models;
-using BitShuva.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Raven.Client;
 using Raven.Client.Linq;
 using System.Collections.Generic;
@@ -13,8 +13,11 @@ namespace BitShuva.Controllers
     [Route("api/playlists")]
     public class PlaylistsController : RavenApiController
     {
-        public PlaylistsController(ILoggerService logger) : base(logger)
+        private readonly ILogger<PlaylistsController> logger;
+
+        public PlaylistsController(ILogger<PlaylistsController> logger)
         {
+            this.logger = logger;
         }
 
         [Route("get")]

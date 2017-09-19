@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Common;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -13,6 +15,8 @@ namespace BitShuva.Chavah.Controllers
     public abstract class RavenController : Controller
     {
         protected readonly ILogger logger;
+        private  AppUser currentUser;
+        public SessionToken SessionToken { get; set; }
 
         protected RavenController(IAsyncDocumentSession dbSession, ILogger logger)
         {
@@ -44,6 +48,24 @@ namespace BitShuva.Chavah.Controllers
             {
                 await DbSession.SaveChangesAsync();
             }
+        }
+
+        public async Task<AppUser> GetCurrentUser()
+        {
+            if (this.currentUser != null)
+            {
+                return this.currentUser;
+            }
+
+            if (this.SessionToken != null && !string.IsNullOrEmpty(this.SessionToken.Email))
+            {
+                using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
+                {
+                    this.currentUser = await DbSession.LoadAsync<AppUser>("ApplicationUsers/" + this.SessionToken.Email);
+                }
+            }
+
+            return currentUser;
         }
     }
 }
