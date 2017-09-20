@@ -1,24 +1,21 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BitShuva.Chavah.Models;
 using Microsoft.Extensions.Options;
 using SendGrid.Helpers.Mail;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace BitShuva.Services
 {
-    public class SendGridEmailService : IIdentityMessageService
+    public class SendGridEmailService : IEmailSender
     {
-        public SendGridEmailService(IOptions options)
+        private readonly AppSettings appSettings;
+
+        public SendGridEmailService(IOptions<AppSettings> appSettings)
         {
-            this.options = options;
+            this.appSettings = appSettings.Value;
         }
-        public static IdentityMessage ConfirmEmail(string toEmail, string confirmationCode, Uri hostUri)
+        public IdentityMessage ConfirmEmail(string toEmail, string confirmationCode, Uri hostUri)
         {
             var subject = "Chavah Messianic Radio - confirm your email";
             var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
@@ -34,7 +31,7 @@ namespace BitShuva.Services
             };
         }
 
-        public static IdentityMessage ResetPassword(string toEmail, string resetCode, Uri hostUri)
+        public IdentityMessage ResetPassword(string toEmail, string resetCode, Uri hostUri)
         {
             var subject = "Chavah Messianic Radio - reset your password";
             var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
@@ -52,24 +49,35 @@ namespace BitShuva.Services
 
         public async Task SendAsync(IdentityMessage message)
         {
-            var sendGridApiKey = ConfigurationManager.AppSettings["SendGridApiKey"];
-            var sendGrid = new SendGrid.SendGridAPIClient(sendGridApiKey);
-            var from = new Email("chavah@messianicradio.com", "Chavah Messianic Radio");
-            string subject = message.Subject;
-            var to = new Email(message.Destination);
-            var content = new Content("text/html", message.Body);
-            var mail = new Mail(from, subject, to, content);
+            var apiKey = appSettings.Email.SendGridApiKey;
+            var client = new SendGrid.SendGridClient(apiKey);
 
-            dynamic response = await sendGrid.client.mail.send.post(requestBody: mail.Get());
+            var from = new EmailAddress("chavah@messianicradio.com", "Chavah Messianic Radio");
+
+            string subject = message.Subject;
+            var to = new EmailAddress(message.Destination);
+            var htmlContent = new Content("text/html", message.Body);
+            var plainTextContent = Regex.Replace(htmlContent.Value, "<[^>]*>", "");
+
+            var mail = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent.Value);
+
+            var response = await client.SendEmailAsync(mail);
+
+            return;
         }
 
-        private static string GetAppUrl(Uri hostUri)
+        public Task SendEmailAsync(string email, string subject, string message)
+        {
+            return Task.CompletedTask;
+        }
+
+        private string GetAppUrl(Uri hostUri)
         {
             var portString = hostUri.Port != 443 && hostUri.Port != 80 ? $":{hostUri.Port}" : "";
             return $"{hostUri.Scheme}://{hostUri.Host}{portString}";
         }
 
-        private static string GetAngularRouteEscapedCode(string input)
+        private string GetAngularRouteEscapedCode(string input)
         {
             // Angular routes don't work with forward slashes, even if escaped. Replace with triple underscore.
             return Uri.EscapeDataString(input.Replace("/", "___"));

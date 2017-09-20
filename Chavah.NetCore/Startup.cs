@@ -11,6 +11,7 @@ using BitShuva.Chavah.Models.Transformers;
 using Raven.Client.Indexes;
 using cloudscribe.Syndication.Models.Rss;
 using BitShuva.Chavah.Common;
+using BitShuva.Services;
 
 namespace BitShuva.Chavah
 {
@@ -26,8 +27,13 @@ namespace BitShuva.Chavah
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Configuration settings
+            services.AddOptions();
+            services.Configure<AppSettings>(Configuration);
+
             // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailSender, SendGridEmailService>();
+            services.AddTransient<ICdnManagerService, CdnManagerService>();
 
             // Add RavenDB and identity.
             services

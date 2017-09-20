@@ -1,9 +1,10 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
-using BitShuva.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Raven.Client;
 using Raven.Client.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,11 +15,11 @@ namespace BitShuva.Controllers
     //[JwtSession]
     public class SongEditsController : RavenApiController
     {
-        private ILoggerService _logger;
+        private ILogger<SongEditsController> logger;
 
-        public SongEditsController(ILoggerService logger) : base(logger)
+        public SongEditsController(ILogger<SongEditsController> logger)
         {
-            _logger = logger;
+            this.logger = logger;
         }
 
         [Route("Edit")]
@@ -28,7 +29,7 @@ namespace BitShuva.Controllers
             var user = await this.GetCurrentUser();
             if (user == null)
             {
-                throw NewUnauthorizedException();
+                throw new UnauthorizedAccessException();
             }
 
             var existingSong = await this.DbSession.LoadNotNullAsync<Song>(song.Id);
@@ -82,7 +83,7 @@ namespace BitShuva.Controllers
                 songEdit.Apply(song);
                 songEdit.Status = SongEditStatus.Approved;
                 await DbSession.StoreAsync(songEdit);
-                await _logger.Info("Applied song edit", songEdit);
+                logger.LogInformation("Applied song edit", songEdit);
 
                 // Notify the user.
                 var user = await DbSession.LoadAsync<AppUser>(songEdit.UserId);

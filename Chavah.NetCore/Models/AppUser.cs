@@ -61,5 +61,8 @@ namespace BitShuva.Chavah.Models
                 LockoutEnabled = this.LockoutEnabled
             };
         }
+
+        public bool IsAdmin() => this.Roles.Contains(AppUser.AdminRole);
+
     }
 }

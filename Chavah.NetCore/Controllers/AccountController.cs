@@ -1,5 +1,6 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Services;
 using BitShuva.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,17 +17,22 @@ namespace BitShuva.Chavah.Controllers
     public class AccountController : RavenController
     {
         private readonly UserManager<AppUser> userManager;
+        private readonly IAsyncDocumentSession asyncDocumentSession;
         private readonly SignInManager<AppUser> signInManager;
+        private readonly IEmailSender emailSender;
 
         public AccountController(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            IAsyncDocumentSession dbSession, 
-            ILogger<AccountController> logger) 
-            : base(dbSession, logger)
+            IAsyncDocumentSession asyncDocumentSession, 
+            ILogger<AccountController> logger,
+            IEmailSender emailSender) 
+            : base(asyncDocumentSession, logger)
         {
-            this.userManager = userManager;
             this.signInManager = signInManager;
+            this.userManager = userManager;
+            this.asyncDocumentSession = asyncDocumentSession;
+            this.emailSender = emailSender;
         }
 
         [HttpPost]
@@ -202,7 +208,10 @@ namespace BitShuva.Chavah.Controllers
                 await DbSession.StoreAsync(confirmToken);
                 DbSession.SetRavenExpiration(confirmToken, DateTime.UtcNow.AddDays(14));
 
-                await userManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken.Token, Request.RequestUri));
+                var mailMessage = emailSender.ConfirmEmail(email, confirmToken.Token, new Uri(HttpContext.Request.Path));
+                await emailSender.SendAsync(mailMessage);
+
+                //await userManager.EmailService.SendAsync(SendGridEmailService.ConfirmEmail(email, confirmToken.Token, Request.RequestUri));
 
                 logger.LogInformation($"Sending new user confirmation email", (Email: email, ConfirmToken: confirmToken.Token));
                 //await ChavahLog.Info(DbSession, $"Sending confirmation email to {email}", new { confirmToken = confirmToken });
@@ -321,8 +330,12 @@ namespace BitShuva.Chavah.Controllers
 
             //var userManager = Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var passwordResetCode = await userManager.GeneratePasswordResetTokenAsync(user);
-            var mailMessage = SendGridEmailService.ResetPassword(email, passwordResetCode, Request.RequestUri);
-            await userManager.SendEmailAsync(userId, mailMessage.Subject, mailMessage.Body);
+
+            var mailMessage = emailSender.ResetPassword(email, passwordResetCode, new Uri(HttpContext.Request.Path));
+            await emailSender.SendAsync(mailMessage);
+
+            //var mailMessage = SendGridEmailService.ResetPassword(email, passwordResetCode, Request.RequestUri);
+            //await userManager.SendEmailAsync(userId, mailMessage.Subject, mailMessage.Body);
 
             logger.LogInformation($"Sending reset password email", (Email: email, ResetCode: passwordResetCode));
             return new ResetPasswordResult

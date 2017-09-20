@@ -2,9 +2,9 @@
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Services;
-using BitShuva.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Optional.Async;
 using Raven.Client;
 using Raven.Client.Linq;
@@ -23,8 +23,17 @@ namespace BitShuva.Controllers
     [Route("api/albums")]
     public class AlbumsController : RavenApiController
     {
-        public AlbumsController(ILoggerService logger) : base(logger)
+        private readonly ILogger<AlbumsController> logger;
+        private readonly ICdnManagerService cdnManagerService;
+        private readonly ISongUploadService songUploadService;
+
+        public AlbumsController(ILogger<AlbumsController> logger,
+                                ICdnManagerService cdnManagerService,
+                                ISongUploadService songUploadService)
         {
+            this.logger = logger;
+            this.cdnManagerService = cdnManagerService;
+            this.songUploadService = songUploadService;
         }
 
         /// <summary>
@@ -100,7 +109,7 @@ namespace BitShuva.Controllers
                 throw new ArgumentException("Couldn't find album with ID " + albumId);
             }
 
-            var albumArtUri = await CdnManager.UploadAlbumArtToCdn(new Uri(artUri), album.Artist, album.Name, ".jpg");
+            var albumArtUri = await cdnManagerService.UploadAlbumArtToCdn(new Uri(artUri), album.Artist, album.Name, ".jpg");
             album.AlbumArtUri = albumArtUri;
 
             // Update the songs on this album.
@@ -158,7 +167,7 @@ namespace BitShuva.Controllers
         public async Task<string> Upload(AlbumUpload album)
         {
             // Put the album art on the CDN.
-            var albumArtUriCdn = await CdnManager.UploadAlbumArtToCdn(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
+            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtToCdn(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()
@@ -184,7 +193,7 @@ namespace BitShuva.Controllers
 
             // Store the songs in the DB.
             var songNumber = 1;
-            var uploadService = new SongUploadService();
+            
             foreach (var albumSong in album.Songs)
             {
                 //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
@@ -207,7 +216,7 @@ namespace BitShuva.Controllers
                 await this.DbSession.StoreAsync(song);
 
                 // Queue the songs to be uploaded to the CDN.
-                uploadService.QueueMp3Upload(albumSong, album, songNumber, song.Id);
+                songUploadService.QueueMp3Upload(albumSong, album, songNumber, song.Id);
                 songNumber++;
             }
 
@@ -343,7 +352,7 @@ namespace BitShuva.Controllers
                 return response;
             }
 
-            await this._logger.Warn("Unable to find matching album art.", (artist, album));
+            this.logger.LogWarning("Unable to find matching album art.", (artist, album));
             return new HttpResponseMessage(HttpStatusCode.NotFound);
         }
 

@@ -1,8 +1,10 @@
-﻿using BitShuva.Chavah.Models;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
@@ -16,6 +18,16 @@ namespace BitShuva.Controllers
     [Route("api/artists")]
     public class ArtistsController : RavenApiController
     {
+        private readonly ILogger<ArtistsController> logger;
+        private readonly ICdnManagerService cdnManagerService;
+
+        public ArtistsController(ILogger<ArtistsController> logger,
+                            ICdnManagerService cdnManagerService)
+        {
+            this.logger = logger;
+            this.cdnManagerService = cdnManagerService;
+        }
+
         [Route("getByName")]
         [AllowAnonymous]
         public async Task<Artist> GetByName(string artistName)
@@ -118,17 +130,17 @@ namespace BitShuva.Controllers
         private async Task<List<string>> EnsureArtistImagesOnCdn(string artistName, IList<string> artistImages)
         {
             // Go through each of the images and make sure they're on the CDN.
-            var cdnHost = CdnManager.cdnAddress.Host;
+            var cdnHost = cdnManagerService.FtpAddress.Host;
             var imageUris = new List<string>();
             for (var i = 0; i < artistImages.Count; i++)
             {
                 var image = artistImages[i];
-                var isOnCdn = image.Contains(CdnManager.artistImagesUri.ToString(), StringComparison.InvariantCultureIgnoreCase);
+                var isOnCdn = image.Contains(cdnManagerService.HttpAlbumArt.ToString(), StringComparison.InvariantCultureIgnoreCase);
                 if (!isOnCdn)
                 {
                     var oneBasedIndex = i + 1;
                     var fileName = FindUnusedArtistImageFileName(artistName, oneBasedIndex, artistImages);
-                    var newUri = await CdnManager.UploadArtistImage(new Uri(image), fileName);
+                    var newUri = await cdnManagerService.UploadArtistImage(new Uri(image), fileName);
                     imageUris.Add(newUri.ToString());
                 }
                 else
@@ -143,7 +155,7 @@ namespace BitShuva.Controllers
         static string FindUnusedArtistImageFileName(string artist, int index, IList<string> allFileNames)
         {
             const int maxArtistImages = 10000;
-            var artistCdnSafe = CdnManager.GetAlphaNumericEnglish(artist);
+            var artistCdnSafe = CdnManagerService.GetAlphaNumericEnglish(artist);
             while (index < maxArtistImages)
             {
                 var desiredFileName = $"{artistCdnSafe} {index}.jpg";

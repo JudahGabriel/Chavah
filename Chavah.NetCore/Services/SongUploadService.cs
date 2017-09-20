@@ -16,15 +16,16 @@ namespace BitShuva.Chavah.Services
     /// Uploads an MP3 in the background, and when finished, updates the song.
     /// If the MP3 fails to upload, the Song is deleted from the database.
     /// </summary>
-    public class SongUploadService
+    public class SongUploadService : ISongUploadService
     {
-        private readonly CdnManager cdnManager;
+        private readonly ICdnManagerService cdnManagerService;
         private readonly ILogger<SongUploadService> logger;
         private readonly IDocumentStore db;
 
-        public SongUploadService(CdnManager cdnManager, IDocumentStore db, ILogger<SongUploadService> logger)
+        public SongUploadService(ICdnManagerService cdnManagerService, 
+                                IDocumentStore db, ILogger<SongUploadService> logger)
         {
-            this.cdnManager = cdnManager;
+            this.cdnManagerService = cdnManagerService;
             this.logger = logger;
             this.db = db;
         }
@@ -41,7 +42,7 @@ namespace BitShuva.Chavah.Services
             var albumArtUri = Option.None<Uri>();
             try
             {
-                albumArtUri = Option.Some(await cdnManager.UploadMp3ToCdn(song.Address, album.Artist, album.Name, songNumber, song.FileName));
+                albumArtUri = Option.Some(await cdnManagerService.UploadMp3ToCdn(song.Address, album.Artist, album.Name, songNumber, song.FileName));
             }
             catch (Exception error)
             {

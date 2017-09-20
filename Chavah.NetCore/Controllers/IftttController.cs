@@ -1,18 +1,17 @@
 ﻿using BitShuva.Chavah.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BitShuva.Chavah.Models.Rss;
+using Chavah.Common;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.SyndicationFeed;
+using Newtonsoft.Json;
+using Raven.Abstractions.Data;
 using Raven.Client;
 using Raven.Client.Linq;
-using BitShuva.Chavah.Common;
-using Raven.Abstractions.Data;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -22,54 +21,59 @@ namespace BitShuva.Chavah.Controllers
     [Route("[controller]/[action]")]
     public class IftttController : RavenController
     {
-        private readonly IOptions<AppSettings> appSettings;
-        private readonly IOptions<IftttSettings> iftttSettings;
-
+        private readonly AppSettings appSettings;
+        
         public IftttController(
             IAsyncDocumentSession dbSession, 
             ILogger<IftttController> logger,
-            IOptions<AppSettings> appSettings,
-            IOptions<IftttSettings> iftttSettings)
+            IOptions<AppSettings> appSettings)
             : base(dbSession, logger)
         {
-            this.appSettings = appSettings;
-            this.iftttSettings = iftttSettings;
+            this.appSettings = appSettings.Value;
         }
-        
-        // TODO: Port this method to AspNetCore. Need to support RSS.
-        //[HttpGet]
-        //public async Task<ActionResult> RegisteredUsers()
-        //{
-        //    var lastRegisteredUsers = await DbSession
-        //        .Query<AppUser>()
-        //        .Where(u => u.Email != null)
-        //        .OrderByDescending(a => a.RegistrationDate)
-        //        .Take(100)
-        //        .ToListAsync();
+                
+        [HttpGet]
+        public async Task<ActionResult> RegisteredUsers()
+        {
+            var radioUrl = appSettings.Jwt.key;
 
-        //    var feedItems = from user in lastRegisteredUsers
-        //                    select new SyndicationItem(
-        //                        id: user.Email,
-        //                        lastUpdatedTime: user.RegistrationDate,
-        //                        title: user.Email,
-        //                        content: $"A new user registered on Chavah on {user.RegistrationDate} with email address {user.Email}",
-        //                        itemAlternateLink: new Uri($"{radioUrl}/?user={Uri.EscapeUriString(user.Email)}")
-        //                    );
+            var lastRegisteredUsers = await DbSession
+                .Query<AppUser>()
+                .Where(u => u.Email != null)
+                .OrderByDescending(a => a.RegistrationDate)
+                .Take(100)
+                .ToListAsync();
 
-        //    var feed = new SyndicationFeed("Chavah Messianic Radio",
-        //                                   "The most recent registered users at Chavah Messianic Radio",
-        //                                   new Uri(radioUrl), feedItems)
-        //    {
-        //        Language = "en-US"
-        //    };
-        //    return new RssActionResult { Feed = feed };
-        //}
-        
+            var feedItems = from user in lastRegisteredUsers
+                            select new SyndicationItem
+                            {
+                                Id = user.Email,
+                                LastUpdated = user.RegistrationDate,
+                                Title = user.Email,
+                                Description = $"A new user registered on Chavah on {user.RegistrationDate} with email address {user.Email}",
+
+                            };
+                            //    Id: user.Email,
+                            //    //lastUpdatedTime: user.RegistrationDate,
+                            //    title: user.Email,
+                            //    content: $"A new user registered on Chavah on {user.RegistrationDate} with email address {user.Email}",
+                            //    itemAlternateLink: new Uri($"{radioUrl}/?user={Uri.EscapeUriString(user.Email)}")
+                            //);
+
+            var feed = new SyndicationFeed("Chavah Messianic Radio",
+                                           "The most recent registered users at Chavah Messianic Radio",
+                                           new Uri(radioUrl),"Chavah", feedItems)
+            {
+                Language = "en-US"
+            };
+            return new RssActionResult(feed);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateNotification(string secretToken, string title, string imgUrl, string sourceName, string url)
         {
-            var isValidSecretToken = this.iftttSettings.Value.Key == secretToken;
+            var isValidSecretToken = appSettings.Ifttt.Key == secretToken;
             if (!isValidSecretToken)
             {
                 throw new UnauthorizedAccessException();
