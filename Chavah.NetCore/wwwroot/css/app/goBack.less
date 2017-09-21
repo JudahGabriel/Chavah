@@ -1,0 +1,21 @@
+﻿@import "../variables.less";
+
+.go-back {
+    width: 100%;
+    background-color: @brand-background;
+    position: absolute;
+    left: 0;
+    box-shadow: 0 0 10px @shadow-color;
+
+    a {
+        color: @text-color-light;
+        font-size: 22px;
+        outline: none;
+
+        &:hover, &:active, &:visited, &:focus {
+            color: darken(@text-color-light, 10%);
+            text-decoration: none;
+            outline: none;
+        }
+    }
+}

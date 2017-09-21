@@ -1,8 +1,11 @@
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Rss;
 using BitShuva.Chavah.Services;
+using Chavah.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.SyndicationFeed;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
@@ -136,7 +139,7 @@ namespace BitShuva.Chavah.Controllers
         {
             return View();
         }
-        
+
         // TODO: port this to AspNetCore
         //public async Task<ActionResult> ActivityFeed(int take = 5)
         //{
@@ -152,7 +155,7 @@ namespace BitShuva.Chavah.Controllers
         //                                   "The latest activity over at Chavah Messianic Radio",
         //                                   new Uri(_radioUrl), feedItems)
         //    { Language = "en-US" };
-        //    return new RssActionResult { Feed = feed };
+        //    return new RssActionResult(feed);
         //}
 
     }

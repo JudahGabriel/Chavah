@@ -1,0 +1,67 @@
+﻿<section class="log-editor-page" ng-controller="LogEditorController as vm">
+    <div class="row">
+        <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+            <div class="row">
+                <div class="col-xs-12 col-sm-3">
+                    <div ng-include="Partials.adminSidebar" ng-init="adminPage = 'logs'"></div>
+                </div>
+
+                <div class="col-sm-9">
+
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top: 20px;">
+                        <div class="panel panel-default" ng-repeat="log in vm.logs.items">
+                            <div class="panel-heading" role="tab">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" ng-attr-data-target="{{'#collapse' + $index}}" aria-expanded="true" aria-controls="collapseOne">
+                                        <i class="fa fa-circle" ng-class="{ 'text-danger': log.level === 0, 'text-warning': log.level === 1, 'text-info': log.level === 2, 'text-muted': log.level === 3 }"></i>
+                                        {{vm.getTimeAgo(log.lastOccurrence)}} - {{log.occurrencesCount}} times - {{log.message}}
+                                    </a>
+                                </h4>
+                            </div>
+                            <div ng-attr-id="{{'collapse' + $index}}" class="panel-collapse collapse" role="tabpanel">
+                                <div class="panel-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label>Message</label>
+                                            <textarea type="text" class="form-control" ng-model="log.message" readonly></textarea>
+                                        </div>
+                                        <div class="form-group" ng-show="log.exception">
+                                            <label>Exception</label>
+                                            <pre>{{log.exception}}</pre>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>First occurrence</label>
+                                            <p class="form-control-static">{{vm.getTimeAgo(log.firstOccurrence)}} - {{vm.getFriendlyDate(log.firstOccurrence)}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Last occurrence</label>
+                                            <p class="form-control-static">{{vm.getTimeAgo(log.lastOccurrence)}} - {{vm.getFriendlyDate(log.lastOccurrence)}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Occurrence count</label>
+                                            <p class="form-control-static">{{log.occurrencesCount}}</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Occurrences</label>
+                                            <pre ng-repeat="occ in vm.getOccurrencesText(log)">{{occ}}</pre>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger" ng-click="vm.deleteLog(log)" ng-disabled="vm.isSaving">
+                                            <i class="fa fa-trash-o"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted text-center" ng-show="vm.logs.isLoadedWithData">
+                        Showing {{vm.logs.items.length}} of {{vm.logs.itemsTotalCount}}
+                        <button class="btn btn-default" ng-show="vm.logs.hasMoreItems" ng-click="vm.logs.fetchNextChunk()" ng-disabled="vm.logs.isLoading">
+                            Load more
+                        </button>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
