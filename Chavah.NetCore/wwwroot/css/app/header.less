@@ -1,0 +1,134 @@
+﻿@import "../variables.less";
+
+header {
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: @brand-primary;
+    box-shadow: 0 1px 3px 1px @shadow-color;
+    white-space: nowrap;
+    z-index: 10;
+    height: 100px;
+
+    a, .btn-link {
+        color: @text-color-light;
+
+        &:hover, &:active, &:focus {
+            color: @text-color-light;
+        }
+    }
+
+    .left-decor {
+        margin-left: 30px;
+        margin-right: 30px;
+        max-height: 97px;
+        box-shadow: -2px 0 8px 1px rgba(29, 38, 55, 0.9), 2px 0 8px 1px rgba(29, 38, 55, 0.9);
+    }
+
+    .login {
+        @media (max-width: @screen-xs-max) {
+            position: absolute;
+        }
+    }
+
+    .title {
+        color: @text-color-light;
+        font-size: 42px;
+        text-shadow: 0 2px 1px #1d2637, 2px 0 1px #1d2637, -2px 0 1px #1d2637, 0 -2px 1px #1d2637;
+        font-family: @title-font;
+
+        @media (max-width: @screen-xs-max) {
+            padding-left: 15px;
+        }
+
+        a, a:hover, a:active, a:visited {
+            text-decoration: none;
+        }
+    }
+
+    .title .hebrew {
+        font-size: 48px;
+    }
+
+    .subtitle {
+        color: #d7c146;
+        text-shadow: 0 0 #1d2637;
+        padding: 5px;
+        margin-left: 45px;
+        margin-top: -10px;
+        font-family: 'Simonetta', cursive;
+        font-style: italic;
+        font-size: 22px;
+
+        .btn-link {
+            font-size: 20px;
+            color: #646464;
+            text-shadow: 1px 1px 2px #eeeeee, -1px -1px 2px #eeeeee, 1px -1px 2px #eeeeee, -1px 1px 2px #eeeeee;
+            padding-left: 2px;
+            padding-top: 3px;
+        }
+    }
+
+    .dropdown-menu {
+        // Left auto and right zero. Otherwise, the drop down menu is obscured off to the right side of the screen.
+        left: auto !important;
+        right: 0;
+    }
+
+    .notifications-btn {
+        &.open {
+            button {
+                color: white;
+            }
+        }
+
+        button {
+            text-decoration: none;
+        }
+
+        .dropdown-menu {
+            min-width: 350px;
+
+            @media (max-width: @screen-xs-max) {
+                max-width: 300px;
+            }
+
+            li {
+                border-bottom: 1px solid @gray-lighter;
+                border-top: 1px solid @gray-lighter;
+                padding-bottom: 5px;
+                padding-top: 5px;
+                margin-top: -1px;
+                transition: background-color linear 1s;
+
+                .description {
+                    white-space: normal;
+                }
+
+                img {
+                    max-width: 50px;
+                    max-height: 50px;
+                    margin-right: 10px;
+                    box-shadow: 0 0 5px 0 @gray-light;
+                    vertical-align: text-top;
+                }
+
+                &.unread {
+                    background-color: @gray-light;
+                }
+            }
+        }
+
+        .badge {
+            background-color: red;
+            position: absolute;
+            top: 15px;
+            right: 0;
+        }
+
+        .popover {
+            margin-top: -7px;
+            margin-right: 7px;
+        }
+    }
+}

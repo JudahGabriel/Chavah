@@ -1,0 +1,96 @@
+﻿@import "../variables.less";
+
+.song-list {
+    transform-style: preserve-3d;
+    white-space: nowrap;
+    text-align: center;
+
+    .song-item {
+        cursor: pointer;
+        transition: all .2s linear;
+        margin-top: 2px;
+        display: inline-block;
+        opacity: 1;
+        transform: rotateZ(-10deg) translate3d(0, 10px, 0px);
+        box-shadow: 0 0 8px 0 rgba(0,0,0, .8);
+
+        &:nth-child(2) {
+            transform: translate3d(-30px, 0, 0px);
+        }
+
+        &:nth-child(3) {
+            transform: rotateZ(10deg) translate3d(-60px, 20px, 0px);
+        }
+
+        &.ng-enter-active {
+            opacity: 0;
+        }
+
+        &.ng-enter-stagger {
+            transition-delay: 0.5s;
+            transition-duration: 0s;
+        }
+
+        &.ng-enter {
+            opacity: 0;
+        }
+        
+        /* This allows the removed item to disappear immediately */ 
+        &.ng-leave-active {
+            display: none;
+        }
+
+        .song-info {
+            text-align: left;
+            opacity: .7;
+            transition: all .2s ease-out;
+            background-color: fadeOut(@brand-background, 10%);
+            width: 100%;
+            display: inline-block;
+            position: absolute;
+            bottom: 0px;
+            left: 0;
+            color: @text-color-light;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 11px;
+            padding: 2px;
+        }
+
+        img {
+            max-width: 125px;
+            max-height: 125px;
+
+            // on tablets, shrink the images down further
+            @media (max-width: @screen-md-max) {
+                max-width: 100px;
+                max-height: 100px;
+            }
+
+            // if we're in portrait mode on tablets, shrink even more
+            @media (max-width: 768px) {
+                max-width: 75px;
+                max-height: 75px;
+            }
+        }
+
+        &:hover {
+            transform: scale(1.5) translate3d(5px, 0, 1px);
+            z-index: 2;
+            background-color: @brand-background;
+
+            &:nth-child(2) {
+                transform: scale(1.5) translate3d(-15px, 0, 1px);
+            }
+
+            &:nth-child(3) {
+                transform: scale(1.5) translate3d(-30px, 0, 1px);
+            }
+            
+            .song-info {
+                opacity: .9;
+            }
+        }
+    }
+}

@@ -1,0 +1,21 @@
+﻿/* Colors */
+.go-back {
+  width: 100%;
+  background-color: #2f3d58;
+  position: absolute;
+  left: 0;
+  box-shadow: 0 0 10px gray;
+}
+.go-back a {
+  color: #e9dd9a;
+  font-size: 22px;
+  outline: none;
+}
+.go-back a:hover,
+.go-back a:active,
+.go-back a:visited,
+.go-back a:focus {
+  color: #e0cf70;
+  text-decoration: none;
+  outline: none;
+}

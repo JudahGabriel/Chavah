@@ -1,8 +1,11 @@
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Rss;
 using BitShuva.Chavah.Services;
+using Chavah.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.SyndicationFeed;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
@@ -13,7 +16,7 @@ using System.Xml;
 
 namespace BitShuva.Chavah.Controllers
 {
-    [Route("[controller]/[action]")]
+    //[Route("[controller]/[action]")]
     public class HomeController : RavenController
     {
         private ISongService _songService;
@@ -24,13 +27,12 @@ namespace BitShuva.Chavah.Controllers
         private const string _radioUrl = "https://messianicradio.com";
         private const string _blogUrl = @"http://blog.messianicradio.com/feeds/posts/default";
 
-        public HomeController(
-            IAsyncDocumentSession dbSession,
-            ILogger<HomeController> logger,
-            ISongService songService,
-            IAlbumService albumService,
-            IUserService userService) 
-            : base(dbSession, logger)
+        public HomeController(IAsyncDocumentSession dbSession,
+                                ILogger<HomeController> logger,
+                                ISongService songService,
+                                IAlbumService albumService,
+                                IUserService userService) 
+                                : base(dbSession, logger)
         {
             _songService = songService;
             _albumService = albumService;
@@ -52,12 +54,11 @@ namespace BitShuva.Chavah.Controllers
         [RequireHttps]
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(
-            string user=null, 
-            string artist = null,
-            string album = null,
-            string song = null,
-            bool embed = false)
+        public async Task<IActionResult> Index(string user=null, 
+                                               string artist = null,
+                                               string album = null,
+                                               string song = null,
+                                               bool embed = false)
         {
             var viewModel = new HomeViewModel
             {
@@ -136,7 +137,7 @@ namespace BitShuva.Chavah.Controllers
         {
             return View();
         }
-        
+
         // TODO: port this to AspNetCore
         //public async Task<ActionResult> ActivityFeed(int take = 5)
         //{
@@ -152,7 +153,7 @@ namespace BitShuva.Chavah.Controllers
         //                                   "The latest activity over at Chavah Messianic Radio",
         //                                   new Uri(_radioUrl), feedItems)
         //    { Language = "en-US" };
-        //    return new RssActionResult { Feed = feed };
+        //    return new RssActionResult(feed);
         //}
 
     }

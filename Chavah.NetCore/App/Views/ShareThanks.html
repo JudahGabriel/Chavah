@@ -1,0 +1,28 @@
+﻿<div id="fb-root"></div>
+<script>
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=256833604430846";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+<section ng-controller="ShareThanksController as vm">
+    <div class="row">
+        <div class="col-xs-12 col-sm-8 col-lg-6 col-sm-offset-2 col-lg-offset-3">
+            <br />
+            <h1><i class="fa fa-hand-spock-o text-info"></i> You're a mensch!</h1>
+            <h4>Thanks for spreading Messiah's music on the web. (◕‿◕✿)</h4>
+            <p>
+                Want to help even more? <a href="#/donate" ng-href="{{vm.donateUrl}}">{{vm.donateText}}</a> to amplify and increase Messiah's music.
+            </p>
+        </div>
+    </div>
+</section>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-8 col-lg-6 col-sm-offset-2 col-lg-offset-3">
+        <div class="fb-page" data-href="https://www.facebook.com/chavahmessianicradio/" data-tabs="timeline" data-width="500" data-height="500" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/chavahmessianicradio/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/chavahmessianicradio/">Chavah Messianic Radio</a></blockquote></div>
+    </div>
+</div>
