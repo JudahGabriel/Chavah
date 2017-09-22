@@ -16,7 +16,7 @@ using System.Xml;
 
 namespace BitShuva.Chavah.Controllers
 {
-    [Route("[controller]/[action]")]
+    //[Route("[controller]/[action]")]
     public class HomeController : RavenController
     {
         private ISongService _songService;
@@ -27,13 +27,12 @@ namespace BitShuva.Chavah.Controllers
         private const string _radioUrl = "https://messianicradio.com";
         private const string _blogUrl = @"http://blog.messianicradio.com/feeds/posts/default";
 
-        public HomeController(
-            IAsyncDocumentSession dbSession,
-            ILogger<HomeController> logger,
-            ISongService songService,
-            IAlbumService albumService,
-            IUserService userService) 
-            : base(dbSession, logger)
+        public HomeController(IAsyncDocumentSession dbSession,
+                                ILogger<HomeController> logger,
+                                ISongService songService,
+                                IAlbumService albumService,
+                                IUserService userService) 
+                                : base(dbSession, logger)
         {
             _songService = songService;
             _albumService = albumService;
@@ -55,12 +54,11 @@ namespace BitShuva.Chavah.Controllers
         [RequireHttps]
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(
-            string user=null, 
-            string artist = null,
-            string album = null,
-            string song = null,
-            bool embed = false)
+        public async Task<IActionResult> Index(string user=null, 
+                                               string artist = null,
+                                               string album = null,
+                                               string song = null,
+                                               bool embed = false)
         {
             var viewModel = new HomeViewModel
             {

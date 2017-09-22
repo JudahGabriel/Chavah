@@ -51,6 +51,10 @@ namespace BitShuva.Chavah
             // Add RSS feed services.
             services.AddScoped<IChannelProvider, RssChannelProvider>();
 
+            services.AddTransient<ISongService, SongService>();
+            services.AddTransient<IAlbumService, AlbumService>();
+            services.AddTransient<IUserService, UserService>();
+
             services.AddMvc();
         }
 

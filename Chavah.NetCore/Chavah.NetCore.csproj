@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="App\Polyfills\TsLib.js" />
     <Content Include="App\Views\Albums.html" />
     <Content Include="App\Views\ApproveSongEdits.html" />
     <Content Include="App\Views\ConfirmEmail.html" />
@@ -70,6 +69,7 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.5.357" />
   </ItemGroup>
 
   <ItemGroup>
