@@ -25,7 +25,8 @@
   },
   "homepage": "https://github.com/JudahGabriel/Chavah#readme",
   "dependencies": {
-    "jquery": "^2.2.4"
+    "jquery": "^2.2.4",
+    "rx-lite": "^4.0.8"
   },
   "devDependencies": {
     "@types/angular": "^1.5.8",

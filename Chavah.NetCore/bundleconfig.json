@@ -68,10 +68,10 @@
     "outputFileName": "wwwroot/js/bundle.js",
     "inputFiles": [
       "wwwroot/lib/modernizr/modernizr.js",
+      "wwwroot/lib/nprogress/nprogress.js",
       "wwwroot/lib/moment/moment.js",
       "wwwroot/lib/fastclick/lib/fastclick.js",
-      "wwwroot/lib/nprogress/nprogress.js",
-      "wwwroot/lib/rxjs/dist/rx.js",
+      "wwwroot/lib/rx.lite.js",
       "wwwroot/lib/lodash/lodash.js",
       "wwwroot/lib/tinycolor/tinycolor.js"
     ]
