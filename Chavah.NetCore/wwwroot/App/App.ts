@@ -1,7 +1,6 @@
 ﻿namespace BitShuva.Chavah {
     "use strict";
-
-    var modules = [
+     var modules = [
         "ngRoute",
         "ngAnimate",
         "ui.bootstrap",

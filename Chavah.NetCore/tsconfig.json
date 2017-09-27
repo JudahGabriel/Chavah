@@ -14,7 +14,8 @@
   "compileOnSave": true,
   "exclude": [
     "node_modules",
-    "wwwroot"
-  ]
- 
+    "wwwroot/js/",
+    "wwwroot/lib"
+  ],
+ "include": ["wwwroot/app/"]
 }
