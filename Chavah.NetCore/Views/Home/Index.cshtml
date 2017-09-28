@@ -3,7 +3,7 @@
 }
 
 @model BitShuva.Chavah.Models.HomeViewModel
-@inject IOptions<AppSettings> appSettings
+@inject IOptionsSnapshot<AppSettings> appSettings
 
 <!DOCTYPE html>
 <html>
@@ -136,6 +136,17 @@
         <link rel="stylesheet" href="~/css/app-styles.css" />
     </environment>
 
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" 
+              asp-fallback-test-property="position"
+              asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/app-styles.min.css" 
+              asp-append-version="true" />
+    </environment>
+
+
     <environment names="Development">
         <script src="~/js/jquery.js"></script>
         <script src="~/js/bootstrap.js"></script>
@@ -143,6 +154,27 @@
         <script src="~/js/bundle.js"></script>
         <script src="~/js/app.js"></script>
     </environment>
+
+    <environment names="Staging,Production">
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"
+                asp-fallback-src="~/lib/angular/angular.js">
+        </script>
+
+
+        <script src="~/js/app.min.js" asp-append-version="true"></script>
+    </environment>
+
+
+
     @*
      @Styles.Render("~/bundles/app-styles")
 
