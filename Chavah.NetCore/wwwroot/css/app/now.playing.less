@@ -1,0 +1,251 @@
+﻿@import "../variables.less";
+
+.now-playing-page {
+
+    .songs-container {
+        /*position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;*/
+        width: 50%;
+        margin: auto;
+        height: 365px;
+        margin-top: 20px;
+        // on very large screens, shift the songs to the right a bit.
+        @media (min-width: 1400px) {
+            padding-left: 20px;
+        }
+        // on tiny screens, shrink things down a bit
+        @media (max-width: @screen-xs-max) {
+            height: 290px;
+            width: 75%;
+            margin-top: 0;
+            padding-left: 10px;
+        }
+    }
+
+    .song {
+        min-width: 300px;
+        display: inline-block;
+        /*border: 1px solid gray;*/
+        background-color: white;
+        padding: 5px;
+        box-shadow: 0 0 20px 0 rgba(0,0,0, .5);
+        transition: all ease-in-out .2s;
+        position: absolute;
+        transform-style: preserve-3d;
+        perspective: 50em;
+        cursor: pointer;
+
+        @widthOnXs: 250px;
+
+        @media (max-width: @screen-xs-max) {
+            top: 20px;
+            min-width: @widthOnXs;
+        }
+
+        &:nth-child(1) {
+            z-index: 5;
+            -webkit-box-reflect: below 18px -webkit-gradient( linear, left bottom, left top, from(rgba(255,255,255,0.25)), color-stop(0.3, transparent) );
+        }
+
+        &:nth-child(2) {
+            z-index: 4;
+            transform: scale(.9) translateX(-50px) translateY(-5px) rotateZ(-10deg);
+            opacity: .9;
+        }
+
+        &:nth-child(3) {
+            z-index: 3;
+            transform: scale(.8) translateX(-100px) rotateZ(-15deg);
+            opacity: .7;
+        }
+
+        &:nth-child(4) {
+            z-index: 2;
+            transform: scale(.7) translateX(-160px) rotateZ(-22deg);
+            opacity: .5;
+            // On small screens and tablets in portrait mode, don't show this one.
+            @media (max-width: 768px) {
+                display: none;
+            }
+        }
+
+        &:nth-child(5) {
+            z-index: 1;
+            transform: scale(.6) translateX(-240px) rotateZ(-30deg);
+            opacity: .3;
+            // On small screens and tablets in portrait mode, don't show this one.
+            @media (max-width: 768px) {
+                display: none;
+            }
+        }
+
+        &:nth-child(6) {
+            z-index: 0;
+            transform: scale(.5) translateX(-300px);
+            opacity: .1;
+
+            @media (max-width: @screen-xs-max) {
+                display: none;
+            }
+        }
+
+        &.ng-leave-active {
+            transform: translateX(300px) translateY(-100px) rotateZ(-45deg);
+            opacity: 0;
+        }
+
+        &:hover:not(:first-child) {
+            margin-left: -150px;
+            transform: rotateZ(-5deg);
+            opacity: 1;
+
+            .song-info {
+                display: block;
+                opacity: .85;
+            }
+        }
+
+        &.ng-enter-active {
+            opacity: 0;
+        }
+
+        &.ng-enter {
+            opacity: 1;
+        }
+
+        img {
+            width: 300px;
+
+            @media (max-width: @screen-xs-max) {
+                width: @widthOnXs;
+            }
+        }
+
+        .song-info {
+            position: absolute;
+            bottom: 0;
+            padding: 5px;
+            transition: all .2s linear;
+            opacity: 0;
+            padding-top: 10px;
+            width: 100%;
+            white-space: normal;
+        }
+    }
+
+    .current-song-name {
+        margin-top: 0;
+    }
+
+    .current-song-artist, .current-song-album {
+        cursor: pointer;
+        padding-top: 0;
+        padding-bottom: 0;
+
+        h4 {
+            display: inline-block;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            color: @brand-primary;
+        }
+    }
+
+    .left-pane, .right-pane {
+        padding: 20px;
+    }
+
+    .right-pane {
+        transform: translateX(-40px);
+    }
+
+    .song-list-title {
+        text-transform: lowercase;
+        text-align: center;
+        color: @text-color;
+    }
+
+    .expander {
+        opacity: .9;
+
+        .panel-heading {
+            cursor: pointer;
+            transition: all .2s linear;
+            min-height: 60px;
+            background-color: @brand-background;
+            color: @text-color-light;
+            padding-top: 15px;
+        }
+
+        .panel-title {
+            font-size: 24px;
+
+            .fa {
+                font-size: 36px;
+                margin-top: -2px;
+            }
+        }
+
+        .panel-body {
+            background-color: @brand-background;
+            color: @text-color-light;
+        }
+    }
+
+    .lyrics-expander {
+        pre {
+            font-family: @title-font;
+            font-size: 20px;
+        }
+
+        .submit-lyrics {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    }
+
+    .share-expander {
+        .social-link {
+            background-color: white;
+            margin-right: 10px;
+            width: 37px;
+            height: 38px;
+            display: inline-block;
+            text-align: center;
+            border-radius: 7px;
+
+            &:hover {
+                text-decoration: none;
+            }
+
+            i {
+                vertical-align: top;
+                position: relative;
+                top: -4px;
+                left: -1px;
+            }
+        }
+    }
+
+    .tag {
+        padding: 10px;
+        margin-right: 10px;
+        margin-bottom: 0;
+        display: inline-block;
+        cursor: pointer;
+        border-radius: 3px;
+        background-color: @brand-background;
+        color: @text-color-light;
+    }
+
+    .edit-tags-btn {
+        padding-left: 0;
+        padding-right: 0;
+
+        .fa-tags {
+            color: rgb(44, 62, 80);
+        }
+    }
+}

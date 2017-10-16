@@ -3,18 +3,33 @@
 
     public class AppSettings
     {
-        public  Connectionstrings ConnectionStrings { get; set; }
-        public  Logging Logging { get; set; }
-        public  Email Email { get; set; }
-        public  Cdn Cdn { get; set; }
-        public  Filepickr FilePickr { get; set; }
-        public  Ifttt Ifttt { get; set; }
-        public  Jwt Jwt { get; set; }
+        public Connectionstrings ConnectionStrings { get; set; }
+        public Application Application { get; set; }
+        public Logging Logging { get; set; }
+        public Email Email { get; set; }
+        public Cdn Cdn { get; set; }
+        public Filepickr FilePickr { get; set; }
+        public Ifttt Ifttt { get; set; }
+        public Jwt Jwt { get; set; }
     }
 
     public class Connectionstrings
     {
         public string RavenConnection { get; set; }
+    }
+
+    public class Application
+    {
+        public string Name { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Version { get; set; }
+        public string DefaultUrl { get; set; }
+        public string FacebookUrl { get; set; }
+        public string TwitterUrl { get; set; }
+        public string Keywords { get; set; }
+        public string GoogleAnalytics { get; set; }
+        public string TrackJsToken { get; set; }
     }
 
     public class Logging

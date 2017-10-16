@@ -1,0 +1,31 @@
+{
+    "version": "0.1.0",
+    "command": "dotnet",
+    "isShellCommand": true,
+    "showOutput": "always",
+    "args": [],
+    "tasks": [
+        {
+            "taskName": "build",
+            "args": [
+                "${workspaceRoot}/Chavah.NetCore.csproj"
+            ],
+            "isBuildCommand": true,
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "bundle"
+        },
+        {
+            "taskName": "clean",
+            "args": [ "bundle", "clean" ],
+            "suppressTaskName": true
+        },
+        {
+            "taskName": "watch",
+            "args": [ "bundle", "watch" ],
+            "suppressTaskName": true,
+            "isBackground": true
+        }
+    ]
+}
