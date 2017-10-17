@@ -6,14 +6,167 @@
     <AssemblyName>BitShuva.Chavah</AssemblyName>
     <RootNamespace>BitShuva.Chavah</RootNamespace>
     <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+    <RestoreSources>$(RestoreSources);local-packages;https://api.nuget.org/v3/index.json</RestoreSources>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="App\App.ts" />
+    <Content Include="App\Common\List.ts" />
+    <Content Include="App\Common\PagedList.ts" />
+    <Content Include="App\Common\TemplatePaths.ts" />
+    <Content Include="App\Controllers\AlbumsController.ts" />
+    <Content Include="App\Controllers\ApproveSongEditsController.ts" />
+    <Content Include="App\Controllers\ConfirmEmailController.ts" />
+    <Content Include="App\Controllers\CreatePasswordController.ts" />
+    <Content Include="App\Controllers\DonateController.ts" />
+    <Content Include="App\Controllers\EditAlbumController.ts" />
+    <Content Include="App\Controllers\EditArtistController.ts" />
+    <Content Include="App\Controllers\EditSongController.ts" />
+    <Content Include="App\Controllers\FooterController.ts" />
+    <Content Include="App\Controllers\ForgotPasswordController.ts" />
+    <Content Include="App\Controllers\HeaderController.ts" />
+    <Content Include="App\Controllers\LogEditorController.ts" />
+    <Content Include="App\Controllers\NowPlayingController.ts" />
+    <Content Include="App\Controllers\PasswordController.ts" />
+    <Content Include="App\Controllers\RegisterController.ts" />
+    <Content Include="App\Controllers\RequestSongController.ts" />
+    <Content Include="App\Controllers\ResetPasswordController.ts" />
+    <Content Include="App\Controllers\ShareThanksController.ts" />
+    <Content Include="App\Controllers\SignInController.ts" />
+    <Content Include="App\Controllers\SongEditApprovedController.ts" />
+    <Content Include="App\Controllers\SongListController.ts" />
+    <Content Include="App\Controllers\TagEditorController.ts" />
+    <Content Include="App\Controllers\TrendingController.ts" />
+    <Content Include="App\Controllers\UploadAlbumController.ts" />
+    <Content Include="App\Css\app\adminSidebar.less" />
+    <Content Include="App\Css\app\albums.less" />
+    <Content Include="App\Css\app\edit.artist.less" />
+    <Content Include="App\Css\app\editSong.less" />
+    <Content Include="App\Css\app\footer.less" />
+    <Content Include="App\Css\app\goBack.less" />
+    <Content Include="App\Css\app\header.less" />
+    <Content Include="App\Css\app\now.playing.less" />
+    <Content Include="App\Css\app\requestSongModal.less" />
+    <Content Include="App\Css\app\shared.less" />
+    <Content Include="App\Css\app\songList.less" />
+    <Content Include="App\Css\app\tagEditor.less" />
+    <Content Include="App\Css\app\trending.less" />
+    <Content Include="App\Css\app\upload.album.less" />
+    <Content Include="App\Css\bootstrap.flatly.less" />
+    <Content Include="App\Css\bootstrap.flatly.tweaks.less" />
+    <Content Include="App\Css\functions.less" />
+    <Content Include="App\Css\nprogress.less" />
+    <Content Include="App\Css\variables.less" />
+    <Content Include="App\Directives\AudioStatusChanged.ts" />
+    <Content Include="App\Directives\EnterHandler.ts" />
+    <Content Include="App\Directives\TriggerFocus.ts" />
+    <Content Include="App\Models\Album.ts" />
+    <Content Include="App\Models\AppRoute.ts" />
+    <Content Include="App\Models\Artist.ts" />
+    <Content Include="App\Models\AudioErrorInfo.ts" />
+    <Content Include="App\Models\AudioStatus.ts" />
+    <Content Include="App\Models\CommunityRankStanding.ts" />
+    <Content Include="App\Models\HeaderRoute.ts" />
+    <Content Include="App\Models\IAlbumSwatch.ts" />
+    <Content Include="App\Models\InitConfig.ts" />
+    <Content Include="App\Models\LikeLevel.ts" />
+    <Content Include="App\Models\LogLevel.ts" />
+    <Content Include="App\Models\ServerInterfaces.ts" />
+    <Content Include="App\Models\SignInResult.ts" />
+    <Content Include="App\Models\SignInStatus.ts" />
+    <Content Include="App\Models\Song.ts" />
+    <Content Include="App\Models\SongEditStatus.ts" />
+    <Content Include="App\Models\SongLike.ts" />
+    <Content Include="App\Models\SongPick.ts" />
+    <Content Include="App\Models\User.ts" />
+    <Content Include="App\Polyfills\Array.ts" />
+    <Content Include="App\Polyfills\MediaSession.ts" />
+    <Content Include="App\Polyfills\String.ts" />
+    <Content Include="App\Services\AccountService.ts" />
+    <Content Include="App\Services\AdminScriptsService.ts" />
+    <Content Include="App\Services\AlbumApiService.ts" />
+    <Content Include="App\Services\AlbumCacheService.ts" />
+    <Content Include="App\Services\AppNavService.ts" />
+    <Content Include="App\Services\ArtistApiService.ts" />
+    <Content Include="App\Services\AudioPlayerService.ts" />
+    <Content Include="App\Services\HttpApiService.ts" />
+    <Content Include="App\Services\LikeApiService.ts" />
+    <Content Include="App\Services\LoadingProgressService.ts" />
+    <Content Include="App\Services\LogService.ts" />
+    <Content Include="App\Services\SongApiService.ts" />
+    <Content Include="App\Services\SongBatchService.ts" />
+    <Content Include="App\Services\SongEditService.ts" />
+    <Content Include="App\Services\SongRequestService.ts" />
+    <Content Include="App\Services\StationIdentifierService.ts" />
+    <Content Include="App\Services\TagService.ts" />
+    <Content Include="App\typings\typings\angular-local-storage\angular-local-storage.d.ts" />
+    <Content Include="App\typings\typings\angular-ui-bootstrap\angular-ui-bootstrap.d.ts" />
+    <Content Include="App\typings\typings\angularjs\angular-animate.d.ts" />
+    <Content Include="App\typings\typings\angularjs\angular-component-router.d.ts" />
+    <Content Include="App\typings\typings\angularjs\angular-cookies.d.ts" />
+    <Content Include="App\typings\typings\angularjs\angular-mocks.d.ts" />
+    <Content Include="App\typings\typings\angularjs\angular-resource.d.ts" />
+    <Content Include="App\typings\typings\angularjs\angular-route.d.ts" />
+    <Content Include="App\typings\typings\angularjs\angular-sanitize.d.ts" />
+    <Content Include="App\typings\typings\angularjs\angular.d.ts" />
+    <Content Include="App\typings\typings\bootstrap\bootstrap.d.ts" />
+    <Content Include="App\typings\typings\fastclick\fastclick.d.ts" />
+    <Content Include="App\typings\typings\filepicker\filepicker.d.ts" />
+    <Content Include="App\typings\typings\jquery\jquery.d.ts" />
+    <Content Include="App\typings\typings\lodash\lodash.d.ts" />
+    <Content Include="App\typings\typings\modernizr\modernizr.d.ts" />
+    <Content Include="App\typings\typings\moment\moment.d.ts" />
+    <Content Include="App\typings\typings\nprogress\NProgress.d.ts" />
+    <Content Include="App\typings\typings\rx\rx.lite.d.ts" />
+    <Content Include="App\typings\typings\tinycolor\tinycolor.d.ts" />
+    <Content Include="App\typings\typings\vibrantjs\vibrant.d.ts" />
+    <Content Include="App\Views\Albums.html" />
+    <Content Include="App\Views\ApproveSongEdits.html" />
+    <Content Include="App\Views\ConfirmEmail.html" />
+    <Content Include="App\Views\CreatePassword.html" />
+    <Content Include="App\Views\Donate.html" />
+    <Content Include="App\Views\DonateCancelled.html" />
+    <Content Include="App\Views\DonateSuccess.html" />
+    <Content Include="App\Views\EditAlbum.html" />
+    <Content Include="App\Views\EditArtist.html" />
+    <Content Include="App\Views\EditSong.html" />
+    <Content Include="App\Views\Footer.html" />
+    <Content Include="App\Views\ForgotPassword.html" />
+    <Content Include="App\Views\Header.html" />
+    <Content Include="App\Views\Legal.html" />
+    <Content Include="App\Views\LogEditor.html" />
+    <Content Include="App\Views\MyLikes.html" />
+    <Content Include="App\Views\NowPlaying.html" />
+    <Content Include="App\Views\Password.html" />
+    <Content Include="App\Views\Popular.html" />
+    <Content Include="App\Views\Profile.html" />
+    <Content Include="App\Views\PromptSignIn.html" />
+    <Content Include="App\Views\RecentSongs.html" />
+    <Content Include="App\Views\Register.html" />
+    <Content Include="App\Views\RequestSongModal.html" />
+    <Content Include="App\Views\ResetPassword.html" />
+    <Content Include="App\Views\ShareThanks.html" />
+    <Content Include="App\Views\SignIn.html" />
+    <Content Include="App\Views\SongEditApproved.html" />
+    <Content Include="App\Views\TagEditor.html" />
+    <Content Include="App\Views\Templates\AdminSidebar.html" />
+    <Content Include="App\Views\Templates\ArtistList.html" />
+    <Content Include="App\Views\Templates\GoBack.html" />
+    <Content Include="App\Views\Templates\SongList.html" />
+    <Content Include="App\Views\Templates\SongRequestResult.html" />
+    <Content Include="App\Views\Trending.html" />
+    <Content Include="App\Views\UploadAlbum.html" />
+    <Content Include="App\Views\Welcome.html" />
+  </ItemGroup>
 
 
   <ItemGroup>
-    <PackageReference Include="BuildBundlerMinifier" Version="2.5.357" />
-    <PackageReference Include="BuildBundlerMinifier-Typescript" Version="2.1.258" />
     <PackageReference Include="cloudscribe.Syndication.Web" Version="2.0.0" />
     <PackageReference Include="CoreFtp" Version="1.3.6" />
+    <PackageReference Include="KDCLLC.WebOptimizer.AngularTemplateCache" Version="1.0.1-beta" />
+
+    <PackageReference Include="LigerShark.WebOptimizer.LESS" Version="2.7.3-beta" />
+    <PackageReference Include="LigerShark.WebOptimizer.TypeScript" Version="2.5.8-beta" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" PrivateAssets="All" />
@@ -29,101 +182,100 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
-    <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.5.357" />
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\App\App.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Common\List.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Common\PagedList.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Common\TemplatePaths.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\AlbumsController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\ApproveSongEditsController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\ConfirmEmailController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\CreatePasswordController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\DonateController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\EditAlbumController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\EditArtistController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\EditSongController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\FooterController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\ForgotPasswordController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\HeaderController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\LogEditorController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\NowPlayingController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\PasswordController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\RegisterController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\RequestSongController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\ResetPasswordController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\ShareThanksController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\SignInController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\SongEditApprovedController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\SongListController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\TagEditorController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\TrendingController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Controllers\UploadAlbumController.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Directives\AudioStatusChanged.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Directives\EnterHandler.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Directives\TriggerFocus.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\Album.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\AppRoute.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\Artist.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\AudioErrorInfo.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\AudioStatus.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\CommunityRankStanding.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\HeaderRoute.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\IAlbumSwatch.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\InitConfig.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\LikeLevel.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\LogLevel.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\ServerInterfaces.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\SignInResult.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\SignInStatus.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\Song.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\SongEditStatus.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\SongLike.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\SongPick.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Models\User.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Polyfills\Array.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Polyfills\MediaSession.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Polyfills\String.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\AccountService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\AdminScriptsService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\AlbumApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\AlbumCacheService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\AppNavService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\ArtistApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\AudioPlayerService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\HttpApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\LikeApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\LoadingProgressService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\LogService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\SongApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\SongBatchService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\SongEditService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\SongRequestService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\StationIdentifierService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\Services\TagService.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\angular-local-storage\angular-local-storage.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\angular-ui-bootstrap\angular-ui-bootstrap.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\angularjs\angular-animate.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\angularjs\angular-component-router.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\angularjs\angular-cookies.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\angularjs\angular-mocks.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\angularjs\angular-resource.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\angularjs\angular-route.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\angularjs\angular-sanitize.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\bootstrap\bootstrap.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\fastclick\fastclick.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\filepicker\filepicker.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\lodash\lodash.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\modernizr\modernizr.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\moment\moment.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\nprogress\NProgress.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\rx\rx.lite.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\tinycolor\tinycolor.d.ts" />
-    <TypeScriptCompile Include="wwwroot\App\typings\typings\vibrantjs\vibrant.d.ts" />
+    <TypeScriptCompile Include="App\App.ts" />
+    <TypeScriptCompile Include="App\Common\List.ts" />
+    <TypeScriptCompile Include="App\Common\PagedList.ts" />
+    <TypeScriptCompile Include="App\Common\TemplatePaths.ts" />
+    <TypeScriptCompile Include="App\Controllers\AlbumsController.ts" />
+    <TypeScriptCompile Include="App\Controllers\ApproveSongEditsController.ts" />
+    <TypeScriptCompile Include="App\Controllers\ConfirmEmailController.ts" />
+    <TypeScriptCompile Include="App\Controllers\CreatePasswordController.ts" />
+    <TypeScriptCompile Include="App\Controllers\DonateController.ts" />
+    <TypeScriptCompile Include="App\Controllers\EditAlbumController.ts" />
+    <TypeScriptCompile Include="App\Controllers\EditArtistController.ts" />
+    <TypeScriptCompile Include="App\Controllers\EditSongController.ts" />
+    <TypeScriptCompile Include="App\Controllers\FooterController.ts" />
+    <TypeScriptCompile Include="App\Controllers\ForgotPasswordController.ts" />
+    <TypeScriptCompile Include="App\Controllers\HeaderController.ts" />
+    <TypeScriptCompile Include="App\Controllers\LogEditorController.ts" />
+    <TypeScriptCompile Include="App\Controllers\NowPlayingController.ts" />
+    <TypeScriptCompile Include="App\Controllers\PasswordController.ts" />
+    <TypeScriptCompile Include="App\Controllers\RegisterController.ts" />
+    <TypeScriptCompile Include="App\Controllers\RequestSongController.ts" />
+    <TypeScriptCompile Include="App\Controllers\ResetPasswordController.ts" />
+    <TypeScriptCompile Include="App\Controllers\ShareThanksController.ts" />
+    <TypeScriptCompile Include="App\Controllers\SignInController.ts" />
+    <TypeScriptCompile Include="App\Controllers\SongEditApprovedController.ts" />
+    <TypeScriptCompile Include="App\Controllers\SongListController.ts" />
+    <TypeScriptCompile Include="App\Controllers\TagEditorController.ts" />
+    <TypeScriptCompile Include="App\Controllers\TrendingController.ts" />
+    <TypeScriptCompile Include="App\Controllers\UploadAlbumController.ts" />
+    <TypeScriptCompile Include="App\Directives\AudioStatusChanged.ts" />
+    <TypeScriptCompile Include="App\Directives\EnterHandler.ts" />
+    <TypeScriptCompile Include="App\Directives\TriggerFocus.ts" />
+    <TypeScriptCompile Include="App\Models\Album.ts" />
+    <TypeScriptCompile Include="App\Models\AppRoute.ts" />
+    <TypeScriptCompile Include="App\Models\Artist.ts" />
+    <TypeScriptCompile Include="App\Models\AudioErrorInfo.ts" />
+    <TypeScriptCompile Include="App\Models\AudioStatus.ts" />
+    <TypeScriptCompile Include="App\Models\CommunityRankStanding.ts" />
+    <TypeScriptCompile Include="App\Models\HeaderRoute.ts" />
+    <TypeScriptCompile Include="App\Models\IAlbumSwatch.ts" />
+    <TypeScriptCompile Include="App\Models\InitConfig.ts" />
+    <TypeScriptCompile Include="App\Models\LikeLevel.ts" />
+    <TypeScriptCompile Include="App\Models\LogLevel.ts" />
+    <TypeScriptCompile Include="App\Models\ServerInterfaces.ts" />
+    <TypeScriptCompile Include="App\Models\SignInResult.ts" />
+    <TypeScriptCompile Include="App\Models\SignInStatus.ts" />
+    <TypeScriptCompile Include="App\Models\Song.ts" />
+    <TypeScriptCompile Include="App\Models\SongEditStatus.ts" />
+    <TypeScriptCompile Include="App\Models\SongLike.ts" />
+    <TypeScriptCompile Include="App\Models\SongPick.ts" />
+    <TypeScriptCompile Include="App\Models\User.ts" />
+    <TypeScriptCompile Include="App\Polyfills\Array.ts" />
+    <TypeScriptCompile Include="App\Polyfills\MediaSession.ts" />
+    <TypeScriptCompile Include="App\Polyfills\String.ts" />
+    <TypeScriptCompile Include="App\Services\AccountService.ts" />
+    <TypeScriptCompile Include="App\Services\AdminScriptsService.ts" />
+    <TypeScriptCompile Include="App\Services\AlbumApiService.ts" />
+    <TypeScriptCompile Include="App\Services\AlbumCacheService.ts" />
+    <TypeScriptCompile Include="App\Services\AppNavService.ts" />
+    <TypeScriptCompile Include="App\Services\ArtistApiService.ts" />
+    <TypeScriptCompile Include="App\Services\AudioPlayerService.ts" />
+    <TypeScriptCompile Include="App\Services\HttpApiService.ts" />
+    <TypeScriptCompile Include="App\Services\LikeApiService.ts" />
+    <TypeScriptCompile Include="App\Services\LoadingProgressService.ts" />
+    <TypeScriptCompile Include="App\Services\LogService.ts" />
+    <TypeScriptCompile Include="App\Services\SongApiService.ts" />
+    <TypeScriptCompile Include="App\Services\SongBatchService.ts" />
+    <TypeScriptCompile Include="App\Services\SongEditService.ts" />
+    <TypeScriptCompile Include="App\Services\SongRequestService.ts" />
+    <TypeScriptCompile Include="App\Services\StationIdentifierService.ts" />
+    <TypeScriptCompile Include="App\Services\TagService.ts" />
+    <TypeScriptCompile Include="App\typings\typings\angular-local-storage\angular-local-storage.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\angular-ui-bootstrap\angular-ui-bootstrap.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\angularjs\angular-animate.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\angularjs\angular-component-router.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\angularjs\angular-cookies.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\angularjs\angular-mocks.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\angularjs\angular-resource.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\angularjs\angular-route.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\angularjs\angular-sanitize.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\angularjs\angular.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\bootstrap\bootstrap.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\fastclick\fastclick.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\filepicker\filepicker.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\lodash\lodash.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\modernizr\modernizr.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\moment\moment.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\nprogress\NProgress.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\rx\rx.lite.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\tinycolor\tinycolor.d.ts" />
+    <TypeScriptCompile Include="App\typings\typings\vibrantjs\vibrant.d.ts" />
     <TypeScriptCompile Include="Models\Album.cs.d.ts">
       <DependentUpon>Album.cs</DependentUpon>
     </TypeScriptCompile>
@@ -146,236 +298,6 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\App\App.ts" />
-    <None Include="wwwroot\App\Common\List.ts" />
-    <None Include="wwwroot\App\Common\PagedList.ts" />
-    <None Include="wwwroot\App\Common\TemplatePaths.ts" />
-    <None Include="wwwroot\App\Controllers\AlbumsController.ts" />
-    <None Include="wwwroot\App\Controllers\ApproveSongEditsController.ts" />
-    <None Include="wwwroot\App\Controllers\ConfirmEmailController.ts" />
-    <None Include="wwwroot\App\Controllers\CreatePasswordController.ts" />
-    <None Include="wwwroot\App\Controllers\DonateController.ts" />
-    <None Include="wwwroot\App\Controllers\EditAlbumController.ts" />
-    <None Include="wwwroot\App\Controllers\EditArtistController.ts" />
-    <None Include="wwwroot\App\Controllers\EditSongController.ts" />
-    <None Include="wwwroot\App\Controllers\FooterController.ts" />
-    <None Include="wwwroot\App\Controllers\ForgotPasswordController.ts" />
-    <None Include="wwwroot\App\Controllers\HeaderController.ts" />
-    <None Include="wwwroot\App\Controllers\LogEditorController.ts" />
-    <None Include="wwwroot\App\Controllers\NowPlayingController.ts" />
-    <None Include="wwwroot\App\Controllers\PasswordController.ts" />
-    <None Include="wwwroot\App\Controllers\RegisterController.ts" />
-    <None Include="wwwroot\App\Controllers\RequestSongController.ts" />
-    <None Include="wwwroot\App\Controllers\ResetPasswordController.ts" />
-    <None Include="wwwroot\App\Controllers\ShareThanksController.ts" />
-    <None Include="wwwroot\App\Controllers\SignInController.ts" />
-    <None Include="wwwroot\App\Controllers\SongEditApprovedController.ts" />
-    <None Include="wwwroot\App\Controllers\SongListController.ts" />
-    <None Include="wwwroot\App\Controllers\TagEditorController.ts" />
-    <None Include="wwwroot\App\Controllers\TrendingController.ts" />
-    <None Include="wwwroot\App\Controllers\UploadAlbumController.ts" />
-    <None Include="wwwroot\App\Directives\AudioStatusChanged.ts" />
-    <None Include="wwwroot\App\Directives\EnterHandler.ts" />
-    <None Include="wwwroot\App\Directives\TriggerFocus.ts" />
-    <None Include="wwwroot\App\Models\Album.ts" />
-    <None Include="wwwroot\App\Models\AppRoute.ts" />
-    <None Include="wwwroot\App\Models\Artist.ts" />
-    <None Include="wwwroot\App\Models\AudioErrorInfo.ts" />
-    <None Include="wwwroot\App\Models\AudioStatus.ts" />
-    <None Include="wwwroot\App\Models\CommunityRankStanding.ts" />
-    <None Include="wwwroot\App\Models\HeaderRoute.ts" />
-    <None Include="wwwroot\App\Models\IAlbumSwatch.ts" />
-    <None Include="wwwroot\App\Models\InitConfig.ts" />
-    <None Include="wwwroot\App\Models\LikeLevel.ts" />
-    <None Include="wwwroot\App\Models\LogLevel.ts" />
-    <None Include="wwwroot\App\Models\ServerInterfaces.ts" />
-    <None Include="wwwroot\App\Models\SignInResult.ts" />
-    <None Include="wwwroot\App\Models\SignInStatus.ts" />
-    <None Include="wwwroot\App\Models\Song.ts" />
-    <None Include="wwwroot\App\Models\SongEditStatus.ts" />
-    <None Include="wwwroot\App\Models\SongLike.ts" />
-    <None Include="wwwroot\App\Models\SongPick.ts" />
-    <None Include="wwwroot\App\Models\User.ts" />
-    <None Include="wwwroot\App\Polyfills\Array.ts" />
-    <None Include="wwwroot\App\Polyfills\MediaSession.ts" />
-    <None Include="wwwroot\App\Polyfills\String.ts" />
-    <None Include="wwwroot\App\Services\AccountService.ts" />
-    <None Include="wwwroot\App\Services\AdminScriptsService.ts" />
-    <None Include="wwwroot\App\Services\AlbumApiService.ts" />
-    <None Include="wwwroot\App\Services\AlbumCacheService.ts" />
-    <None Include="wwwroot\App\Services\AppNavService.ts" />
-    <None Include="wwwroot\App\Services\ArtistApiService.ts" />
-    <None Include="wwwroot\App\Services\AudioPlayerService.ts" />
-    <None Include="wwwroot\App\Services\HttpApiService.ts" />
-    <None Include="wwwroot\App\Services\LikeApiService.ts" />
-    <None Include="wwwroot\App\Services\LoadingProgressService.ts" />
-    <None Include="wwwroot\App\Services\LogService.ts" />
-    <None Include="wwwroot\App\Services\SongApiService.ts" />
-    <None Include="wwwroot\App\Services\SongBatchService.ts" />
-    <None Include="wwwroot\App\Services\SongEditService.ts" />
-    <None Include="wwwroot\App\Services\SongRequestService.ts" />
-    <None Include="wwwroot\App\Services\StationIdentifierService.ts" />
-    <None Include="wwwroot\App\Services\TagService.ts" />
-    <None Include="wwwroot\App\typings\typings\angular-local-storage\angular-local-storage.d.ts" />
-    <None Include="wwwroot\App\typings\typings\angular-ui-bootstrap\angular-ui-bootstrap.d.ts" />
-    <None Include="wwwroot\App\typings\typings\angularjs\angular-animate.d.ts" />
-    <None Include="wwwroot\App\typings\typings\angularjs\angular-component-router.d.ts" />
-    <None Include="wwwroot\App\typings\typings\angularjs\angular-cookies.d.ts" />
-    <None Include="wwwroot\App\typings\typings\angularjs\angular-mocks.d.ts" />
-    <None Include="wwwroot\App\typings\typings\angularjs\angular-resource.d.ts" />
-    <None Include="wwwroot\App\typings\typings\angularjs\angular-route.d.ts" />
-    <None Include="wwwroot\App\typings\typings\angularjs\angular-sanitize.d.ts" />
-    <None Include="wwwroot\App\typings\typings\angularjs\angular.d.ts" />
-    <None Include="wwwroot\App\typings\typings\bootstrap\bootstrap.d.ts" />
-    <None Include="wwwroot\App\typings\typings\fastclick\fastclick.d.ts" />
-    <None Include="wwwroot\App\typings\typings\filepicker\filepicker.d.ts" />
-    <None Include="wwwroot\App\typings\typings\jquery\jquery.d.ts" />
-    <None Include="wwwroot\App\typings\typings\lodash\lodash.d.ts" />
-    <None Include="wwwroot\App\typings\typings\modernizr\modernizr.d.ts" />
-    <None Include="wwwroot\App\typings\typings\moment\moment.d.ts" />
-    <None Include="wwwroot\App\typings\typings\nprogress\NProgress.d.ts" />
-    <None Include="wwwroot\App\typings\typings\rx\rx.lite.d.ts" />
-    <None Include="wwwroot\App\typings\typings\tinycolor\tinycolor.d.ts" />
-    <None Include="wwwroot\App\typings\typings\vibrantjs\vibrant.d.ts" />
-    <None Include="wwwroot\App\Views\Albums.html" />
-    <None Include="wwwroot\App\Views\ApproveSongEdits.html" />
-    <None Include="wwwroot\App\Views\ConfirmEmail.html" />
-    <None Include="wwwroot\App\Views\CreatePassword.html" />
-    <None Include="wwwroot\App\Views\Donate.html" />
-    <None Include="wwwroot\App\Views\DonateCancelled.html" />
-    <None Include="wwwroot\App\Views\DonateSuccess.html" />
-    <None Include="wwwroot\App\Views\EditAlbum.html" />
-    <None Include="wwwroot\App\Views\EditArtist.html" />
-    <None Include="wwwroot\App\Views\EditSong.html" />
-    <None Include="wwwroot\App\Views\Footer.html" />
-    <None Include="wwwroot\App\Views\ForgotPassword.html" />
-    <None Include="wwwroot\App\Views\Header.html" />
-    <None Include="wwwroot\App\Views\Legal.html" />
-    <None Include="wwwroot\App\Views\LogEditor.html" />
-    <None Include="wwwroot\App\Views\MyLikes.html" />
-    <None Include="wwwroot\App\Views\NowPlaying.html" />
-    <None Include="wwwroot\App\Views\Password.html" />
-    <None Include="wwwroot\App\Views\Popular.html" />
-    <None Include="wwwroot\App\Views\Profile.html" />
-    <None Include="wwwroot\App\Views\PromptSignIn.html" />
-    <None Include="wwwroot\App\Views\RecentSongs.html" />
-    <None Include="wwwroot\App\Views\Register.html" />
-    <None Include="wwwroot\App\Views\RequestSongModal.html" />
-    <None Include="wwwroot\App\Views\ResetPassword.html" />
-    <None Include="wwwroot\App\Views\ShareThanks.html" />
-    <None Include="wwwroot\App\Views\SignIn.html" />
-    <None Include="wwwroot\App\Views\SongEditApproved.html" />
-    <None Include="wwwroot\App\Views\TagEditor.html" />
-    <None Include="wwwroot\App\Views\Templates\AdminSidebar.html" />
-    <None Include="wwwroot\App\Views\Templates\ArtistList.html" />
-    <None Include="wwwroot\App\Views\Templates\GoBack.html" />
-    <None Include="wwwroot\App\Views\Templates\SongList.html" />
-    <None Include="wwwroot\App\Views\Templates\SongRequestResult.html" />
-    <None Include="wwwroot\App\Views\Trending.html" />
-    <None Include="wwwroot\App\Views\UploadAlbum.html" />
-    <None Include="wwwroot\App\Views\Welcome.html" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="wwwroot\css\app\adminSidebar.css">
-      <DependentUpon>adminSidebar.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\adminSidebar.min.css">
-      <DependentUpon>adminSidebar.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\albums.css">
-      <DependentUpon>albums.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\albums.min.css">
-      <DependentUpon>albums.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\edit.artist.css">
-      <DependentUpon>edit.artist.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\edit.artist.min.css">
-      <DependentUpon>edit.artist.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\editSong.css">
-      <DependentUpon>editSong.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\editSong.min.css">
-      <DependentUpon>editSong.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\footer.css">
-      <DependentUpon>footer.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\footer.min.css">
-      <DependentUpon>footer.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\goBack.css">
-      <DependentUpon>goBack.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\goBack.min.css">
-      <DependentUpon>goBack.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\header.css">
-      <DependentUpon>header.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\header.min.css">
-      <DependentUpon>header.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\now.playing.css">
-      <DependentUpon>now.playing.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\now.playing.min.css">
-      <DependentUpon>now.playing.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\requestSongModal.css">
-      <DependentUpon>requestSongModal.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\requestSongModal.min.css">
-      <DependentUpon>requestSongModal.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\shared.css">
-      <DependentUpon>shared.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\shared.min.css">
-      <DependentUpon>shared.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\songList.css">
-      <DependentUpon>songList.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\songList.min.css">
-      <DependentUpon>songList.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\tagEditor.css">
-      <DependentUpon>tagEditor.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\tagEditor.min.css">
-      <DependentUpon>tagEditor.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\trending.css">
-      <DependentUpon>trending.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\trending.min.css">
-      <DependentUpon>trending.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\upload.album.css">
-      <DependentUpon>upload.album.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\app\upload.album.min.css">
-      <DependentUpon>upload.album.css</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\bootstrap.flatly.css">
-      <DependentUpon>bootstrap.flatly.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\bootstrap.flatly.tweaks.css">
-      <DependentUpon>bootstrap.flatly.tweaks.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\nprogress.css">
-      <DependentUpon>nprogress.less</DependentUpon>
-    </Content>
-    <Content Update="wwwroot\css\nprogress.min.css">
-      <DependentUpon>nprogress.css</DependentUpon>
-    </Content>
   </ItemGroup>
 
 </Project>

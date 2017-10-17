@@ -88,7 +88,7 @@
             <meta name="twitter:image" content="https://messianicradio.com/content/images/chavahLogoTwitterCard.png" />
     }
 
-    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css'/>
     <script type="text/javascript">
             if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
                 var msViewportStyle = document.createElement("style");
@@ -118,7 +118,7 @@
         <footer ng-include="Partials.footerPartial"></footer>
     </div>
 
-    <script type="text/javascript">
+ <script type="text/javascript">
             window["BitShuva.Chavah.InitConfig"] = {
                 debug: @(Model.Debug ? bool.TrueString.ToLower() : bool.FalseString.ToLower()),
                 songId: "@(Model.Song != null ? Model.Song.Id : "")",
@@ -131,9 +131,8 @@
             };
     </script>
     <environment names="Development">
-        <link rel="stylesheet" href="~/css/bootstrap-theme.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="~/css/app-styles.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     </environment>
 
     <environment names="Staging,Production">
@@ -152,7 +151,10 @@
         <script src="~/js/bootstrap.js"></script>
         <script src="~/js/angular.js"></script>
         <script src="~/js/bundle.js"></script>
-        <script src="~/js/app.js"></script>
+        <script src="~/bundles/app.js"></script>
+        <script src="~/bundles/app-templates.js"></script>
+        <script src="~/bundles/app-templates-core.js"></script>
+
     </environment>
 
     <environment names="Staging,Production">
@@ -170,7 +172,11 @@
         </script>
 
 
-        <script src="~/js/app.min.js" asp-append-version="true"></script>
+        <script src="~/bundles/app.js"></script>    
+        <script src="~/bundles/app-templates.js"></script>
+        <script src="~/bundles/app-templates-core.js"></script>
+
+
     </environment>
 
 
@@ -215,6 +221,16 @@
                 userId: "@Model.UserEmail"
             });
 
+
+    </script>
+    <script>
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=256833604430846";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
     </script>
 </body>
 
