@@ -122,7 +122,7 @@
     }]);
 
     App.run([
-        "templates-main",
+        "$templateCache",
         "templatePaths",
         "accountApi",
         "appNav",
@@ -130,7 +130,8 @@
         "$rootScope",
         "$location",
         "$q",
-        (templatePaths: TemplatePaths,
+        ($templateCache: ng.ITemplateCacheService,
+        templatePaths: TemplatePaths,
         accountApi: AccountService,
         appNav: AppNavService,
         adminScripts: AdminScriptsService,

@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="bundleconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="App\App.ts" />
     <Content Include="App\Common\List.ts" />
     <Content Include="App\Common\PagedList.ts" />

@@ -109,7 +109,7 @@ var BitShuva;
                 });
             }]);
         Chavah.App.run([
-            "templates-main",
+            "$templateCache",
             "templatePaths",
             "accountApi",
             "appNav",
@@ -117,7 +117,7 @@ var BitShuva;
             "$rootScope",
             "$location",
             "$q",
-            function (templatePaths, accountApi, appNav, adminScripts, $rootScope, $location, $q) {
+            function ($templateCache, templatePaths, accountApi, appNav, adminScripts, $rootScope, $location, $q) {
                 // Use Angular's Q object as Promise. This is needed to make async/await work properly with the UI.
                 // See http://stackoverflow.com/a/41825004/536
                 window["Promise"] = $q;
