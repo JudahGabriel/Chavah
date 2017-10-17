@@ -34,7 +34,7 @@ namespace BitShuva.Controllers
         {
             base.Initialize(controllerContext);
             DbSession = controllerContext.Request.GetOwinContext().Get<IAsyncDocumentSession>();
-            DbSession.Advanced.WaitForIndexesAfterSaveChanges(TimeSpan.FromSeconds(30), throwOnTimeout: false);
+            DbSession.Advanced.WaitForIndexesAfterSaveChanges(TimeSpan.FromSeconds(3), throwOnTimeout: false);
         }
 
         public async override Task<HttpResponseMessage> ExecuteAsync(
