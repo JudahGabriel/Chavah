@@ -8,14 +8,20 @@
     "lib": [ "dom","es5", "scripthost", "es2015.promise"],
     "noEmitHelpers": true,
     "strictNullChecks": true,
-    "outFile": "wwwroot/js/app.js",
     "experimentalDecorators": true
   },
   "compileOnSave": true,
   "exclude": [
     "node_modules",
-    "wwwroot/js/",
     "wwwroot/lib"
   ],
- "include": ["wwwroot/app/"]
+  "include": [
+    "wwwroot/js/polyfills/*",
+    "wwwroot/js/common/*",
+    "wwwroot/js/models/*",
+    "wwwroot/js/directives/*",
+    "wwwroot/js/services/*",
+    "wwwroot/js/controllers/*",
+    "wwwroot/js/app.ts"
+  ]
 }
