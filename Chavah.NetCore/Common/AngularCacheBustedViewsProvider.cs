@@ -49,7 +49,7 @@ namespace BitShuva.Chavah.Common
 
         private static string GetCacheBustedRelativeUrl(string htmlFilePath, string viewsFolderRelativePath)
         {
-            var file = File.OpenRead(htmlFilePath);
+            using (var file = File.OpenRead(htmlFilePath))
             using (var md5 = System.Security.Cryptography.MD5.Create())
             {
                 var fileContentHash = string.Join(string.Empty, md5.ComputeHash(file));
