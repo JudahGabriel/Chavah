@@ -1,34 +1,15 @@
 [
   {
-    "outputFileName": "wwwroot/css/app-styles.css",
-    "inputFiles": [
-      "wwwroot/css/app/adminSidebar.css",
-      "wwwroot/css/app/albums.css",
-      "wwwroot/css/app/edit.artist.css",
-      "wwwroot/css/app/editSong.css",
-      "wwwroot/css/app/footer.css",
-      "wwwroot/css/app/goBack.css",
-      "wwwroot/css/app/header.css",
-      "wwwroot/css/app/now.playing.css",
-      "wwwroot/css/app/requestSongModal.css",
-      "wwwroot/css/app/shared.css",
-      "wwwroot/css/app/songList.css",
-      "wwwroot/css/app/tagEditor.css",
-      "wwwroot/css/app/trending.css",
-      "wwwroot/css/app/upload.album.css",
-      "wwwroot/css/nprogress.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/bootstrap-theme.css",
+    "outputFileName": "wwwroot/dist/app.min.css",
     "inputFiles": [
       "wwwroot/css/bootswatch.css",
-      "wwwroot/css/bootstrap.flatly.css",
-      "wwwroot/css/bootstrap.flatly.tweaks.css"
+      "wwwroot/css/bootstrap.flatly.min.css",
+      "wwwroot/css/bootstrap.flatly.tweaks.min.css",
+      "wwwroot/css/app/*.min.css"
     ]
   },
   {
-    "outputFileName": "wwwroot/js/app.min.js",
+    "outputFileName": "wwwroot/dist/app.min.js",
     "inputFiles": [
       "wwwroot/js/app.js"
     ],
@@ -36,44 +17,5 @@
       "enabled": true,
       "renameLocals": true
     }
-  },
-  {
-    "outputFileName": "wwwroot/js/angular.js",
-    "inputFiles": [
-      "wwwroot/lib/angular/angular.js",
-      "wwwroot/lib/angular-animate/angular-animate.js",
-      "wwwroot/lib/angular-route/angular-route.js",
-      "wwwroot/lib/angular-local-storage/dist/angular-local-storage.js",
-      "wwwroot/lib/angular-local-storage/dist/angular-local-storage.js",
-      "wwwroot/lib/angular-bootstrap/ui-bootstrap.js",
-      "wwwroot/lib/angular-bootstrap/ui-bootstrap-tpls.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/js/bootstrap.js",
-    "inputFiles": [
-      "wwwroot/lib/bootstrap/dist/js/bootstrap.js"
-       ]
-  },
-  {
-    "outputFileName": "wwwroot/js/jquery.js",
-    "inputFiles": [
-      "wwwroot/lib/jquery/dist/jquery.js",
-      "wwwroot/lib/jquery-validation/dist/jquery.validate.js",
-      "wwwroot/lib/jquery-validation/dist/additional-methods.js",
-      "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/js/bundle.js",
-    "inputFiles": [
-      "wwwroot/lib/modernizr/modernizr.js",
-      "wwwroot/lib/nprogress/nprogress.js",
-      "wwwroot/lib/moment/moment.js",
-      "wwwroot/lib/fastclick/lib/fastclick.js",
-      "wwwroot/lib/rx.lite.js",
-      "wwwroot/lib/lodash/lodash.js",
-      "wwwroot/lib/tinycolor/tinycolor.js"
-    ]
   }
 ]

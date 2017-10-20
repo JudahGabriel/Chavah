@@ -13,8 +13,15 @@
   "compileOnSave": true,
   "exclude": [
     "node_modules",
-    "wwwroot/js/",
     "wwwroot/lib"
   ],
- "include": ["app/"]
+  "include": [
+    "wwwroot/js/polyfills/*",
+    "wwwroot/js/common/*",
+    "wwwroot/js/models/*",
+    "wwwroot/js/directives/*",
+    "wwwroot/js/services/*",
+    "wwwroot/js/controllers/*",
+    "wwwroot/js/app.ts"
+  ]
 }

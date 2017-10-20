@@ -176,8 +176,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" PrivateAssets="All" />
     <PackageReference Include="Optional" Version="3.2.0" />
     <PackageReference Include="Optional.Collections" Version="1.1.0" />
-    <PackageReference Include="RavenDB.Client" Version="3.5.5-patch-35220" />
-    <PackageReference Include="RavenDB.Identity" Version="2.1.0" />
+    <PackageReference Include="RavenDB.Client" Version="3.5.5-patch-35223" />
+    <PackageReference Include="RavenDB.Identity" Version="3.0.0" />
+    <PackageReference Include="RavenDB.StructuredLogger" Version="1.0.1" />
     <PackageReference Include="Sendgrid" Version="9.9.0" />
     <PackageReference Include="System.Interactive" Version="3.1.1" />
   </ItemGroup>
@@ -303,5 +304,225 @@
   <ItemGroup>
     <Folder Include="Extensions\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\App.ts" />
+    <None Include="wwwroot\js\common\List.ts" />
+    <None Include="wwwroot\js\common\PagedList.ts" />
+    <None Include="wwwroot\js\common\TemplatePaths.ts" />
+    <None Include="wwwroot\js\controllers\AlbumsController.ts" />
+    <None Include="wwwroot\js\controllers\ApproveSongEditsController.ts" />
+    <None Include="wwwroot\js\controllers\ConfirmEmailController.ts" />
+    <None Include="wwwroot\js\controllers\CreatePasswordController.ts" />
+    <None Include="wwwroot\js\controllers\DonateController.ts" />
+    <None Include="wwwroot\js\controllers\EditAlbumController.ts" />
+    <None Include="wwwroot\js\controllers\EditArtistController.ts" />
+    <None Include="wwwroot\js\controllers\EditSongController.ts" />
+    <None Include="wwwroot\js\controllers\FooterController.ts" />
+    <None Include="wwwroot\js\controllers\ForgotPasswordController.ts" />
+    <None Include="wwwroot\js\controllers\HeaderController.ts" />
+    <None Include="wwwroot\js\controllers\LogEditorController.ts" />
+    <None Include="wwwroot\js\controllers\NowPlayingController.ts" />
+    <None Include="wwwroot\js\controllers\PasswordController.ts" />
+    <None Include="wwwroot\js\controllers\RegisterController.ts" />
+    <None Include="wwwroot\js\controllers\RequestSongController.ts" />
+    <None Include="wwwroot\js\controllers\ResetPasswordController.ts" />
+    <None Include="wwwroot\js\controllers\ShareThanksController.ts" />
+    <None Include="wwwroot\js\controllers\SignInController.ts" />
+    <None Include="wwwroot\js\controllers\SongEditApprovedController.ts" />
+    <None Include="wwwroot\js\controllers\SongListController.ts" />
+    <None Include="wwwroot\js\controllers\TagEditorController.ts" />
+    <None Include="wwwroot\js\controllers\TrendingController.ts" />
+    <None Include="wwwroot\js\controllers\UploadAlbumController.ts" />
+    <None Include="wwwroot\js\directives\AudioStatusChanged.ts" />
+    <None Include="wwwroot\js\directives\EnterHandler.ts" />
+    <None Include="wwwroot\js\directives\TriggerFocus.ts" />
+    <None Include="wwwroot\js\models\Album.ts" />
+    <None Include="wwwroot\js\models\AppRoute.ts" />
+    <None Include="wwwroot\js\models\Artist.ts" />
+    <None Include="wwwroot\js\models\AudioErrorInfo.ts" />
+    <None Include="wwwroot\js\models\AudioStatus.ts" />
+    <None Include="wwwroot\js\models\CommunityRankStanding.ts" />
+    <None Include="wwwroot\js\models\HeaderRoute.ts" />
+    <None Include="wwwroot\js\models\IAlbumSwatch.ts" />
+    <None Include="wwwroot\js\models\InitConfig.ts" />
+    <None Include="wwwroot\js\models\LikeLevel.ts" />
+    <None Include="wwwroot\js\models\LogLevel.ts" />
+    <None Include="wwwroot\js\models\ServerInterfaces.ts" />
+    <None Include="wwwroot\js\models\SignInResult.ts" />
+    <None Include="wwwroot\js\models\SignInStatus.ts" />
+    <None Include="wwwroot\js\models\Song.ts" />
+    <None Include="wwwroot\js\models\SongEditStatus.ts" />
+    <None Include="wwwroot\js\models\SongLike.ts" />
+    <None Include="wwwroot\js\models\SongPick.ts" />
+    <None Include="wwwroot\js\models\User.ts" />
+    <None Include="wwwroot\js\polyfills\Array.ts" />
+    <None Include="wwwroot\js\polyfills\MediaSession.ts" />
+    <None Include="wwwroot\js\polyfills\String.ts" />
+    <None Include="wwwroot\js\services\AccountService.ts" />
+    <None Include="wwwroot\js\services\AdminScriptsService.ts" />
+    <None Include="wwwroot\js\services\AlbumApiService.ts" />
+    <None Include="wwwroot\js\services\AlbumCacheService.ts" />
+    <None Include="wwwroot\js\services\AppNavService.ts" />
+    <None Include="wwwroot\js\services\ArtistApiService.ts" />
+    <None Include="wwwroot\js\services\AudioPlayerService.ts" />
+    <None Include="wwwroot\js\services\HttpApiService.ts" />
+    <None Include="wwwroot\js\services\LikeApiService.ts" />
+    <None Include="wwwroot\js\services\LoadingProgressService.ts" />
+    <None Include="wwwroot\js\services\LogService.ts" />
+    <None Include="wwwroot\js\services\SongApiService.ts" />
+    <None Include="wwwroot\js\services\SongBatchService.ts" />
+    <None Include="wwwroot\js\services\SongEditService.ts" />
+    <None Include="wwwroot\js\services\SongRequestService.ts" />
+    <None Include="wwwroot\js\services\StationIdentifierService.ts" />
+    <None Include="wwwroot\js\services\TagService.ts" />
+    <None Include="wwwroot\js\views\Albums.html" />
+    <None Include="wwwroot\js\views\ApproveSongEdits.html" />
+    <None Include="wwwroot\js\views\ConfirmEmail.html" />
+    <None Include="wwwroot\js\views\CreatePassword.html" />
+    <None Include="wwwroot\js\views\Donate.html" />
+    <None Include="wwwroot\js\views\DonateCancelled.html" />
+    <None Include="wwwroot\js\views\DonateSuccess.html" />
+    <None Include="wwwroot\js\views\EditAlbum.html" />
+    <None Include="wwwroot\js\views\EditArtist.html" />
+    <None Include="wwwroot\js\views\EditSong.html" />
+    <None Include="wwwroot\js\views\Footer.html" />
+    <None Include="wwwroot\js\views\ForgotPassword.html" />
+    <None Include="wwwroot\js\views\Header.html" />
+    <None Include="wwwroot\js\views\Legal.html" />
+    <None Include="wwwroot\js\views\LogEditor.html" />
+    <None Include="wwwroot\js\views\MyLikes.html" />
+    <None Include="wwwroot\js\views\NowPlaying.html" />
+    <None Include="wwwroot\js\views\Password.html" />
+    <None Include="wwwroot\js\views\Popular.html" />
+    <None Include="wwwroot\js\views\Profile.html" />
+    <None Include="wwwroot\js\views\PromptSignIn.html" />
+    <None Include="wwwroot\js\views\RecentSongs.html" />
+    <None Include="wwwroot\js\views\Register.html" />
+    <None Include="wwwroot\js\views\RequestSongModal.html" />
+    <None Include="wwwroot\js\views\ResetPassword.html" />
+    <None Include="wwwroot\js\views\ShareThanks.html" />
+    <None Include="wwwroot\js\views\SignIn.html" />
+    <None Include="wwwroot\js\views\SongEditApproved.html" />
+    <None Include="wwwroot\js\views\TagEditor.html" />
+    <None Include="wwwroot\js\views\Templates\AdminSidebar.html" />
+    <None Include="wwwroot\js\views\Templates\ArtistList.html" />
+    <None Include="wwwroot\js\views\Templates\GoBack.html" />
+    <None Include="wwwroot\js\views\Templates\SongList.html" />
+    <None Include="wwwroot\js\views\Templates\SongRequestResult.html" />
+    <None Include="wwwroot\js\views\Trending.html" />
+    <None Include="wwwroot\js\views\UploadAlbum.html" />
+    <None Include="wwwroot\js\views\Welcome.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\css\app\adminSidebar.css">
+      <DependentUpon>adminSidebar.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\adminSidebar.min.css">
+      <DependentUpon>adminSidebar.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\albums.css">
+      <DependentUpon>albums.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\albums.min.css">
+      <DependentUpon>albums.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\edit.artist.css">
+      <DependentUpon>edit.artist.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\edit.artist.min.css">
+      <DependentUpon>edit.artist.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\editSong.css">
+      <DependentUpon>editSong.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\editSong.min.css">
+      <DependentUpon>editSong.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\footer.css">
+      <DependentUpon>footer.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\footer.min.css">
+      <DependentUpon>footer.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\goBack.css">
+      <DependentUpon>goBack.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\goBack.min.css">
+      <DependentUpon>goBack.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\header.css">
+      <DependentUpon>header.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\header.min.css">
+      <DependentUpon>header.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\now.playing.css">
+      <DependentUpon>now.playing.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\now.playing.min.css">
+      <DependentUpon>now.playing.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\requestSongModal.css">
+      <DependentUpon>requestSongModal.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\requestSongModal.min.css">
+      <DependentUpon>requestSongModal.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\shared.css">
+      <DependentUpon>shared.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\shared.min.css">
+      <DependentUpon>shared.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\songList.css">
+      <DependentUpon>songList.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\songList.min.css">
+      <DependentUpon>songList.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\tagEditor.css">
+      <DependentUpon>tagEditor.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\tagEditor.min.css">
+      <DependentUpon>tagEditor.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\trending.css">
+      <DependentUpon>trending.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\trending.min.css">
+      <DependentUpon>trending.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\upload.album.css">
+      <DependentUpon>upload.album.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\app\upload.album.min.css">
+      <DependentUpon>upload.album.css</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\bootstrap.flatly.css">
+      <DependentUpon>bootstrap.flatly.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\bootstrap.flatly.tweaks.css">
+      <DependentUpon>bootstrap.flatly.tweaks.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\nprogress.css">
+      <DependentUpon>nprogress.less</DependentUpon>
+    </Content>
+    <Content Update="wwwroot\css\nprogress.min.css">
+      <DependentUpon>nprogress.css</DependentUpon>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="wwwroot\dist\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 
 </Project>

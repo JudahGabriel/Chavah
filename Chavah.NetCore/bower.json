@@ -4,8 +4,6 @@
   "dependencies": {
     "bootstrap": "3.3.6",
     "jquery": "2.2.4",
-    "jquery-validation": "1.14.0",
-    "jquery-validation-unobtrusive": "3.2.6",
     "moment": "2.13.0",
     "angular": "1.5.7",
     "angular-animate": "1.5.7",

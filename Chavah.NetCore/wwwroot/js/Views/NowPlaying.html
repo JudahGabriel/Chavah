@@ -1,0 +1,224 @@
+﻿<section class="page now-playing-page" ng-controller="NowPlayingController as vm">
+    <div class="row">
+        <div class="col-sm-3 hidden-xs">
+            <div class="left-pane">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4 class="song-list-title">
+                            <a href="#/trending"><i class="fa fa-line-chart"></i> Trending</a>
+                        </h4>
+                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.trending"></div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4 class="song-list-title">
+                            <a href="#/popular">Popular</a>
+                        </h4>
+                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.popular"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xs-12">
+            <div class="songs-container">
+                <div class="song" data-ng-repeat="song in vm.songs track by song.clientId" data-ng-show="song.name" ng-style="{ 'background-color': song.albumSwatchBackground, 'color': song.albumSwatchForeground }" ng-click="vm.songClicked(song)">
+                    <img ng-src="{{song.albumArtUri}}" alt="Album art for {{song.artist}} - {{song.album}}">
+                    <div class="song-info" ng-style="{ 'text-shadow': '0 0 5px ' + song.albumSwatchTextShadow, 'background-color': song.albumSwatchBackground }">
+                        {{song.name}}
+                        <br />
+                        <span ng-style="{ 'color': song.albumSwatchMuted }">By</span>
+                        {{song.artist}}
+                        <br />
+                        <span ng-style="{ 'color': song.albumSwatchMuted }">on</span>
+                        {{song.album}}
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="text-center current-song-name" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                {{vm.currentSong.name}}
+            </h1>
+            <h1 class="text-center current-song-name hebrew" ng-show="vm.currentSong.hebrewName" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                {{vm.currentSong.hebrewName}}
+            </h1>
+            <div class="text-center">
+                <button class="btn btn-link current-song-artist" ng-click="vm.playSongFromCurrentArtist()" uib-tooltip="Click to play another {{vm.currentSong.artist}} song" tooltip-placement="right" role="button">
+                    <h4 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                        <span class="sr-only">Play another song from the artist</span>
+                        {{vm.currentSong.artist}}
+                    </h4>
+                </button>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-link current-song-album" ng-click="vm.playSongFromCurrentAlbum()" uib-tooltip="Click to play another song from {{vm.currentSong.album}}" tooltip-placement="right" role="button">
+                    <h4 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                        <span class="sr-only">Play another song from the album</span>
+                        {{vm.currentSong.album}}
+                    </h4>
+                </button>                
+            </div>
+            <br />
+
+            <!--Song rank expander-->
+            <div class="panel-group expander" role="tablist">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}">
+                        <h3 class="panel-title text-center" ng-click="vm.currentSong.isSongStatusExpanded = !vm.currentSong.isSongStatusExpanded">
+                            Ranked {{vm.currentSong.communityRankText}},
+                            {{vm.currentSong.communityRankStandingText}}
+                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isSongStatusExpanded, 'fa-angle-up': vm.currentSong.isSongStatusExpanded }"></i>
+                        </h3>
+                    </div>
+                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isSongStatusExpanded }" role="tabpanel">
+                        <div class="panel-body" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
+                            {{vm.currentSong.name}} has been played {{vm.currentSong.totalPlays}} times. It appears as the {{vm.currentSong.nthSongText}} song on {{vm.currentSong.artist}}'s {{vm.currentSong.album}} album. It's {{vm.currentSong.communityRankText}} ranking puts it at {{vm.currentSong.communityRankStandingText}} standing of all the songs on Chavah. You can increase the rank by thumbing up this song. Songs with higher rank are more likely to play for everyone listening.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Song tags -->
+            <div class="text-center">
+                <span class="sr-only">Song tags</span>
+                <h4 class="tag" role="button" ng-click="vm.playSongWithTag(tag)" ng-repeat="tag in vm.currentSong.tags" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}" ng-attr-uib-tooltip="{{ 'Click to play another ' + tag + ' song' }}">
+                    <i class="fa fa-tag"></i> {{tag}}
+                </h4>
+
+                <!--Edit tags when we have 1 or more.-->
+                <a class="btn btn-link edit-tags-btn" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-show="vm.currentSong.tags.length >= 1" uib-tooltip="Add or change the tags for this song">
+                    <span class="fa-stack fa-lg" aria-hidden="true">
+                        <i class="fa fa-tags fa-stack-2x" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}"></i>
+                        <i class="fa fa-pencil fa-stack-1x" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchLighter } : { 'color': 'white' }"></i>
+                    </span>
+                </a>
+
+                <!--No tags-->
+                <h4 ng-hide="vm.currentSong.tags.length">
+                    <a class="submit-lyrics" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                        <i class="fa fa-tags"></i>
+                        Submit tags for this song
+                    </a>
+                </h4>
+            </div>
+
+            <!--Reason we played text -->
+            <div>
+                <h4 class="text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
+                    <i class="fa fa-info-circle"></i>
+                    We're playing this song for you because {{vm.currentSong.reasonPlayedText}}.
+                </h4>
+            </div>
+
+            <!--Share-->
+            <div class="panel-group expander share-expander" role="tablist">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}">
+                        <h3 class="panel-title text-center" ng-click="vm.currentSong.isShareExpaned = !vm.currentSong.isShareExpaned">
+                            <i class="fa fa-share" style="font-size: 22px;"></i> Share
+                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isShareExpaned, 'fa-angle-up': vm.currentSong.isShareExpaned }"></i>
+                        </h3>
+                    </div>
+                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isShareExpaned }" role="tabpanel">
+                        <div class="panel-body" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
+                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSong.facebookShareUrl}}" uib-tooltip="Share this song on Facebook" tooltip-append-to-body="true">
+                                <i class="fa fa-facebook-official fa-3x" style="color: rgb(59, 88, 152)"></i>
+                            </a>
+                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSong.twitterShareUrl}}" uib-tooltip="Tweet this song" tooltip-append-to-body="true">
+                                <i class="fa fa-twitter-square fa-3x" style="color: rgb(85, 172, 238)"></i>
+                            </a>
+                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSong.googlePlusShareUrl}}" uib-tooltip="Share this song on Google+" tooltip-append-to-body="true">
+                                <i class="fa fa-google-plus-square fa-3x" style="color: rgb(219, 68, 55)"></i>
+                            </a>
+                            <br />
+                            <br />
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default" type="button" uib-tooltip="Show the song link" tooltip-append-to-body="true" ng-click="vm.currentSong.isShowingEmbedCode = false" ng-class="{ 'active': !vm.currentSong.isShowingEmbedCode }">
+                                        <i class="fa fa-link"></i>
+                                    </button>
+                                    <button class="btn btn-default" type="button" uib-tooltip="Show the embed code" tooltip-append-to-body="true" ng-click="vm.currentSong.isShowingEmbedCode = true" ng-class="{ 'active': vm.currentSong.isShowingEmbedCode }">
+                                        <i class="fa fa-code"></i>
+                                    </button>
+                                </div>
+                                <input type="url" id="currentSongShareLink" class="form-control" ng-model="vm.currentSongShareUrl" onclick="this.select()" readonly="readonly" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" uib-tooltip="Copy" uib-popover="Copied!" popover-placement="right" popover-popup-close-delay="1500" popover-trigger="'outsideClick'" ng-click="vm.copyShareUrl()">
+                                        <i class="fa fa-copy" title="Copy the link to this song"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Lyrics expander-->
+            <div class="panel-group expander lyrics-expander" role="tablist">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}">
+                        <h3 class="panel-title text-center" ng-click="vm.currentSong.isLyricsExpanded = !vm.currentSong.isLyricsExpanded">
+                            Lyrics
+                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isLyricsExpanded, 'fa-angle-up': vm.currentSong.isLyricsExpanded }"></i>
+                        </h3>
+                    </div>
+                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isLyricsExpanded }" role="tabpanel">
+                        <pre class="panel-body" ng-show="vm.currentSong.lyrics" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">{{vm.currentSong.lyrics}}<br /><br /><a class="submit-lyrics" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground } : {}">Edit the lyrics for this song</a></pre>
+                        <div class="panel-body" ng-hide="vm.currentSong.lyrics" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
+                            No lyrics for this song yet.
+                            <a class="submit-lyrics" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground } : {}">
+                                Submit lyrics for this song
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Donate to artist-->
+            <div class="panel-group expander support-expander" role="tablist">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}">
+                        <h3 class="panel-title text-center" ng-click="vm.currentSong.isSupportExpanded = !vm.currentSong.isSupportExpanded">
+                            Support {{vm.currentSong.artist}}
+                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isSupportExpanded, 'fa-angle-up': vm.currentSong.isSupportExpanded }"></i>
+                        </h3>
+                    </div>
+                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isSupportExpanded }" role="tabpanel">
+                        <div class="panel-body text-center" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
+                            <br />
+                            <a href="#/donate" ng-href="{{vm.currentArtistDonateUrl}}" class="btn btn-primary"><i class="fa fa-paypal"></i> Donate to {{vm.currentSong.artist}}</a>
+                            <br class="visible-xs-block" />
+                            <br class="visible-xs-block" />
+                            <a href="#" target="_blank" ng-show="vm.currentSong.purchaseUri" ng-href="{{vm.currentSong.purchaseUri}}" class="btn btn-primary"><i class="fa fa-music"></i> Purchase {{vm.currentSong.artist}}'s music</a>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+        <div class="col-sm-3 hidden-xs">
+            <div class="right-pane">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4 class="song-list-title">
+                            <a href="#/recentsongs">Recent</a>
+                        </h4>
+                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.recent"></div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4 class="song-list-title">
+                            <a href="#/mylikes">Likes</a>
+                        </h4>
+                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.likes"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>      
+</section>
