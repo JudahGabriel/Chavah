@@ -1,0 +1,41 @@
+﻿<section class="tag-editor-page" ng-controller="TagEditorController as vm">
+    <div class="row">
+        <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+            <div class="row">
+                <div class="col-xs-12 col-sm-3">
+                    <div ng-include="Partials.adminSidebar" ng-init="adminPage = 'tags'"></div>
+                </div>
+
+                <div class="col-sm-9">
+
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="list-group tags-list">
+                                <a href="javascript:void(0)" class="list-group-item" ng-repeat="tag in vm.allTags" ng-class="{ active: vm.selectedTag === tag }" ng-click="vm.selectTag(tag)">
+                                    {{tag}}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-8">
+                            <div ng-show="vm.selectedTag">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="tagNameInput">Tag name</label>
+                                        <input type="text" class="form-control" id="tagNameInput" ng-disabled="vm.isSaving" ng-model="vm.newTagName" />
+                                    </div>
+                                </form>
+
+                                <button class="btn btn-danger" ng-disabled="vm.isSaving" ng-click="vm.deleteTag(vm.selectedTag)">
+                                    <i class="fa fa-trash-o"></i> Delete
+                                </button>
+                                <button class="btn btn-primary pull-right" ng-disabled="vm.isSaving" ng-click="vm.renameTag(vm.selectedTag)">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

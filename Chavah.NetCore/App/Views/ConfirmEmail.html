@@ -1,0 +1,33 @@
+﻿<section class="page confirm-email-page account-page" ng-controller="ConfirmEmailController as vm">
+    <div class="row">
+        <div class="account-form col-xs-12 col-sm-6 col-md-4 col-lg-3 col-sm-offset-3 col-md-offset-4 col-lg-offset-4">
+            <div ng-show="vm.isConfirming">
+                <h1 class="text-center">
+                    <i class="fa fa-spin fa-cog"></i> 
+                    Confirming your email address...
+                </h1>
+            </div>
+            <div ng-show="vm.confirmSucceeded">
+                <h3>
+                    <i class="fa fa-check-circle text-success"></i>
+                    Email confirmed.
+                </h3>
+                <p>
+                    You may now <a href="#/signin">sign in</a>.
+                </p>
+            </div>
+            <div ng-show="vm.confirmFailed">
+                <h3>
+                    <i class="fa fa-exclamation-circle text-danger"></i>
+                    Unable to confirm your account. 
+                </h3>
+                <p>
+                    Please contact chavah@messianicradio.com for help.
+                </p>
+                <p ng-show="{{vm.confirmFailedErrorMessage}}">
+                    Error details: {{vm.confirmFailedErrorMessage}}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>

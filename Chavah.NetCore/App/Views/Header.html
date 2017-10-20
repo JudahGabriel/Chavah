@@ -1,0 +1,65 @@
+﻿<header ng-controller="HeaderController as vm">
+    <img class="left-decor pull-left hidden-xs" src="~/images/LeftDecor.jpg" />
+    <div class="pull-right login">
+        <br class="visible-xs-block visible-sm-block" />
+        <br class="visible-xs-block visible-sm-block" />
+        <div class="btn-group profile-btn">
+            <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <h4 ng-show="vm.currentUserName">
+                    <i class="fa fa-user-circle"></i> 
+                    {{vm.currentUserName}} 
+                    <span class="caret"></span>
+                </h4>
+                <h4 ng-hide="vm.currentUserName">
+                    <i class="fa fa-bars"></i>
+                </h4>
+            </button>
+            <ul class="dropdown-menu">
+                <li ng-show="vm.currentUserName">
+                    <a href="#/profile">Profile</a>
+                </li>
+                <li>
+                    <a href="#/about">About Chavah &amp; legal</a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li ng-hide="vm.currentUserName">
+                    <a href="#/signin"><i class="fa fa-sign-in"></i> Sign In</a>
+                </li>
+                <li ng-show="vm.currentUserName">
+                    <a href="javascript:void(0)" ng-click="vm.signOut()">Sign out</a>
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group notifications-btn" ng-show="vm.notifications.length > 0">
+            <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-click="vm.markNotificationsAsRead()" uib-tooltip="Notifications" uib-popover="You have unread notifications" popover-placement="bottom-right" popover-trigger="none" popover-is-open="vm.isNotificationPopoverOpened">
+                <h4>
+                    <i class="fa fa-globe"></i>
+                    <span class="badge" ng-show="vm.unreadNotificationCount > 0">{{vm.unreadNotificationCount}}</span>
+                </h4>
+            </button>
+            <ul class="dropdown-menu">
+                <li ng-repeat="notification in vm.notifications" ng-class="{ unread: notification.isUnread }">
+                    <a href="#" ng-href="{{notification.url}}" target="_blank">
+                        <img class="img-responsive source-img pull-left" ng-src="{{notification.imageUrl}}" ng-show="notification.imageUrl" />
+                        <span class="description">
+                            <strong>{{notification.title}}</strong>
+                            <br />
+                            <span class="text-muted">via</span>
+                            {{notification.sourceName}}
+                        </span>
+                        <span class="clearfix"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="title">
+        <a href="#/">
+            Chavah <span class="hidden-xs">Messianic</span> Radio
+        </a> 
+        <span class="hebrew">חוה</span>
+    </div>
+    <div class="subtitle hidden-xs">
+        <span>music for Yeshua's disciples</span> 
+    </div>
+</header>

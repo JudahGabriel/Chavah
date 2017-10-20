@@ -1,10 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F8F0D21A-8319-40F8-9D22-CF6EA5F7958C}"
 	ProjectSection(SolutionItems) = preProject
+		Chavah.NetCore\NuGet.config = Chavah.NetCore\NuGet.config
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
@@ -22,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chava.Tests", "Chava.Tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chavah.NetCore", "Chavah.NetCore\Chavah.NetCore.csproj", "{F1AEC0AF-E797-4DE1-B5F4-7F706E15E641}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xUnitTests", "xUnitTests\xUnitTests.csproj", "{38BDBFEA-404C-4A4B-B6E1-CADAF03B0D36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xUnitTests", "xUnitTests\xUnitTests.csproj", "{38BDBFEA-404C-4A4B-B6E1-CADAF03B0D36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

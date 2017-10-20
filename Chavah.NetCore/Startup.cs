@@ -12,6 +12,10 @@ using Raven.Client.Indexes;
 using cloudscribe.Syndication.Models.Rss;
 using BitShuva.Chavah.Common;
 using BitShuva.Services;
+using WebOptimizer.AngularTemplateCache;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace BitShuva.Chavah
 {
@@ -55,7 +59,11 @@ namespace BitShuva.Chavah
             services.AddTransient<IAlbumService, AlbumService>();
             services.AddTransient<IUserService, UserService>();
 
+            services.AddMemoryCache();
+
             services.AddMvc();
+
+            services.UseBundles();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +82,13 @@ namespace BitShuva.Chavah
 
             app.UseStaticFiles();
 
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"App", @"Views")),
+                RequestPath = new PathString("/App/Views")
+            });
+
+            app.UseWebOptimizer();
             app.UseAuthentication();
 
             app.UseMvc(routes =>
