@@ -4,34 +4,33 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client;
+using RavenDB.StructuredLog;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BitShuva.Controllers.Api
+namespace BitShuva.Chavah.Controllers
 {
     [Route("api/logs")]
     [Authorize(Roles = "Admin")]
-    public class LogsController : RavenApiController
+    public class LogsController : RavenController
     {
-        private readonly ILogger<LogsController> logger;
-
-        public LogsController(ILogger<LogsController> logger)
+        public LogsController(IAsyncDocumentSession dbSession, ILogger<LogsController> logger)
+            : base(dbSession, logger)
         {
-            this.logger = logger;
         }
 
         [HttpGet]
         [Route("getAll")]
-        public async Task<PagedList<LogSummary>> GetAll(int skip, int take)
+        public async Task<PagedList<StructuredLog>> GetAll(int skip, int take)
         {
-            var results = await DbSession.Query<LogSummary>()
+            var results = await DbSession.Query<StructuredLog>()
                 .Statistics(out var stats)
                 .OrderByDescending(l => l.LastOccurrence)
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
-            return new PagedList<LogSummary>
+            return new PagedList<StructuredLog>
             {
                 Items = results,
                 Skip = skip,
@@ -49,7 +48,7 @@ namespace BitShuva.Controllers.Api
                 throw new ArgumentException("ID must specify a LogSummary");
             }
 
-            var log = await DbSession.LoadNotNullAsync<LogSummary>(id);
+            var log = await DbSession.LoadNotNullAsync<StructuredLog>(id);
             DbSession.Delete(log);
         }
     }

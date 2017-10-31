@@ -90,13 +90,6 @@ ipch/
 *.vspx
 *.sap
 
-# Web config
-# Web.config
-# Web.Release.config
-# Web.Debug.config
-/Chavah/App/*/*.js
-/Chavah/App/*/*.js.map
-
 # TFS 2012 Local Workspace
 $tf/
 
@@ -258,7 +251,8 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
-#Chavah configuraiton exceptions
+
+# Chavah exceptions
 /Chavah/App/App.js
 /Chavah/AudioTest.html
 /Chavah/ConnectionStrings.Debug.Secrets.config
@@ -267,5 +261,16 @@ paket-files/
 /Chavah/AppSettings.Debug.Secrets.config
 /Chavah/ConnnectionStrings.Debug.Secrets.config
 /ConnectionStrings.Debug.Secrets.config
-#/Chavah.NetCore/appsettings.json
+# Web config
+Web.Release.config
+Web.Debug.config
+/Chavah/App/*/*.js
+/Chavah/App/*/*.js.map
+
+
+# Chavah.NetCore exceptions
 /Chavah.NetCore/appsettings.Development.json
+/Chavah.NetCore/appsettings.Production.json
+/Chavah.NetCore/wwwroot/js/app.js
+/Chavah.NetCore/wwwroot/js/*/*.js
+/Chavah.NetCore/wwwroot/js/*/*.js.map

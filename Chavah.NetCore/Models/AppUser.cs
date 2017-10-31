@@ -11,7 +11,7 @@ namespace BitShuva.Chavah.Models
     /// </summary>
     public class AppUser : IdentityUser
     {
-        public const string AdminRole = "Admin";
+        public const string AdminRole = "admin";
         public const int MaxNotifications = 5;
         public const int MaxRecentSongs = 10;
 

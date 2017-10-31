@@ -12,19 +12,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
-    //[JwtSession]
     [Route("api/artists")]
-    public class ArtistsController : RavenApiController
+    public class ArtistsController : RavenController
     {
-        private readonly ILogger<ArtistsController> logger;
         private readonly ICdnManagerService cdnManagerService;
 
-        public ArtistsController(ILogger<ArtistsController> logger,
-                            ICdnManagerService cdnManagerService)
+        public ArtistsController(
+            ICdnManagerService cdnManagerService,
+            IAsyncDocumentSession dbSession, 
+            ILogger<UsersController> logger)
+            : base(dbSession, logger)
         {
-            this.logger = logger;
             this.cdnManagerService = cdnManagerService;
         }
 
@@ -110,23 +110,7 @@ namespace BitShuva.Controllers
                 return artist;
             }
         }
-
-
-        [Route("admin/delete/{*artistId}")]
-        [HttpDelete]
-        [Authorize]
-        public async Task Delete(string artistId)
-        {
-            await this.RequireAdminUser();
-
-            var artist = await this.DbSession.LoadAsync<Artist>(artistId);
-            if (artist != null)
-            {
-                this.DbSession.Delete(artist);
-            }
-        }
-
-        #region Private
+        
         private async Task<List<string>> EnsureArtistImagesOnCdn(string artistName, IList<string> artistImages)
         {
             // Go through each of the images and make sure they're on the CDN.
@@ -170,6 +154,5 @@ namespace BitShuva.Controllers
 
             throw new InvalidOperationException("Programming bug. Couldn't find a valid artist image name.");
         }
-        #endregion
     }
 }

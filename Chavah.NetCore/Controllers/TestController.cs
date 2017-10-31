@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
 using System.Threading.Tasks;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
     [Route("api/test")]
     public class TestController : Controller

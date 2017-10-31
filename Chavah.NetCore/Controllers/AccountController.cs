@@ -133,7 +133,7 @@ namespace BitShuva.Chavah.Controllers
             }
 
             user.RequiresPasswordReset = false;
-            user.IsEmailConfirmed = true;
+            user.EmailConfirmed = true;
         }
         
         [HttpGet]
@@ -181,7 +181,7 @@ namespace BitShuva.Chavah.Controllers
                 {
                     ErrorMessage = "You're already registered.",
                     IsAlreadyRegistered = true,
-                    NeedsConfirmation = !existingUser.IsEmailConfirmed
+                    NeedsConfirmation = !existingUser.EmailConfirmed
                 };
             }
 
@@ -256,7 +256,7 @@ namespace BitShuva.Chavah.Controllers
             
             // We've seen some users click the confirm link multiple times.
             // If the user is already confirmed, just play along and say it's ok.
-            if (user.IsEmailConfirmed)
+            if (user.EmailConfirmed)
             {
                 return new ConfirmEmailResult
                 {
@@ -272,7 +272,7 @@ namespace BitShuva.Chavah.Controllers
             var errorMessage = default(string);
             if (isValidToken)
             {
-                user.IsEmailConfirmed = true;
+                user.EmailConfirmed = true;
                 logger.LogInformation("Successfully confirmed new account", email);
 
                 // Add a welcome notification for the user.

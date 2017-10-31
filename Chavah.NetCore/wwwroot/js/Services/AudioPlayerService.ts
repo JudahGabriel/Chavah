@@ -1,4 +1,6 @@
-﻿namespace BitShuva.Chavah {
+﻿/// <reference path="../../../../node_modules/@types/vibrantjs/index.d.ts" />
+
+namespace BitShuva.Chavah {
     export class AudioPlayerService {
         readonly status = new Rx.BehaviorSubject(AudioStatus.Paused);
         readonly song = new Rx.BehaviorSubject<Song | null>(null);

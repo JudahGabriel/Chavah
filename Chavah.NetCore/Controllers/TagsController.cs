@@ -2,17 +2,23 @@
 using BitShuva.Chavah.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Raven.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BitShuva.Controllers.Api
+namespace BitShuva.Chavah.Controllers
 {
     [Route("api/tags")]
-    public class TagsController : RavenApiController
+    public class TagsController : RavenController
     {
+        public TagsController(IAsyncDocumentSession dbSession, ILogger<TagsController> logger)
+            : base(dbSession, logger)
+        {
+        }
+
         [Authorize(Roles = "Admin")]
         [Route("getAll")]
         public async Task<List<string>> GetAll()

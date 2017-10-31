@@ -13,21 +13,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
     [Route("api/songs")]
-    //[JwtSession]
-    public class SongsController : RavenApiController
+    public class SongsController : RavenController
     {
-        private readonly ILogger logger;
         private readonly ICdnManagerService cdnManagerService;
-
-        public HttpRequest httpRequest;
-
-        public SongsController(ILogger logger,
-                               ICdnManagerService cdnManagerService)
+        
+        public SongsController(
+            ICdnManagerService cdnManagerService, 
+            IAsyncDocumentSession dbSession, 
+            ILogger<SongsController> logger)
+            : base(dbSession, logger)
         {
-            this.logger = logger;
             this.cdnManagerService = cdnManagerService;
         }
 
@@ -138,10 +136,9 @@ namespace BitShuva.Controllers
 
         [HttpPost]
         [Route("admin/save")]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task<Song> Save(Song song)
         {
-            await this.RequireAdminUser();
-
             var dbSong = await this.DbSession.LoadAsync<Song>(song.Id);
             dbSong.Artist = song.Artist;
             dbSong.Album = song.Album;
@@ -528,14 +525,14 @@ namespace BitShuva.Controllers
                 .ToListAsync();
         }
 
-        [HttpPost]
-        [Route("audioFailed")]
-        public async Task<AudioErrorInfo> AudioFailed(AudioErrorInfo errorInfo)
-        {
-            errorInfo.UserId = this.SessionToken?.UserId;
-            logger.LogError("Audio playback failed", null, errorInfo);
-            return errorInfo;
-        }
+        //[HttpPost]
+        //[Route("audioFailed")]
+        //public AudioErrorInfo AudioFailed(AudioErrorInfo errorInfo)
+        //{
+        //    errorInfo.UserId = this.SessionToken?.UserId;
+        //    logger.LogError("Audio playback failed", null, errorInfo);
+        //    return errorInfo;
+        //}
         
         private async Task<Song> PickRandomSong()
         {

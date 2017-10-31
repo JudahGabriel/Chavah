@@ -9,17 +9,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
     //[JwtSession]
     [Route("api/requests")]
-    public class SongRequestsController : RavenApiController
+    public class SongRequestsController : RavenController
     {
-        private readonly ILogger<SongRequestsController> logger;
-
-        public SongRequestsController(ILogger<SongRequestsController> logger)
+        public SongRequestsController(
+            IAsyncDocumentSession dbSession, 
+            ILogger<SongRequestsController> logger)
+            : base(dbSession, logger)
         {
-            this.logger = logger;
         }
 
         [Route("pending")]

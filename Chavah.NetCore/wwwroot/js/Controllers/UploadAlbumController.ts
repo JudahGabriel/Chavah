@@ -1,4 +1,7 @@
-﻿namespace BitShuva.Chavah {
+﻿/// <reference path="../../../../node_modules/@types/filepicker/index.d.ts" />
+/// <reference path="../../../../node_modules/@types/vibrantjs/index.d.ts" />
+
+namespace BitShuva.Chavah {
     export class UploadAlbumController {
 
         albumName = "";
@@ -32,6 +35,7 @@
             private appNav: AppNavService,
             private $scope: ng.IScope,
             private $sce: ng.ISCEService) {
+
             artistApi.getAll().then(results => this.allArtists = results.items);
         }
 

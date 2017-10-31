@@ -17,21 +17,21 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
-    //[JwtSession]
     [Route("api/albums")]
-    public class AlbumsController : RavenApiController
+    public class AlbumsController : RavenController
     {
-        private readonly ILogger<AlbumsController> logger;
         private readonly ICdnManagerService cdnManagerService;
         private readonly ISongUploadService songUploadService;
 
-        public AlbumsController(ILogger<AlbumsController> logger,
-                                ICdnManagerService cdnManagerService,
-                                ISongUploadService songUploadService)
+        public AlbumsController(
+            ICdnManagerService cdnManagerService,
+            ISongUploadService songUploadService,
+            IAsyncDocumentSession dbSession,
+            ILogger<AlbumsController> logger)
+            : base(dbSession, logger)
         {
-            this.logger = logger;
             this.cdnManagerService = cdnManagerService;
             this.songUploadService = songUploadService;
         }
@@ -99,10 +99,9 @@ namespace BitShuva.Controllers
         
         [HttpPost]
         [Route("changeArt")]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task<Album> ChangeArt(string albumId, string artUri)
         {
-            await this.RequireAdminUser();
-
             var album = await DbSession.LoadAsync<Album>(albumId);
             if (album == null)
             {

@@ -24,9 +24,9 @@ namespace BitShuva.Chavah.Controllers
         private readonly AppSettings appSettings;
         
         public IftttController(
+            IOptions<AppSettings> appSettings,
             IAsyncDocumentSession dbSession, 
-            ILogger<IftttController> logger,
-            IOptions<AppSettings> appSettings)
+            ILogger<IftttController> logger)
             : base(dbSession, logger)
         {
             this.appSettings = appSettings.Value;
@@ -71,7 +71,7 @@ namespace BitShuva.Chavah.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateNotification(string secretToken, string title, string imgUrl, string sourceName, string url)
+        public IActionResult CreateNotification(string secretToken, string title, string imgUrl, string sourceName, string url)
         {
             var isValidSecretToken = appSettings.Ifttt.Key == secretToken;
             if (!isValidSecretToken)

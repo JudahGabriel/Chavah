@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Mmm.QualityDirect.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

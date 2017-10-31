@@ -1,5 +1,6 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client;
@@ -9,17 +10,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
     [Route("api/songEdits")]
-    //[JwtSession]
-    public class SongEditsController : RavenApiController
+    public class SongEditsController : RavenController
     {
-        private ILogger<SongEditsController> logger;
-
-        public SongEditsController(ILogger<SongEditsController> logger)
+        public SongEditsController(IAsyncDocumentSession dbSession, ILogger<SongEditsController> logger)
+            : base(dbSession, logger)
         {
-            this.logger = logger;
         }
 
         [Route("Edit")]
@@ -73,10 +71,9 @@ namespace BitShuva.Controllers
 
         [Route("Approve")]
         [HttpPost]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task<SongEdit> Approve(SongEdit songEdit)
         {
-            await this.RequireAdminUser();
-
             var song = await DbSession.LoadAsync<Song>(songEdit.SongId);
             if (song != null)
             {
@@ -98,10 +95,9 @@ namespace BitShuva.Controllers
 
         [Route("Reject")]
         [HttpPost]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task<SongEdit> Reject(string songEditId)
         {
-            await this.RequireAdminUser();
-
             var existingEdit = await DbSession.LoadAsync<SongEdit>(songEditId);
             if (existingEdit != null)
             {

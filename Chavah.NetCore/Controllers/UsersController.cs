@@ -1,5 +1,6 @@
 ﻿using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
@@ -7,13 +8,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
     [Route("api/users")]
-    //[JwtSession]
-    public class UsersController : RavenApiController
+    public class UsersController : RavenController
     {
-        static DateTime startTime = DateTime.UtcNow;
+        private static readonly DateTime startTime = DateTime.UtcNow;
+
+        public UsersController(IAsyncDocumentSession dbSession, ILogger<UsersController> logger)
+            : base(dbSession, logger)
+        {
+
+        }
 
         [HttpGet]
         [Route("getRecent")]

@@ -7,18 +7,14 @@ using Raven.Client;
 using System;
 using System.Threading.Tasks;
 
-namespace BitShuva.Controllers
+namespace BitShuva.Chavah.Controllers
 {
-    //[JwtSession]
     [Route("api/likes")]
-    public class LikesController : RavenApiController
+    public class LikesController : RavenController
     {
-        private ILogger<LikesController> logger;
-
-        public LikesController(ILogger<LikesController> logger)
+        public LikesController(IAsyncDocumentSession dbSession, ILogger<LikesController> logger)
+            : base(dbSession, logger)
         {
-            this.logger = logger;
-
         }
 
         [HttpPost]
