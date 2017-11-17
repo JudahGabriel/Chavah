@@ -10,7 +10,7 @@
         }
 
         submit(song: Song): ng.IPromise<Server.ISongEdit> {
-            return this.httpApi.post("/api/songEdits/edit", song);
+            return this.httpApi.post("/api/songEdits/editSong", song);
         }
 
         getPendingEdits(take: number): ng.IPromise<Server.ISongEdit[]> {

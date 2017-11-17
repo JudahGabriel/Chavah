@@ -9,11 +9,12 @@ using Microsoft.Extensions.Logging;
 using Raven.Client;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class AccountController : RavenController
     {
         private readonly UserManager<AppUser> userManager;
@@ -151,24 +152,24 @@ namespace BitShuva.Chavah.Controllers
 
             return user;           
         }
-
-        [Route("ClearNotifications")]
+        
         [HttpPost]
-        public async Task<int> ClearNotifications()
+        public async Task<int> ClearNotifications(DateTime asOf)
         {
             var user = await this.GetCurrentUser();
             if (user != null)
             {
                 var count = user.Notifications.Count;
-                user.Notifications.ForEach(n => n.IsUnread = false);
+                user.Notifications
+                    .Where(n => n.Date <= asOf)
+                    .ForEach(n => n.IsUnread = false);
 
                 return count;
             }
 
             return 0;
         }
-
-        [Route("Register")]
+        
         [HttpPost]
         [AllowAnonymous]
         public async Task<RegisterResults> Register(string email, string password)
@@ -227,7 +228,7 @@ namespace BitShuva.Chavah.Controllers
                 //await ChavahLog.Warn(DbSession, "Register new user failed.", creteUserResult);
                 return new RegisterResults
                 {
-                    ErrorMessage = string.Join(",", creteUserResult.Errors)
+                    ErrorMessage = string.Join(", ", creteUserResult.Errors.Select(s => s.Description))
                 };
             }
         }
@@ -235,7 +236,6 @@ namespace BitShuva.Chavah.Controllers
         /// <summary>
         /// Confirms a user's email.
         /// </summary>
-        [Route("ConfirmEmail")]
         [HttpPost]
         public async Task<ConfirmEmailResult> ConfirmEmail(string email, string confirmCode)
         {
@@ -310,7 +310,6 @@ namespace BitShuva.Chavah.Controllers
         /// <summary>
         /// Begins the password reset process by generating a password reset token and sending the user an email with the link to reset the password.
         /// </summary>
-        [Route("SendResetPasswordEmail")]
         [HttpPost]
         public async Task<ResetPasswordResult> SendResetPasswordEmail(string email)
         {
@@ -349,7 +348,6 @@ namespace BitShuva.Chavah.Controllers
         /// <summary>
         /// Resets the user's password using the email and password reset code.
         /// </summary>
-        [Route("ResetPassword")]
         [HttpPost]
         public async Task<ResetPasswordResult> ResetPassword(string email, string passwordResetCode, string newPassword)
         {

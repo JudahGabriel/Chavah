@@ -19,7 +19,6 @@ namespace BitShuva.Chavah.Models
         public string UserEmail { get; set; }
         public List<string> UserRoles { get; set; } = new List<string>();
         public List<Notification> Notifications { get; set; } = new List<Notification>();
-        public string Jwt { get; set; }
         public bool Debug { get; set; }
         public string Redirect { get; set; }
         public bool Embed { get; set; }
@@ -28,10 +27,11 @@ namespace BitShuva.Chavah.Models
         public string DescriptiveImageUrl { get; set; }
         public Song Song { get; set; }
         public string SongNth { get; set; }
+        public IList<string> CacheBustedAngularViews { get; set; }
 
-        public string NotificationsToJsArray()
+        public string ToJson()
         {
-            return JsonConvert.SerializeObject(this.Notifications, new JsonSerializerSettings
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });

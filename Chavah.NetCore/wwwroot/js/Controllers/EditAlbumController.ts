@@ -147,7 +147,7 @@
 
             var deferred = this.$q.defer<HTMLImageElement>();
             var img = document.createElement("img");
-            img.src = "/api/albums/art/imageOnDomain?imageUrl=" + encodeURIComponent(imgUrl);
+            img.src = "/api/albums/imageOnDomain?imageUrl=" + encodeURIComponent(imgUrl);
             img.addEventListener("load", () => {
                 deferred.resolve(img);
             });

@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
-    [Route("api/albums")]
+    [Route("api/[controller]/[action]")]
     public class AlbumsController : RavenController
     {
         private readonly ICdnManagerService cdnManagerService;
@@ -71,18 +71,16 @@ namespace BitShuva.Chavah.Controllers
                 Total = stats.TotalResults
             };
         }
-
-        [Route("GetAlbumArtBySongId")]
+        
         [HttpGet]
-        public async Task<HttpResponseMessage> GetBySongId(string songId)
+        public async Task<HttpResponseMessage> GetAlbumArtBySongId(string songId)
         {
             var song = await DbSession.LoadNotNullAsync<Song>(songId);
             var response = new HttpResponseMessage(HttpStatusCode.Moved);
             response.Headers.Location = song.AlbumArtUri;
             return response;
         }
-
-        [Route("GetByArtistAlbum")]
+        
         [HttpGet]
         public async Task<Album> GetByArtistAlbum(string artist, string album)
         {
@@ -98,7 +96,6 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpPost]
-        [Route("changeArt")]
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<Album> ChangeArt(string albumId, string artUri)
         {
@@ -119,11 +116,10 @@ namespace BitShuva.Chavah.Controllers
 
             return album;
         }
-
-        [Route("Save")]
+        
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<Album> Save(Album album)
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task<Album> Save([FromBody] Album album)
         {
             if (string.IsNullOrEmpty(album.Artist) || string.IsNullOrEmpty(album.Name))
             {
@@ -161,9 +157,8 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        [Route("upload")]
-        [Authorize]
-        public async Task<string> Upload(AlbumUpload album)
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task<string> Upload([FromBody] AlbumUpload album)
         {
             // Put the album art on the CDN.
             var albumArtUriCdn = await cdnManagerService.UploadAlbumArtToCdn(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
@@ -222,8 +217,7 @@ namespace BitShuva.Chavah.Controllers
             await this.DbSession.SaveChangesAsync();
             return existingAlbum.Id;
         }
-
-        [Route("getAlbums")]
+        
         [HttpGet]
         public Task<IList<Album>> GetAlbums(string albumIdsCsv)
         {
@@ -233,31 +227,7 @@ namespace BitShuva.Chavah.Controllers
                 .Distinct();
             return DbSession.LoadWithoutNulls<Album>(validIds);
         }
-
-        [Route("GetAlbumsForSongs")]
-        [HttpGet]
-        [Obsolete("Use GetAlbums instead. Delete this method after 8/3/2017")]
-        public async Task<IList<Album>> GetAlbumsForSongs(string songIdsCsv)
-        {
-            // TODO: we might want to implement a song ID => album ID cache. That would save us a lot of work.
-
-            if (string.IsNullOrEmpty(songIdsCsv))
-            {
-                throw new ArgumentNullException(nameof(songIdsCsv));
-            }
-
-            const int maxAlbumArtFetch = 30;
-            var songIds = songIdsCsv.Split(',')
-                .Where(s => !string.IsNullOrWhiteSpace(s) && s.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase)) // Somehow, some users are calling this with ApplicationUsers/[current email].
-                .Take(maxAlbumArtFetch);
-
-            var songs = await DbSession
-                .Include<Song>(s => s.AlbumId)
-                .LoadAsync<Song>(songIds);
-            var albums = await DbSession.LoadWithoutNulls<Album>(songs.Select(s => s.AlbumId));
-            return albums.ToList();
-        }
-
+        
         /// <summary>
         /// Streams an image from another domain through our domain. 
         /// Needed for client-side canvas rendering of images on other domains (e.g. on our media CDN.)
@@ -266,7 +236,6 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="imageUrl"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("art/imageondomain")]
         public async Task<HttpResponseMessage> ImageOnDomain(string imageUrl)
         {
             if (string.IsNullOrWhiteSpace(imageUrl))
@@ -361,17 +330,15 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="songId"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("art/forSong")]
         public async Task<HttpResponseMessage> GetArtForSong(string songId)
         {
             var song = await DbSession.LoadNotNullAsync<Song>(songId);
             var response = new HttpResponseMessage(HttpStatusCode.Moved);
             response.Headers.Location = song.AlbumArtUri;
-            return response; ;
+            return response;
         }
 
         [HttpGet]
-        [Route("songListing")]
         public async Task<List<string>> SongListing(string artist, string album)
         {
             var songs = await DbSession.Query<Song, Songs_GeneralQuery>()
@@ -383,8 +350,7 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpPost]
-        [Route("delete")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task Delete(string albumId)
         {
             var album = await DbSession.LoadNotNullAsync<Album>(albumId);

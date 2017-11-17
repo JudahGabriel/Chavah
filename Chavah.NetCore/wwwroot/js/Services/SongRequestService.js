@@ -57,7 +57,7 @@ var BitShuva;
             };
             SongRequestApiService.prototype.fetchPendingSongRequests = function () {
                 var _this = this;
-                return this.httpApi.query("/api/requests/pending")
+                return this.httpApi.query("/api/songRequests/getPending")
                     .then(function (songIdOrNull) {
                     if (songIdOrNull && _this.pendingSongRequestIds.indexOf(songIdOrNull) === -1) {
                         _this.pendingSongRequestIds.push(songIdOrNull);

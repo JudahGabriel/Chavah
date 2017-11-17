@@ -1,4 +1,5 @@
-﻿using BitShuva.Chavah.Models.Indexes;
+﻿using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
-    [Route("api/tags")]
+    [Route("api/[controller]/[action]")]
     public class TagsController : RavenController
     {
         public TagsController(IAsyncDocumentSession dbSession, ILogger<TagsController> logger)
@@ -19,8 +20,7 @@ namespace BitShuva.Chavah.Controllers
         {
         }
 
-        [Authorize(Roles = "Admin")]
-        [Route("getAll")]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task<List<string>> GetAll()
         {
             var tags = new List<string>(1000);
@@ -34,7 +34,6 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        [Route("searchTags")]
         public async Task<IEnumerable<string>> SearchTags(string search)
         {
             var result = await DbSession.Query<Songs_Tags.Result, Songs_Tags>()
@@ -45,8 +44,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        [Route("rename")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task<string> Rename(string oldTag, string newTag)
         {
             if (string.IsNullOrWhiteSpace(oldTag))
@@ -60,6 +58,7 @@ namespace BitShuva.Chavah.Controllers
 
             newTag = newTag.Trim().ToLower();
 
+            // Fix up the tag name in each song.
             var patchScript = @"
                 if (this.Tags && this.Tags.length) {
                     var oldTagIndex = this.Tags.indexOf(oldTag);
@@ -80,7 +79,7 @@ namespace BitShuva.Chavah.Controllers
                 { "oldTag", oldTag },
                 { "newTag", newTag }
             };
-            var patch = new CollectionPatchService(DbSession.Advanced.DocumentStore,"Songs", patchScript, patchVariables);
+            var patch = new CollectionPatchService(DbSession.Advanced.DocumentStore, "Songs", patchScript, patchVariables);
             await patch.ExecuteAsync();
 
             return newTag;
@@ -88,7 +87,7 @@ namespace BitShuva.Chavah.Controllers
 
         [HttpPost]
         [Route("delete")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task Delete(string tag)
         {
             if (string.IsNullOrWhiteSpace(tag))
@@ -96,6 +95,7 @@ namespace BitShuva.Chavah.Controllers
                 throw new ArgumentException("tag must not be empty");
             }
 
+            // Patch all songs so that it no longer has this tag.
             var patchScript = @"
                 if (this.Tags && this.Tags.length) {
                     var tagIndex = this.Tags.indexOf(tag);

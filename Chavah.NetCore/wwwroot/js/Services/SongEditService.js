@@ -7,7 +7,7 @@ var BitShuva;
                 this.httpApi = httpApi;
             }
             SongEditService.prototype.submit = function (song) {
-                return this.httpApi.post("/api/songEdits/edit", song);
+                return this.httpApi.post("/api/songEdits/editSong", song);
             };
             SongEditService.prototype.getPendingEdits = function (take) {
                 var args = {

@@ -83,7 +83,7 @@ namespace BitShuva.Chavah {
         fetchAlbumColorSwatches(albumArt: FilepickerInkBlob) {
             if (albumArt.url) {
                 var img = document.createElement("img");
-                img.src = "/api/albums/art/imageOnDomain?imageUrl=" + encodeURIComponent(albumArt.url);
+                img.src = "/api/albums/imageOnDomain?imageUrl=" + encodeURIComponent(albumArt.url);
                 img.addEventListener("load", () => {
                     var vibrant = new Vibrant(img, 64, 5);
                     var swatches = vibrant.swatches();

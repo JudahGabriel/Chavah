@@ -25,7 +25,7 @@ namespace BitShuva.Chavah.Services
         private const string albumArtDirectoryName = "album-art";
         private const string artistImagesDirectoryName = "artist-images";
 
-        public CdnManagerService(IOptions<AppSettings> options, ILogger logger, IHostingEnvironment hostingEnv)
+        public CdnManagerService(IOptions<AppSettings> options, ILogger<CdnManagerService> logger, IHostingEnvironment hostingEnv)
         {
             this.cdnSettings = options.Value.Cdn;
             this.logger = logger;

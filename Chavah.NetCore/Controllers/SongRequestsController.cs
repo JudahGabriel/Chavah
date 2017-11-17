@@ -11,8 +11,7 @@ using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
-    //[JwtSession]
-    [Route("api/requests")]
+    [Route("api/[controller]/[action]")]
     public class SongRequestsController : RavenController
     {
         public SongRequestsController(
@@ -21,8 +20,7 @@ namespace BitShuva.Chavah.Controllers
             : base(dbSession, logger)
         {
         }
-
-        [Route("pending")]
+        
         public async Task<string> GetPendingRequestedSongId()
         {
             var user = await this.GetCurrentUser();
@@ -64,7 +62,6 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        [Route("requestsong")]
         public async Task RequestSong(string songId)
         {
             var user = await this.GetCurrentUser();

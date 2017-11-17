@@ -68,7 +68,7 @@
         }
 
         private fetchPendingSongRequests() {
-            return this.httpApi.query("/api/requests/pending")
+            return this.httpApi.query("/api/songRequests/getPending")
                 .then((songIdOrNull: string) => {
                     if (songIdOrNull && this.pendingSongRequestIds.indexOf(songIdOrNull) === -1) {
                         this.pendingSongRequestIds.push(songIdOrNull);

@@ -25,7 +25,7 @@ namespace BitShuva.Chavah.Models
         public int TotalSongRequests { get; set; }
         public bool RequiresPasswordReset { get; set; }
         public List<string> RecentSongIds { get; set; } = new List<string>();
-        public string Jwt { get; set; }
+        //public string Jwt { get; set; }
         public List<Notification> Notifications { get; set; } = new List<Notification>();
 
         public void AddNotification(Notification notification)

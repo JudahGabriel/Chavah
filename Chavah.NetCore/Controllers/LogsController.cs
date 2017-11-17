@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
-    [Route("api/logs")]
-    [Authorize(Roles = "Admin")]
+    [Route("api/[controller]/[action]")]
+    [Authorize(Roles = AppUser.AdminRole)]
     public class LogsController : RavenController
     {
         public LogsController(IAsyncDocumentSession dbSession, ILogger<LogsController> logger)
@@ -21,7 +21,6 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        [Route("getAll")]
         public async Task<PagedList<StructuredLog>> GetAll(int skip, int take)
         {
             var results = await DbSession.Query<StructuredLog>()
@@ -40,7 +39,6 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        [Route("delete")]
         public async Task Delete(string id)
         {
             if (!id.StartsWith("LogSummary/", StringComparison.InvariantCultureIgnoreCase))

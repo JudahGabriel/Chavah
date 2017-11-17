@@ -40,7 +40,7 @@ namespace BitShuva.Chavah.Common
             var viewsFolder = Path.Combine(host.WebRootPath, viewsFolderRelativePath);
             return new AngularCacheBustedViews
             {
-                Views = Directory.EnumerateFiles(viewsFolder, "*.html")
+                Views = Directory.EnumerateFiles(viewsFolder, "*.html", SearchOption.AllDirectories)
                     .Select(htmlFilePath => GetCacheBustedRelativeUrl(htmlFilePath, viewsFolderRelativePath))
                     .ToList()
             };
@@ -51,9 +51,25 @@ namespace BitShuva.Chavah.Common
             using (var file = File.OpenRead(htmlFilePath))
             using (var md5 = System.Security.Cryptography.MD5.Create())
             {
+                var viewsFolder = '\\' + viewsFolderRelativePath + '\\';
+                var viewFolderIndex = htmlFilePath.LastIndexOf(viewsFolder, StringComparison.InvariantCultureIgnoreCase);
+                if (viewFolderIndex == -1)
+                {
+                    var error = new InvalidOperationException("Couldn't find views inside html file path");
+                    error.Data.Add("views folder", viewsFolder);
+                    error.Data.Add("html file path", htmlFilePath);
+                    throw error;
+                }
+
+                // See if the view is in a subfolder.
+                var htmlFileName = Path.GetFileName(htmlFilePath);
+                var filePathRelativeToViewsFolder = htmlFilePath
+                    .Substring(viewFolderIndex + viewsFolder.Length)
+                    .Replace(htmlFileName, string.Empty, StringComparison.InvariantCultureIgnoreCase);
+
                 var fileContentHash = string.Join(string.Empty, md5.ComputeHash(file));
-                var fileNameWithHash = Path.GetFileName(htmlFilePath) + "?v=" + fileContentHash;
-                return Path.Combine($"/" + viewsFolderRelativePath, fileNameWithHash)
+                var fileNameWithHash = htmlFileName + "?v=" + fileContentHash;
+                return Path.Combine($"/" + viewsFolderRelativePath, filePathRelativeToViewsFolder, fileNameWithHash)
                     .Replace("\\", "/")
                     .ToLowerInvariant();
             }

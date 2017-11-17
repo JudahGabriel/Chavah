@@ -8,76 +8,89 @@
         "LocalStorageModule"
     ];
 
-    export var App = angular.module("ChavahApp", modules);
+    export const App = angular.module("ChavahApp", modules);
 
-    function createRoute(htmlPage: string, isAdmin = false): AppRoute {
+    const homeVm: Server.IHomeViewModel = window["BitShuva.Chavah.HomeViewModel"];
+    App.constant("initConfig", homeVm); 
+
+    // Gets the relative path to a cache-busted angular view. 
+    // The view URL is appended a hash of the contents of the file. See AngularCacheBustedViewsProvider.cs
+    function findCacheBustedView(viewName: string) {
+        var cacheBustedView = homeVm.cacheBustedAngularViews.find(v => v.search(new RegExp(viewName, "i")) !== -1);
+        if (!cacheBustedView) {
+            throw new Error("Unable to find cache-busted Angular view " + viewName);
+        }
+
+        return cacheBustedView;
+    } 
+    export const FindAppView = findCacheBustedView;
+    
+    function createRoute(templateUrl: string, access = RouteAccess.Anonymous): Route {
+        var cacheBustedView = findCacheBustedView(templateUrl);
         return {
-            templateUrl: htmlPage,
-            isAdmin: isAdmin
+            templateUrl: cacheBustedView,
+            access: access,
         };
     }
 
-    var initConfig: InitConfig = window["BitShuva.Chavah.InitConfig"];
-    App.constant("initConfig", initConfig); 
-
-    var templatePaths: TemplatePaths = {
-        artistList: "/App/Views/Templates/ArtistList.html",
-        songList: "/App/Views/Templates/SongList.html",
-        songRequestModal: "/App/Views/RequestSongModal.html",
-        songRequestResult: "/App/Views/Templates/SongRequestResult.html",
-        headerPartial: "/App/Views/Header.html",
-        footerPartial: "/App/Views/Footer.html",
-        adminSidebar: "/App/Views/Templates/AdminSidebar.html",
-        goBack: "/App/Views/Templates/GoBack.html"
+    const templatePaths: TemplatePaths = {
+        artistList: findCacheBustedView("/partials/ArtistList.html"),
+        songList: findCacheBustedView("/partials/SongList.html"),
+        songRequestModal: findCacheBustedView("/modals/RequestSongModal.html"),
+        songRequestResult: findCacheBustedView("/partials/SongRequestResult.html"),
+        headerPartial: findCacheBustedView("/partials/Header.html"),
+        footerPartial: findCacheBustedView("/partials/Footer.html"),
+        adminSidebar: findCacheBustedView("/partials/AdminSidebar.html"),
+        goBack: findCacheBustedView("/partials/GoBack.html")
     };
     App.constant("templatePaths", templatePaths);
     
-    var views = {
-        nowPlaying: "/App/Views/NowPlaying.html",
-        trending: "/App/Views/Trending.html",
-        profile: "/App/Views/Profile.html",
-        popular: "/App/Views/Popular.html",
-        recent: "/App/Views/RecentSongs.html",
-        myLikes: "/App/Views/MyLikes.html",
-        editSong: "/App/Views/EditSong.html",
-        shareThanks: "/App/Views/ShareThanks.html",
-        about: "/App/Views/Legal.html",
-        welcome: "/App/Views/Welcome.html",
-        songEditApproved: "/App/Views/SongEditApproved.html",
+    const views = {
+        nowPlaying: "/NowPlaying.html",
+        trending: "/Trending.html",
+        profile: "/Profile.html",
+        popular: "/Popular.html",
+        recent: "/RecentSongs.html",
+        myLikes: "/MyLikes.html",
+        editSong: "/EditSong.html",
+        shareThanks: "/ShareThanks.html",
+        about: "/Legal.html",
+        welcome: "/Welcome.html",
+        songEditApproved: "/SongEditApproved.html",
 
         // Sign in
-        promptSignIn: "/App/Views/PromptSignIn.html",
-        signIn: "/App/Views/SignIn.html",
-        password: "/App/Views/Password.html",
-        forgotPassword: "/App/Views/ForgotPassword.html",
-        createPassword: "/App/Views/CreatePassword.html",
-        register: "/App/Views/Register.html",
-        confirmEmail: "/App/Views/ConfirmEmail.html",
-        resetPassword: "/App/Views/ResetPassword.html",
+        promptSignIn: "/PromptSignIn.html",
+        signIn: "/SignIn.html",
+        password: "/Password.html",
+        forgotPassword: "/ForgotPassword.html",
+        createPassword: "/CreatePassword.html",
+        register: "/Register.html",
+        confirmEmail: "/ConfirmEmail.html",
+        resetPassword: "/ResetPassword.html",
 
         // Donate
-        donate: "/App/Views/Donate.html",
-        donateSuccess: "/App/Views/DonateSuccess.html",
-        donateCancelled: "/App/Views/DonateCancelled.html",
+        donate: "/Donate.html",
+        donateSuccess: "/DonateSuccess.html",
+        donateCancelled: "/DonateCancelled.html",
 
         // Admin
-        albums: "/App/Views/Albums.html",
-        uploadAlbum: "/App/Views/UploadAlbum.html",
-        createAlbum: "/App/Views/EditAlbum.html",
-        editAlbum: "/App/Views/EditAlbum.html",
-        editArtist: "/App/Views/EditArtist.html",
-        songEdits: "/App/Views/ApproveSongEdits.html",
-        tags: "/App/Views/TagEditor.html",
-        logs: "/App/Views/LogEditor.html"
+        albums: "/Albums.html",
+        uploadAlbum: "/UploadAlbum.html",
+        createAlbum: "/EditAlbum.html",
+        editAlbum: "/EditAlbum.html",
+        editArtist: "/EditArtist.html",
+        songEdits: "/ApproveSongEdits.html",
+        tags: "/TagEditor.html",
+        logs: "/LogEditor.html"
     };
 
     App.config(["$routeProvider", "$locationProvider", ($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {
         $routeProvider.caseInsensitiveMatch = true;
         $locationProvider.hashPrefix('');
         $routeProvider
-            .when("/", createRoute(views.nowPlaying))
-            .when("/nowplaying", createRoute(views.nowPlaying))
-            .when("/trending", createRoute(views.trending))
+            .when("/", createRoute("NowPlaying.html"))
+            .when("/nowplaying", { redirectTo: "/" })
+            .when("/trending", createRoute("Trending.html"))
             .when("/profile", createRoute(views.profile))
             .when("/popular", createRoute(views.popular))
             .when("/recent", createRoute(views.recent))
@@ -104,15 +117,15 @@
             .when("/donatecancelled", createRoute(views.donateCancelled))
 
             // Admin
-            .when("/admin", createRoute(views.albums, true))
-            .when("/admin/albums", createRoute(views.albums, true))
-            .when("/admin/album/upload", createRoute(views.uploadAlbum, true))
-            .when("/admin/album/create", createRoute(views.createAlbum, true))
-            .when("/admin/album/:artist/:album", createRoute(views.editAlbum, true))
-            .when("/admin/artists/:artistName?", createRoute(views.editArtist, true))
-            .when("/admin/songedits", createRoute(views.songEdits, true))
-            .when("/admin/tags", createRoute(views.tags, true))
-            .when("/admin/logs", createRoute(views.logs, true))
+            .when("/admin", createRoute(views.albums, RouteAccess.Admin))
+            .when("/admin/albums", createRoute(views.albums, RouteAccess.Admin))
+            .when("/admin/album/upload", createRoute(views.uploadAlbum, RouteAccess.Admin))
+            .when("/admin/album/create", createRoute(views.createAlbum, RouteAccess.Admin))
+            .when("/admin/album/:artist/:album", createRoute(views.editAlbum, RouteAccess.Admin))
+            .when("/admin/artists/:artistName?", createRoute(views.editArtist, RouteAccess.Admin))
+            .when("/admin/songedits", createRoute(views.songEdits, RouteAccess.Admin))
+            .when("/admin/tags", createRoute(views.tags, RouteAccess.Admin))
+            .when("/admin/logs", createRoute(views.logs, RouteAccess.Admin))
 
             .otherwise({
                 redirectTo: "/nowplaying"

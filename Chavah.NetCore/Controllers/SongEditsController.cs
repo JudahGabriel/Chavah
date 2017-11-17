@@ -12,17 +12,16 @@ using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
-    [Route("api/songEdits")]
+    [Route("api/[controller]/[action]")]
     public class SongEditsController : RavenController
     {
         public SongEditsController(IAsyncDocumentSession dbSession, ILogger<SongEditsController> logger)
             : base(dbSession, logger)
         {
         }
-
-        [Route("Edit")]
+        
         [HttpPost]
-        public async Task<SongEdit> EditSong(Song song)
+        public async Task<SongEdit> EditSong([FromBody] Song song)
         {
             var user = await this.GetCurrentUser();
             if (user == null)
@@ -57,8 +56,7 @@ namespace BitShuva.Chavah.Controllers
 
             return songEdit;
         }
-
-        [Route("GetPendingEdits")]
+        
         [HttpGet]
         public Task<IList<SongEdit>> GetPendingEdits(int take = 20)
         {
@@ -68,11 +66,10 @@ namespace BitShuva.Chavah.Controllers
                 .Take(take)
                 .ToListAsync();
         }
-
-        [Route("Approve")]
+        
         [HttpPost]
         [Authorize(Roles = AppUser.AdminRole)]
-        public async Task<SongEdit> Approve(SongEdit songEdit)
+        public async Task<SongEdit> Approve([FromBody] SongEdit songEdit)
         {
             var song = await DbSession.LoadAsync<Song>(songEdit.SongId);
             if (song != null)
@@ -92,8 +89,7 @@ namespace BitShuva.Chavah.Controllers
 
             return songEdit;
         }
-
-        [Route("Reject")]
+        
         [HttpPost]
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<SongEdit> Reject(string songEditId)

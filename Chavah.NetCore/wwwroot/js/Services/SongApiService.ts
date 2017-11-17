@@ -84,7 +84,7 @@
             var args = {
                 count: count
             };
-            return this.httpApi.query("/api/songs/top", args, SongApiService.songListConverter);
+            return this.httpApi.query("/api/songs/getpopular", args, SongApiService.songListConverter);
         }
 
         getLikes(count: number): ng.IPromise<Song[]> {
@@ -104,7 +104,7 @@
         }
 
         songCompleted(songId: string): ng.IPromise<any> {
-            return this.httpApi.post(`/api/songs/completed?songId=${songId}`, null);
+            return this.httpApi.post(`/api/songs/songCompleted?songId=${songId}`, null);
         }
 
         songFailed(error: AudioErrorInfo): ng.IPromise<any> {

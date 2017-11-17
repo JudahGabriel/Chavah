@@ -105,7 +105,7 @@ namespace BitShuva.Chavah {
             if (!this._facebookShareUrl) {
                 var name = `${this.artist} - ${this.name}`.replace(new RegExp("&", 'g'), "and"); // Yes, replace ampersand. Even though we escape it via encodeURIComponent, Facebook barfs on it.
                 var url = `https://messianicradio.com?song=${this.id}`;
-                var albumArtUrl = `https://messianicradio.com/api/albums/art/forSong?songId=${this.id}`;
+                var albumArtUrl = `https://messianicradio.com/api/albums/getArtforSong?songId=${this.id}`;
                 this._facebookShareUrl = "https://www.facebook.com/dialog/feed?app_id=256833604430846" +
                     `&link=${url}` +
                     `&picture=${encodeURIComponent(albumArtUrl)}` +

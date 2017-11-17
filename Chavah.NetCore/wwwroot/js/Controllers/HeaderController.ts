@@ -11,7 +11,7 @@
         ];
 
         constructor(            
-            private readonly initConfig: InitConfig,
+            private readonly initConfig: Server.IHomeViewModel,
             private readonly accountApi: AccountService,
             private readonly $timeout: ng.ITimeoutService) {
 
@@ -38,7 +38,7 @@
         markNotificationsAsRead() {
             if (this.notifications.some(n => n.isUnread)) {
                 this.notifications.forEach(n => n.isUnread = false);
-                this.accountApi.clearNotifications();
+                this.accountApi.clearNotifications(this.notifications[0].date);
             }
 
             this.isNotificationPopoverOpened = false;

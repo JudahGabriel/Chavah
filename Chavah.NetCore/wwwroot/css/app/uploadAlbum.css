@@ -1,0 +1,19 @@
+﻿.upload-album-page {
+  margin-bottom: 30px;
+}
+.upload-album-page .album-art {
+  max-height: 300px;
+  max-width: 300px;
+}
+.upload-album-page input[type="color"] {
+  cursor: pointer;
+}
+.upload-album-page .swatch-sample {
+  width: 150px;
+  height: 150px;
+  box-shadow: 0 0 3px 1px black;
+  padding: 5px;
+  margin-bottom: 5px;
+  margin-left: auto;
+  margin-right: auto;
+}

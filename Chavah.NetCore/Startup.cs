@@ -16,6 +16,7 @@ using WebOptimizer.AngularTemplateCache;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using BitShuva.Chavah.Models.Patches;
 
 namespace BitShuva.Chavah
 {
@@ -38,12 +39,23 @@ namespace BitShuva.Chavah
             // Add application services.
             services.AddTransient<IEmailSender, SendGridEmailService>();
             services.AddTransient<ICdnManagerService, CdnManagerService>();
+            services.AddScoped<IChannelProvider, RssChannelProvider>();
+            services.AddTransient<ISongService, SongService>();
+            services.AddTransient<ISongUploadService, SongUploadService>();
+            services.AddTransient<IAlbumService, AlbumService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddCacheBustedAngularViews("/views");
 
             // Add RavenDB and identity.
             services
                 .AddRavenDb(Configuration.GetConnectionString("RavenConnection")) // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession() // Create a RavenDB IAsyncDocumentSession for each request.
-                .AddRavenDbIdentity<AppUser>(); // Use Raven for users and roles. AppUser is your class, a simple DTO to hold user data. See https://github.com/JudahGabriel/RavenDB.Identity/blob/master/Sample/Models/AppUser.cs
+                .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles. 
+                {
+                    c.Password.RequireNonAlphanumeric = false;
+                    c.Password.RequireUppercase = false;
+                    c.Password.RequiredLength = 6;
+                }); 
 
             // Install our RavenDB indexes and transformers.
             // TODO: Move this into a helper function, maybe an extension on services?
@@ -52,17 +64,11 @@ namespace BitShuva.Chavah
             IndexCreation.CreateIndexes(typeof(Startup).Assembly, db);
             new SongNameTransformer().Execute(db);
 
-            // Add RSS feed services.
-            services.AddScoped<IChannelProvider, RssChannelProvider>();
-
-            services.AddTransient<ISongService, SongService>();
-            services.AddTransient<IAlbumService, AlbumService>();
-            services.AddTransient<IUserService, UserService>();
-
+            // Run any database patches.
+            PatchBase.RunPendingPatches(services);
+                        
             services.AddMemoryCache();
-
             services.AddMvc();
-
             services.UseBundles();
         }
 
@@ -81,13 +87,6 @@ namespace BitShuva.Chavah
             }
 
             app.UseStaticFiles();
-
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"App", @"Views")),
-                RequestPath = new PathString("/App/Views")
-            });
-
             app.UseWebOptimizer();
             app.UseAuthentication();
 

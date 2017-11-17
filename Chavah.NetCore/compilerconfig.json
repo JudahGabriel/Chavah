@@ -1,0 +1,90 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/bootswatch.css",
+    "inputFile": "wwwroot/css/bootswatch.less"
+  },
+  {
+    "outputFile": "wwwroot/css/functions.css",
+    "inputFile": "wwwroot/css/functions.less"
+  },
+  {
+    "outputFile": "wwwroot/css/nprogress.css",
+    "inputFile": "wwwroot/css/nprogress.less"
+  },
+  {
+    "outputFile": "wwwroot/css/variables.css",
+    "inputFile": "wwwroot/css/variables.less"
+  },
+  {
+    "outputFile": "wwwroot/css/adminSidebar.css",
+    "inputFile": "wwwroot/css/adminSidebar.less"
+  },
+  {
+    "outputFile": "wwwroot/css/albums.css",
+    "inputFile": "wwwroot/css/albums.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/adminSidebar.css",
+    "inputFile": "wwwroot/css/app/adminSidebar.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/albums.css",
+    "inputFile": "wwwroot/css/app/albums.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/editArtist.css",
+    "inputFile": "wwwroot/css/app/editArtist.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/editSong.css",
+    "inputFile": "wwwroot/css/app/editSong.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/footer.css",
+    "inputFile": "wwwroot/css/app/footer.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/goBack.css",
+    "inputFile": "wwwroot/css/app/goBack.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/header.css",
+    "inputFile": "wwwroot/css/app/header.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/nowPlaying.css",
+    "inputFile": "wwwroot/css/app/nowPlaying.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/requestSongModal.css",
+    "inputFile": "wwwroot/css/app/requestSongModal.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/shared.css",
+    "inputFile": "wwwroot/css/app/shared.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/songList.css",
+    "inputFile": "wwwroot/css/app/songList.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/tagEditor.css",
+    "inputFile": "wwwroot/css/app/tagEditor.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/trending.css",
+    "inputFile": "wwwroot/css/app/trending.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/uploadAlbum.css",
+    "inputFile": "wwwroot/css/app/uploadAlbum.less"
+  },
+  {
+    "outputFile": "wwwroot/css/bootstrap-flatly-tweaks.css",
+    "inputFile": "wwwroot/css/bootstrap-flatly-tweaks.less"
+  },
+  {
+    "outputFile": "wwwroot/css/bootstrap-flatly.css",
+    "inputFile": "wwwroot/css/bootstrap-flatly.less"
+  }
+]

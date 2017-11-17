@@ -1,4 +1,15 @@
 ﻿module BitShuva.Chavah.Server {
+    export interface IHomeViewModel {
+        debug: boolean;
+        songId: string | null;
+        redirect: string | null;
+        userEmail: string | null;
+        userRoles: string[];
+        notifications: Server.INotification[];
+        embed: boolean;
+        cacheBustedAngularViews: string[];
+    };
+
     export interface IApplicationUser {
         totalPlays: number;
         preferences: any;

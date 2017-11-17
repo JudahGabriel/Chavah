@@ -70,7 +70,7 @@ var BitShuva;
                 var args = {
                     count: count
                 };
-                return this.httpApi.query("/api/songs/top", args, SongApiService.songListConverter);
+                return this.httpApi.query("/api/songs/getpopular", args, SongApiService.songListConverter);
             };
             SongApiService.prototype.getLikes = function (count) {
                 var args = {
@@ -85,7 +85,7 @@ var BitShuva;
                 return this.httpApi.query("/api/songs/getRecentPlays", args, SongApiService.songListConverter);
             };
             SongApiService.prototype.songCompleted = function (songId) {
-                return this.httpApi.post("/api/songs/completed?songId=" + songId, null);
+                return this.httpApi.post("/api/songs/songCompleted?songId=" + songId, null);
             };
             SongApiService.prototype.songFailed = function (error) {
                 return this.httpApi.post("/api/songs/audiofailed", error);

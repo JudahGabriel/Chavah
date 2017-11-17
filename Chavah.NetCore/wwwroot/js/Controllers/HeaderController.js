@@ -36,7 +36,7 @@ var BitShuva;
             HeaderController.prototype.markNotificationsAsRead = function () {
                 if (this.notifications.some(function (n) { return n.isUnread; })) {
                     this.notifications.forEach(function (n) { return n.isUnread = false; });
-                    this.accountApi.clearNotifications();
+                    this.accountApi.clearNotifications(this.notifications[0].date);
                 }
                 this.isNotificationPopoverOpened = false;
             };

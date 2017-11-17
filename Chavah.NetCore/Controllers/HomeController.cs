@@ -18,9 +18,10 @@ namespace BitShuva.Chavah.Controllers
 {
     public class HomeController : RavenController
     {
-        private ISongService _songService;
-        private IAlbumService _albumService;
-        private IUserService _userService;
+        private ISongService songService;
+        private IAlbumService albumService;
+        private IUserService userService;
+        private AngularCacheBustedViews cacheBustedNgViews;
 
         //TODO: move this to the web.config?\
         private const string _radioUrl = "https://messianicradio.com";
@@ -30,13 +31,15 @@ namespace BitShuva.Chavah.Controllers
             ISongService songService,
             IAlbumService albumService,
             IUserService userService,
+            AngularCacheBustedViews cacheBustedNgViews,
             IAsyncDocumentSession dbSession,
             ILogger<HomeController> logger)
             : base(dbSession, logger)
         {
-            _songService = songService;
-            _albumService = albumService;
-            _userService = userService;
+            this.songService = songService;
+            this.albumService = albumService;
+            this.userService = userService;
+            this.cacheBustedNgViews = cacheBustedNgViews;
         }
         
         /// <summary>
@@ -54,40 +57,39 @@ namespace BitShuva.Chavah.Controllers
         [RequireHttps]
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(string user=null, 
-                                               string artist = null,
-                                               string album = null,
-                                               string song = null,
-                                               bool embed = false)
+        public async Task<IActionResult> Index(
+            string user=null, 
+            string artist = null, 
+            string album = null, 
+            string song = null, 
+            bool embed = false)
         {
             var viewModel = new HomeViewModel
             {
-                Embed = embed
+                Embed = embed,
+                CacheBustedAngularViews = this.cacheBustedNgViews.Views
             };
 
             var userName = User.Identity.Name;
             AppUser currentUser = null;
             if (!string.IsNullOrEmpty(userName))
             {
-                currentUser = await _userService.GetUser(userName);
+                currentUser = await userService.GetUser(userName);
             }
 
             if (currentUser != null)
             {
                 viewModel.UserEmail = currentUser.Email;
-                //viewModel.Jwt = currentUser.Jwt;
                 viewModel.UserRoles = new List<string>(currentUser.Roles);
                 viewModel.Notifications = currentUser.Notifications;
             }          
-
-            //get the query
+            
             var firstValidQuery = new[] { artist, album, song }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
-
             if (firstValidQuery != null)
             {
-                var taskOrNull = firstValidQuery == song ? _songService.GetSongByIdQueryAsync(firstValidQuery) :
-                    firstValidQuery == artist ? _songService.GetSongByArtistAsync(firstValidQuery) :
-                    firstValidQuery == album ? _songService.GetSongByAlbumAsync(firstValidQuery) :
+                var taskOrNull = firstValidQuery == song ? songService.GetSongByIdQueryAsync(firstValidQuery) :
+                    firstValidQuery == artist ? songService.GetSongByArtistAsync(firstValidQuery) :
+                    firstValidQuery == album ? songService.GetSongByAlbumAsync(firstValidQuery) :
                     null;
 
                 if (taskOrNull != null)
@@ -95,7 +97,7 @@ namespace BitShuva.Chavah.Controllers
                     var songForQuery = await taskOrNull;
                     if (songForQuery != null)
                     {
-                        var albumData = await _albumService.GetMatchingAlbumAsync(a => a.Name == songForQuery.Album && a.Artist == songForQuery.Artist);
+                        var albumData = await albumService.GetMatchingAlbumAsync(a => a.Name == songForQuery.Album && a.Artist == songForQuery.Artist);
                         viewModel.PageTitle = $"{songForQuery.Name} by {songForQuery.Artist} on Chavah Messianic Radio";
                         viewModel.DescriptiveImageUrl = albumData?.AlbumArtUri?.ToString();
                         viewModel.Song = songForQuery;
@@ -137,24 +139,11 @@ namespace BitShuva.Chavah.Controllers
         {
             return View();
         }
-
-        // TODO: port this to AspNetCore
-        //public async Task<ActionResult> ActivityFeed(int take = 5)
-        //{
-        //    var recentActivities = await _logger.GetActivity(take);
-
-        //    var feedItems = from activity in recentActivities
-        //                    select new SyndicationItem(
-        //                        title: activity.Title,
-        //                        content: activity.Description,
-        //                        itemAlternateLink: activity.MoreInfoUri);
-
-        //    var feed = new SyndicationFeed("Chavah Messianic Radio",
-        //                                   "The latest activity over at Chavah Messianic Radio",
-        //                                   new Uri(_radioUrl), feedItems)
-        //    { Language = "en-US" };
-        //    return new RssActionResult(feed);
-        //}
-
+        
+        [HttpGet]
+        public IActionResult ActivityFeed()
+        {
+            return RedirectToActionPermanent("ActivityFeed", "Activities");
+        }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
-    [Route("api/likes")]
+    [Route("api/[controller]/[action]")]
     public class LikesController : RavenController
     {
         public LikesController(IAsyncDocumentSession dbSession, ILogger<LikesController> logger)
@@ -18,20 +18,18 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        [Route("like")]
         public async Task<int> Like(string songId)
         {
             return await UpdateLikeStatus(songId, LikeStatus.Like);
         }
         
         [HttpPost]
-        [Route("dislike")]
         public async Task<int> Dislike(string songId)
         {
             return await UpdateLikeStatus(songId, LikeStatus.Dislike);
         }
-
-        [Route("upDownVotes")]
+        
+        [HttpGet]
         public async Task<dynamic> GetUpDownVotes(string songId)
         {
             var upVoteCount = await this.DbSession.Query<Like>().CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Like);

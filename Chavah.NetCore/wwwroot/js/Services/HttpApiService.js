@@ -97,19 +97,19 @@ var BitShuva;
                 return deferred.promise;
             };
             HttpApiService.prototype.createHeaders = function () {
-                var jwtAuthHeader = this.createJwtAuthHeader();
-                if (jwtAuthHeader) {
-                    return { "Authorization": jwtAuthHeader };
-                }
+                //var jwtAuthHeader = this.createJwtAuthHeader();
+                //if (jwtAuthHeader) {
+                //    return { "Authorization": jwtAuthHeader };
+                //}
                 return {};
             };
-            HttpApiService.prototype.createJwtAuthHeader = function () {
-                var jwt = this.localStorageService.get(Chavah.AccountService.jwtKey);
-                if (jwt) {
-                    return "Bearer " + jwt;
-                }
-                return "";
-            };
+            //private createJwtAuthHeader(): string {
+            //    var jwt = this.localStorageService.get<string>(AccountService.jwtKey);
+            //    if (jwt) {
+            //        return `Bearer ${jwt}`;
+            //    }
+            //    return "";
+            //}
             HttpApiService.prototype.onAjaxError = function (errorDetails, errorMessage) {
                 // If we got 401 unauthorized, the token is probably stale or invalid. Go to sign in.
                 //if (errorDetails && errorDetails.status === 401) {

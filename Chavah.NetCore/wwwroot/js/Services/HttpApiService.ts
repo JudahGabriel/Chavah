@@ -107,22 +107,22 @@
         }
 
         private createHeaders(): {} {
-            var jwtAuthHeader = this.createJwtAuthHeader();
-            if (jwtAuthHeader) {
-                return { "Authorization": jwtAuthHeader };
-            }
+            //var jwtAuthHeader = this.createJwtAuthHeader();
+            //if (jwtAuthHeader) {
+            //    return { "Authorization": jwtAuthHeader };
+            //}
 
             return {};
         }
 
-        private createJwtAuthHeader(): string {
-            var jwt = this.localStorageService.get<string>(AccountService.jwtKey);
-            if (jwt) {
-                return `Bearer ${jwt}`;
-            }
+        //private createJwtAuthHeader(): string {
+        //    var jwt = this.localStorageService.get<string>(AccountService.jwtKey);
+        //    if (jwt) {
+        //        return `Bearer ${jwt}`;
+        //    }
 
-            return "";
-        }
+        //    return "";
+        //}
 
         private onAjaxError(errorDetails: any, errorMessage: string) {
             // If we got 401 unauthorized, the token is probably stale or invalid. Go to sign in.
