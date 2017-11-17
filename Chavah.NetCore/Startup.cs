@@ -69,6 +69,7 @@ namespace BitShuva.Chavah
                         
             services.AddMemoryCache();
             services.AddMvc();
+            services.AddProgressiveWebApp();
             services.UseBundles();
         }
 

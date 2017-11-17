@@ -1,0 +1,17 @@
+﻿{
+  "name": "Chavah Messianic Radio",
+  "short_name": "Chavah",
+  "description": "The very best Messianic Jewish and Hebrew Roots music on the web",
+  "icons": [
+    {
+      "src": "/images/chavah192x192.png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/chavah512x512.png",
+      "sizes": "512x512"
+    }
+  ],
+  "display": "standalone",
+  "start_url": "/"
+}
