@@ -64,7 +64,7 @@ namespace BitShuva.Chavah.Models.Indexes
                            };
 
             // Reduce: Group the preferences by user and combine their LikeDislikeCounts.
-            // This way, we can query UserSongPreference by ApplicationUser ID.
+            // This way, we can query UserSongPreference by user ID.
             Reduce = results => from result in results
                                 group result by result.UserId into userGroup
                                 select new UserSongPreferences

@@ -105,7 +105,7 @@ namespace BitShuva.Chavah.Controllers
                             this.Notifications.length = 10;
                         }"
             };
-            var query = new IndexQuery { Query = $"Tag:ApplicationUsers" };
+            var query = new IndexQuery { Query = $"Tag:AppUsers" };
             var options = new BulkOperationOptions
             {
                 AllowStale = true

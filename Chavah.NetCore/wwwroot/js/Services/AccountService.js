@@ -38,26 +38,33 @@ var BitShuva;
                 return this.httpApi.postUriEncoded("/api/account/clearNotifications", args);
             };
             AccountService.prototype.register = function (email, password) {
-                var escapedEmail = encodeURIComponent(email);
-                var escapedPassword = encodeURIComponent(password);
-                return this.httpApi.post("/api/account/Register?email=" + escapedEmail + "&password=" + escapedPassword, null);
+                var args = {
+                    email: email,
+                    password: password
+                };
+                return this.httpApi.postUriEncoded("/api/account/register", args);
             };
             AccountService.prototype.getUserWithEmail = function (email) {
                 var args = {
                     email: email
                 };
-                return this.httpApi.query("/api/account/GetUserWithEmail", args);
+                return this.httpApi.query("/api/account/getUserWithEmail", args);
             };
             AccountService.prototype.createPassword = function (email, password) {
-                var emailEscaped = encodeURIComponent(email);
-                var passwordEscaped = encodeURIComponent(password);
-                return this.httpApi.post("/api/account/CreatePassword?email=" + emailEscaped + "&password=" + passwordEscaped, null);
+                var args = {
+                    email: email,
+                    password: password
+                };
+                return this.httpApi.postUriEncoded("/api/account/createPassword", args);
             };
             AccountService.prototype.signIn = function (email, password, staySignedIn) {
                 var _this = this;
-                var emailEscaped = encodeURIComponent(email);
-                var passwordEscaped = encodeURIComponent(password);
-                var signInTask = this.httpApi.post("/api/account/SignIn?email=" + emailEscaped + "&password=" + passwordEscaped + "&staySignedIn=" + staySignedIn, null);
+                var args = {
+                    email: email,
+                    password: password,
+                    staySignedIn: staySignedIn
+                };
+                var signInTask = this.httpApi.postUriEncoded("/api/account/signIn", args);
                 signInTask.then(function (result) {
                     if (result.status === Chavah.SignInStatus.Success) {
                         _this.currentUser = new Chavah.User(result.email, result.roles);
@@ -76,18 +83,25 @@ var BitShuva;
                 return signInTask;
             };
             AccountService.prototype.confirmEmail = function (email, confirmCode) {
-                var escapedEmail = encodeURIComponent(email);
-                var escapedConfirmCode = encodeURIComponent(confirmCode);
-                return this.httpApi.post("/api/account/ConfirmEmail?email=" + escapedEmail + "&confirmCode=" + escapedConfirmCode, null);
+                var args = {
+                    email: email,
+                    confirmCode: confirmCode
+                };
+                return this.httpApi.postUriEncoded("/api/account/ConfirmEmail", args);
             };
             AccountService.prototype.sendPasswordResetEmail = function (email) {
-                return this.httpApi.post("/api/account/SendResetPasswordEmail?email=" + encodeURIComponent(email), null);
+                var args = {
+                    email: email
+                };
+                return this.httpApi.postUriEncoded("/api/account/sendResetPasswordEmail", args);
             };
             AccountService.prototype.resetPassword = function (email, passwordResetCode, newPassword) {
-                var escapedEmail = encodeURIComponent(email);
-                var escapedPasswordResetCode = encodeURIComponent(passwordResetCode);
-                var escapedNewPassword = encodeURIComponent(newPassword);
-                return this.httpApi.post("/api/account/ResetPassword?email=" + escapedEmail + "&passwordResetCode=" + escapedPasswordResetCode + "&newPassword=" + escapedNewPassword, null);
+                var args = {
+                    email: email,
+                    passwordResetCode: passwordResetCode,
+                    newPassword: newPassword
+                };
+                return this.httpApi.postUriEncoded("/api/account/resetPassword", args);
             };
             return AccountService;
         }());

@@ -1,4 +1,5 @@
 ﻿using BitShuva.Chavah.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid.Helpers.Mail;
 using System;
@@ -10,44 +11,36 @@ namespace BitShuva.Services
     public class SendGridEmailService : IEmailSender
     {
         private readonly AppSettings appSettings;
+        private readonly ILogger<SendGridEmailService> logger;
 
-        public SendGridEmailService(IOptions<AppSettings> appSettings)
+        public SendGridEmailService(IOptions<AppSettings> appSettings, ILogger<SendGridEmailService> logger)
         {
             this.appSettings = appSettings.Value;
+            this.logger = logger;
         }
-        public IdentityMessage ConfirmEmail(string toEmail, string confirmationCode, Uri hostUri)
+
+        public void QueueEmail(IdentityMessage message)
         {
-            var subject = "Chavah Messianic Radio - confirm your email";
-            var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
-            var confirmationCodeEscaped = GetAngularRouteEscapedCode(confirmationCode);
-            var confirmUrl = $"{GetAppUrl(hostUri)}/#/confirmemail/{emailEscaped}/{confirmationCodeEscaped}";
-            var html = $"Shalom from Chavah!<p>Please <strong><a href='{confirmUrl}'>click here</a></strong> to confirm your email address.</p>";
-
-            return new IdentityMessage
+            System.Threading.ThreadPool.QueueUserWorkItem(_ =>
             {
-                Body = html,
-                Destination = toEmail,
-                Subject = subject
-            };
+
+                try
+                {
+                    var task = this.SendEmailAsync(message);
+                    task.ConfigureAwait(continueOnCapturedContext: false);
+                    task.Wait(TimeSpan.FromSeconds(30));
+                }
+                catch (Exception error)
+                {
+                    using (logger.BeginScope(message))
+                    {
+                        logger.LogError(error, "Unable to send email");
+                    }
+                }
+            });
         }
 
-        public IdentityMessage ResetPassword(string toEmail, string resetCode, Uri hostUri)
-        {
-            var subject = "Chavah Messianic Radio - reset your password";
-            var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
-            var confirmationCodeEscaped = GetAngularRouteEscapedCode(resetCode);
-            var confirmUrl = $"{GetAppUrl(hostUri)}/#/resetpassword/{emailEscaped}/{confirmationCodeEscaped}";
-            var html = $"Shalom from Chavah!<p>Please <strong><a href='{confirmUrl}'>click here</a></strong> if you wish to reset your password.</p>";
-
-            return new IdentityMessage
-            {
-                Body = html,
-                Destination = toEmail,
-                Subject = subject
-            };
-        }
-
-        public async Task SendAsync(IdentityMessage message)
+        public async Task SendEmailAsync(IdentityMessage message)
         {
             var apiKey = appSettings.Email.SendGridApiKey;
             var client = new SendGrid.SendGridClient(apiKey);
@@ -60,27 +53,7 @@ namespace BitShuva.Services
             var plainTextContent = Regex.Replace(htmlContent.Value, "<[^>]*>", "");
 
             var mail = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent.Value);
-
-            var response = await client.SendEmailAsync(mail);
-
-            return;
-        }
-
-        public Task SendEmailAsync(string email, string subject, string message)
-        {
-            return Task.CompletedTask;
-        }
-
-        private string GetAppUrl(Uri hostUri)
-        {
-            var portString = hostUri.Port != 443 && hostUri.Port != 80 ? $":{hostUri.Port}" : "";
-            return $"{hostUri.Scheme}://{hostUri.Host}{portString}";
-        }
-
-        private string GetAngularRouteEscapedCode(string input)
-        {
-            // Angular routes don't work with forward slashes, even if escaped. Replace with triple underscore.
-            return Uri.EscapeDataString(input.Replace("/", "___"));
+            await client.SendEmailAsync(mail);
         }
     }
 }

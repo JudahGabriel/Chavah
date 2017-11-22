@@ -45,28 +45,35 @@
         }
 
         register(email: string, password: string): ng.IPromise<Server.IRegisterResults> {
-            var escapedEmail = encodeURIComponent(email);
-            var escapedPassword = encodeURIComponent(password);
-            return this.httpApi.post(`/api/account/Register?email=${escapedEmail}&password=${escapedPassword}`, null);
+            var args = {
+                email: email,
+                password: password
+            };
+            return this.httpApi.postUriEncoded("/api/account/register", args);
         }
 
-        getUserWithEmail(email: string): ng.IPromise<Server.IApplicationUser | null> {
+        getUserWithEmail(email: string): ng.IPromise<Server.IAppUser | null> {
             var args = {
                 email: email
             };
-            return this.httpApi.query<Server.IApplicationUser | null>("/api/account/GetUserWithEmail", args);
+            return this.httpApi.query<Server.IAppUser | null>("/api/account/getUserWithEmail", args);
         }
 
         createPassword(email: string, password: string): ng.IPromise<any> {
-            var emailEscaped = encodeURIComponent(email);
-            var passwordEscaped = encodeURIComponent(password);
-            return this.httpApi.post(`/api/account/CreatePassword?email=${emailEscaped}&password=${passwordEscaped}`, null);
+            var args = {
+                email: email,
+                password: password
+            };
+            return this.httpApi.postUriEncoded("/api/account/createPassword", args);
         }
 
         signIn(email: string, password: string, staySignedIn: boolean): ng.IPromise<SignInResult> {
-            var emailEscaped = encodeURIComponent(email);
-            var passwordEscaped = encodeURIComponent(password);
-            var signInTask = this.httpApi.post<SignInResult>(`/api/account/SignIn?email=${emailEscaped}&password=${passwordEscaped}&staySignedIn=${staySignedIn}`, null);
+            var args = {
+                email: email,
+                password: password,
+                staySignedIn: staySignedIn
+            };
+            var signInTask = this.httpApi.postUriEncoded<SignInResult>("/api/account/signIn", args);
             signInTask.then(result => {
                 if (result.status === SignInStatus.Success) {
                     this.currentUser = new User(result.email!, result.roles);
@@ -87,20 +94,28 @@
         }
 
         confirmEmail(email: string, confirmCode: string): ng.IPromise<Server.IConfirmEmailResult> {
-            var escapedEmail = encodeURIComponent(email);
-            var escapedConfirmCode = encodeURIComponent(confirmCode);
-            return this.httpApi.post(`/api/account/ConfirmEmail?email=${escapedEmail}&confirmCode=${escapedConfirmCode}`, null);
+            var args = {
+                email: email,
+                confirmCode: confirmCode
+            };
+            
+            return this.httpApi.postUriEncoded("/api/account/ConfirmEmail", args);
         }
 
         sendPasswordResetEmail(email: string): ng.IPromise<Server.IResetPasswordResult> {
-            return this.httpApi.post(`/api/account/SendResetPasswordEmail?email=${encodeURIComponent(email)}`, null);
+            var args = {
+                email: email
+            };
+            return this.httpApi.postUriEncoded("/api/account/sendResetPasswordEmail", args);
         }
 
         resetPassword(email: string, passwordResetCode: string, newPassword: string): ng.IPromise<Server.IResetPasswordResult> {
-            var escapedEmail = encodeURIComponent(email);
-            var escapedPasswordResetCode = encodeURIComponent(passwordResetCode);
-            var escapedNewPassword = encodeURIComponent(newPassword);
-            return this.httpApi.post(`/api/account/ResetPassword?email=${escapedEmail}&passwordResetCode=${escapedPasswordResetCode}&newPassword=${escapedNewPassword}`, null);
+            var args = {
+                email: email,
+                passwordResetCode: passwordResetCode,
+                newPassword: newPassword
+            };
+            return this.httpApi.postUriEncoded("/api/account/resetPassword", args);
         }
     }
 

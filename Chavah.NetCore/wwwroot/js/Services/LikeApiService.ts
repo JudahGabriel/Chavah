@@ -7,11 +7,17 @@
         }
 
         dislikeSong(songId: string): ng.IPromise<number> {
-            return this.httpApi.post(`/api/likes/dislike?songId=${songId}`, null);
+            var args = {
+                songId: songId
+            };
+            return this.httpApi.postUriEncoded("/api/likes/dislike", args);
         }
 
         likeSong(songId: string): ng.IPromise<number> {
-            return this.httpApi.post(`/api/likes/like?songId=${songId}`, null);
+            var args = {
+                songId: songId
+            }
+            return this.httpApi.postUriEncoded("/api/likes/like", args);
         }
     }
 

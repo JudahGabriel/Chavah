@@ -1,5 +1,6 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client;
@@ -21,7 +22,7 @@ namespace BitShuva.Chavah.Controllers
         {
         }
         
-        public async Task<string> GetPendingRequestedSongId()
+        public async Task<string> GetPending()
         {
             var user = await this.GetCurrentUser();
             if (user == null)
@@ -62,10 +63,17 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
+        public string ReqFoo(string songId)
+        {
+            return "ok! " + songId;
+        }
+
+        [HttpPost]
         public async Task RequestSong(string songId)
         {
             var user = await this.GetCurrentUser();
             var song = await this.DbSession.LoadAsync<Song>(songId);
+
             if (song != null && user != null)
             {
                 var requestExpiration = DateTime.UtcNow.AddDays(10);
@@ -87,7 +95,6 @@ namespace BitShuva.Chavah.Controllers
                     };
                     await this.DbSession.StoreAsync(songRequest);
                     this.DbSession.SetRavenExpiration(songRequest, requestExpiration);
-
                     // Store an activity for the song request.
                     var activity = new Activity
                     {

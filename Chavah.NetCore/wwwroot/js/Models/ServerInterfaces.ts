@@ -10,21 +10,25 @@
         cacheBustedAngularViews: string[];
     };
 
-    export interface IApplicationUser {
+    export interface IAppUser {
         totalPlays: number;
-        preferences: any;
         registrationDate: string;
         lastSeen: string;
         totalSongRequests: number;
         requiresPasswordReset: boolean;
+        recentSongIds: string[];
+        notifications: Server.INotification[];
+
         accessFailedCount: number;
         claims: any[];
         email: string;
         id: string;
-        isEmailConfirmed: boolean;
+        userName: string;
+        emailConfirmed: boolean;
         isPhoneNumberConfirmed: boolean;
         lockoutEnabled: boolean;
-        lockoutEndDate: string;
+        lockoutEndDate: string | null;
+        twoFactorEnabled: boolean;
         logins: any[];
         passwordHash: string;
         phoneNumber: string;

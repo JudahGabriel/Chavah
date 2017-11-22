@@ -104,7 +104,10 @@
         }
 
         songCompleted(songId: string): ng.IPromise<any> {
-            return this.httpApi.post(`/api/songs/songCompleted?songId=${songId}`, null);
+            var args = {
+                songId: songId
+            };
+            return this.httpApi.postUriEncoded("/api/songs/songCompleted", args);
         }
 
         songFailed(error: AudioErrorInfo): ng.IPromise<any> {

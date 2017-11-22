@@ -85,7 +85,10 @@ var BitShuva;
                 return this.httpApi.query("/api/songs/getRecentPlays", args, SongApiService.songListConverter);
             };
             SongApiService.prototype.songCompleted = function (songId) {
-                return this.httpApi.post("/api/songs/songCompleted?songId=" + songId, null);
+                var args = {
+                    songId: songId
+                };
+                return this.httpApi.postUriEncoded("/api/songs/songCompleted", args);
             };
             SongApiService.prototype.songFailed = function (error) {
                 return this.httpApi.post("/api/songs/audiofailed", error);

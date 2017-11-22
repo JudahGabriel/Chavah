@@ -22,6 +22,6 @@ namespace BitShuva.Chavah.Common
         public bool IsSignedIn { get; set; }
         public bool IsAdmin { get; set; }
         public string Email { get; set; }
-        public string UserId => "ApplicationUsers/" + Email;
+        public string UserId => "AppUsers/" + Email;
     }
 }

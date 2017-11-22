@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Common;
+using RavenDB.StructuredLog;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -16,7 +17,6 @@ namespace BitShuva.Chavah.Controllers
     {
         protected readonly ILogger logger;
         private  AppUser currentUser;
-        public SessionToken SessionToken { get; set; }
 
         protected RavenController(IAsyncDocumentSession dbSession, ILogger logger)
         {
@@ -26,7 +26,7 @@ namespace BitShuva.Chavah.Controllers
             // RavenDB best practice: during save, wait for the indexes to update.
             // This way, Post-Redirect-Get scenarios won't be affected by stale indexes.
             // For more info, see https://ravendb.net/docs/article-page/3.5/Csharp/client-api/session/saving-changes
-            DbSession.Advanced.WaitForIndexesAfterSaveChanges(timeout: TimeSpan.FromSeconds(30), throwOnTimeout: false);
+            DbSession.Advanced.WaitForIndexesAfterSaveChanges(timeout: TimeSpan.FromSeconds(3), throwOnTimeout: false);
         }
 
         /// <summary>
@@ -44,9 +44,34 @@ namespace BitShuva.Chavah.Controllers
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var executedContext = await next.Invoke();
-            if (executedContext.Exception == null)
+            var httpMethodOrNull = context?.HttpContext?.Request?.Method;
+            if (executedContext.Exception == null && httpMethodOrNull != "GET" && DbSession.Advanced.HasChanges)
             {
-                await DbSession.SaveChangesAsync();
+                try
+                {
+                    await DbSession.SaveChangesAsync();
+                }
+                catch (Exception saveError)
+                {
+                    using (logger.BeginKeyValueScope("user", context?.HttpContext?.User?.Identity?.Name))
+                    using (logger.BeginKeyValueScope("action", context?.ActionDescriptor?.DisplayName))
+                    using (logger.BeginKeyValueScope("routeValues", executedContext.ActionDescriptor.RouteValues))
+                    using (logger.BeginKeyValueScope("changes", DbSession.Advanced.WhatChanged()))
+                    {
+                        logger.LogError(saveError, $"Error saving changes for {next.Method?.Name}");
+                    }
+                }
+            }
+            else if (executedContext.Exception != null) // An exception occurred while executing the method.
+            {
+                using (logger.BeginKeyValueScope("user", context?.HttpContext?.User?.Identity?.Name))
+                using (logger.BeginKeyValueScope("action", executedContext.ActionDescriptor?.DisplayName))
+                using (logger.BeginKeyValueScope("routeValues", executedContext.ActionDescriptor.RouteValues))
+                using (logger.BeginKeyValueScope("parameters", context?.ActionDescriptor?.Parameters))
+                using (logger.BeginScope(context?.ModelState))
+                {
+                    logger.LogError(executedContext.Exception, executedContext.Exception.Message);
+                }
             }
         }
 
@@ -57,11 +82,12 @@ namespace BitShuva.Chavah.Controllers
                 return this.currentUser;
             }
 
-            if (this.SessionToken != null && !string.IsNullOrEmpty(this.SessionToken.Email))
+            var email = this.User.Identity.Name;
+            if (!string.IsNullOrEmpty(email))
             {
                 using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
                 {
-                    this.currentUser = await DbSession.LoadAsync<AppUser>("ApplicationUsers/" + this.SessionToken.Email);
+                    this.currentUser = await DbSession.LoadAsync<AppUser>("AppUsers/" + email);
                 }
             }
 

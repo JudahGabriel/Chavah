@@ -5,18 +5,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RavenDB.Identity;
-using Raven.Client;
 using BitShuva.Chavah.Models.Transformers;
-using Raven.Client.Indexes;
-using cloudscribe.Syndication.Models.Rss;
 using BitShuva.Chavah.Common;
 using BitShuva.Services;
-using WebOptimizer.AngularTemplateCache;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using BitShuva.Chavah.Models.Patches;
+using cloudscribe.Syndication.Models.Rss;
+using Raven.Client;
+using RavenDB.Identity;
+using BitShuva.Chavah.Models.Indexes;
+using WebEssentials.AspNetCore.Pwa;
+using RavenDB.StructuredLog;
 
 namespace BitShuva.Chavah
 {
@@ -32,11 +33,10 @@ namespace BitShuva.Chavah
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //Configuration settings
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
 
-            // Add application services.
+            //// Add application services.
             services.AddTransient<IEmailSender, SendGridEmailService>();
             services.AddTransient<ICdnManagerService, CdnManagerService>();
             services.AddScoped<IChannelProvider, RssChannelProvider>();
@@ -45,6 +45,10 @@ namespace BitShuva.Chavah
             services.AddTransient<IAlbumService, AlbumService>();
             services.AddTransient<IUserService, UserService>();
             services.AddCacheBustedAngularViews("/views");
+
+            // Use our BCrypt for password hashing. Must be added before AddIdentity().
+            services.AddTransient<BCryptPasswordSettings>();
+            services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher<AppUser>>();
 
             // Add RavenDB and identity.
             services
@@ -55,22 +59,24 @@ namespace BitShuva.Chavah
                     c.Password.RequireNonAlphanumeric = false;
                     c.Password.RequireUppercase = false;
                     c.Password.RequiredLength = 6;
-                }); 
+                })
+                .AddLogging(logger => logger.AddRavenStructuredLogger());
 
-            // Install our RavenDB indexes and transformers.
-            // TODO: Move this into a helper function, maybe an extension on services?
-            var db = services.BuildServiceProvider()
-                .GetRequiredService<IDocumentStore>();
-            IndexCreation.CreateIndexes(typeof(Startup).Assembly, db);
-            new SongNameTransformer().Execute(db);
-
-            // Run any database patches.
-            PatchBase.RunPendingPatches(services);
-                        
+            services.RunDatabasePatches();
+            services.InstallIndexes();
+            services.InstallTransformers();
             services.AddMemoryCache();
             services.AddMvc();
-            services.AddProgressiveWebApp();
-            services.UseBundles();
+            services.UseBundles(); // Must be *after* .AddMvc()
+            //services.AddProgressiveWebApp(new PwaOptions
+            //{
+            //    CacheId = "v1.1",
+            //    RoutesToPreCache = "",
+            //    RegisterServiceWorker = true,
+            //    RegisterWebmanifest = true,
+            //    Strategy = ServiceWorkerStrategy.CacheFirstSafe,
+            //    OfflineRoute = "/offline.html"
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,11 +90,12 @@ namespace BitShuva.Chavah
             }
             else
             {
+                app.UseDeveloperExceptionPage();
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseWebOptimizer(); // this line must come before .UseStaticFiles()
             app.UseStaticFiles();
-            app.UseWebOptimizer();
             app.UseAuthentication();
 
             app.UseMvc(routes =>
@@ -96,6 +103,7 @@ namespace BitShuva.Chavah
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                
             });
         }
     }

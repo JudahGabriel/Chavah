@@ -61,7 +61,7 @@
     @* Twitter card. When a user shares a song, we show a full card containing album art and song info. *@
     <meta name="twitter:creator" content="&#64;chavahradio">
     <meta name="twitter:site" content="&#64;chavahradio">
-    @if (Model.Song != null)
+    @if (Model != null && Model.Song != null)
     {
         // Show a Twitter summary card with the song info.
         <meta name="twitter:card" content="summary" />
@@ -91,14 +91,13 @@
         <link rel="stylesheet" href="~/css/bootstrap-flatly.css" />
         <link rel="stylesheet" href="~/css/bootstrap-flatly-tweaks.css" />
         <link rel="stylesheet" href="~/css/nprogress.css" />
-        <link rel="stylesheet" href="~/css/nprogress.css" />
         <link rel="stylesheet" asp-href-include="~/css/app/*.min.css" />
     </environment>
 
     @*CSS for production*@
     <environment include="Staging,Production">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="~/css/app-styles.css" />
+        <link rel="stylesheet" href="/bundles/app.css" />
     </environment>
 </head>
 
@@ -119,7 +118,7 @@
         <script src="~/lib/nprogress/nprogress.js"></script>
         <script src="~/lib/moment/moment.js"></script>
         <script src="~/lib/lodash/dist/lodash.js"></script>
-        <script src="~/lib/rx.lite.js"></script>
+        <script src="~/lib/rxjs/dist/rx.all.js"></script>
         <script src="~/lib/tslib/tslib.js"></script>
         <script src="~/lib/fastclick/lib/fastclick.js"></script>
         <script src="~/lib/tinycolor/tinycolor.js"></script>
@@ -148,7 +147,7 @@
         <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" asp-fallback-src="~/lib/nprogress/nprogress.js" asp-fallback-test="window.NProgress"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js" asp-fallback-src="~/lib/moment/moment.js" asp-fallback-test="window.moment"></script>
         <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js" asp-fallback-src="~/lib/lodash/dist/lodash.js" asp-fallback-test="window._"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.min.js" asp-fallback-src="~/lib/rxjs/dist/rx.js" asp-fallback-test="window.Rx && window.Rx.Observable"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.lite.js" asp-fallback-src="~/lib/rxjs/dist/rx.all.min.js" asp-fallback-test="window.Rx && window.Rx.Observable"></script>
         <script src="https://cdn.jsdelivr.net/npm/tslib@1.6.0/tslib.js" asp-fallback-src="~/lib/tslib/tslib.js" asp-fallback-test="window.__asyncValues"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js" asp-fallback-src="~/lib/fastclick/lib/fastclick.js" asp-fallback-test="window.FastClick"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js" asp-fallback-src="~/lib/tinycolor/tinycolor.js" asp-fallback-test="window.tinycolor"></script>
@@ -160,8 +159,8 @@
     @RenderSection("Scripts", required: false)
 
     @*TrackJS for diagnosing client-side errors*@
-    <script type="text/javascript">window._trackJs = { token: '3f47a41e023149458b76ae8aa70bab84' };</script>
-    <script type="text/javascript" src="https://cdn.trackjs.com/releases/current/tracker.js"></script>
+    @*<script type="text/javascript">window._trackJs = { token: '3f47a41e023149458b76ae8aa70bab84' };</script>
+    <script type="text/javascript" src="https://cdn.trackjs.com/releases/current/tracker.js"></script>*@
 
     @*Google analytics*@
     <script>
@@ -172,9 +171,12 @@
                 m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
             })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-            ga('create', 'UA-58465409-1', 'auto', {
-                userId: "@Model.UserEmail"
-            });
+            var userId = '@(Model != null && !string.IsNullOrEmpty(Model.UserEmail) ? Model.UserEmail : string.Empty)';
+            if (userId) {
+                ga('create', 'UA-58465409-1', 'auto', { userId: userId });
+            } else {
+                ga('create', 'UA-58465409-1', 'auto');
+            }
     </script>
 
     @*Facebook connect*@

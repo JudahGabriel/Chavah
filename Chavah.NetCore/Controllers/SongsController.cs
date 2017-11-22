@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client;
 using Raven.Client.Linq;
+using RavenDB.StructuredLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -139,7 +140,7 @@ namespace BitShuva.Chavah.Controllers
             var stopWatch = new System.Diagnostics.Stopwatch();
             stopWatch.Start();
 
-            var userId = "ApplicationUsers/" + email;
+            var userId = "AppUsers/" + email;
             var userPreferences = await DbSession.Query<Like, Likes_SongPreferences>()
                 .As<UserSongPreferences>()
                 .FirstOrDefaultAsync(u => u.UserId == userId);
@@ -186,10 +187,10 @@ namespace BitShuva.Chavah.Controllers
 
             var userPreferences = default(UserSongPreferences);
             var songsWithRanking = default(IList<Songs_RankStandings.Result>);
-
+            
             // Aggressive caching for the UserSongPreferences and SongsWithRanking. These don't change often.
-            using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
-            {
+            //using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
+            //{
                 var user = await this.GetCurrentUser();
 
                 // This is NOT an unbounded result set:
@@ -197,6 +198,7 @@ namespace BitShuva.Chavah.Controllers
                 songsWithRanking = await this.DbSession.Query<Song, Songs_RankStandings>()
                     .As<Songs_RankStandings.Result>()
                     .ToListAsync();
+
                 if (user != null)
                 {
                     userPreferences = await DbSession.Query<Like, Likes_SongPreferences>()
@@ -207,7 +209,7 @@ namespace BitShuva.Chavah.Controllers
                 {
                     userPreferences = new UserSongPreferences();
                 }
-            }
+            //}
 
             // Run the song picking algorithm.
             var songPick = userPreferences.PickSong(songsWithRanking);
@@ -222,6 +224,7 @@ namespace BitShuva.Chavah.Controllers
             var songLikeStatus = songLikeDislike != null && songLikeDislike.LikeCount > 0 ?
                 LikeStatus.Like : songLikeDislike != null && songLikeDislike.DislikeCount > 0 ?
                 LikeStatus.Dislike : LikeStatus.None;
+
             return song.ToDto(songLikeStatus, songPick);
         }
         
@@ -232,6 +235,8 @@ namespace BitShuva.Chavah.Controllers
             var userPreferences = default(UserSongPreferences);
             var songsWithRanking = default(IList<Songs_RankStandings.Result>);
 
+            var stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             // Aggressive caching for the UserSongPreferences and SongsWithRanking. These don't change often.
             using (var cache = DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
             {
@@ -242,6 +247,7 @@ namespace BitShuva.Chavah.Controllers
                 songsWithRanking = await this.DbSession.Query<Song, Songs_RankStandings>()
                     .As<Songs_RankStandings.Result>()
                     .ToListAsync();
+
                 if (user != null)
                 {
                     userPreferences = await DbSession.Query<Like, Likes_SongPreferences>()
@@ -252,13 +258,15 @@ namespace BitShuva.Chavah.Controllers
                 {
                     userPreferences = new UserSongPreferences();
                 }
+
             }
 
             // Run the song picking algorithm.
             var batch = new List<Song>(songsInBatch);
-            var pickedSongs = Enumerable.Range(0, 5)
+            var pickedSongs = Enumerable.Range(0, songsInBatch)
                 .Select(_ => userPreferences.PickSong(songsWithRanking))
                 .ToList();
+            
             if (pickedSongs.Any(s => string.IsNullOrEmpty(s.SongId)))
             {
                 logger.LogWarning("Picked songs for batch, but returned one or more empty song IDs", pickedSongs);
@@ -294,7 +302,7 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpGet]
-        public async Task<Song> GetSongById(string songId)
+        public async Task<Song> GetById(string songId)
         {
             var song = await this.DbSession.LoadAsync<Song>(songId);
             if (song == null)
@@ -385,6 +393,19 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
+        public async Task<PagedList<Song>> GetSome(int skip, int take)
+        {
+            var user = await this.GetCurrentUser();
+            return new PagedList<Song>
+            {
+                Items = new List<Song>(),
+                Skip = 0,
+                Take = 0,
+                Total = 0
+            };
+        }
+
+        [HttpGet]
         public async Task<PagedList<Song>> GetTrending(int skip, int take)
         {
             var recentLikedSongIds = await this.DbSession
@@ -428,8 +449,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        [Route("heavenly70")]
-        public async Task<IEnumerable<Song>> GetHeavenly70()
+        public async Task<IEnumerable<Song>> Heavenly70()
         {
             return await this.DbSession.Query<Song, Songs_GeneralQuery>()
                 .OrderByDescending(s => s.CommunityRank)

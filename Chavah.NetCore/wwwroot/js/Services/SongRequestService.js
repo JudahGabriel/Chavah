@@ -24,8 +24,10 @@ var BitShuva;
             SongRequestApiService.prototype.requestSong = function (song) {
                 this.pendingSongRequestIds.unshift(song.id);
                 this.hasPlayedRequestAnnouncement = false;
-                var url = "/api/requests/requestsong?songId=" + song.id;
-                return this.httpApi.post(url, null);
+                var args = {
+                    songId: song.id
+                };
+                return this.httpApi.postUriEncoded("/api/songRequests/requestsong", args);
             };
             SongRequestApiService.prototype.playRequest = function () {
                 var _this = this;

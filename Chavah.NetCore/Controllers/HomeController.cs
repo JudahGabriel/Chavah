@@ -18,14 +18,10 @@ namespace BitShuva.Chavah.Controllers
 {
     public class HomeController : RavenController
     {
-        private ISongService songService;
-        private IAlbumService albumService;
-        private IUserService userService;
-        private AngularCacheBustedViews cacheBustedNgViews;
-
-        //TODO: move this to the web.config?\
-        private const string _radioUrl = "https://messianicradio.com";
-        private const string _blogUrl = @"http://blog.messianicradio.com/feeds/posts/default";
+        private readonly ISongService songService;
+        private readonly IAlbumService albumService;
+        private readonly IUserService userService;
+        private readonly AngularCacheBustedViews cacheBustedNgViews;
 
         public HomeController(
             ISongService songService,
@@ -41,7 +37,7 @@ namespace BitShuva.Chavah.Controllers
             this.userService = userService;
             this.cacheBustedNgViews = cacheBustedNgViews;
         }
-        
+
         /// <summary>
         /// Urls like "http://messianicradio.com?song=songs/32" need to load the server-rendered Razor 
         /// page with info about that song.
@@ -58,10 +54,10 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> Index(
-            string user=null, 
-            string artist = null, 
-            string album = null, 
-            string song = null, 
+            string user = null,
+            string artist = null,
+            string album = null,
+            string song = null,
             bool embed = false)
         {
             var viewModel = new HomeViewModel
@@ -82,8 +78,8 @@ namespace BitShuva.Chavah.Controllers
                 viewModel.UserEmail = currentUser.Email;
                 viewModel.UserRoles = new List<string>(currentUser.Roles);
                 viewModel.Notifications = currentUser.Notifications;
-            }          
-            
+            }
+
             var firstValidQuery = new[] { artist, album, song }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
             if (firstValidQuery != null)
             {
@@ -133,13 +129,13 @@ namespace BitShuva.Chavah.Controllers
         {
             return Index(user, artist, album, song, true);
         }
-        
+
         [HttpGet]
         public ActionResult About()
         {
             return View();
         }
-        
+
         [HttpGet]
         public IActionResult ActivityFeed()
         {
