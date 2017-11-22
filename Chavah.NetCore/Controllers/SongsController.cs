@@ -393,19 +393,6 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        public async Task<PagedList<Song>> GetSome(int skip, int take)
-        {
-            var user = await this.GetCurrentUser();
-            return new PagedList<Song>
-            {
-                Items = new List<Song>(),
-                Skip = 0,
-                Take = 0,
-                Total = 0
-            };
-        }
-
-        [HttpGet]
         public async Task<PagedList<Song>> GetTrending(int skip, int take)
         {
             var recentLikedSongIds = await this.DbSession

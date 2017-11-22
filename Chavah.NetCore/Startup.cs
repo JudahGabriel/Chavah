@@ -90,7 +90,6 @@ namespace BitShuva.Chavah
             }
             else
             {
-                app.UseDeveloperExceptionPage();
                 app.UseExceptionHandler("/Home/Error");
             }
 
