@@ -55,7 +55,6 @@ namespace BitShuva.Chavah.Controllers
                 {
                     using (logger.BeginKeyValueScope("user", context?.HttpContext?.User?.Identity?.Name))
                     using (logger.BeginKeyValueScope("action", context?.ActionDescriptor?.DisplayName))
-                    using (logger.BeginKeyValueScope("routeValues", executedContext.ActionDescriptor.RouteValues))
                     using (logger.BeginKeyValueScope("changes", DbSession.Advanced.WhatChanged()))
                     {
                         logger.LogError(saveError, $"Error saving changes for {next.Method?.Name}");
@@ -66,9 +65,6 @@ namespace BitShuva.Chavah.Controllers
             {
                 using (logger.BeginKeyValueScope("user", context?.HttpContext?.User?.Identity?.Name))
                 using (logger.BeginKeyValueScope("action", executedContext.ActionDescriptor?.DisplayName))
-                using (logger.BeginKeyValueScope("routeValues", executedContext.ActionDescriptor.RouteValues))
-                using (logger.BeginKeyValueScope("parameters", context?.ActionDescriptor?.Parameters))
-                using (logger.BeginScope(context?.ModelState))
                 {
                     logger.LogError(executedContext.Exception, executedContext.Exception.Message);
                 }
