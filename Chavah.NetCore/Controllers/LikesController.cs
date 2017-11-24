@@ -55,7 +55,7 @@ namespace BitShuva.Chavah.Controllers
             var isNoChange = false;
             var existingLike = await this.DbSession
                 .Query<Like>()
-                .Customize(x => x.WaitForNonStaleResultsAsOfLastWrite(TimeSpan.FromSeconds(10)))
+                //.Customize(x => x.WaitForNonStaleResultsAsOfLastWrite(TimeSpan.FromSeconds(10)))
                 .FirstOrDefaultAsync(l => l.SongId == songId && l.UserId == user.Id);
             if (existingLike != null)
             {

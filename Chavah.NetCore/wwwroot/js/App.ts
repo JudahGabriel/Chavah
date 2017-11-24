@@ -179,19 +179,6 @@
                     }
                 }
             });
-
-            // Install our service worker if available.
-            // We use it to cache our views so that the UI will always be available.
-            // Commented out: Service Worker is so unstable, tools so immature. Come back in a few months and see if it's in better shape.
-            //if ('serviceWorker' in navigator) {
-            //    window.addEventListener("load", () => {
-            //        console.log("zanz page loaded, registering service worker.");
-            //        navigator["serviceWorker"].register("/ServiceWorker.js?test=4").then(
-            //            registration => console.log("ServiceWorker registration successful with scope: ", registration.scope),
-            //            err => console.log("ServiceWorker registration failed: ", err)
-            //        );
-            //    });
-            //}
         }]);
 
     // Setup Fastclick to remove the 300ms click delay on mobile browsers.

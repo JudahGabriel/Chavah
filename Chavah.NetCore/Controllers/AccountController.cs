@@ -253,8 +253,7 @@ namespace BitShuva.Chavah.Controllers
             {
                 return new ConfirmEmailResult
                 {
-                    Success = true,
-                    ErrorMessage = "Already confirmed zanz delete this"
+                    Success = true
                 };
             }
 

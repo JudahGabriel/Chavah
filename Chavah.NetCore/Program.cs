@@ -14,9 +14,7 @@ namespace BitShuva.Chavah
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Zanz main 1");
             BuildWebHost(args).Run();
-            Console.WriteLine("Zanz main 2");
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

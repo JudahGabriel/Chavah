@@ -33,10 +33,8 @@ namespace BitShuva.Chavah.Controllers
         }
                 
         [HttpGet]
-        public async Task<ActionResult> RegisteredUsers()
+        public async Task<ActionResult> GetRegisteredUsers()
         {
-            var radioUrl = appSettings.Jwt.key;
-
             var lastRegisteredUsers = await DbSession
                 .Query<AppUser>()
                 .Where(u => u.Email != null)
@@ -53,16 +51,10 @@ namespace BitShuva.Chavah.Controllers
                                 Description = $"A new user registered on Chavah on {user.RegistrationDate} with email address {user.Email}",
 
                             };
-                            //    Id: user.Email,
-                            //    //lastUpdatedTime: user.RegistrationDate,
-                            //    title: user.Email,
-                            //    content: $"A new user registered on Chavah on {user.RegistrationDate} with email address {user.Email}",
-                            //    itemAlternateLink: new Uri($"{radioUrl}/?user={Uri.EscapeUriString(user.Email)}")
-                            //);
-
+         
             var feed = new SyndicationFeed("Chavah Messianic Radio",
                                            "The most recent registered users at Chavah Messianic Radio",
-                                           new Uri(radioUrl),"Chavah", feedItems)
+                                           new Uri(appSettings.Application.DefaultUrl), "Chavah", feedItems)
             {
                 Language = "en-US"
             };
