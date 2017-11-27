@@ -1,4 +1,5 @@
-﻿using BitShuva.Chavah.Models;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Rss;
 using Chavah.Common;
 using Microsoft.AspNetCore.Mvc;
@@ -25,15 +26,9 @@ namespace BitShuva.Chavah.Controllers
                 .OrderByDescending(a => a.DateTime)
                 .Take(take)
                 .ToListAsync();
-            
-            var feedItems = from activity in recentActivities
-                            select new SyndicationItem
-                            {
-                                Id = activity.Id,
-                                Title = activity.Title,
-                                Description = activity.Description,
-                                Published = activity.DateTime
-                            };
+
+            var feedItems = recentActivities
+                .Select(activity => new SyndicationLinkItem(activity.Id, activity.Title, activity.Description, activity.MoreInfoUri));
             
             var feed = new SyndicationFeed("Chavah Messianic Radio",
                                            "The latest activity over at Chavah Messianic Radio",
