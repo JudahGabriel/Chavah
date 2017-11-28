@@ -456,11 +456,10 @@ namespace BitShuva.Chavah.Controllers
             var user = await this.GetCurrentUser();
             if (user != null)
             {
-                var songLike = await this.DbSession
-                    .Query<Like>()
-                    .FirstOrDefaultAsync(s => s.UserId == user.Id && s.SongId == song.Id);
-
-                return song.ToDto(songLike.StatusOrNone(), pickReason);
+                var songLikeId = Like.GetLikeId(user.Id, song.Id);
+                var songLike = await this.DbSession.LoadOptionAsync<Like>(songLikeId);
+                var status = songLike.Match(l => l.Status, () => LikeStatus.None);
+                return song.ToDto(status, pickReason);
             }
 
             return song.ToDto();

@@ -42,19 +42,20 @@ namespace BitShuva.Chavah.Controllers
                 .Take(100)
                 .ToListAsync();
 
-            var feedItems = from user in lastRegisteredUsers
-                            select new SyndicationItem
-                            {
-                                Id = user.Email,
-                                LastUpdated = user.RegistrationDate,
-                                Title = user.Email,
-                                Description = $"A new user registered on Chavah on {user.RegistrationDate} with email address {user.Email}",
-
-                            };
+            var feedItems = lastRegisteredUsers.Select(user => new SyndicationItem
+            {
+                Id = user.Email,
+                LastUpdated = user.RegistrationDate,
+                Title = user.Email,
+                Description = $"A new user registered on Chavah on {user.RegistrationDate} with email address {user.Email}",
+                Published = user.RegistrationDate,
+            })
+            .ToList();
+            feedItems.ForEach(i => i.AddLink(new SyndicationLink(new Uri(appSettings.Application.DefaultUrl + "/?newUser=" + i.Published.ToUnixTimeSeconds().ToString()))));
          
             var feed = new SyndicationFeed("Chavah Messianic Radio",
                                            "The most recent registered users at Chavah Messianic Radio",
-                                           new Uri(radioUrl),"Chavah", feedItems)
+                                           new Uri(appSettings.Application.DefaultUrl), "Chavah", feedItems)
             {
                 Language = "en-US"
             };

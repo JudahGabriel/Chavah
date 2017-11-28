@@ -16,7 +16,7 @@
            ng-hide="vm.selectedSongRequest"
            placeholder="Type a song, artist, or album"
            uib-typeahead="match.name for match in vm.getSongMatches($viewValue)"
-           typeahead-template-url="/App/Views/Templates/SongRequestResult.html"
+           typeahead-template-url="{{vm.songRequestResultView}}"
            typeahead-on-select="vm.songChosen($item)" />
 
     <!--Selected song request-->

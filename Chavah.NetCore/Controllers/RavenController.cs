@@ -89,5 +89,15 @@ namespace BitShuva.Chavah.Controllers
 
             return currentUser;
         }
+
+        protected string GetUserId()
+        {
+            if (this.User.Identity.IsAuthenticated && !string.IsNullOrEmpty(this.User.Identity.Name))
+            {
+                return AppUser.AppUserPrefix + this.User.Identity.Name;
+            }
+
+            return null;
+        }
     }
 }

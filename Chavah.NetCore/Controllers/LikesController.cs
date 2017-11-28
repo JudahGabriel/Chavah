@@ -1,10 +1,12 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
@@ -16,7 +18,7 @@ namespace BitShuva.Chavah.Controllers
             : base(dbSession, logger)
         {
         }
-
+        
         [HttpPost]
         public async Task<int> Like(string songId)
         {
@@ -46,17 +48,19 @@ namespace BitShuva.Chavah.Controllers
         {
             var user = await this.GetCurrentUser();
             var song = await this.DbSession.LoadAsync<Song>(songId);
+            var likeId = $"Likes/{user.Id}/{songId}";
             if (user == null || song == null)
             {
-                throw new Exception($"User updated like status, even though user or song wasn't found. UserID = {user?.Id}, SongID = {song?.Id}");
+                var error = new UnauthorizedAccessException($"User attempted to update like status, even though user or song wasn't found.");
+                error.Data.Add("User ID", user?.Id);
+                error.Data.Add("Song ID", song?.Id);
+                throw error;
             }
-
+            
             var isReversal = false;
             var isNoChange = false;
-            var existingLike = await this.DbSession
-                .Query<Like>()
-                //.Customize(x => x.WaitForNonStaleResultsAsOfLastWrite(TimeSpan.FromSeconds(10)))
-                .FirstOrDefaultAsync(l => l.SongId == songId && l.UserId == user.Id);
+            
+            var existingLike = await this.DbSession.LoadAsync<Like>(likeId);
             if (existingLike != null)
             {
                 isReversal = existingLike.Status != likeStatus;
@@ -73,7 +77,7 @@ namespace BitShuva.Chavah.Controllers
                     UserId = user.Id,
                     Date = DateTime.Now
                 };
-                await this.DbSession.StoreAsync(newLikeStatus);
+                await this.DbSession.StoreAsync(newLikeStatus, likeId);
                 
                 if (likeStatus == LikeStatus.Like)
                 {

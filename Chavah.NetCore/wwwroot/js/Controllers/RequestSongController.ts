@@ -2,17 +2,22 @@
     export class RequestSongController {
         selectedSongRequest: Song | null;
         songRequestText = "";
+        readonly songRequestResultView: string;
 
         static $inject = [
             "songApi",
+            "templatePaths",
             "$uibModalInstance",
             "$q"
         ];
 
         constructor(
             private songApi: SongApiService,
+            private templatePaths: TemplatePaths,
             private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
             private $q: ng.IQService) {
+
+            this.songRequestResultView = templatePaths.songRequestResult;
         }
 
         getSongMatches(searchText: string): ng.IPromise<Song[]> {

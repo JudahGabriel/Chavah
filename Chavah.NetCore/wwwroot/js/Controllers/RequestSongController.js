@@ -3,11 +3,13 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var RequestSongController = (function () {
-            function RequestSongController(songApi, $uibModalInstance, $q) {
+            function RequestSongController(songApi, templatePaths, $uibModalInstance, $q) {
                 this.songApi = songApi;
+                this.templatePaths = templatePaths;
                 this.$uibModalInstance = $uibModalInstance;
                 this.$q = $q;
                 this.songRequestText = "";
+                this.songRequestResultView = templatePaths.songRequestResult;
             }
             RequestSongController.prototype.getSongMatches = function (searchText) {
                 var maxSongResults = 10;
@@ -32,6 +34,7 @@ var BitShuva;
         }());
         RequestSongController.$inject = [
             "songApi",
+            "templatePaths",
             "$uibModalInstance",
             "$q"
         ];

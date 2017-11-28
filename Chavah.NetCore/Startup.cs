@@ -18,6 +18,7 @@ using RavenDB.Identity;
 using BitShuva.Chavah.Models.Indexes;
 using WebEssentials.AspNetCore.Pwa;
 using RavenDB.StructuredLog;
+using System;
 
 namespace BitShuva.Chavah
 {
@@ -82,6 +83,13 @@ namespace BitShuva.Chavah
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            System.AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                Console.WriteLine("Unhandled exception. Terminating = {0}. Exception details: {1}", e?.IsTerminating, e?.ExceptionObject?.ToString());
+                Console.Out.Flush();
+            };
+            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

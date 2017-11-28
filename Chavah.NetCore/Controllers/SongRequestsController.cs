@@ -49,10 +49,9 @@ namespace BitShuva.Chavah.Controllers
             // We've got a valid song request. Verify the user hasn't disliked this song.
             if (updatedSongRequest != null)
             {
-                var userDislikesSong = await this.DbSession
-                    .Query<Like>()
-                    .Where(l => l.UserId == user.Id && l.Status == LikeStatus.Dislike && l.SongId == updatedSongRequest.SongId)
-                    .AnyAsync();
+                var songLikeId = Like.GetLikeId(user.Id, updatedSongRequest.SongId);
+                var songLike = await this.DbSession.LoadOptionAsync<Like>(songLikeId);
+                var userDislikesSong = songLike.Exists(l => l.Status == LikeStatus.Dislike);
                 if (!userDislikesSong)
                 {
                     return updatedSongRequest.SongId;
