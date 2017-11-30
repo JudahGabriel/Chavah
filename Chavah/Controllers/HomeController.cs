@@ -62,7 +62,8 @@ namespace BitShuva.Controllers
                 var userDb = await _userService.GetUser(user);
                 if (userDb == null)
                 {
-                    RavenDB.AspNet.Identity.IdentityUser
+                    //TODO:fix the line below
+                    //RavenDB.AspNet.Identity.IdentityUser
                     return Json(new ApplicationUser(), JsonRequestBehavior.AllowGet);
                 }
                 else

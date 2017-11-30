@@ -1,6 +1,4 @@
-﻿/// <reference path="../../../../node_modules/@types/filepicker/index.d.ts" />
-/// <reference path="../../../../node_modules/@types/vibrantjs/index.d.ts" />
-
+﻿
 namespace BitShuva.Chavah {
     export class UploadAlbumController {
 

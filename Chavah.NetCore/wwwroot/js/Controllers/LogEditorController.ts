@@ -1,4 +1,6 @@
-﻿namespace BitShuva.Chavah {
+﻿
+namespace BitShuva.Chavah {
+
     export class LogEditorController {
 
         logs = new PagedList((skip: number, take: number) => this.logApi.getAll(skip, take));

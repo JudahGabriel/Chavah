@@ -5,10 +5,11 @@
     "removeComments": false,
     "sourceMap": false,
     "target": "es5",
-    "lib": [ "dom","es5", "scripthost", "es2015.promise"],
+    "lib": [ "dom", "es5", "scripthost", "es2015.promise" ],
     "noEmitHelpers": true,
     "strictNullChecks": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "typeRoots": [ "typings", "node_modules/@types" ]
   },
   "compileOnSave": true,
   "exclude": [
