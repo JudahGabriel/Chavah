@@ -7,6 +7,8 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography.X509Certificates;
+using System.Net;
 
 namespace BitShuva.Chavah
 {
@@ -14,12 +16,70 @@ namespace BitShuva.Chavah
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            if (env == "Development")
+            {
+                var cert = GetCertificate();
+                BuildWebHost(args, cert).Run();
+            }
+            else
+            {
+               BuildWebHost(args).Run();
+            }
+
+
         }
+   
+        public static IWebHost BuildWebHost(string[] args, X509Certificate2 certificate) =>
+           WebHost.CreateDefaultBuilder(args)
+               .UseStartup<Startup>()
+               .UseKestrel(options =>
+               {
+                   options.Listen(IPAddress.Loopback, 44363, listenOptions =>
+                   {
+                       listenOptions.UseHttps(certificate);
+                   });
+               })
+               .Build();
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .Build();
+
+        /// <summary>
+        /// Returns the certificate based on the environment variable setting
+        /// </summary>
+        /// <returns></returns>
+        public static X509Certificate2 GetCertificate()
+        {
+            X509Certificate2 cert = null;
+            try
+            {
+                var exePath = Directory.GetCurrentDirectory();
+
+                var config = new ConfigurationBuilder()
+                  .SetBasePath(exePath)
+                  .AddEnvironmentVariables()
+                  .AddJsonFile("certificate.json", optional: true, reloadOnChange: true)
+                  .AddJsonFile($"certificate.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
+                  .Build();
+
+                var certificateSettings = config.GetSection("certificateSettings");
+                string certificateFileName = certificateSettings.GetValue<string>("filename");
+                string certificatePassword = certificateSettings.GetValue<string>("password");
+
+                var certPath = exePath + certificateFileName;
+                return new X509Certificate2(certPath, certificatePassword);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return cert;
+            }
+
+        }
+
     }
 }
