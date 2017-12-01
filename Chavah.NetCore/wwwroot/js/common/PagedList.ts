@@ -36,13 +36,13 @@
             if (!this.isLoading) {
                 this.isLoading = true;
 
-                var skip = this.skip;
+                let skip = this.skip;
                 this.fetcher(skip, this.take)
                     .then(results => {
                         if (this.isLoading) {
-                            // If skip is zero, we're fetching the first chunk. 
+                            // If skip is zero, we're fetching the first chunk.
                             // Empty array because we may have added items when rehydrating the cache.
-                            var cacheKey = this.cacheKey;
+                            let cacheKey = this.cacheKey;
                             if (cacheKey && skip === 0) {
                                 this.items.length = 0;
                                 this.cacheItems(cacheKey, results.items);
@@ -63,7 +63,7 @@
 
         private rehydrateCachedItems(cacheKey: string) {
             try {
-                var cachedJson = window.localStorage.getItem(cacheKey);
+                let cachedJson = window.localStorage.getItem(cacheKey);
                 if (cachedJson) {
                     this.items = JSON.parse(cachedJson);
                     if (this.afterFetch) {
@@ -77,7 +77,7 @@
 
         private cacheItems(cacheKey: string, items: T[]) {
             try {
-                var itemsJson = JSON.stringify(items);
+                let itemsJson = JSON.stringify(items);
                 window.localStorage.setItem(cacheKey, itemsJson);
             } catch (error) {
                 console.log("Unable to cache list of items with cache key", cacheKey, items, error);

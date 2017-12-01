@@ -1,6 +1,14 @@
 ﻿namespace BitShuva.Chavah {
     export class PasswordController {
 
+        static $inject = [
+            "accountApi",
+            "appNav",
+            "$routeParams",
+            "$timeout",
+            "$scope",
+        ];
+
         readonly email = "";
         showPasswordError = false;
         passwordError = "";
@@ -8,14 +16,6 @@
         password = "";
         staySignedIn = true;
         signInSuccessful = false;
-
-        static $inject = [
-            "accountApi",
-            "appNav",
-            "$routeParams",
-            "$timeout",
-            "$scope"
-        ];
 
         constructor(
             private accountApi: AccountService,
@@ -56,6 +56,7 @@
                 this.passwordError = "Your account is locked out. Please contact judahgabriel@gmail.com";
             } else if (result.status === SignInStatus.RequiresVerification) {
                 this.showPasswordError = true;
+                // tslint:disable-next-line:max-line-length
                 this.passwordError = "Please check your email. We've sent you an email with a link to confirm your account.";
             } else if (result.status === SignInStatus.Failure) {
                 this.showPasswordError = true;

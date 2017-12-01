@@ -1,5 +1,11 @@
 ﻿namespace BitShuva.Chavah {
     export class RegisterController {
+
+        static $inject = [
+            "accountApi",
+            "$routeParams",
+        ];
+
         email = "";
         password = "";
         showEmailError = false;
@@ -10,16 +16,11 @@
         registrationError = "";
         isBusy = false;
 
-        static $inject = [
-            "accountApi",
-            "$routeParams"
-        ];
-
         constructor(
             private accountApi: AccountService,
             $routeParams: ng.route.IRouteParamsService) {
 
-            var routeEmail: string | null = $routeParams["email"];
+            let routeEmail: string | null = $routeParams["email"];
             if (routeEmail) {
                 this.email = routeEmail;
             }
@@ -65,6 +66,7 @@
             } else if (results.isAlreadyRegistered) {
                 this.showAlreadyRegistered = true;
             } else {
+                // tslint:disable-next-line:max-line-length
                 this.registrationError = results.errorMessage || "Unable to register your user. Please contact judahgabriel@gmail.com";
             }
         }

@@ -15,9 +15,10 @@ var BitShuva;
             return SongListController;
         }());
         SongListController.$inject = [
-            "audioPlayer"
+            "audioPlayer",
         ];
         Chavah.SongListController = SongListController;
         Chavah.App.controller("SongListController", SongListController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=SongListController.js.map

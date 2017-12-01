@@ -13,3 +13,4 @@ var BitShuva;
         })(CommunityRankStanding = Chavah.CommunityRankStanding || (Chavah.CommunityRankStanding = {}));
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=CommunityRankStanding.js.map

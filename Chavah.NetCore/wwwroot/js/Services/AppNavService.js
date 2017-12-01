@@ -52,7 +52,7 @@ var BitShuva;
                 var requestSongDialog = this.$uibModal.open({
                     controller: "RequestSongController as vm",
                     templateUrl: this.templatePaths.songRequestModal,
-                    windowClass: "request-song-modal"
+                    windowClass: "request-song-modal",
                 });
                 return requestSongDialog;
             };
@@ -80,9 +80,10 @@ var BitShuva;
             "audioPlayer",
             "templatePaths",
             "$location",
-            "$uibModal"
+            "$uibModal",
         ];
         Chavah.AppNavService = AppNavService;
         Chavah.App.service("appNav", AppNavService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=AppNavService.js.map

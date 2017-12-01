@@ -68,9 +68,10 @@ var BitShuva;
             "audioPlayer",
             "songApi",
             "songRequestApi",
-            "accountApi"
+            "accountApi",
         ];
         Chavah.SongBatchService = SongBatchService;
         Chavah.App.service("songBatch", SongBatchService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=SongBatchService.js.map

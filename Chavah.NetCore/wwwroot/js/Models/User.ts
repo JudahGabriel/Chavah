@@ -3,7 +3,7 @@
         readonly isAdmin: boolean;
 
         constructor(public email: string, public roles: string[]) {
-            this.isAdmin = roles && roles.includes("Admin")
+            this.isAdmin = roles && roles.includes("Admin");
         }
     }
 }

@@ -1,10 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebOptimizer.AngularTemplateCache;
 
 namespace BitShuva.Chavah
 {
@@ -33,20 +27,6 @@ namespace BitShuva.Chavah
                     "css/app/*.min.css"
                 });
 
-                //bundles.Add(new StyleBundle("~/bundles/bootstrap-theme")
-                //.Include("~/Content/styles/bootswatch.css")
-                //.Include("~/Content/styles/bootstrap.flatly.min.css")
-                //.Include("~/Content/styles/bootstrap.flatly.tweaks.css"));
-
-                //pipeline.AddHtmlTemplateBundle("/bundles/app-templates-core.js",
-                //                                new AngularTemplateOptions { moduleName = "app-templates-main", templatePath = "/App/Views/" },
-                //                                "App/Views/*.html")
-                //                                .UseContentRoot();
-
-                //pipeline.AddHtmlTemplateBundle("/bundles/app-templates.js",
-                //                                new AngularTemplateOptions { moduleName = "app-templates", templatePath = "/App/Views/Templates/" },
-                //                                "App/Views/Templates/*.html")
-                //                               .UseContentRoot();
             });
         }
     }

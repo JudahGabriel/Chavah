@@ -1,16 +1,18 @@
 ﻿namespace BitShuva.Chavah {
     export class TrendingController {
-        songsList = new PagedList((skip, take) => this.songApi.getTrendingSongs(skip, take), undefined, items => this.calcVisibleSongs(items));
-        visibleSongs: Song[] = [];
-        visibleStart = 0;
 
         static readonly maxVisibleSongs = 5;
 
         static $inject = [
             "songApi",
             "albumCache",
-            "audioPlayer"
+            "audioPlayer",
         ];
+
+        songsList = new PagedList((skip, take) => this.songApi
+            .getTrendingSongs(skip, take), undefined, items => this.calcVisibleSongs(items));
+        visibleSongs: Song[] = [];
+        visibleStart = 0;
 
         constructor(
             private readonly songApi: SongApiService,
@@ -35,9 +37,9 @@
             }
 
             // Fetch the album colors for these songs.
-            var albums = await this.albumCache.getAlbumsForSongs(this.visibleSongs);
+            let albums = await this.albumCache.getAlbumsForSongs(this.visibleSongs);
             this.visibleSongs.forEach(s => {
-                var albumForSong = albums.find(a => a.artist === s.artist && a.name === s.album);
+                let albumForSong = albums.find(a => a.artist === s.artist && a.name === s.album);
                 if (albumForSong) {
                     s.updateAlbumArtColors(albumForSong);
                 }

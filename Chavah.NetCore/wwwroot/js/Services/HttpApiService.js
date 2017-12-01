@@ -25,7 +25,7 @@ var BitShuva;
                     url: this.apiBaseUrl + relativeUrl,
                     method: "GET",
                     params: args,
-                    headers: this.createHeaders()
+                    headers: this.createHeaders(),
                 };
                 this.$http(config)
                     .then(function (result) {
@@ -49,7 +49,7 @@ var BitShuva;
                 }
                 var absoluteUrl = "" + this.apiBaseUrl + relativeUrl;
                 var config = {
-                    headers: this.createHeaders()
+                    headers: this.createHeaders(),
                 };
                 var postTask = this.$http.post(absoluteUrl, args, config);
                 postTask.then(function (result) {
@@ -74,9 +74,10 @@ var BitShuva;
                 }
                 var absoluteUrl = "" + this.apiBaseUrl + relativeUrl + "?";
                 var config = {
-                    headers: this.createHeaders()
+                    headers: this.createHeaders(),
                 };
                 // Encode the args into the URL
+                // tslint:disable-next-line:forin
                 for (var prop in args) {
                     var isFirstArgument = absoluteUrl.endsWith("?");
                     absoluteUrl += isFirstArgument ? "" : "&";
@@ -97,30 +98,30 @@ var BitShuva;
                 return deferred.promise;
             };
             HttpApiService.prototype.createHeaders = function () {
-                //var jwtAuthHeader = this.createJwtAuthHeader();
-                //if (jwtAuthHeader) {
+                // var jwtAuthHeader = this.createJwtAuthHeader();
+                // if (jwtAuthHeader) {
                 //    return { "Authorization": jwtAuthHeader };
-                //}
+                // }
                 return {};
             };
-            //private createJwtAuthHeader(): string {
+            // private createJwtAuthHeader(): string {
             //    var jwt = this.localStorageService.get<string>(AccountService.jwtKey);
             //    if (jwt) {
             //        return `Bearer ${jwt}`;
             //    }
             //    return "";
-            //}
+            // }
             HttpApiService.prototype.onAjaxError = function (errorDetails, errorMessage) {
                 // If we got 401 unauthorized, the token is probably stale or invalid. Go to sign in.
-                //if (errorDetails && errorDetails.status === 401) {
+                // if (errorDetails && errorDetails.status === 401) {
                 //    this.appNav.signIn();
-                //} else {
+                // } else {
                 //    this.errors.push({
                 //        error: errorDetails,
                 //        message: errorMessage
                 //    });
                 //    this.isShowingApiError = true;
-                //}
+                // }
             };
             return HttpApiService;
         }());
@@ -128,9 +129,10 @@ var BitShuva;
             "loadingProgress",
             "$http",
             "localStorageService",
-            "$q"
+            "$q",
         ];
         Chavah.HttpApiService = HttpApiService;
         Chavah.App.service("httpApi", HttpApiService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=HttpApiService.js.map

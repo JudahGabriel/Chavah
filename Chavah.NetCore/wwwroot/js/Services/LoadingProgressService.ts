@@ -5,18 +5,19 @@
      * When the loading is completed, if no other load operations are occurring,  the loading UI will be hidden.
      */
     export class LoadingProgressService {
-        resultsInProgress = 0;
 
         static $inject = ["$q"];
 
+        resultsInProgress = 0;
+
         constructor(private $q: ng.IQService) {
-        };
+        }
 
         /**
          * Creates a deferred object and shows the loading UI until the deferred work completes.
          */
         start<T>(): ng.IDeferred<T> {
-            var deferred = this.$q.defer<T>();
+            let deferred = this.$q.defer<T>();
 
             this.loadingStarted();
             deferred.promise.finally(() => this.loadingEnded());

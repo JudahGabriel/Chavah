@@ -13,7 +13,8 @@
          * Constructs a new list.
          * @param fetcher The function that fetches the items from the server.
          * @param cacheKey Optional cache key that will store and fetch the items from local storage.
-         * @param cacheSelector Optional selector function that rehydrates an item from local storage. If null or undefined, the raw JSON object read from storage will be used for the items.
+         * @param cacheSelector Optional selector function that rehydrates an item from local storage.
+         * If null or undefined, the raw JSON object read from storage will be used for the items.
          */
         constructor(
             private readonly fetcher: () => ng.IPromise<T[]>,
@@ -39,7 +40,7 @@
             if (!this.isLoading) {
                 this.isLoading = true;
                 this.hasLoaded = false;
-                var task = this.fetcher();
+                let task = this.fetcher();
                 task
                     .then(results => {
                         if (this.isLoading) {
@@ -63,13 +64,14 @@
         }
 
         remove(item: T): boolean {
-            var lengthBeforeRemoval = this.items.length;
-            var arrayAfterRemoval = _.pull(this.items, item);
+            let lengthBeforeRemoval = this.items.length;
+            let arrayAfterRemoval = _.pull(this.items, item);
             return lengthBeforeRemoval > arrayAfterRemoval.length;
         }
 
         /**
-         * Puts the items into the local cache. This is done automatically when the items are loaded, but calling this method can be useful for updating the cache after the items have been modified.
+         * Puts the items into the local cache. This is done automatically when the items are loaded,
+         * but calling this method can be useful for updating the cache after the items have been modified.
          */
         cache() {
             if (this.cacheKey) {
@@ -79,9 +81,9 @@
 
         private rehydrateCachedItems(cacheKey: string, cacheSelector?: (rawJsonObj: any) => T) {
             try {
-                var cachedJson = window.localStorage.getItem(cacheKey);
+                let cachedJson = window.localStorage.getItem(cacheKey);
                 if (cachedJson) {
-                    var rawItems = JSON.parse(cachedJson) as any[];
+                    let rawItems = JSON.parse(cachedJson) as any[];
                     if (cacheSelector) {
                         this.items = rawItems.map(i => cacheSelector(i));
                     } else {
@@ -92,14 +94,14 @@
                         this.afterLoadProcessor(this.items);
                     }
                 }
-            } catch(error) {
+            } catch (error) {
                 console.log("Failed to rehydrated cached items for cacheKey", cacheKey, error);
             }
         }
 
         private cacheItems(cacheKey: string, items: T[]) {
             try {
-                var itemsJson = JSON.stringify(items);
+                let itemsJson = JSON.stringify(items);
                 window.localStorage.setItem(cacheKey, itemsJson);
             } catch (error) {
                 console.log("Unable to cache list of items with cache key", cacheKey, items, error);

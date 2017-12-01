@@ -1,19 +1,20 @@
 ﻿namespace BitShuva.Chavah {
     export class RequestSongController {
-        selectedSongRequest: Song | null;
-        songRequestText = "";
-        readonly songRequestResultView: string;
 
         static $inject = [
             "songApi",
             "templatePaths",
             "$uibModalInstance",
-            "$q"
+            "$q",
         ];
+
+        selectedSongRequest: Song | null;
+        songRequestText = "";
+        readonly songRequestResultView: string;
 
         constructor(
             private songApi: SongApiService,
-            private templatePaths: TemplatePaths,
+            private templatePaths: ITemplatePaths,
             private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
             private $q: ng.IQService) {
 
@@ -21,8 +22,8 @@
         }
 
         getSongMatches(searchText: string): ng.IPromise<Song[]> {
-            var maxSongResults = 10;
-            var deferred = this.$q.defer<Song[]>();
+            let maxSongResults = 10;
+            let deferred = this.$q.defer<Song[]>();
             this.songApi.getSongMatches(searchText)
                 .then(results => deferred.resolve(results.slice(0, maxSongResults)))
                 .catch(error => deferred.reject(error));

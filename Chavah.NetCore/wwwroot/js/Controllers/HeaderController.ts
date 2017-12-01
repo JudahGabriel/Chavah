@@ -1,19 +1,18 @@
 ﻿namespace BitShuva.Chavah {
     export class HeaderController {
 
-        notifications: Server.INotification[];
-        isNotificationPopoverOpened = false;
-
         static $inject = [
             "initConfig",
             "accountApi",
-            "$timeout"
+            "$timeout",
         ];
 
-        constructor(            
-            private readonly initConfig: Server.IHomeViewModel,
-            private readonly accountApi: AccountService,
-            private readonly $timeout: ng.ITimeoutService) {
+        notifications: Server.INotification[];
+        isNotificationPopoverOpened = false;
+
+        constructor(private readonly initConfig: Server.IHomeViewModel,
+                    private readonly accountApi: AccountService,
+                    private readonly $timeout: ng.ITimeoutService) {
 
             this.notifications = initConfig.notifications;
             $timeout(() => this.encourageUserToViewNotifications(), 15000);

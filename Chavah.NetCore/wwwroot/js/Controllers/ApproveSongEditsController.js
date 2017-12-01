@@ -98,9 +98,10 @@ var BitShuva;
         ApproveSongEditsController.$inject = [
             "songApi",
             "songEditApi",
-            "tagApi"
+            "tagApi",
         ];
         Chavah.ApproveSongEditsController = ApproveSongEditsController;
         Chavah.App.controller("ApproveSongEditsController", ApproveSongEditsController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=ApproveSongEditsController.js.map

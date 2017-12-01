@@ -2,6 +2,6 @@
     export enum SongEditStatus {
         Pending,
         Rejected,
-        Approved
+        Approved,
     }
 }

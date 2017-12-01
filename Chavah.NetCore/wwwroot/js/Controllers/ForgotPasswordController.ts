@@ -1,14 +1,15 @@
 ﻿namespace BitShuva.Chavah {
     export class ForgotPasswordController {
+
+        static $inject = [
+            "accountApi",
+        ];
+
         email = "";
         resetPasswordSuccessfully = false;
         couldNotFindEmail = false;
         resetErrorMessage = "";
         isBusy = false;
-
-        static $inject = [
-            "accountApi"
-        ];
 
         constructor(private accountApi: AccountService) {
         }
@@ -22,7 +23,7 @@
         }
 
         resetPassword() {
-            var isValidEmail = this.email && this.email.includes("@");
+            let isValidEmail = this.email && this.email.includes("@");
             if (!isValidEmail) {
                 this.resetErrorMessage = "Please enter your email so we can reset your password";
                 return;

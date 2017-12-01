@@ -1,39 +1,39 @@
 ﻿namespace BitShuva.Chavah {
     "use strict";
-     var modules = [
+    const modules = [
         "ngRoute",
         "ngAnimate",
         "ui.bootstrap",
         "ui.bootstrap.tpls",
-        "LocalStorageModule"
+        "LocalStorageModule",
     ];
 
     export const App = angular.module("ChavahApp", modules);
 
     const homeVm: Server.IHomeViewModel = window["BitShuva.Chavah.HomeViewModel"];
-    App.constant("initConfig", homeVm); 
+    App.constant("initConfig", homeVm);
 
-    // Gets the relative path to a cache-busted angular view. 
+    // Gets the relative path to a cache-busted angular view.
     // The view URL is appended a hash of the contents of the file. See AngularCacheBustedViewsProvider.cs
     function findCacheBustedView(viewName: string) {
-        var cacheBustedView = homeVm.cacheBustedAngularViews.find(v => v.search(new RegExp(viewName, "i")) !== -1);
+        let cacheBustedView = homeVm.cacheBustedAngularViews.find((v) => v.search(new RegExp(viewName, "i")) !== -1);
         if (!cacheBustedView) {
             throw new Error("Unable to find cache-busted Angular view " + viewName);
         }
 
         return cacheBustedView;
-    } 
+    }
     export const FindAppView = findCacheBustedView;
-    
-    function createRoute(templateUrl: string, access = RouteAccess.Anonymous): Route {
-        var cacheBustedView = findCacheBustedView(templateUrl);
+
+    function createRoute(templateUrl: string, access = RouteAccess.Anonymous): IRoute {
+        let cacheBustedView = findCacheBustedView(templateUrl);
         return {
             templateUrl: cacheBustedView,
-            access: access,
+            access,
         };
     }
 
-    const templatePaths: TemplatePaths = {
+    const templatePaths: ITemplatePaths = {
         artistList: findCacheBustedView("/partials/ArtistList.html"),
         songList: findCacheBustedView("/partials/SongList.html"),
         songRequestModal: findCacheBustedView("/modals/RequestSongModal.html"),
@@ -44,7 +44,7 @@
         goBack: findCacheBustedView("/partials/GoBack.html")
     };
     App.constant("templatePaths", templatePaths);
-    
+
     const views = {
         nowPlaying: "/NowPlaying.html",
         trending: "/Trending.html",
@@ -81,12 +81,13 @@
         editArtist: "/EditArtist.html",
         songEdits: "/ApproveSongEdits.html",
         tags: "/TagEditor.html",
-        logs: "/LogEditor.html"
+        logs: "/LogEditor.html",
     };
 
-    App.config(["$routeProvider", "$locationProvider", ($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {
+    App.config(["$routeProvider", "$locationProvider",
+        ($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {
         $routeProvider.caseInsensitiveMatch = true;
-        $locationProvider.hashPrefix('');
+        $locationProvider.hashPrefix("");
         $routeProvider
             .when("/", createRoute("NowPlaying.html"))
             .when("/nowplaying", { redirectTo: "/" })
@@ -128,7 +129,7 @@
             .when("/admin/logs", createRoute(views.logs, RouteAccess.Admin))
 
             .otherwise({
-                redirectTo: "/nowplaying"
+                redirectTo: "/nowplaying",
             });
     }]);
 
@@ -140,34 +141,36 @@
         "$rootScope",
         "$location",
         "$q",
-        (templatePaths: TemplatePaths,
-        accountApi: AccountService,
-        appNav: AppNavService,
-        adminScripts: AdminScriptsService,
-        $rootScope: ng.IRootScopeService,
-        $location: ng.ILocationService,
-        $q: ng.IQService) => {
+        // tslint:disable-next-line:no-shadowed-variable
+        (templatePaths: ITemplatePaths,
+         accountApi: AccountService,
+         appNav: AppNavService,
+         adminScripts: AdminScriptsService,
+         $rootScope: ng.IRootScopeService,
+         $location: ng.ILocationService,
+         $q: ng.IQService) => {
 
             // Use Angular's Q object as Promise. This is needed to make async/await work properly with the UI.
             // See http://stackoverflow.com/a/41825004/536
             window["Promise"] = $q;
 
             // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.
-            $rootScope["Partials"] = templatePaths;
+            ($rootScope as any).Partials = templatePaths;
 
             // Hide the splash UI.
             $(".splash").remove();
 
             $rootScope.$on("$routeChangeSuccess", (e: ng.IAngularEvent, next: any) => {
                 // Let Google Analytics know about our route change.
-                var ga = window["ga"];
+                const ga = (window as any).ga;
                 if (ga) {
                     ga("send", "pageview", $location.path());
                 }
             });
 
+            // tslint:disable-next-line:variable-name
             $rootScope.$on("$routeChangeStart", (_e: ng.IAngularEvent, next: any) => {
-                var route: AppRoute = next["$$route"];
+                const route: IAppRoute = next.$$route;
 
                 // If we're an admin route, load the admin-specific scripts.
                 if (route && route.isAdmin) {

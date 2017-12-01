@@ -17,11 +17,12 @@
             angular.merge(this, serverObj);
         }
 
+        // tslint:disable-next-line:member-ordering
         static createDefaultServerObj(): Server.IArtist {
             return {
                 bio: "",
                 images: [],
-                name: ""
+                name: "",
             };
         }
     }

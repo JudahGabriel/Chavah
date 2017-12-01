@@ -1,17 +1,17 @@
 ﻿namespace BitShuva.Chavah {
     export class ApproveSongEditsController {
 
+        static $inject = [
+            "songApi",
+            "songEditApi",
+            "tagApi",
+        ];
+
         pendingEdits: Server.ISongEdit[] = [];
         currentEdit: Server.ISongEdit | null = null;
         isSaving = false;
         hasLoaded = false;
         tagsInput: string = "";
-
-        static $inject = [
-            "songApi",
-            "songEditApi",
-            "tagApi"
-        ];
 
         constructor(
             private songApi: SongApiService,
@@ -33,7 +33,7 @@
         }
 
         approve() {
-            var edit = this.currentEdit;
+            let edit = this.currentEdit;
             if (!this.isSaving && edit) {
                 this.isSaving = true;
                 this.songEditApi.approve(edit)
@@ -43,7 +43,7 @@
         }
 
         reject() {
-            var edit = this.currentEdit;
+            let edit = this.currentEdit;
             if (!this.isSaving && edit) {
                 this.isSaving = true;
                 this.songEditApi.reject(edit.id)
@@ -65,7 +65,7 @@
 
         removeTag(tag: string) {
             if (this.currentEdit) {
-                var index = this.currentEdit.newTags.indexOf(tag);
+                let index = this.currentEdit.newTags.indexOf(tag);
                 if (index >= 0) {
                     this.currentEdit.newTags.splice(index, 1);
                 }
@@ -79,7 +79,7 @@
 
         addTag(tag: string) {
             if (this.currentEdit) {
-                var tagLowered = tag.toLowerCase().trim();
+                let tagLowered = tag.toLowerCase().trim();
                 if (!this.currentEdit.newTags.includes(tagLowered) && tagLowered.length > 1) {
                     this.currentEdit.newTags.push(tagLowered);
                 }
@@ -89,7 +89,7 @@
         tagsInputChanged() {
             // If the user typed a comma, add any existing tag
             if (this.tagsInput.includes(",")) {
-                var tags = this.tagsInput.split(",");
+                let tags = this.tagsInput.split(",");
                 this.tagsInput = "";
                 tags
                     .filter(t => t && t.length > 1)
@@ -108,5 +108,5 @@
         }
     }
 
-    App.controller("ApproveSongEditsController", ApproveSongEditsController)
+    App.controller("ApproveSongEditsController", ApproveSongEditsController);
 }

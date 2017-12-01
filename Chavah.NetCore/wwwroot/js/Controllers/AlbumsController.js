@@ -42,9 +42,10 @@ var BitShuva;
         }());
         AlbumsController.$inject = [
             "albumApi",
-            "appNav"
+            "appNav",
         ];
         Chavah.AlbumsController = AlbumsController;
         Chavah.App.controller("AlbumsController", AlbumsController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=AlbumsController.js.map

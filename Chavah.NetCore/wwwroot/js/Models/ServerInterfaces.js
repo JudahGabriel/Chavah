@@ -8,3 +8,4 @@ var BitShuva;
         })(Server = Chavah.Server || (Chavah.Server = {}));
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=ServerInterfaces.js.map

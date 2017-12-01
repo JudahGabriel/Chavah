@@ -1,9 +1,9 @@
 ﻿namespace BitShuva.Chavah {
-    
+
     export class SongEditService {
 
         static $inject = [
-            "httpApi"
+            "httpApi",
         ];
 
         constructor(private httpApi: HttpApiService) {
@@ -14,9 +14,9 @@
         }
 
         getPendingEdits(take: number): ng.IPromise<Server.ISongEdit[]> {
-            var args = {
-                take: take
-            }
+            let args = {
+                take,
+            };
             return this.httpApi.query("/api/songEdits/getPendingEdits", args);
         }
 
@@ -25,8 +25,8 @@
         }
 
         reject(songEditId: string): ng.IPromise<Server.ISongEdit | null> {
-            var args = {
-                songEditId: songEditId
+            let args = {
+                songEditId,
             };
             return this.httpApi.postUriEncoded<Server.ISongEdit | null>("/api/songEdits/reject", args);
         }

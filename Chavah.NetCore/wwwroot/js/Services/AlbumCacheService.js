@@ -25,7 +25,7 @@ var BitShuva;
                     .filter(function (s) { return !!s.albumId; })
                     .map(function (s) { return s.albumId; }));
                 albumIdsToFetch.forEach(function (albumId) {
-                    // Do we have it in the cache? 
+                    // Do we have it in the cache?
                     var cachedAlbum = _this.getCachedAlbum(albumId);
                     if (cachedAlbum) {
                         albumsForSongs.push(cachedAlbum);
@@ -34,7 +34,7 @@ var BitShuva;
                         albumIdCacheMisses.push(albumId);
                     }
                 });
-                // If everthing's in the cache, just return that.            
+                // If everthing's in the cache, just return that.
                 var allInCache = albumIdCacheMisses.length === 0;
                 if (allInCache) {
                     return this.$q.resolve(albumsForSongs);
@@ -59,6 +59,7 @@ var BitShuva;
                 AlbumCacheService.tryStoreCacheInLocalStorage(this.cache);
                 var _a;
             };
+            // tslint:disable-next-line:member-ordering
             AlbumCacheService.tryStoreCacheInLocalStorage = function (cache) {
                 try {
                     var data = JSON.stringify(cache);
@@ -68,6 +69,7 @@ var BitShuva;
                     console.log("Unable to save album cache to local storage.");
                 }
             };
+            // tslint:disable-next-line:member-ordering
             AlbumCacheService.tryRehydrateCache = function () {
                 AlbumCacheService.hasAttemptedRehydratedCache = true;
                 try {
@@ -86,13 +88,14 @@ var BitShuva;
             };
             return AlbumCacheService;
         }());
-        AlbumCacheService.cacheKey = "album-art-cache";
-        AlbumCacheService.hasAttemptedRehydratedCache = false;
         AlbumCacheService.$inject = [
             "albumApi",
-            "$q"
+            "$q",
         ];
+        AlbumCacheService.cacheKey = "album-art-cache";
+        AlbumCacheService.hasAttemptedRehydratedCache = false;
         Chavah.AlbumCacheService = AlbumCacheService;
         Chavah.App.service("albumCache", AlbumCacheService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=AlbumCacheService.js.map

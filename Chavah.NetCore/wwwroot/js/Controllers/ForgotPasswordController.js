@@ -55,9 +55,10 @@ var BitShuva;
             return ForgotPasswordController;
         }());
         ForgotPasswordController.$inject = [
-            "accountApi"
+            "accountApi",
         ];
         Chavah.ForgotPasswordController = ForgotPasswordController;
         Chavah.App.controller("ForgotPasswordController", ForgotPasswordController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=ForgotPasswordController.js.map

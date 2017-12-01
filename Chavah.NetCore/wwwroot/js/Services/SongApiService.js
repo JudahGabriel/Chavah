@@ -120,3 +120,4 @@ var BitShuva;
         Chavah.App.service("songApi", SongApiService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=SongApiService.js.map

@@ -1,12 +1,14 @@
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
 if (!Array.prototype.includes) {
     Array.prototype.includes = function (searchElement /*, fromIndex*/) {
-        'use strict';
+        "use strict";
         var O = Object(this);
+        // tslint:disable-next-line:radix
         var len = parseInt(O.length) || 0;
         if (len === 0) {
             return false;
         }
+        // tslint:disable-next-line:radix
         var n = parseInt(arguments[1]) || 0;
         var k;
         if (n >= 0) {
@@ -34,12 +36,13 @@ if (!Array.prototype.includes) {
 if (!Array.prototype.find) {
     Array.prototype.find = function (predicate) {
         if (this === null) {
-            throw new TypeError('Array.prototype.find called on null or undefined');
+            throw new TypeError("Array.prototype.find called on null or undefined");
         }
-        if (typeof predicate !== 'function') {
-            throw new TypeError('predicate must be a function');
+        if (typeof predicate !== "function") {
+            throw new TypeError("predicate must be a function");
         }
         var list = Object(this);
+        // tslint:disable-next-line:no-bitwise
         var length = list.length >>> 0;
         var thisArg = arguments[1];
         var value;
@@ -52,3 +55,4 @@ if (!Array.prototype.find) {
         return undefined;
     };
 }
+//# sourceMappingURL=Array.js.map

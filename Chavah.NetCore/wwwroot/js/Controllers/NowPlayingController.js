@@ -20,9 +20,15 @@ var BitShuva;
                 this.likes = [];
                 this.isFetchingAlbums = false;
                 this.disposed = new Rx.Subject();
-                this.audioPlayer.song.takeUntil(this.disposed).subscribeOnNext(function (song) { return _this.nextSongBeginning(song); });
-                this.audioPlayer.songCompleted.takeUntil(this.disposed).throttle(5000).subscribe(function (song) { return _this.songCompleted(song); });
-                this.songBatch.songsBatch.takeUntil(this.disposed).subscribeOnNext(function () { return _this.songs = _this.getSongs(); });
+                this.audioPlayer.song
+                    .takeUntil(this.disposed)
+                    .subscribeOnNext(function (song) { return _this.nextSongBeginning(song); });
+                this.audioPlayer.songCompleted
+                    .takeUntil(this.disposed).throttle(5000)
+                    .subscribe(function (song) { return _this.songCompleted(song); });
+                this.songBatch.songsBatch
+                    .takeUntil(this.disposed)
+                    .subscribeOnNext(function () { return _this.songs = _this.getSongs(); });
                 // Recent plays we fetch once, at init. Afterwards, we update it ourselves.
                 this.fetchRecentPlays();
                 this.setupRecurringFetches();
@@ -107,7 +113,8 @@ var BitShuva;
             NowPlayingController.prototype.populateSongsWithAlbumColors = function (albums) {
                 var _this = this;
                 albums.forEach(function (a) {
-                    var songsForAlbum = _this.getAllSongsOnScreen().filter(function (s) { return s.albumId && s.albumId.toLowerCase() === a.id.toLowerCase(); });
+                    var songsForAlbum = _this.getAllSongsOnScreen()
+                        .filter(function (s) { return s.albumId && s.albumId.toLowerCase() === a.id.toLowerCase(); });
                     songsForAlbum.forEach(function (s) { return s.updateAlbumArtColors(a); });
                 });
             };
@@ -216,9 +223,9 @@ var BitShuva;
                 var queryString = window.location.search;
                 if (queryString) {
                     var allTerms = queryString.split("&");
-                    var termWithEquals = term + "=";
-                    var termAtBeginning = "?" + termWithEquals;
-                    var match = allTerms.find(function (t) { return t.startsWith(termWithEquals) || t.startsWith(termAtBeginning); });
+                    var termWithEquals_1 = term + "=";
+                    var termAtBeginning_1 = "?" + termWithEquals_1;
+                    var match = allTerms.find(function (t) { return t.startsWith(termWithEquals_1) || t.startsWith(termAtBeginning_1); });
                     if (match) {
                         var termValue = match.substr(match.indexOf("=") + 1);
                         if (termValue) {
@@ -239,9 +246,10 @@ var BitShuva;
             "initConfig",
             "appNav",
             "accountApi",
-            "$q"
+            "$q",
         ];
         Chavah.NowPlayingController = NowPlayingController;
         Chavah.App.controller("NowPlayingController", NowPlayingController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=NowPlayingController.js.map

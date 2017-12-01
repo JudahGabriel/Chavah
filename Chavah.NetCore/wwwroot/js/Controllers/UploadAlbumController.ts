@@ -2,6 +2,16 @@
 namespace BitShuva.Chavah {
     export class UploadAlbumController {
 
+        static filePickerKey = "AwdRIarCGT8COm0mkYX1Ez";
+
+        static $inject = [
+            "artistApi",
+            "albumApi",
+            "appNav",
+            "$scope",
+            "$sce",
+        ];
+
         albumName = "";
         songs: FilepickerInkBlob[] = [];
         isUploading = false;
@@ -17,16 +27,6 @@ namespace BitShuva.Chavah {
         textShadowColor = Song.defaultSwatch.getBodyTextColor();
         allAlbumSwatches: IAlbumSwatch[] = [];
 
-        static filePickerKey = "AwdRIarCGT8COm0mkYX1Ez";
-
-        static $inject = [
-            "artistApi",
-            "albumApi",
-            "appNav",
-            "$scope",
-            "$sce"
-        ];
-
         constructor(
             artistApi: ArtistApiService,
             private albumApi: AlbumApiService,
@@ -39,13 +39,13 @@ namespace BitShuva.Chavah {
 
         chooseSongs() {
             filepicker.setKey(UploadAlbumController.filePickerKey);
-            var options: FilepickerMultipleFilePickOptions = {
-                extension: ".mp3"
+            let options: FilepickerMultipleFilePickOptions = {
+                extension: ".mp3",
             };
             filepicker.pickMultiple(
                 options,
                 (results: FilepickerInkBlob[]) => this.songsChosen(results),
-                (error) => console.log("Upload failed.", error));
+                    error => console.log("Upload failed.", error));
         }
 
         songsChosen(songs: FilepickerInkBlob[]) {
@@ -62,14 +62,14 @@ namespace BitShuva.Chavah {
         }
 
         chooseAlbumArt() {
-            filepicker.setKey(UploadAlbumController.filePickerKey)
-            var options: FilepickerMultipleFilePickOptions = {
-                extensions: [".jpg", ".png"]
+            filepicker.setKey(UploadAlbumController.filePickerKey);
+            let options: FilepickerMultipleFilePickOptions = {
+                extensions: [".jpg", ".png"],
             };
             filepicker.pick(
                 options,
                 (result: FilepickerInkBlob) => this.albumArtChosen(result),
-                (error) => console.log("Album art pick failed.", error));
+                error => console.log("Album art pick failed.", error));
         }
 
         albumArtChosen(albumArt: FilepickerInkBlob) {
@@ -80,16 +80,18 @@ namespace BitShuva.Chavah {
 
         fetchAlbumColorSwatches(albumArt: FilepickerInkBlob) {
             if (albumArt.url) {
-                var img = document.createElement("img");
+                let img = document.createElement("img");
                 img.src = "/api/albums/imageOnDomain?imageUrl=" + encodeURIComponent(albumArt.url);
                 img.addEventListener("load", () => {
-                    var vibrant = new Vibrant(img, 64, 5);
-                    var swatches = vibrant.swatches();
+                    let vibrant = new Vibrant(img, 64, 5);
+                    let swatches = vibrant.swatches();
                     if (swatches) {
                         this.allAlbumSwatches = UploadAlbumController.getFriendlySwatches(swatches);
                         this.backColor = (swatches.DarkVibrant || swatches.DarkMuted || Song.defaultSwatch).getHex();
                         this.foreColor = (swatches.LightVibrant || swatches.Vibrant || Song.defaultSwatch).getHex();
+                        // tslint:disable-next-line:max-line-length
                         this.mutedColor = (swatches.DarkMuted || swatches.DarkVibrant || swatches.Vibrant || Song.defaultSwatch).getBodyTextColor();
+                        // tslint:disable-next-line:max-line-length
                         this.textShadowColor = (swatches.DarkMuted || swatches.DarkVibrant || Song.defaultSwatch).getHex();
                         this.$scope.$applyAsync();
                     }
@@ -98,41 +100,42 @@ namespace BitShuva.Chavah {
         }
 
         moveSongUp(song: FilepickerInkBlob) {
-            var currentIndex = this.songs.indexOf(song);
+            let currentIndex = this.songs.indexOf(song);
             if (currentIndex > 0) {
-                var newIndex = currentIndex - 1;
+                let newIndex = currentIndex - 1;
                 this.songs.splice(currentIndex, 1);
                 this.songs.splice(newIndex, 0, song);
             }
         }
 
         moveSongDown(song: FilepickerInkBlob) {
-            var currentIndex = this.songs.indexOf(song);
+            let currentIndex = this.songs.indexOf(song);
             if (currentIndex < (this.songs.length - 1)) {
-                var newIndex = currentIndex + 1;
+                let newIndex = currentIndex + 1;
                 this.songs.splice(currentIndex, 1);
                 this.songs.splice(newIndex, 0, song);
             }
         }
 
         removeSong(song: FilepickerInkBlob) {
-            var index = this.songs.indexOf(song);
+            let index = this.songs.indexOf(song);
             if (index >= 0) {
                 this.songs.splice(index, 1);
             }
         }
 
+        // tslint:disable-next-line:member-ordering
         static songNameFromFileName(fileName: string): string {
-            var songName = fileName;
+            let songName = fileName;
 
             // Slice off the extension.
-            var lastIndexOfDot = songName.lastIndexOf(".");
+            let lastIndexOfDot = songName.lastIndexOf(".");
             if (lastIndexOfDot > 0) {
                 songName = songName.substring(0, lastIndexOfDot);
             }
 
             // Slice off anything before " - "
-            var lastIndexOfDash = songName.lastIndexOf(" - ");
+            let lastIndexOfDash = songName.lastIndexOf(" - ");
             if (lastIndexOfDash >= 0) {
                 songName = songName.substr(lastIndexOfDash + 3);
             }
@@ -140,30 +143,32 @@ namespace BitShuva.Chavah {
             return songName;
         }
 
+        // tslint:disable-next-line:member-ordering
         static filePickerSongToAlbumSong(file: FilepickerInkBlob): Server.ISongUpload {
             return {
                 fileName: file["friendlyName"],
-                address: file.url
+                address: file.url,
             };
         }
 
-        static getFriendlySwatches(rawSwatches: ISwatchList): IAlbumSwatch[] {            
+        // tslint:disable-next-line:member-ordering
+        static getFriendlySwatches(rawSwatches: ISwatchList): IAlbumSwatch[] {
             return Object.getOwnPropertyNames(rawSwatches)
                 .filter(p => !!rawSwatches[p])
                 .map(p => {
-                    var swatch: ISwatch = rawSwatches[p];
-                    var friendlySwatch: IAlbumSwatch = {
+                    let swatch: ISwatch = rawSwatches[p];
+                    let friendlySwatch: IAlbumSwatch = {
                         name: p,
                         color: swatch.getHex(),
                         titleTextColor: swatch.getTitleTextColor(),
-                        bodyTextColor: swatch.getBodyTextColor()
+                        bodyTextColor: swatch.getBodyTextColor(),
                     };
                     return friendlySwatch;
                 });
         }
 
         hexToRgbString(hex: string) {
-            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             if (result && result.length >= 4) {
                 return `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})`;
             }
@@ -188,8 +193,8 @@ namespace BitShuva.Chavah {
                 throw new Error("Must have an artist");
             }
 
-            if (!this.isUploading) {             
-                var album: Server.IAlbumUpload = {
+            if (!this.isUploading) {
+                let album: Server.IAlbumUpload = {
                     albumArtUri: this.albumArt.url,
                     artist: this.artist.name,
                     backColor: this.backColor,
@@ -199,7 +204,7 @@ namespace BitShuva.Chavah {
                     name: this.albumName,
                     purchaseUrl: this.purchaseUrl,
                     songs: this.songs ? this.songs.map(UploadAlbumController.filePickerSongToAlbumSong) : [],
-                    textShadowColor: this.textShadowColor
+                    textShadowColor: this.textShadowColor,
                 };
                 this.isUploading = true;
                 this.albumApi.upload(album)

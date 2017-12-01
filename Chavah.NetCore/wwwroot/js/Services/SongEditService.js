@@ -11,7 +11,7 @@ var BitShuva;
             };
             SongEditService.prototype.getPendingEdits = function (take) {
                 var args = {
-                    take: take
+                    take: take,
                 };
                 return this.httpApi.query("/api/songEdits/getPendingEdits", args);
             };
@@ -20,16 +20,17 @@ var BitShuva;
             };
             SongEditService.prototype.reject = function (songEditId) {
                 var args = {
-                    songEditId: songEditId
+                    songEditId: songEditId,
                 };
                 return this.httpApi.postUriEncoded("/api/songEdits/reject", args);
             };
             return SongEditService;
         }());
         SongEditService.$inject = [
-            "httpApi"
+            "httpApi",
         ];
         Chavah.SongEditService = SongEditService;
         Chavah.App.service("songEditApi", SongEditService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=SongEditService.js.map

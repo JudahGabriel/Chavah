@@ -49,9 +49,10 @@ var BitShuva;
         HeaderController.$inject = [
             "initConfig",
             "accountApi",
-            "$timeout"
+            "$timeout",
         ];
         Chavah.HeaderController = HeaderController;
         Chavah.App.controller("HeaderController", HeaderController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=HeaderController.js.map

@@ -12,3 +12,4 @@ var BitShuva;
         Chavah.Album = Album;
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=Album.js.map

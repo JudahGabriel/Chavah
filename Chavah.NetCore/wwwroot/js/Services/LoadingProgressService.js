@@ -11,7 +11,6 @@ var BitShuva;
                 this.$q = $q;
                 this.resultsInProgress = 0;
             }
-            ;
             /**
              * Creates a deferred object and shows the loading UI until the deferred work completes.
              */
@@ -48,3 +47,4 @@ var BitShuva;
         Chavah.App.service("loadingProgress", LoadingProgressService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=LoadingProgressService.js.map

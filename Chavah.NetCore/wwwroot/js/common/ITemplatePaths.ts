@@ -1,5 +1,5 @@
 ﻿namespace BitShuva.Chavah {
-    export interface TemplatePaths {
+    export interface ITemplatePaths {
         artistList: string;
         songList: string;
         songRequestModal: string;

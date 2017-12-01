@@ -1,23 +1,23 @@
 ﻿namespace BitShuva.Chavah {
     export class SongRequestApiService {
 
-        private pendingSongRequestIds: string[] = [];
-        private hasPlayedRequestAnnouncement = false;
-
         static $inject = [
             "httpApi",
             "audioPlayer",
-            "songApi"
+            "songApi",
         ];
+
+        private pendingSongRequestIds: string[] = [];
+        private hasPlayedRequestAnnouncement = false;
 
         constructor(
             private httpApi: HttpApiService,
             private audioPlayer: AudioPlayerService,
-            private songApi: SongApiService) { 
+            private songApi: SongApiService) {
         }
 
         hasPendingRequest() {
-            var hasPendingRequest = this.pendingSongRequestIds.length > 0;
+            let hasPendingRequest = this.pendingSongRequestIds.length > 0;
             if (this.pendingSongRequestIds.length === 0) {
                 setTimeout(() => this.fetchPendingSongRequests(), 2000);
             }
@@ -29,35 +29,35 @@
             return this.pendingSongRequestIds.indexOf(songId) !== -1;
         }
 
-        requestSong(song: Song): ng.IPromise<any> {            
+        requestSong(song: Song): ng.IPromise<any> {
             this.pendingSongRequestIds.unshift(song.id);
             this.hasPlayedRequestAnnouncement = false;
 
-            var args = {
-                songId: song.id
+            let args = {
+                songId: song.id,
             };
             return this.httpApi.postUriEncoded("/api/songRequests/requestsong", args);
         }
 
         playRequest() {
             if (!this.hasPendingRequest()) {
-                throw "There was no pending song request.";
+                throw new Error("There was no pending song request.");
             }
 
             if (!this.hasPlayedRequestAnnouncement) {
                 this.hasPlayedRequestAnnouncement = true;
-                var songRequestNumbers = [1, 3, 4, 5, 6, 7, 8, 9, 10];
-                var songRequestName = "SongRequest" + songRequestNumbers[Math.floor(Math.random() * songRequestNumbers.length)] + ".mp3";
-                var songRequestUrl = "https://bitshuvafiles01.com/chavah/soundEffects/" + songRequestName;
+                let songRequestNumbers = [1, 3, 4, 5, 6, 7, 8, 9, 10];
+                // tslint:disable-next-line:max-line-length
+                let songRequestName = "SongRequest" + songRequestNumbers[Math.floor(Math.random() * songRequestNumbers.length)] + ".mp3";
+                let songRequestUrl = "https://bitshuvafiles01.com/chavah/soundEffects/" + songRequestName;
                 this.audioPlayer.playNewUri(songRequestUrl);
-            }
-            else {
+            } else {
                 this.hasPlayedRequestAnnouncement = false;
-                var pendingRequestedSongId = this.pendingSongRequestIds.splice(0, 1)[0];
-                var currentSong = this.audioPlayer.song.getValue();
+                let pendingRequestedSongId = this.pendingSongRequestIds.splice(0, 1)[0];
+                let currentSong = this.audioPlayer.song.getValue();
                 this.songApi.getSongById(pendingRequestedSongId, SongPick.SomeoneRequestedSong)
                     .then(song => {
-                        var isStillWaitingForSong = this.audioPlayer.song.getValue() === currentSong;   
+                        let isStillWaitingForSong = this.audioPlayer.song.getValue() === currentSong;
                         if (isStillWaitingForSong && song) {
                             this.audioPlayer.playNewSong(song);
                         }

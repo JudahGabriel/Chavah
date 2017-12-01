@@ -9,13 +9,13 @@ var BitShuva;
             LogService.prototype.getAll = function (skip, take) {
                 var args = {
                     skip: skip,
-                    take: take
+                    take: take,
                 };
                 return this.httpApi.query("/api/logs/getAll", args);
             };
-            LogService.prototype.deleteLog = function (logId) {
+            LogService.prototype.deleteLog = function (id) {
                 var args = {
-                    id: logId
+                    id: id,
                 };
                 return this.httpApi.postUriEncoded("/api/logs/delete", args);
             };
@@ -26,3 +26,4 @@ var BitShuva;
         Chavah.App.service("logApi", LogService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=LogService.js.map

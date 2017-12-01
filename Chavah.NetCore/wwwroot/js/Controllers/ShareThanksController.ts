@@ -1,10 +1,11 @@
 ﻿namespace BitShuva.Chavah {
     export class ShareThanksController {
-        readonly artist: string | null;
 
         static $inject = [
-            "$routeParams"
+            "$routeParams",
         ];
+
+        readonly artist: string | null;
 
         constructor($routeParams: ng.route.IRouteParamsService) {
             this.artist = $routeParams["artist"];
@@ -20,7 +21,7 @@
 
         get donateText(): string {
             if (this.artist) {
-                return `Donate to ${this.artist}`
+                return `Donate to ${this.artist}`;
             }
 
             return "Donate to the artists";

@@ -33,14 +33,14 @@ var BitShuva;
                 var _this = this;
                 if (!this.isLoading) {
                     this.isLoading = true;
-                    var skip = this.skip;
-                    this.fetcher(skip, this.take)
+                    var skip_1 = this.skip;
+                    this.fetcher(skip_1, this.take)
                         .then(function (results) {
                         if (_this.isLoading) {
-                            // If skip is zero, we're fetching the first chunk. 
+                            // If skip is zero, we're fetching the first chunk.
                             // Empty array because we may have added items when rehydrating the cache.
                             var cacheKey = _this.cacheKey;
-                            if (cacheKey && skip === 0) {
+                            if (cacheKey && skip_1 === 0) {
                                 _this.items.length = 0;
                                 _this.cacheItems(cacheKey, results.items);
                             }
@@ -105,3 +105,4 @@ var BitShuva;
         Chavah.PagedList = PagedList;
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=PagedList.js.map

@@ -5,14 +5,14 @@
      */
     export class SongBatchService {
 
-        songsBatch = new Rx.BehaviorSubject<Song[]>([]);
-
         static $inject = [
             "audioPlayer",
             "songApi",
             "songRequestApi",
-            "accountApi"
+            "accountApi",
         ];
+
+        songsBatch = new Rx.BehaviorSubject<Song[]>([]);
 
         constructor(
             private audioPlayer: AudioPlayerService,
@@ -30,7 +30,7 @@
         playNext() {
             // Play any song remaining from the batch.
             if (this.songsBatch.getValue().length > 0) {
-                var song = this.songsBatch.getValue().splice(0, 1)[0]; // Remove the top item.
+                let song = this.songsBatch.getValue().splice(0, 1)[0]; // Remove the top item.
                 this.songsBatch.onNext(this.songsBatch.getValue());
                 this.audioPlayer.playNewSong(song);
             } else {
@@ -43,7 +43,7 @@
                     });
             }
 
-            var needMoreSongs = this.songsBatch.getValue().length < 5;
+            let needMoreSongs = this.songsBatch.getValue().length < 5;
             if (needMoreSongs) {
                 this.fetchSongBatch();
             }
@@ -53,16 +53,17 @@
             this.songApi
                 .chooseSongBatch()
                 .then(songs => {
-                    var existingSongBatch = this.songsBatch.getValue();
-                        var freshSongs = songs
+                    let existingSongBatch = this.songsBatch.getValue();
+                    let freshSongs = songs
+                            // tslint:disable-next-line:no-shadowed-variable
                             .filter(s => existingSongBatch.map(s => s.id).indexOf(s.id) === -1)
                             .filter(s => !this.songRequestApi.isSongPendingRequest(s.id));
-                        this.songsBatch.onNext(existingSongBatch.concat(freshSongs));
+                    this.songsBatch.onNext(existingSongBatch.concat(freshSongs));
                 });
         }
 
         private signedInChanged(isSignedIn: boolean) {
-            var hasBatchSongs = this.songsBatch.getValue().length > 0;
+            let hasBatchSongs = this.songsBatch.getValue().length > 0;
             if (isSignedIn && hasBatchSongs) {
                 // Discard the current batch and fetch a fresh batch.
                 this.songsBatch.onNext([]);

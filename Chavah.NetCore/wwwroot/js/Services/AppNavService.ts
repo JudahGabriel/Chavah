@@ -1,18 +1,18 @@
 ﻿namespace BitShuva.Chavah {
     export class AppNavService {
-
-        readonly promptSignInUrl = "#/promptsignin";
-
+        
         static $inject = [
             "audioPlayer",
             "templatePaths",
             "$location",
-            "$uibModal"
+            "$uibModal",
         ];
+
+        readonly promptSignInUrl = "#/promptsignin";
 
         constructor(
             private audioPlayer: AudioPlayerService,
-            private templatePaths: TemplatePaths,
+            private templatePaths: ITemplatePaths,
             private $location: ng.ILocationService,
             private $uibModal: ng.ui.bootstrap.IModalService) {
 
@@ -35,7 +35,7 @@
 
         register(attemptedEmail?: string) {
             if (attemptedEmail) {
-                this.$location.url(`/register/${encodeURIComponent(attemptedEmail)}`)
+                this.$location.url(`/register/${encodeURIComponent(attemptedEmail)}`);
             } else {
                 this.$location.url("/register");
             }
@@ -54,8 +54,8 @@
         }
 
         editAlbum(artist: string, album: string) {
-            var escapedArtist = encodeURIComponent(artist);
-            var escapedAlbum = encodeURIComponent(album);
+            let escapedArtist = encodeURIComponent(artist);
+            let escapedAlbum = encodeURIComponent(album);
             this.$location.url(`/admin/album/${escapedArtist}/${escapedAlbum}`);
         }
 
@@ -64,17 +64,17 @@
         }
 
         showSongRequestDialog(): ng.ui.bootstrap.IModalServiceInstance {
-            var requestSongDialog = this.$uibModal.open({
+            let requestSongDialog = this.$uibModal.open({
                 controller: "RequestSongController as vm",
                 templateUrl: this.templatePaths.songRequestModal,
-                windowClass: "request-song-modal"
+                windowClass: "request-song-modal",
             });
 
             return requestSongDialog;
         }
 
         createAlbum() {
-            this.$location.url("/admin/album/create")
+            this.$location.url("/admin/album/create");
         }
 
         /**

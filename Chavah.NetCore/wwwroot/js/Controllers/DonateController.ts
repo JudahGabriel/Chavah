@@ -1,17 +1,18 @@
 ﻿namespace BitShuva.Chavah {
-    export class DonateController {   
-        desiredArtistName: string | null = null;     
-        donationTargetOptions = [
-            "Chavah Messianic Radio",
-            "All artists on Chavah Messianic Radio"
-        ];
-        donationTarget = this.donationTargetOptions[0];
-        selectedArtist: Server.IArtist | null = null;
+    export class DonateController {
 
         static $inject = [
             "artistApi",
-            "$routeParams"
+            "$routeParams",
         ];
+
+        desiredArtistName: string | null = null;
+        donationTargetOptions = [
+            "Chavah Messianic Radio",
+            "All artists on Chavah Messianic Radio",
+        ];
+        donationTarget = this.donationTargetOptions[0];
+        selectedArtist: Server.IArtist | null = null;
 
         constructor(
             artistApi: ArtistApiService,
@@ -28,7 +29,7 @@
         }
 
         allArtistsFetched(artists: Server.IArtist[]) {
-            var artistNames = artists.map(a => a.name);
+            let artistNames = artists.map(a => a.name);
             this.donationTargetOptions.push(...artistNames);
         }
     }

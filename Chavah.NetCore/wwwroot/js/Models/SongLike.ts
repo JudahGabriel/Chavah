@@ -2,6 +2,6 @@
     export enum SongLike {
         Unranked = 0,
         Liked = 1,
-        Disliked = 2
+        Disliked = 2,
     }
 }

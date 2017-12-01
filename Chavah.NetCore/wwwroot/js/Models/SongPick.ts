@@ -15,6 +15,6 @@
         SongFromArtistRequested,
         SongWithTagRequested,
         YouRequestedSong,
-        SomeoneRequestedSong
+        SomeoneRequestedSong,
     }
 }

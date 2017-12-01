@@ -12,3 +12,4 @@ var BitShuva;
         })(HeaderRoute = Chavah.HeaderRoute || (Chavah.HeaderRoute = {}));
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=HeaderRoute.js.map

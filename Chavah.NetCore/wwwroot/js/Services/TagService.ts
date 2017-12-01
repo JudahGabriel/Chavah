@@ -11,23 +11,23 @@
         }
 
         renameTag(oldTag: string, newTag: string): ng.IPromise<string> {
-            var args = {
-                oldTag: oldTag,
-                newTag: newTag
+            let args = {
+                oldTag,
+                newTag,
             };
             return this.httpApi.postUriEncoded("/api/tags/rename", args);
         }
 
         deleteTag(tag: string): ng.IPromise<string> {
-            var args = {
-                tag: tag
+            let args = {
+                tag,
             };
             return this.httpApi.postUriEncoded("/api/tags/delete", args);
         }
 
         searchTags(search: string): ng.IPromise<string[]> {
-            var args = {
-                search: search
+            let args = {
+                search,
             };
             return this.httpApi.query("/api/tags/searchTags", args);
         }

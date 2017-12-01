@@ -53,3 +53,4 @@ var BitShuva;
         Chavah.App.controller("TagEditorController", TagEditorController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=TagEditorController.js.map

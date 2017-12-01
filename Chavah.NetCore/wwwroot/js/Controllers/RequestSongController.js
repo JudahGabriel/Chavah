@@ -36,9 +36,10 @@ var BitShuva;
             "songApi",
             "templatePaths",
             "$uibModalInstance",
-            "$q"
+            "$q",
         ];
         Chavah.RequestSongController = RequestSongController;
         Chavah.App.controller("RequestSongController", RequestSongController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=RequestSongController.js.map

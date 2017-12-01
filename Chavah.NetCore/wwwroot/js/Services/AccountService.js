@@ -33,27 +33,27 @@ var BitShuva;
             };
             AccountService.prototype.clearNotifications = function (asOfDate) {
                 var args = {
-                    asOf: asOfDate
+                    asOf: asOfDate,
                 };
                 return this.httpApi.postUriEncoded("/api/account/clearNotifications", args);
             };
             AccountService.prototype.register = function (email, password) {
                 var args = {
                     email: email,
-                    password: password
+                    password: password,
                 };
                 return this.httpApi.postUriEncoded("/api/account/register", args);
             };
             AccountService.prototype.getUserWithEmail = function (email) {
                 var args = {
-                    email: email
+                    email: email,
                 };
                 return this.httpApi.query("/api/account/getUserWithEmail", args);
             };
             AccountService.prototype.createPassword = function (email, password) {
                 var args = {
                     email: email,
-                    password: password
+                    password: password,
                 };
                 return this.httpApi.postUriEncoded("/api/account/createPassword", args);
             };
@@ -62,7 +62,7 @@ var BitShuva;
                 var args = {
                     email: email,
                     password: password,
-                    staySignedIn: staySignedIn
+                    staySignedIn: staySignedIn,
                 };
                 var signInTask = this.httpApi.postUriEncoded("/api/account/signIn", args);
                 signInTask.then(function (result) {
@@ -85,13 +85,13 @@ var BitShuva;
             AccountService.prototype.confirmEmail = function (email, confirmCode) {
                 var args = {
                     email: email,
-                    confirmCode: confirmCode
+                    confirmCode: confirmCode,
                 };
                 return this.httpApi.postUriEncoded("/api/account/ConfirmEmail", args);
             };
             AccountService.prototype.sendPasswordResetEmail = function (email) {
                 var args = {
-                    email: email
+                    email: email,
                 };
                 return this.httpApi.postUriEncoded("/api/account/sendResetPasswordEmail", args);
             };
@@ -99,7 +99,7 @@ var BitShuva;
                 var args = {
                     email: email,
                     passwordResetCode: passwordResetCode,
-                    newPassword: newPassword
+                    newPassword: newPassword,
                 };
                 return this.httpApi.postUriEncoded("/api/account/resetPassword", args);
             };
@@ -109,9 +109,10 @@ var BitShuva;
             "appNav",
             "initConfig",
             "httpApi",
-            "localStorageService"
+            "localStorageService",
         ];
         Chavah.AccountService = AccountService;
         Chavah.App.service("accountApi", AccountService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=AccountService.js.map

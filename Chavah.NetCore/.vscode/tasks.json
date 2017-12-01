@@ -14,6 +14,16 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "taskName": "tsc",
+            "command": "tsc",
+            "showOutput": "always",
+            "windows": {
+                "command": "${workspaceRoot}\\node_modules\\.bin\\tsc"
+            },
+            "isShellCommand": true,
+            "problemMatcher":"$tsc"
+        },
+        {
             "taskName": "bundle"
         },
         {

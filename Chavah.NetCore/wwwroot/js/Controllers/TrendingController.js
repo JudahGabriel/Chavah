@@ -8,7 +8,8 @@ var BitShuva;
                 this.songApi = songApi;
                 this.albumCache = albumCache;
                 this.audioPlayer = audioPlayer;
-                this.songsList = new Chavah.PagedList(function (skip, take) { return _this.songApi.getTrendingSongs(skip, take); }, undefined, function (items) { return _this.calcVisibleSongs(items); });
+                this.songsList = new Chavah.PagedList(function (skip, take) { return _this.songApi
+                    .getTrendingSongs(skip, take); }, undefined, function (items) { return _this.calcVisibleSongs(items); });
                 this.visibleSongs = [];
                 this.visibleStart = 0;
                 this.songsList.fetchNextChunk();
@@ -72,9 +73,10 @@ var BitShuva;
         TrendingController.$inject = [
             "songApi",
             "albumCache",
-            "audioPlayer"
+            "audioPlayer",
         ];
         Chavah.TrendingController = TrendingController;
         Chavah.App.controller("TrendingController", TrendingController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=TrendingController.js.map

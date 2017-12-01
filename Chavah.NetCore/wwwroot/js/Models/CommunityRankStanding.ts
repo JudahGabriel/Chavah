@@ -5,6 +5,6 @@
         Poor,
         Good,
         Great,
-        Best
+        Best,
     }
 }

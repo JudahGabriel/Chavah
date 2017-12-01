@@ -10,3 +10,4 @@ var BitShuva;
         Chavah.SignInResult = SignInResult;
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=SignInResult.js.map
