@@ -274,3 +274,4 @@ Web.Debug.config
 /Chavah.NetCore/wwwroot/js/app.js
 /Chavah.NetCore/wwwroot/js/*/*.js
 /Chavah.NetCore/wwwroot/js/*/*.js.map
+/Chavah.NetCore/zanz.config
