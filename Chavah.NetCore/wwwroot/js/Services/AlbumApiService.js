@@ -16,13 +16,13 @@ var BitShuva;
             AlbumApiService.prototype.changeArt = function (albumId, artUri) {
                 var args = {
                     albumId: albumId,
-                    artUri: artUri
+                    artUri: artUri,
                 };
                 return this.httpApi.postUriEncoded("/api/albums/changeArt", args, AlbumApiService.albumSelector);
             };
             AlbumApiService.prototype.get = function (id) {
                 var args = {
-                    id: id
+                    id: id,
                 };
                 return this.httpApi.query("/api/albums/get", args, AlbumApiService.albumSelector);
             };
@@ -30,14 +30,14 @@ var BitShuva;
                 var args = {
                     skip: skip,
                     take: take,
-                    search: search
+                    search: search,
                 };
                 return this.httpApi.query("/api/albums/getAll", args, AlbumApiService.albumPagedListSelector);
             };
             AlbumApiService.prototype.getByArtistAndAlbumName = function (artist, album) {
                 var args = {
                     artist: artist,
-                    album: album
+                    album: album,
                 };
                 return this.httpApi.query("/api/albums/getByArtistAlbum", args, AlbumApiService.albumSelector);
             };
@@ -46,11 +46,11 @@ var BitShuva;
             };
             AlbumApiService.prototype.getAlbums = function (albumIds) {
                 var args = {
-                    albumIdsCsv: albumIds.join(",")
+                    albumIdsCsv: albumIds.join(","),
                 };
                 return this.httpApi.query("/api/albums/getAlbums", args, AlbumApiService.albumArraySelector);
             };
-            //getAlbumsForSongs(songIds: string[]): ng.IPromise<Album[]> {
+            // getAlbumsForSongs(songIds: string[]): ng.IPromise<Album[]> {
             //    var songIdsCsv = songIds.join(",");
             //    if (songIdsCsv.length === 0) {
             //        return this.$q.resolve<Album[]>([]);
@@ -59,37 +59,41 @@ var BitShuva;
             //        songIdsCsv: songIdsCsv
             //    };
             //    return this.httpApi.query("/api/albums/GetAlbumsForSongs", args, AlbumApiService.albumArraySelector);
-            //}
+            // }
             AlbumApiService.prototype.deleteAlbum = function (albumId) {
                 var args = {
-                    albumId: albumId
+                    albumId: albumId,
                 };
                 return this.httpApi.postUriEncoded("/api/albums/delete", args);
             };
+            // tslint:disable-next-line:member-ordering
             AlbumApiService.albumSelector = function (serverObj) {
                 if (serverObj) {
                     return new Chavah.Album(serverObj);
                 }
                 return null;
             };
+            // tslint:disable-next-line:member-ordering
             AlbumApiService.albumArraySelector = function (serverObjs) {
                 return serverObjs.map(function (s) { return AlbumApiService.albumSelector(s); });
             };
+            // tslint:disable-next-line:member-ordering
             AlbumApiService.albumPagedListSelector = function (serverObj) {
                 return {
                     items: AlbumApiService.albumArraySelector(serverObj.items),
                     skip: serverObj.skip,
                     take: serverObj.take,
-                    total: serverObj.total
+                    total: serverObj.total,
                 };
             };
             return AlbumApiService;
         }());
         AlbumApiService.$inject = [
             "httpApi",
-            "$q"
+            "$q",
         ];
         Chavah.AlbumApiService = AlbumApiService;
         Chavah.App.service("albumApi", AlbumApiService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=AlbumApiService.js.map

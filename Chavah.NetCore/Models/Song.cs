@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Diagnostics.Contracts;
+using Microsoft.Extensions.Options;
 
 namespace BitShuva.Chavah.Models
 {
@@ -13,6 +14,7 @@ namespace BitShuva.Chavah.Models
             this.Tags = new List<string>();
             this.Genres = new List<string>();
         }
+
 
         public string Name { get; set; }
         public string HebrewName { get; set; }
@@ -29,6 +31,7 @@ namespace BitShuva.Chavah.Models
         public DateTime UploadDate { get; set; }
         public List<string> Tags { get; set; }
         public List<string> Genres { get; set; }
+
         public string Lyrics { get; set; }
         public int TotalPlays { get; set; }
         public string AlbumId { get; set; }
@@ -146,10 +149,9 @@ namespace BitShuva.Chavah.Models
             return ToDto(LikeStatus.None, SongPick.RandomSong);
         }
 
-        public Uri GetSongShareLink()
+        public Uri GetSongShareLink(string url)
         {
-            //TODO: move to station configuraitons
-            return new Uri("https://messianicradio.com/?song=" + this.Id);
+            return new Uri($"{url}/?song={this.Id}");
         }
     }
 }

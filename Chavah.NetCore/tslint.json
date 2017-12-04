@@ -1,0 +1,12 @@
+{
+    "extends": "tslint:recommended",
+    "rules": {
+      "no-namespace": false,
+      "no-console": false,
+      "member-access":false,
+      "prefer-const": false,
+      "arrow-parens": [true, "ban-single-arg-parens"],
+      "no-string-literal": false,
+      "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
+    }
+  }

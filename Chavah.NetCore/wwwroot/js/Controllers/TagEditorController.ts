@@ -1,12 +1,12 @@
 ﻿namespace BitShuva.Chavah {
     export class TagEditorController {
 
+        static $inject = ["tagApi"];
+
         allTags: string[] = [];
         selectedTag: string | null = null;
         newTagName = "";
         isSaving = false;
-
-        static $inject = ["tagApi"];
 
         constructor(
             private readonly tagApi: TagService) {
@@ -33,12 +33,12 @@
         }
 
         renameTag(oldTag: string) {
-            var newTagName = this.newTagName;
+            let newTagName = this.newTagName;
             if (!this.isSaving && newTagName !== oldTag) {
                 this.isSaving = true;
                 this.tagApi.renameTag(oldTag, newTagName)
                     .then(result => {
-                        var oldTagIndex = this.allTags.indexOf(oldTag);
+                        let oldTagIndex = this.allTags.indexOf(oldTag);
                         if (oldTagIndex >= 0) {
                             this.allTags[oldTagIndex] = result;
                             this.allTags = _.uniq(this.allTags);

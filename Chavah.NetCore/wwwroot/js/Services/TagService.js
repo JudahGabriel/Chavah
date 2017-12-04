@@ -12,19 +12,19 @@ var BitShuva;
             TagService.prototype.renameTag = function (oldTag, newTag) {
                 var args = {
                     oldTag: oldTag,
-                    newTag: newTag
+                    newTag: newTag,
                 };
                 return this.httpApi.postUriEncoded("/api/tags/rename", args);
             };
             TagService.prototype.deleteTag = function (tag) {
                 var args = {
-                    tag: tag
+                    tag: tag,
                 };
                 return this.httpApi.postUriEncoded("/api/tags/delete", args);
             };
             TagService.prototype.searchTags = function (search) {
                 var args = {
-                    search: search
+                    search: search,
                 };
                 return this.httpApi.query("/api/tags/searchTags", args);
             };
@@ -35,3 +35,4 @@ var BitShuva;
         Chavah.App.service("tagApi", TagService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=TagService.js.map

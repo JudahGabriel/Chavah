@@ -1,19 +1,19 @@
 ﻿namespace BitShuva.Chavah {
     export class EditArtistController {
-        private artist: Artist | null;
-
         static $inject = [
             "artistApi",
             "$routeParams",
-            "$scope"
+            "$scope",
         ];
+
+        private artist: Artist | null;
 
         constructor(
             private artistApi: ArtistApiService,
             $routeParams: ng.route.IRouteParamsService,
             private $scope: ng.IScope) {
 
-            var artistName: string | null = $routeParams["artistName"];
+            let artistName: string | null = $routeParams["artistName"];
             if (artistName && artistName.length > 0) {
                 this.artistApi.getByName(artistName)
                     .then(result => this.artist = result);
@@ -30,14 +30,15 @@
         }
 
         addImages() {
-            filepicker.setKey(UploadAlbumController.filePickerKey)
-            var options: FilepickerMultipleFilePickOptions = {
+            filepicker.setKey(UploadAlbumController.filePickerKey);
+            let options: FilepickerMultipleFilePickOptions = {
                 extensions: [".jpg", ".png"],
-                maxFiles: 100
+                maxFiles: 100,
             };
             filepicker.pickMultiple(
                 options,
                 (result: FilepickerInkBlob[]) => this.imagesAdded(result),
+                // tslint:disable-next-line:arrow-parens
                 (error) => console.log("Failed to add image.", error));
         }
 
@@ -56,5 +57,5 @@
         }
     }
 
-    App.controller("EditArtistController", EditArtistController)
+    App.controller("EditArtistController", EditArtistController);
 }

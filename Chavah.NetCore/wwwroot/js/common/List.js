@@ -10,7 +10,8 @@ var BitShuva;
              * Constructs a new list.
              * @param fetcher The function that fetches the items from the server.
              * @param cacheKey Optional cache key that will store and fetch the items from local storage.
-             * @param cacheSelector Optional selector function that rehydrates an item from local storage. If null or undefined, the raw JSON object read from storage will be used for the items.
+             * @param cacheSelector Optional selector function that rehydrates an item from local storage.
+             * If null or undefined, the raw JSON object read from storage will be used for the items.
              */
             function List(fetcher, cacheKey, cacheSelector, afterLoadProcessor) {
                 this.fetcher = fetcher;
@@ -63,7 +64,8 @@ var BitShuva;
                 return lengthBeforeRemoval > arrayAfterRemoval.length;
             };
             /**
-             * Puts the items into the local cache. This is done automatically when the items are loaded, but calling this method can be useful for updating the cache after the items have been modified.
+             * Puts the items into the local cache. This is done automatically when the items are loaded,
+             * but calling this method can be useful for updating the cache after the items have been modified.
              */
             List.prototype.cache = function () {
                 if (this.cacheKey) {
@@ -125,3 +127,4 @@ var BitShuva;
         Chavah.List = List;
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=List.js.map

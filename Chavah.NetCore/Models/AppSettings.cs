@@ -30,6 +30,8 @@
         public string Keywords { get; set; }
         public string GoogleAnalytics { get; set; }
         public string TrackJsToken { get; set; }
+        public string Language { get; set; }
+        public string FacebookId { get; set; }
     }
 
     public class Logging
@@ -48,6 +50,7 @@
     public class Email
     {
         public string SendGridApiKey { get; set; }
+        public string AdminEmail { get; set; }
     }
 
     public class Cdn
@@ -60,6 +63,7 @@
         public string AlbumArtDirectory { get; set; }
         public string ArtistImagesDirectory { get; set; }
         public string HttpPath { get; set; }
+        public string SoundEffects { get; set; }
     }
 
     public class Filepickr

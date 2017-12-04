@@ -3,6 +3,6 @@
         NotSpecified,
         Like,
         Love,
-        Favorite
+        Favorite,
     }
 }

@@ -7,16 +7,16 @@
         }
 
         getAll(skip: number, take: number): ng.IPromise<Server.IPagedList<Server.ILogSummary>> {
-            var args = {
-                skip: skip,
-                take: take
+            let args = {
+                skip,
+                take,
             };
             return this.httpApi.query("/api/logs/getAll", args);
         }
 
-        deleteLog(logId: string): ng.IPromise<any> {
-            var args = {
-                id: logId
+        deleteLog(id: string): ng.IPromise<any> {
+            let args = {
+                id,
             };
             return this.httpApi.postUriEncoded("/api/logs/delete", args);
         }

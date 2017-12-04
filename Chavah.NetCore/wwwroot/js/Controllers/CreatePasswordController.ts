@@ -1,6 +1,14 @@
 ﻿namespace BitShuva.Chavah {
     export class CreatePasswordController {
 
+        static readonly minPasswordLength = 6;
+
+        static $inject = [
+            "accountApi",
+            "appNav",
+            "$routeParams",
+        ];
+
         readonly email: string;
         readonly emailWithoutDomain: string;
         password = "";
@@ -8,21 +16,13 @@
         isSaving = false;
         hasCreatedPassword = false;
 
-        static readonly minPasswordLength = 6;
-
-        static $inject = [
-            "accountApi",
-            "appNav",
-            "$routeParams"
-        ];
-
         constructor(
             private accountApi: AccountService,
             private appNav: AppNavService,
             $routeParams: ng.route.IRouteParamsService) {
 
             this.email = $routeParams["email"];
-            this.emailWithoutDomain = this.email.substr(0, this.email.indexOf('@'));
+            this.emailWithoutDomain = this.email.substr(0, this.email.indexOf("@"));
         }
 
         get isPasswordValid(): boolean {

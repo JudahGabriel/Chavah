@@ -1,15 +1,5 @@
 ﻿namespace BitShuva.Chavah {
     export class NowPlayingController {
-        
-        songs: Song[] = [];
-        trending: Song[] = [];
-        recent: Song[] = [];
-        popular: Song[] = [];
-        likes: Song[] = [];
-        isFetchingAlbums = false;
-        currentSong: Song | null;
-        recurringFetchHandle: number | null;
-        disposed = new Rx.Subject<boolean>();
 
         static $inject = [
             "songApi",
@@ -19,8 +9,18 @@
             "initConfig",
             "appNav",
             "accountApi",
-            "$q"
+            "$q",
         ];
+
+        songs: Song[] = [];
+        trending: Song[] = [];
+        recent: Song[] = [];
+        popular: Song[] = [];
+        likes: Song[] = [];
+        isFetchingAlbums = false;
+        currentSong: Song | null;
+        recurringFetchHandle: number | null;
+        disposed = new Rx.Subject<boolean>();
 
         constructor(
             private songApi: SongApiService,
@@ -32,22 +32,30 @@
             private accountApi: AccountService,
             private $q: ng.IQService) {
 
-            this.audioPlayer.song.takeUntil(this.disposed).subscribeOnNext(song => this.nextSongBeginning(song));
-            this.audioPlayer.songCompleted.takeUntil(this.disposed).throttle(5000).subscribe(song => this.songCompleted(song));
-            this.songBatch.songsBatch.takeUntil(this.disposed).subscribeOnNext(() => this.songs = this.getSongs());
-            
+            this.audioPlayer.song
+                .takeUntil(this.disposed)
+                .subscribeOnNext(song => this.nextSongBeginning(song));
+
+            this.audioPlayer.songCompleted
+                .takeUntil(this.disposed).throttle(5000)
+                .subscribe(song => this.songCompleted(song));
+
+            this.songBatch.songsBatch
+                .takeUntil(this.disposed)
+                .subscribeOnNext(() => this.songs = this.getSongs());
+
             // Recent plays we fetch once, at init. Afterwards, we update it ourselves.
             this.fetchRecentPlays();
             this.setupRecurringFetches();
-            
+
             if (initConfig.embed) {
                 // If we're embedded on another page, queue up the song we're told to play.
                 // Don't play it automatically, though, because there may be multiple embeds on the same page.
-                
+
             } else {
                 // Play the next song if we don't already have one playing.
                 // We don't have one playing when first loading the UI.
-                var hasCurrentSong = this.audioPlayer.song.getValue();
+                let hasCurrentSong = this.audioPlayer.song.getValue();
                 if (!hasCurrentSong) {
                     if (!this.playSongInUrlQuery()) {
                         this.songBatch.playNext();
@@ -57,11 +65,10 @@
         }
 
         get currentArtistDonateUrl(): string {
-            var song = this.currentSong;
+            let song = this.currentSong;
             if (song && song.artist) {
                 return "#/donate/" + encodeURIComponent(song.artist);
             }
-
             return "#/donate";
         }
 
@@ -70,10 +77,8 @@
                 if (this.currentSong.isShowingEmbedCode) {
                     return this.currentSong.getEmbedCode();
                 }
-
                 return this.currentSong.shareUrl;
             }
-
             return "";
         }
 
@@ -96,9 +101,9 @@
 
             this.disposed.onNext(true);
         }
-        
+
         getSongs(): Song[] {
-            var songs = [
+            let songs = [
                 this.audioPlayer.song.getValue()!,
                 this.songBatch.songsBatch.getValue()[0],
                 this.songBatch.songsBatch.getValue()[1],
@@ -115,7 +120,7 @@
         }
 
         fetchAlbumColors(songs: Song[]) {
-            var songsNeedingAlbumSwatch = songs
+            let songsNeedingAlbumSwatch = songs
                 .filter(s => !s.hasSetAlbumArtColors && s.id !== "songs/0");
             if (songsNeedingAlbumSwatch.length > 0) {
                 this.isFetchingAlbums = true;
@@ -126,13 +131,14 @@
 
         populateSongsWithAlbumColors(albums: Album[]) {
             albums.forEach(a => {
-                var songsForAlbum = this.getAllSongsOnScreen().filter(s => s.albumId && s.albumId.toLowerCase() === a.id.toLowerCase());
+                let songsForAlbum = this.getAllSongsOnScreen()
+                    .filter(s => s.albumId && s.albumId.toLowerCase() === a.id.toLowerCase());
                 songsForAlbum.forEach(s => s.updateAlbumArtColors(a));
             });
         }
 
         setupRecurringFetches() {
-            var songFetchesTask = this.songApi.getTrendingSongs(0, 3)
+            let songFetchesTask = this.songApi.getTrendingSongs(0, 3)
                 .then(results => this.updateSongList(this.trending, results.items))
                 .then(() => this.songApi.getPopularSongs(3))
                 .then(results => this.updateSongList(this.popular, results))
@@ -140,7 +146,7 @@
                 .then(results => this.updateSongList(this.likes, results))
                 .finally(() => {
                     this.fetchAlbumColors(this.getAllSongsOnScreen());
-                    
+
                     // Call ourselves every 30s.
                     this.recurringFetchHandle = setTimeout(() => this.setupRecurringFetches(), 30000);
                 });
@@ -153,7 +159,7 @@
                     if (this.recent.length > 3) {
                         this.recent.length = 3;
                     }
-                })
+                });
         }
 
         updateSongList(target: Song[], source: Song[]) {
@@ -189,8 +195,8 @@
         songClicked(song: Song) {
             if (song !== this.currentSong) {
                 song.setSolePickReason(SongPick.YouRequestedSong);
-                var songBatch = this.songBatch.songsBatch.getValue();
-                var songIndex = songBatch.indexOf(song);
+                let songBatch = this.songBatch.songsBatch.getValue();
+                let songIndex = songBatch.indexOf(song);
                 if (songIndex >= 0) {
                     songBatch.splice(songIndex, 1);
                     songBatch.splice(0, 0, song);
@@ -217,14 +223,14 @@
 
         playSongInUrlQuery(): boolean {
             // Does the user want us to play a certain song/album/artist?
-            var songId = this.getUrlQueryOrNull("song");
+            let songId = this.getUrlQueryOrNull("song");
             if (songId) {
                 this.audioPlayer.playSongById(songId);
                 return true;
             }
 
-            var artist = this.getUrlQueryOrNull("artist");
-            var album = this.getUrlQueryOrNull("album");
+            let artist = this.getUrlQueryOrNull("artist");
+            let album = this.getUrlQueryOrNull("album");
 
             if (artist && album) {
                 this.audioPlayer.playSongFromArtistAndAlbum(artist, album);
@@ -235,7 +241,7 @@
                 this.audioPlayer.playSongFromAlbum(album);
                 return true;
             }
-            
+
             if (artist) {
                 this.audioPlayer.playSongFromArtist(artist);
                 return true;
@@ -245,22 +251,22 @@
         }
 
         copyShareUrl() {
-            var shareUrlInput = document.querySelector("#currentSongShareLink") as HTMLInputElement;
+            let shareUrlInput = document.querySelector("#currentSongShareLink") as HTMLInputElement;
             shareUrlInput.select();
             document.execCommand("copy");
         }
 
         private getUrlQueryOrNull(term: string): string | null {
-            var queryString = window.location.search;
+            let queryString = window.location.search;
             if (queryString) {
-                var allTerms = queryString.split("&");
-                var termWithEquals = term + "=";
-                var termAtBeginning = "?" + termWithEquals;
-                var match = allTerms.find(t => t.startsWith(termWithEquals) || t.startsWith(termAtBeginning));
+                let allTerms = queryString.split("&");
+                let termWithEquals = term + "=";
+                let termAtBeginning = "?" + termWithEquals;
+                let match = allTerms.find(t => t.startsWith(termWithEquals) || t.startsWith(termAtBeginning));
                 if (match) {
-                    var termValue = match.substr(match.indexOf("=") + 1);
+                    let termValue = match.substr(match.indexOf("=") + 1);
                     if (termValue) {
-                        var termValueWithoutPlus = termValue.split("+").join(" "); // Replace + with space.
+                        let termValueWithoutPlus = termValue.split("+").join(" "); // Replace + with space.
                         return decodeURIComponent(termValueWithoutPlus);
                     }
                 }

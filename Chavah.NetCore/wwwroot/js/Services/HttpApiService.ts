@@ -1,14 +1,14 @@
 ﻿namespace BitShuva.Chavah {
     export class HttpApiService {
 
-        apiBaseUrl = ""
-
         static $inject = [
             "loadingProgress",
             "$http",
             "localStorageService",
-            "$q"
+            "$q",
         ];
+
+        apiBaseUrl = "";
 
         constructor(
             private loadingProgress: LoadingProgressService,
@@ -17,24 +17,25 @@
             private $q: ng.IQService) {
         }
 
-        query<T>(relativeUrl: string, args: any = null, selector?: (rawResult: any) => T, showProgress = true): ng.IPromise<T> {
-            var progress: ng.IDeferred<T>;
+        query<T>(relativeUrl: string, args: any = null,
+                 selector?: (rawResult: any) => T, showProgress = true): ng.IPromise<T> {
+            let progress: ng.IDeferred<T>;
             if (showProgress) {
                 progress = this.loadingProgress.start<T>();
             } else {
                 progress = this.$q.defer<T>();
             }
-            
-            var config: ng.IRequestConfig = {
+
+            let config: ng.IRequestConfig = {
                 url: this.apiBaseUrl + relativeUrl,
                 method: "GET",
                 params: args,
-                headers: this.createHeaders()
+                headers: this.createHeaders(),
             };
 
             this.$http(config)
                 .then(result => {
-                    var preppedResult: T = selector ? selector(result.data) : <T>result.data;
+                    let preppedResult: T = selector ? selector(result.data) : result.data as T;
                     progress.resolve(preppedResult);
                 }, failed => {
                     progress.reject(failed);
@@ -45,21 +46,21 @@
         }
 
         post<T>(relativeUrl: string, args: any, selector?: (rawResult: any) => T, showProgress = true): ng.IPromise<T> {
-            var deferred: ng.IDeferred<T>;
+            let deferred: ng.IDeferred<T>;
             if (showProgress) {
                 deferred = this.loadingProgress.start<T>();
             } else {
                 deferred = this.$q.defer<T>();
             }
-            
-            var absoluteUrl = `${this.apiBaseUrl}${relativeUrl}`;
-            var config: ng.IRequestShortcutConfig = {
-                headers: this.createHeaders()
+
+            let absoluteUrl = `${this.apiBaseUrl}${relativeUrl}`;
+            let config: ng.IRequestShortcutConfig = {
+                headers: this.createHeaders(),
             };
 
-            var postTask = this.$http.post(absoluteUrl, args, config);
+            let postTask = this.$http.post(absoluteUrl, args, config);
             postTask.then((result: any) => {
-                var preppedResult = selector ? selector(result.data) : result.data;
+                let preppedResult = selector ? selector(result.data) : result.data;
                 deferred.resolve(preppedResult);
             });
             postTask.catch(error => {
@@ -70,32 +71,34 @@
             return deferred.promise;
         }
 
-        postUriEncoded<T>(relativeUrl: string, args: any, selector?: (rawResult: any) => T, showProgress = true): ng.IPromise<T> {
-            var deferred: ng.IDeferred<T>;
+        postUriEncoded<T>(relativeUrl: string, args: any,
+                          selector?: (rawResult: any) => T, showProgress = true): ng.IPromise<T> {
+            let deferred: ng.IDeferred<T>;
             if (showProgress) {
                 deferred = this.loadingProgress.start<T>();
             } else {
                 deferred = this.$q.defer<T>();
             }
 
-            var absoluteUrl = `${this.apiBaseUrl}${relativeUrl}?`;
-            var config: ng.IRequestShortcutConfig = {
-                headers: this.createHeaders()
+            let absoluteUrl = `${this.apiBaseUrl}${relativeUrl}?`;
+            let config: ng.IRequestShortcutConfig = {
+                headers: this.createHeaders(),
             };
 
             // Encode the args into the URL
-            for (var prop in args) {
-                var isFirstArgument = absoluteUrl.endsWith("?");
+            // tslint:disable-next-line:forin
+            for (let prop in args) {
+                let isFirstArgument = absoluteUrl.endsWith("?");
                 absoluteUrl += isFirstArgument ? "" : "&";
-                var arg = args[prop] as string | null;
-                var argAsString = arg ? arg.toString() : "";
-                var argEscaped = encodeURIComponent(argAsString);
+                let arg = args[prop] as string | null;
+                let argAsString = arg ? arg.toString() : "";
+                let argEscaped = encodeURIComponent(argAsString);
                 absoluteUrl += `${prop}=${argEscaped}`;
             }
 
-            var postTask = this.$http.post(absoluteUrl, null, config);
+            let postTask = this.$http.post(absoluteUrl, null, config);
             postTask.then((result: any) => {
-                var preppedResult = selector ? selector(result.data) : result.data;
+                let preppedResult = selector ? selector(result.data) : result.data;
                 deferred.resolve(preppedResult);
             });
             postTask.catch(error => {
@@ -107,37 +110,37 @@
         }
 
         private createHeaders(): {} {
-            //var jwtAuthHeader = this.createJwtAuthHeader();
-            //if (jwtAuthHeader) {
+            // var jwtAuthHeader = this.createJwtAuthHeader();
+            // if (jwtAuthHeader) {
             //    return { "Authorization": jwtAuthHeader };
-            //}
+            // }
 
             return {};
         }
 
-        //private createJwtAuthHeader(): string {
+        // private createJwtAuthHeader(): string {
         //    var jwt = this.localStorageService.get<string>(AccountService.jwtKey);
         //    if (jwt) {
         //        return `Bearer ${jwt}`;
         //    }
 
         //    return "";
-        //}
+        // }
 
         private onAjaxError(errorDetails: any, errorMessage: string) {
             // If we got 401 unauthorized, the token is probably stale or invalid. Go to sign in.
-            //if (errorDetails && errorDetails.status === 401) {
+            // if (errorDetails && errorDetails.status === 401) {
             //    this.appNav.signIn();
-            //} else {
+            // } else {
             //    this.errors.push({
             //        error: errorDetails,
             //        message: errorMessage
             //    });
 
             //    this.isShowingApiError = true;
-            //}
+            // }
         }
     }
 
     App.service("httpApi", HttpApiService);
-} 
+}

@@ -38,11 +38,12 @@ var BitShuva;
                     .subscribe(function (percent) { return $(".footer .trackbar").width(percent + "%"); });
                 $scope.$watch(function () { return _this.volume; }, function () { return audio.volume = _this.volume; });
                 // MediaSession:
-                // This is a new browser API being adopted on some mobile platforms (at the time of this writing, Android), 
-                // which shows media information above the 
+                // This is a new browser API being adopted on some mobile platforms (at the time of this writing, Android),
+                // which shows media information above the
                 // For more info, see https://developers.google.com/web/updates/2017/02/media-session#set_metadata
-                if ('mediaSession' in navigator) {
-                    // Setup media session handlers so that a native play/pause/next buttons do the same thing as our footer's play/pause/next.
+                if ("mediaSession" in navigator) {
+                    // Setup media session handlers so that a native play/pause/next
+                    // buttons do the same thing as our footer's play/pause/next.
                     this.setupMediaSessionHandlers();
                     // Listen for when the song changes so that we show the song info on the phone lock screen.
                     this.audioPlayer.song.subscribe(function (songOrNull) { return _this.updateMediaSession(songOrNull); });
@@ -119,22 +120,22 @@ var BitShuva;
             };
             FooterController.prototype.dislikeSong = function () {
                 if (this.requireSignIn()) {
-                    var currentSong = this.audioPlayer.song.getValue();
-                    if (currentSong && currentSong.songLike !== Chavah.SongLike.Disliked) {
-                        currentSong.songLike = Chavah.SongLike.Disliked;
-                        this.likeApi.dislikeSong(currentSong.id)
-                            .then(function (rank) { return currentSong.communityRank = rank; });
+                    var currentSong_1 = this.audioPlayer.song.getValue();
+                    if (currentSong_1 && currentSong_1.songLike !== Chavah.SongLike.Disliked) {
+                        currentSong_1.songLike = Chavah.SongLike.Disliked;
+                        this.likeApi.dislikeSong(currentSong_1.id)
+                            .then(function (rank) { return currentSong_1.communityRank = rank; });
                         this.songBatch.playNext();
                     }
                 }
             };
             FooterController.prototype.likeSong = function () {
                 if (this.requireSignIn()) {
-                    var currentSong = this.audioPlayer.song.getValue();
-                    if (currentSong && currentSong.songLike !== Chavah.SongLike.Liked) {
-                        currentSong.songLike = Chavah.SongLike.Liked;
-                        this.likeApi.likeSong(currentSong.id)
-                            .then(function (rank) { return currentSong.communityRank = rank; });
+                    var currentSong_2 = this.audioPlayer.song.getValue();
+                    if (currentSong_2 && currentSong_2.songLike !== Chavah.SongLike.Liked) {
+                        currentSong_2.songLike = Chavah.SongLike.Liked;
+                        this.likeApi.likeSong(currentSong_2.id)
+                            .then(function (rank) { return currentSong_2.communityRank = rank; });
                     }
                 }
             };
@@ -223,7 +224,7 @@ var BitShuva;
                         title: song.name,
                         artwork: [
                             { src: song.albumArtUri, sizes: "300x300", type: "image/jpg" }
-                        ]
+                        ],
                     };
                     try {
                         navigator["mediaSession"].metadata = new window["MediaMetadata"](metadata);
@@ -243,9 +244,10 @@ var BitShuva;
             "accountApi",
             "stationIdentifier",
             "appNav",
-            "$scope"
+            "$scope",
         ];
         Chavah.FooterController = FooterController;
         Chavah.App.controller("FooterController", FooterController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=FooterController.js.map

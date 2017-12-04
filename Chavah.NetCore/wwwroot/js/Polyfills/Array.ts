@@ -1,26 +1,29 @@
-﻿interface Array<T> {
+﻿// tslint:disable-next-line:interface-name
+interface Array<T> {
     includes(searchElement: T, fromIndex?: number): boolean;
     find(predicate: (input: T) => boolean): T | null;
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
 if (!Array.prototype.includes) {
-    Array.prototype.includes = function (searchElement /*, fromIndex*/) {
-        'use strict';
-        var O = Object(this);
-        var len = parseInt(O.length) || 0;
+    Array.prototype.includes = function(searchElement /*, fromIndex*/) {
+        "use strict";
+        let O = Object(this);
+        // tslint:disable-next-line:radix
+        let len = parseInt(O.length) || 0;
         if (len === 0) {
             return false;
         }
-        var n = parseInt(arguments[1]) || 0;
-        var k;
+        // tslint:disable-next-line:radix
+        let n = parseInt(arguments[1]) || 0;
+        let k;
         if (n >= 0) {
             k = n;
         } else {
             k = len + n;
             if (k < 0) { k = 0; }
         }
-        var currentElement;
+        let currentElement;
         while (k < len) {
             currentElement = O[k];
             if (searchElement === currentElement ||
@@ -35,19 +38,20 @@ if (!Array.prototype.includes) {
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
 if (!Array.prototype.find) {
-    Array.prototype.find = function (predicate) {
+    Array.prototype.find = function(predicate) {
         if (this === null) {
-            throw new TypeError('Array.prototype.find called on null or undefined');
+            throw new TypeError("Array.prototype.find called on null or undefined");
         }
-        if (typeof predicate !== 'function') {
-            throw new TypeError('predicate must be a function');
+        if (typeof predicate !== "function") {
+            throw new TypeError("predicate must be a function");
         }
-        var list = Object(this);
-        var length = list.length >>> 0;
-        var thisArg = arguments[1];
-        var value;
+        let list = Object(this);
+        // tslint:disable-next-line:no-bitwise
+        let length = list.length >>> 0;
+        let thisArg = arguments[1];
+        let value;
 
-        for (var i = 0; i < length; i++) {
+        for (let i = 0; i < length; i++) {
             value = list[i];
             if (predicate.call(thisArg, value, i, list)) {
                 return value;

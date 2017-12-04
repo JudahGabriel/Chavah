@@ -1,6 +1,15 @@
 ﻿namespace BitShuva.Chavah {
     export class EditSongController {
 
+        static $inject = [
+            "songApi",
+            "songEditApi",
+            "tagApi",
+            "accountApi",
+            "appNav",
+            "$routeParams",
+        ];
+
         song: Song | null = null;
         tagsInput = "";
         isSaving = false;
@@ -10,15 +19,6 @@
         readonly isAdmin: boolean;
         isLyricsFocused = true;
         tagPlaceholder = "piano, violin, male vocal, hebrew, psalms";
-
-        static $inject = [
-            "songApi",
-            "songEditApi",
-            "tagApi",
-            "accountApi",
-            "appNav",
-            "$routeParams"
-        ];
 
         constructor(
             private songApi: SongApiService,
@@ -31,7 +31,7 @@
             if (!accountApi.isSignedIn) {
                 appNav.promptSignIn();
             } else {
-                var songId = "songs/" + $routeParams["id"];
+                let songId = "songs/" + $routeParams["id"];
                 if (songId) {
                     songApi.getSongById(songId)
                         .then(result => this.songLoaded(result));
@@ -58,14 +58,14 @@
         tagsInputChanged() {
             // If the user typed a comma, add any existing tag
             if (this.tagsInput.includes(",")) {
-                var tags = this.tagsInput.split(",");
+                let tags = this.tagsInput.split(",");
                 this.tagsInput = "";
                 tags.filter(t => t && t.length > 1).forEach(t => this.addTag(t));
             }
         }
 
         removeTag(tag: string) {
-            var tagIndex = this.tags.indexOf(tag);
+            let tagIndex = this.tags.indexOf(tag);
             if (tagIndex >= 0) {
                 this.tags.splice(tagIndex, 1);
             }
@@ -77,7 +77,7 @@
         }
 
         addTag(tag: string) {
-            var tagLowered = tag.toLowerCase().trim();
+            let tagLowered = tag.toLowerCase().trim();
             if (!this.tags.includes(tagLowered) && tagLowered.length > 1) {
                 this.tags.push(tagLowered);
                 this.tagPlaceholder = "";

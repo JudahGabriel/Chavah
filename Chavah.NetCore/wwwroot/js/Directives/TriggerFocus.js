@@ -19,6 +19,7 @@ var BitShuva;
             }
             return TriggerFocus;
         }());
+        // tslint:disable-next-line:max-classes-per-file
         var TriggerFocusBinder = (function () {
             function TriggerFocusBinder($timeout, $parse) {
                 this.$timeout = $timeout;
@@ -27,10 +28,13 @@ var BitShuva;
                 this.link = this.unboundLink.bind(this);
             }
             TriggerFocusBinder.prototype.unboundLink = function (scope, element, attributes) {
+                // tslint:disable-next-line:no-unused-expression
                 new TriggerFocus(scope, element, attributes, this.$timeout, this.$parse);
             };
             return TriggerFocusBinder;
         }());
-        Chavah.App.directive("triggerFocus", ["$timeout", "$parse", function ($timeout, $parse) { return new TriggerFocusBinder($timeout, $parse); }]);
+        Chavah.App.directive("triggerFocus", ["$timeout", "$parse",
+            function ($timeout, $parse) { return new TriggerFocusBinder($timeout, $parse); }]);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=TriggerFocus.js.map

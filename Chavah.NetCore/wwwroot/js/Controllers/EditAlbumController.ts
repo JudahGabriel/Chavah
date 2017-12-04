@@ -1,16 +1,16 @@
 ﻿namespace BitShuva.Chavah {
     export class EditAlbumController {
 
-        album: Album | null = null;
-        allAlbumSwatches: IAlbumSwatch[] = [];
-        hasChangedAlbumArt = false;
-
         static $inject = [
             "albumApi",
             "appNav",
             "$routeParams",
-            "$q"
+            "$q",
         ];
+
+        album: Album | null = null;
+        allAlbumSwatches: IAlbumSwatch[] = [];
+        hasChangedAlbumArt = false;
 
         constructor(
             private albumApi: AlbumApiService,
@@ -22,10 +22,10 @@
             // - An album and artist: /#/admin/album/lamb/sacrifice
             // - An album ID: /#/admin/album/albums/221
             // - Nothing (will create a new album): /#/admin/album/create
-            var artist = $routeParams["artist"] as string;
-            var album = $routeParams["album"] as string;
+            let artist = $routeParams["artist"] as string;
+            let album = $routeParams["album"] as string;
             if (artist && album) {
-                var isAlbumId = artist.toLowerCase() === "albums";
+                let isAlbumId = artist.toLowerCase() === "albums";
                 if (isAlbumId) {
                     this.albumApi.get(`${artist}/${album}`)
                         .then(result => this.albumLoaded(result));
@@ -49,7 +49,7 @@
                 name: "[new album]",
                 id: "",
                 textShadowColor: "",
-                songCount: 0
+                songCount: 0,
             });
         }
 
@@ -65,11 +65,11 @@
                 this.appNav.createAlbum();
             }
         }
-        
+
         save() {
             if (this.album && !this.album.isSaving) {
                 this.album.isSaving = true;
-                var task: ng.IPromise<Album>;
+                let task: ng.IPromise<Album>;
                 if (this.hasChangedAlbumArt) {
                     // We must .save first to ensure we have an album ID.
                     this.albumApi.save(this.album)
@@ -90,7 +90,7 @@
         }
 
         hexToRgbString(hex: string) {
-            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             if (result && result.length >= 4) {
                 return `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})`;
             }
@@ -104,13 +104,14 @@
         }
 
         chooseAlbumArt() {
-            filepicker.setKey(UploadAlbumController.filePickerKey)
-            var options: FilepickerMultipleFilePickOptions = {
-                extensions: [".jpg", ".png"]
+            filepicker.setKey(UploadAlbumController.filePickerKey);
+            let options: FilepickerMultipleFilePickOptions = {
+                extensions: [".jpg", ".png"],
             };
             filepicker.pick(
                 options,
                 (result: FilepickerInkBlob) => this.albumArtChosen(result),
+                // tslint:disable-next-line:arrow-parens
                 (error) => console.log("Album art pick failed.", error));
         }
 
@@ -125,15 +126,19 @@
 
         populateColorSwatches(image: HTMLImageElement) {
             if (this.album) {
-                var vibrant = new Vibrant(image, 64, 5);
-                var swatches = vibrant.swatches();
+                let vibrant = new Vibrant(image, 64, 5);
+                let swatches = vibrant.swatches();
                 if (swatches) {
                     this.allAlbumSwatches = UploadAlbumController.getFriendlySwatches(swatches);
 
                     if (!this.album.backgroundColor) {
+                        // tslint:disable-next-line:max-line-length
                         this.album.backgroundColor = (swatches.DarkVibrant || swatches.DarkMuted || Song.defaultSwatch).getHex();
+                        // tslint:disable-next-line:max-line-length
                         this.album.foregroundColor = (swatches.LightVibrant || swatches.Vibrant || Song.defaultSwatch).getHex();
+                        // tslint:disable-next-line:max-line-length
                         this.album.mutedColor = (swatches.DarkMuted || swatches.DarkVibrant || swatches.Vibrant || Song.defaultSwatch).getBodyTextColor();
+                        // tslint:disable-next-line:max-line-length
                         this.album.textShadowColor = (swatches.DarkMuted || swatches.DarkVibrant || Song.defaultSwatch).getHex();
                     }
                 }
@@ -145,14 +150,14 @@
                 throw new Error("imgUrl must not be null or undefined");
             }
 
-            var deferred = this.$q.defer<HTMLImageElement>();
-            var img = document.createElement("img");
+            let deferred = this.$q.defer<HTMLImageElement>();
+            let img = document.createElement("img");
             img.src = "/api/albums/imageOnDomain?imageUrl=" + encodeURIComponent(imgUrl);
             img.addEventListener("load", () => {
                 deferred.resolve(img);
             });
             img.addEventListener("error", () => deferred.reject());
-                     
+
             return deferred.promise;
         }
     }

@@ -1,8 +1,8 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Raven.Client;
 using Raven.Client.Linq;
 using System;
@@ -15,11 +15,15 @@ namespace BitShuva.Chavah.Controllers
     [Route("api/[controller]/[action]")]
     public class SongRequestsController : RavenController
     {
+        private readonly IOptions<AppSettings> options;
+
         public SongRequestsController(
             IAsyncDocumentSession dbSession, 
-            ILogger<SongRequestsController> logger)
+            ILogger<SongRequestsController> logger,
+            IOptions<AppSettings> options)
             : base(dbSession, logger)
         {
+            this.options = options;
         }
         
         public async Task<string> GetPending()
@@ -98,9 +102,9 @@ namespace BitShuva.Chavah.Controllers
                     var activity = new Activity
                     {
                         DateTime = DateTime.Now,
-                        Title = string.Format("{0} - {1} was requested by one of our listeners", song.Artist, song.Name),
-                        Description = string.Format("\"{0}\" by {1} was requested by one of our listeners on Chavah Messianic Radio.", song.Name, song.Artist),
-                        MoreInfoUri = song.GetSongShareLink()
+                        Title = $"{song.Artist} - {song.Name} was requested by one of our listeners",
+                        Description = $"\"{song.Name}\" by {song.Artist} was requested by one of our listeners on {options?.Value?.Application?.Title}.",
+                        MoreInfoUri = song.GetSongShareLink(options?.Value?.Application?.DefaultUrl)
                     };
                     await this.DbSession.StoreAsync(activity);
                     this.DbSession.SetRavenExpiration(activity, requestExpiration);

@@ -10,12 +10,12 @@
             if (!this.hasInstalled) {
                 this.hasInstalled = true;
 
-                var adminScripts = [
+                let adminScripts = [
                     "https://api.filepicker.io/v1/filepicker.js",
                     "https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/1.0.0/Vibrant.min.js"
                 ];
                 adminScripts.forEach(s => {
-                    var script = document.createElement("script");
+                    let script = document.createElement("script");
                     script.type = "text/javascript";
                     script.src = s;
                     document.body.appendChild(script);

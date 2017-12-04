@@ -4,6 +4,6 @@
         Trending,
         Top,
         Likes,
-        Other
+        Other,
     }
 }

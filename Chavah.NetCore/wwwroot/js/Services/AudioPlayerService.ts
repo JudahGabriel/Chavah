@@ -1,6 +1,9 @@
 ﻿
 namespace BitShuva.Chavah {
     export class AudioPlayerService {
+
+        static $inject = ["songApi"];
+
         readonly status = new Rx.BehaviorSubject(AudioStatus.Paused);
         readonly song = new Rx.BehaviorSubject<Song | null>(null);
         readonly songCompleted = new Rx.BehaviorSubject<Song | null>(null);
@@ -10,44 +13,43 @@ namespace BitShuva.Chavah {
         readonly duration = new Rx.BehaviorSubject<number>(0);
         playedSongs: Song[] = [];
         private audio: HTMLAudioElement;
-        private audioErrors = new Rx.Subject<AudioErrorInfo>();
+        private audioErrors = new Rx.Subject<IAudioErrorInfo>();
 
         private lastPlayedTime = 0;
 
-        static $inject = ["songApi"];
-        
         constructor(private songApi: SongApiService) {
-            // Commented out: finding out about audio errors on the client turns out to not be very useful; it's often caused by client-side issues outside our control (bad internet connection, etc.)
+            // Commented out: finding out about audio errors on the client turns out to not be very useful;
+            // it's often caused by client-side issues outside our control (bad internet connection, etc.)
             // Listen for audio errors.
-            //this.audioErrors
+            // this.audioErrors
             //    .throttle(10000) // If the CDN is down, we don't want to submit thousands of errors. Throttle it.
             //    .subscribe(val => this.submitAudioError(val));
         }
-        
+
         initialize(audio: HTMLAudioElement) {
-            var supportsMp3Audio = Modernizr.audio.mp3;
+            let supportsMp3Audio = Modernizr.audio.mp3;
             if (supportsMp3Audio) {
                 this.audio = audio;
-                
-                //this.audio.addEventListener("abort", (args) => this.aborted(args));
+
+                // this.audio.addEventListener("abort", (args) => this.aborted(args));
                 this.audio.addEventListener("ended", () => this.ended());
-                this.audio.addEventListener("error", (args) => this.erred(args));
+                this.audio.addEventListener("error", args => this.erred(args));
                 this.audio.addEventListener("pause", () => this.status.onNext(AudioStatus.Paused));
                 this.audio.addEventListener("play", () => this.status.onNext(AudioStatus.Playing));
                 this.audio.addEventListener("playing", () => this.status.onNext(AudioStatus.Playing));
                 this.audio.addEventListener("waiting", () => this.status.onNext(AudioStatus.Buffering));
-                this.audio.addEventListener("stalled", (args) => this.stalled(args));
-                this.audio.addEventListener("timeupdate", (args) => this.playbackPositionChanged(args));
+                this.audio.addEventListener("stalled", args => this.stalled(args));
+                this.audio.addEventListener("timeupdate", args => this.playbackPositionChanged(args));
             } else {
                 // UPGRADE TODO
-                //require(["viewmodels/upgradeBrowserDialog"],(UpgradeBrowserDialog) => {
+                // require(["viewmodels/upgradeBrowserDialog"],(UpgradeBrowserDialog) => {
                 //    App.showDialog(new UpgradeBrowserDialog());
-                //});
+                // });
             }
         }
 
         playNewSong(song: Song) {
-            var currentSong = this.song.getValue();
+            let currentSong = this.song.getValue();
             if (currentSong) {
                 this.playedSongs.unshift(currentSong);
                 if (this.playedSongs.length > 3) {
@@ -69,7 +71,8 @@ namespace BitShuva.Chavah {
                     try {
                         this.audio.play();
                     } catch (error) {
-                        // This can happen on mobile when we try to play before user interaction. Don't worry about it; it will remain paused until the user clicks play.
+                        // This can happen on mobile when we try to play before user interaction.
+                        // Don't worry about it; it will remain paused until the user clicks play.
                         console.log("Unable to play audio", error);
                     }
                 }
@@ -77,36 +80,36 @@ namespace BitShuva.Chavah {
         }
 
         playSongById(songId: string) {
-            var task = this.songApi.getSongById(songId);
+            let task = this.songApi.getSongById(songId);
             this.playSongWhenFinishedLoading(task);
         }
 
         playSongFromArtistAndAlbum(artist: string, album: string) {
-            var task = this.songApi.getSongByArtistAndAlbum(artist, album);
+            let task = this.songApi.getSongByArtistAndAlbum(artist, album);
             this.playSongWhenFinishedLoading(task);
         }
 
         playSongFromArtist(artist: string) {
-            var task = this.songApi.getSongByArtist(artist);
+            let task = this.songApi.getSongByArtist(artist);
             this.playSongWhenFinishedLoading(task);
         }
 
         playSongFromAlbum(album: string) {
-            var task = this.songApi.getSongByAlbum(album);
+            let task = this.songApi.getSongByAlbum(album);
             this.playSongWhenFinishedLoading(task);
         }
 
         playSongWithTag(tag: string) {
-            var task = this.songApi.getSongWithTag(tag);
+            let task = this.songApi.getSongWithTag(tag);
             this.playSongWhenFinishedLoading(task);
         }
 
         playSongWhenFinishedLoading(task: ng.IPromise<Song | null>) {
-            var currentSong = this.song.getValue();
+            let currentSong = this.song.getValue();
             this.pause();
 
             task.then(songResult => {
-                var isStillWaitingForSong = this.song.getValue() === currentSong;
+                let isStillWaitingForSong = this.song.getValue() === currentSong;
                 if (isStillWaitingForSong) {
                     if (songResult) {
                         this.playNewSong(songResult);
@@ -127,7 +130,7 @@ namespace BitShuva.Chavah {
                         return;
                     }
 
-                    var unwrappedSong = this.song.getValue();
+                    let unwrappedSong = this.song.getValue();
                     if (unwrappedSong) {
                         this.playedSongs.unshift(unwrappedSong);
                     }
@@ -161,18 +164,20 @@ namespace BitShuva.Chavah {
 
         private erred(args: any) {
             this.status.onNext(AudioStatus.Erred);
-            console.log("Audio erred. Error code: ", this.audio.error, "Audio source: ", this.audio.currentSrc, "Error event: ", args);
+            console.log("Audio erred. Error code: ",
+                        this.audio.error, "Audio source: ",
+                        this.audio.currentSrc, "Error event: ", args);
 
-            var currentSong = this.song.getValue();
+            let currentSong = this.song.getValue();
             this.audioErrors.onNext({
                 errorCode: this.audio.error,
                 songId: currentSong ? currentSong.id : "",
-                trackPosition: this.audio.currentTime
+                trackPosition: this.audio.currentTime,
             });
         }
 
         private ended() {
-            var currentSong = this.song.getValue();
+            let currentSong = this.song.getValue();
             if (this.audio && currentSong && this.audio.src === encodeURI(currentSong.uri)) {
                 this.songCompleted.onNext(currentSong);
             }
@@ -186,18 +191,18 @@ namespace BitShuva.Chavah {
         }
 
         private playbackPositionChanged(args: any) {
-            var currentTime = this.audio.currentTime;
-            var currentTimeFloored = Math.floor(currentTime);
-            var currentTimeHasChanged = currentTimeFloored !== this.lastPlayedTime;
+            let currentTime = this.audio.currentTime;
+            let currentTimeFloored = Math.floor(currentTime);
+            let currentTimeHasChanged = currentTimeFloored !== this.lastPlayedTime;
             if (currentTimeHasChanged) {
                 this.lastPlayedTime = currentTimeFloored;
-                var duration = this.audio.duration;
+                let duration = this.audio.duration;
                 this.duration.onNext(duration);
 
-                var currentPositionDate = new Date().setMinutes(0, currentTimeFloored);
-                var currentPosition = moment(<any>currentPositionDate);
-                var remainingTimeDate = new Date().setMinutes(0, duration - currentTimeFloored);
-                var remainingTime = moment(<any>remainingTimeDate);
+                let currentPositionDate = new Date().setMinutes(0, currentTimeFloored);
+                let currentPosition = moment(currentPositionDate);
+                let remainingTimeDate = new Date().setMinutes(0, duration - currentTimeFloored);
+                let remainingTime = moment(remainingTimeDate);
 
                 this.playedTimeText.onNext(currentPosition.format("m:ss"));
                 this.remainingTimeText.onNext(remainingTime.format("m:ss"));
@@ -205,7 +210,7 @@ namespace BitShuva.Chavah {
             }
         }
 
-        private submitAudioError(val: AudioErrorInfo) {
+        private submitAudioError(val: IAudioErrorInfo) {
             this.songApi.songFailed(val);
         }
     }

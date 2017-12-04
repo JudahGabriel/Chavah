@@ -15,7 +15,7 @@
         }
 
         getSongById(id: string, songPickReason?: SongPick): ng.IPromise<Song | null> {
-            var task = this.httpApi.query("/api/songs/getById", { songId: id }, SongApiService.songOrNullConverter);
+            let task = this.httpApi.query("/api/songs/getById", { songId: id }, SongApiService.songOrNullConverter);
             if (songPickReason != null) {
                 task.then(song => {
                     if (song) {
@@ -27,106 +27,109 @@
         }
 
         getSongByArtistAndAlbum(artist: string, album: string): ng.IPromise<Song | null> {
-            var url = "/api/songs/getByArtistAndAlbum";
-            var args = {
-                artist: artist,
-                album: album
+            let url = "/api/songs/getByArtistAndAlbum";
+            let args = {
+                artist,
+                album,
             };
 
             return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
         getSongByAlbum(album: string): ng.IPromise<Song | null> {
-            var url = "/api/songs/getByAlbum/";
-            var args = {
-                album: album
+            let url = "/api/songs/getByAlbum/";
+            let args = {
+                album,
             };
 
             return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
         getSongWithTag(tag: string): ng.IPromise<Song | null> {
-            var url = "/api/songs/getByTag";
-            var args = {
-                tag: tag
+            let url = "/api/songs/getByTag";
+            let args = {
+                tag,
             };
 
             return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
         getSongByArtist(artist: string): ng.IPromise<Song | null> {
-            var url = "/api/songs/getByArtist";
-            var args = {
-                artist: artist
+            let url = "/api/songs/getByArtist";
+            let args = {
+                artist,
             };
 
             return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
         getSongMatches(searchText: string): ng.IPromise<Song[]> {
-            var url = "/api/songs/search";
-            var args = {
-                searchText: searchText
+            let url = "/api/songs/search";
+            let args = {
+                searchText,
             };
 
             return this.httpApi.query(url, args, SongApiService.songListConverter);
         }
 
         getTrendingSongs(skip: number, take: number): ng.IPromise<Server.IPagedList<Song>> {
-            var args = {
-                skip: skip,
-                take: take
+            let args = {
+                skip,
+                take,
             };
             return this.httpApi.query("/api/songs/getTrending", args, SongApiService.songPagedListConverter);
         }
 
         getPopularSongs(count: number): ng.IPromise<Song[]> {
-            var args = {
-                count: count
+            let args = {
+                count,
             };
             return this.httpApi.query("/api/songs/getpopular", args, SongApiService.songListConverter);
         }
 
         getLikes(count: number): ng.IPromise<Song[]> {
-            var args = {
-                count: count
+            let args = {
+                count,
             };
 
             return this.httpApi.query("/api/songs/getRandomLikedSongs", args, SongApiService.songListConverter);
         }
 
         getRecentPlays(count: number): ng.IPromise<Song[]> {
-            var args = {
-                count: count
+            let args = {
+                count,
             };
 
             return this.httpApi.query("/api/songs/getRecentPlays", args, SongApiService.songListConverter);
         }
 
         songCompleted(songId: string): ng.IPromise<any> {
-            var args = {
-                songId: songId
+            let args = {
+                songId,
             };
             return this.httpApi.postUriEncoded("/api/songs/songCompleted", args);
         }
 
-        songFailed(error: AudioErrorInfo): ng.IPromise<any> {
+        songFailed(error: IAudioErrorInfo): ng.IPromise<any> {
             return this.httpApi.post("/api/songs/audiofailed", error);
         }
 
+        // tslint:disable-next-line:member-ordering
         private static songPagedListConverter(dto: Server.IPagedList<Server.ISong>): Server.IPagedList<Song> {
             return {
                 items: dto.items.map(s => new Song(s)),
                 skip: dto.skip,
                 take: dto.take,
-                total: dto.total
+                total: dto.total,
             };
         }
 
+        // tslint:disable-next-line:member-ordering
         private static songListConverter(songs: Server.ISong[]): Song[] {
             return songs.map(r => SongApiService.songConverter(r));
         }
 
+        // tslint:disable-next-line:member-ordering
         private static songOrNullConverter(raw: Server.ISong | null): Song | null {
             if (raw) {
                 return SongApiService.songConverter(raw);
@@ -135,6 +138,7 @@
             return null;
         }
 
+        // tslint:disable-next-line:member-ordering
         private static songConverter(raw: Server.ISong): Song {
             return new Song(raw);
         }

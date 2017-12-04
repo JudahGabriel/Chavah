@@ -3,10 +3,10 @@ namespace BitShuva.Chavah {
 
     export class LogEditorController {
 
+        static $inject = ["logApi"];
+
         logs = new PagedList((skip: number, take: number) => this.logApi.getAll(skip, take));
         isSaving = false;
-
-        static $inject = ["logApi"];
 
         constructor(private readonly logApi: LogService) {
             this.logs.fetchNextChunk();
@@ -17,7 +17,7 @@ namespace BitShuva.Chavah {
         }
 
         getFriendlyDate(dateIso: string): string {
-            return moment(dateIso).utcOffset(-6).format("dddd MMMM DD, YYYY h:mma") + " (CST)"
+            return moment(dateIso).utcOffset(-6).format("dddd MMMM DD, YYYY h:mma") + " (CST)";
         }
 
         deleteLog(log: Server.ILogSummary) {

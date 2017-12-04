@@ -16,6 +16,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -24,16 +25,19 @@ namespace BitShuva.Chavah.Controllers
     {
         private readonly ICdnManagerService cdnManagerService;
         private readonly ISongUploadService songUploadService;
+        private readonly IOptions<AppSettings> options;
 
         public AlbumsController(
             ICdnManagerService cdnManagerService,
             ISongUploadService songUploadService,
             IAsyncDocumentSession dbSession,
-            ILogger<AlbumsController> logger)
+            ILogger<AlbumsController> logger,
+            IOptions<AppSettings> options)
             : base(dbSession, logger)
         {
             this.cdnManagerService = cdnManagerService;
             this.songUploadService = songUploadService;
+            this.options = options;
         }
 
         /// <summary>
@@ -345,7 +349,7 @@ namespace BitShuva.Chavah.Controllers
                 .Where(s => s.Artist == artist && s.Album == album)
                 .ToListAsync();
             return songs
-                .Select(s => $"{s.Artist} - {s.Album} - {s.Number} - {s.Name}: http://messianicradio.com/?song={s.Id}")
+                .Select(s => $"{s.Artist} - {s.Album} - {s.Number} - {s.Name}: {options?.Value?.Application?.DefaultUrl}/?song={s.Id}")
                 .ToList();
         }
         

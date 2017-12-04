@@ -3,6 +3,6 @@
         Error,
         Warn,
         Info,
-        Debug
+        Debug,
     }
 }

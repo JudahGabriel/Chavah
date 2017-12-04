@@ -1,12 +1,12 @@
 ﻿namespace BitShuva.Chavah {
     export class SongEditApprovedController {
 
+        static $inject = [
+            "$routeParams",
+        ];
+
         artist: string;
         songName: string;
-
-        static $inject = [
-            "$routeParams"
-        ];
 
         constructor($routeParams: ng.route.IRouteParamsService) {
             this.artist = $routeParams["artist"];

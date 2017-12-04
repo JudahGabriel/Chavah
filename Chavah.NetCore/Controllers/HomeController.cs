@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using Microsoft.Extensions.Options;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -22,6 +23,7 @@ namespace BitShuva.Chavah.Controllers
         private readonly IAlbumService albumService;
         private readonly IUserService userService;
         private readonly AngularCacheBustedViews cacheBustedNgViews;
+        private readonly IOptions<AppSettings> options;
 
         public HomeController(
             ISongService songService,
@@ -29,17 +31,19 @@ namespace BitShuva.Chavah.Controllers
             IUserService userService,
             AngularCacheBustedViews cacheBustedNgViews,
             IAsyncDocumentSession dbSession,
-            ILogger<HomeController> logger)
+            ILogger<HomeController> logger,
+            IOptions<AppSettings> options)
             : base(dbSession, logger)
         {
             this.songService = songService;
             this.albumService = albumService;
             this.userService = userService;
             this.cacheBustedNgViews = cacheBustedNgViews;
+            this.options = options;
         }
 
         /// <summary>
-        /// Urls like "http://messianicradio.com?song=songs/32" need to load the server-rendered Razor 
+        /// Urls like "https://messianicradio.com?song=songs/32" need to load the server-rendered Razor 
         /// page with info about that song.
         /// This is used for social media sites like Facebook and Twitter which show images, title, 
         /// and description from the loaded page.
@@ -63,7 +67,12 @@ namespace BitShuva.Chavah.Controllers
             var viewModel = new HomeViewModel
             {
                 Embed = embed,
-                CacheBustedAngularViews = this.cacheBustedNgViews.Views
+                CacheBustedAngularViews = this.cacheBustedNgViews.Views,
+                Title = options?.Value?.Application.Title,
+                Description = options?.Value.Application?.Description,
+                DefaultUrl = options?.Value?.Application?.DefaultUrl,
+                CdnUrl = options?.Value?.Cdn?.HttpPath,
+                SoundEffects = $"{options?.Value?.Cdn?.HttpPath}{options?.Value?.Cdn?.SoundEffects}",
             };
 
             var userName = User.Identity.Name;
@@ -94,7 +103,7 @@ namespace BitShuva.Chavah.Controllers
                     if (songForQuery != null)
                     {
                         var albumData = await albumService.GetMatchingAlbumAsync(a => a.Name == songForQuery.Album && a.Artist == songForQuery.Artist);
-                        viewModel.PageTitle = $"{songForQuery.Name} by {songForQuery.Artist} on Chavah Messianic Radio";
+                        viewModel.PageTitle = $"{songForQuery.Name} by {songForQuery.Artist} on {options?.Value?.Application?.Title}";
                         viewModel.DescriptiveImageUrl = albumData?.AlbumArtUri?.ToString();
                         viewModel.Song = songForQuery;
                         viewModel.SongNth = songForQuery.Number.ToNumberWord();

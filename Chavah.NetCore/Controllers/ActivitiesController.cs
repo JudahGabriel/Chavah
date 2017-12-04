@@ -4,10 +4,9 @@ using BitShuva.Chavah.Models.Rss;
 using Chavah.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.SyndicationFeed;
+using Microsoft.Extensions.Options;
 using Raven.Client;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,9 +14,14 @@ namespace BitShuva.Chavah.Controllers
 {
     public class ActivitiesController : RavenController
     {
-        public ActivitiesController(IAsyncDocumentSession dbSession, ILogger<ActivitiesController> logger)
+        private readonly Application app;
+
+        public ActivitiesController(IAsyncDocumentSession dbSession, 
+                                    ILogger<ActivitiesController> logger,
+                                    IOptions<AppSettings> options)
             : base(dbSession, logger)
         {
+            app = options?.Value?.Application;
         }
 
         public async Task<IActionResult> ActivityFeed(int take = 5)
@@ -30,9 +34,9 @@ namespace BitShuva.Chavah.Controllers
             var feedItems = recentActivities
                 .Select(activity => new SyndicationLinkItem(activity.Id, activity.Title, activity.Description, activity.MoreInfoUri));
             
-            var feed = new SyndicationFeed("Chavah Messianic Radio",
-                                           "The latest activity over at Chavah Messianic Radio",
-                                           new Uri("https://messianicradio.com"), "ChavahActivities", feedItems)
+            var feed = new SyndicationFeed(app?.Title,
+                                           $"The latest activity over at {app?.Title}",
+                                           new Uri(app?.DefaultUrl), "ChavahActivities", feedItems)
             {
                 Language = "en-US"
             };

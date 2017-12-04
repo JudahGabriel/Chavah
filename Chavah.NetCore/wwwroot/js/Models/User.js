@@ -16,3 +16,4 @@ var BitShuva;
         Chavah.User = User;
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=User.js.map

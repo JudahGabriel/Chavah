@@ -1,10 +1,6 @@
 ﻿namespace BitShuva.Chavah {
     export class FooterController {
 
-        volumeShown = false;
-        volume = 1;
-        isBuffering = false;
-
         static $inject = [
             "audioPlayer",
             "songBatch",
@@ -13,8 +9,12 @@
             "accountApi",
             "stationIdentifier",
             "appNav",
-            "$scope"
+            "$scope",
         ];
+
+        volumeShown = false;
+        volume = 1;
+        isBuffering = false;
 
         constructor(
             private audioPlayer: AudioPlayerService,
@@ -26,14 +26,14 @@
             private appNav: AppNavService,
             private $scope: ng.IScope) {
 
-            var audio = document.querySelector("#audio") as HTMLVideoElement;
+            let audio = document.querySelector("#audio") as HTMLVideoElement;
             this.audioPlayer.initialize(audio);
             this.volume = audio.volume;
 
             // Notify the scope when the audio status changes.
             this.audioPlayer.status
                 .debounce(100)
-                .subscribe(status => this.audioStatusChanged(status)); 
+                .subscribe(status => this.audioStatusChanged(status));
 
             // Update the track time. We don't use angular for this, because of the constant (per second) update.
             this.audioPlayer.playedTimeText
@@ -41,7 +41,7 @@
                 .subscribe(result => $(".footer .track-time").text(result));
             this.audioPlayer.duration
                 .distinctUntilChanged()
-                .subscribe(result => $(".footer .track-duration").text(this.getFormattedTime(result)));            
+                .subscribe(result => $(".footer .track-duration").text(this.getFormattedTime(result)));
             this.audioPlayer.status
                 .distinctUntilChanged()
                 .subscribe(status => $(".footer .audio-status").text(this.getAudioStatusText(status)));
@@ -52,11 +52,12 @@
             $scope.$watch(() => this.volume, () => audio.volume = this.volume);
 
             // MediaSession:
-            // This is a new browser API being adopted on some mobile platforms (at the time of this writing, Android), 
-            // which shows media information above the 
+            // This is a new browser API being adopted on some mobile platforms (at the time of this writing, Android),
+            // which shows media information above the
             // For more info, see https://developers.google.com/web/updates/2017/02/media-session#set_metadata
-            if ('mediaSession' in navigator) {
-                // Setup media session handlers so that a native play/pause/next buttons do the same thing as our footer's play/pause/next.
+            if ("mediaSession" in navigator) {
+                // Setup media session handlers so that a native play/pause/next
+                // buttons do the same thing as our footer's play/pause/next.
                 this.setupMediaSessionHandlers();
 
                 // Listen for when the song changes so that we show the song info on the phone lock screen.
@@ -65,7 +66,7 @@
         }
 
         get likesCurrentSong(): boolean {
-            var currentSong = this.audioPlayer.song.getValue();
+            let currentSong = this.audioPlayer.song.getValue();
             if (currentSong) {
                 return currentSong.songLike === SongLike.Liked;
             }
@@ -74,7 +75,7 @@
         }
 
         get dislikesCurrentSong(): boolean {
-            var currentSong = this.audioPlayer.song.getValue();
+            let currentSong = this.audioPlayer.song.getValue();
             if (currentSong) {
                 return currentSong.songLike === SongLike.Disliked;
             }
@@ -84,14 +85,14 @@
 
         get likeText(): string {
             if (this.likesCurrentSong) {
-                return "You have already liked this song. Chavah is playing it more often."
+                return "You have already liked this song. Chavah is playing it more often.";
             }
             return "Like this song. Chavah will play this song, and others like it, more often.";
         }
 
         get dislikeText(): string {
             if (this.dislikesCurrentSong) {
-                return "You have already disliked this song. Chavah is playing it less often."
+                return "You have already disliked this song. Chavah is playing it less often.";
             }
             return "Dislike this song. Chavah will play this song, and others like it, less often.";
         }
@@ -99,7 +100,7 @@
         get volumeIconClass(): string {
             if (this.volume > .95) {
                 return "fa-volume-up";
-            } 
+            }
             if (this.volume < .05) {
                 return "fa-volume-off";
             }
@@ -125,7 +126,7 @@
 
         dislikeSong() {
             if (this.requireSignIn()) {
-                var currentSong = this.audioPlayer.song.getValue();
+                let currentSong = this.audioPlayer.song.getValue();
                 if (currentSong && currentSong.songLike !== SongLike.Disliked) {
                     currentSong.songLike = SongLike.Disliked;
                     this.likeApi.dislikeSong(currentSong.id)
@@ -137,7 +138,7 @@
 
         likeSong() {
             if (this.requireSignIn()) {
-                var currentSong = this.audioPlayer.song.getValue();
+                let currentSong = this.audioPlayer.song.getValue();
                 if (currentSong && currentSong.songLike !== SongLike.Liked) {
                     currentSong.songLike = SongLike.Liked;
                     this.likeApi.likeSong(currentSong.id)
@@ -198,9 +199,9 @@
                 return "00";
             }
 
-            var minutes = Math.floor(totalSeconds / 60);
-            var seconds = Math.floor(totalSeconds - (minutes * 60));
-            var zeroPaddedSeconds = seconds < 10 ? "0" : "";
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = Math.floor(totalSeconds - (minutes * 60));
+            let zeroPaddedSeconds = seconds < 10 ? "0" : "";
             return `${minutes}:${zeroPaddedSeconds}${seconds}`;
         }
 
@@ -218,7 +219,7 @@
 
         private setupMediaSessionHandlers() {
             try {
-                var mediaSession = navigator["mediaSession"] as any;
+                let mediaSession = navigator["mediaSession"] as any;
                 mediaSession.setActionHandler("play", () => this.playPause());
                 mediaSession.setActionHandler("pause", () => this.playPause());
                 mediaSession.setActionHandler("nexttrack", () => this.playNextSong());
@@ -229,14 +230,14 @@
 
         private updateMediaSession(song: Song | null) {
             if (song) {
-                var metadata: IMediaMetadata = {
+                let metadata: IMediaMetadata = {
                     album: song.album,
                     artist: song.artist,
                     title: song.name,
                     artwork: [
                         { src: song.albumArtUri, sizes: "300x300", type: "image/jpg" }
-                    ]
-                }
+                    ],
+                };
 
                 try {
                     navigator["mediaSession"].metadata = new window["MediaMetadata"](metadata);

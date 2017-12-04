@@ -3,12 +3,13 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var AppNavService = (function () {
-            function AppNavService(audioPlayer, templatePaths, $location, $uibModal) {
+            function AppNavService(audioPlayer, templatePaths, $location, $uibModal, initConfig) {
                 var _this = this;
                 this.audioPlayer = audioPlayer;
                 this.templatePaths = templatePaths;
                 this.$location = $location;
                 this.$uibModal = $uibModal;
+                this.initConfig = initConfig;
                 this.promptSignInUrl = "#/promptsignin";
                 // Listen for when the song changes and update the document title.
                 audioPlayer.song
@@ -52,7 +53,7 @@ var BitShuva;
                 var requestSongDialog = this.$uibModal.open({
                     controller: "RequestSongController as vm",
                     templateUrl: this.templatePaths.songRequestModal,
-                    windowClass: "request-song-modal"
+                    windowClass: "request-song-modal",
                 });
                 return requestSongDialog;
             };
@@ -68,10 +69,10 @@ var BitShuva;
             AppNavService.prototype.updateDocumentTitle = function (song) {
                 // Update the document title so that the browser tab updates.
                 if (song) {
-                    document.title = song.name + " by " + song.artist + " on Chavah Messianic Radio";
+                    document.title = song.name + " by " + song.artist + " on " + this.initConfig.title;
                 }
                 else {
-                    document.title = "Chavah Messianic Radio";
+                    document.title = this.initConfig.title;
                 }
             };
             return AppNavService;
@@ -80,9 +81,11 @@ var BitShuva;
             "audioPlayer",
             "templatePaths",
             "$location",
-            "$uibModal"
+            "$uibModal",
+            "initConfig",
         ];
         Chavah.AppNavService = AppNavService;
         Chavah.App.service("appNav", AppNavService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=AppNavService.js.map

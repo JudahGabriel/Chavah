@@ -30,3 +30,4 @@ var BitShuva;
         Chavah.App.service("adminScripts", AdminScriptsService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=AdminScriptsService.js.map

@@ -9,6 +9,7 @@ var BitShuva;
                 this.httpApi = httpApi;
                 this.localStorageService = localStorageService;
                 this.signedIn = new Rx.BehaviorSubject(false);
+                this.apiUri = "/api/account";
                 if (this.initConfig.userEmail) {
                     this.currentUser = new Chavah.User(this.initConfig.userEmail, this.initConfig.userRoles);
                     this.signedIn.onNext(true);
@@ -23,7 +24,7 @@ var BitShuva;
             });
             AccountService.prototype.signOut = function () {
                 var _this = this;
-                var signOutTask = this.httpApi.post("/api/account/SignOut", null);
+                var signOutTask = this.httpApi.post(this.apiUri + "/SignOut", null);
                 signOutTask
                     .then(function () {
                     _this.currentUser = null;
@@ -33,38 +34,38 @@ var BitShuva;
             };
             AccountService.prototype.clearNotifications = function (asOfDate) {
                 var args = {
-                    asOf: asOfDate
+                    asOf: asOfDate,
                 };
-                return this.httpApi.postUriEncoded("/api/account/clearNotifications", args);
+                return this.httpApi.postUriEncoded(this.apiUri + "/clearNotifications", args);
             };
             AccountService.prototype.register = function (email, password) {
                 var args = {
                     email: email,
-                    password: password
+                    password: password,
                 };
-                return this.httpApi.postUriEncoded("/api/account/register", args);
+                return this.httpApi.postUriEncoded(this.apiUri + "/register", args);
             };
             AccountService.prototype.getUserWithEmail = function (email) {
                 var args = {
-                    email: email
+                    email: email,
                 };
-                return this.httpApi.query("/api/account/getUserWithEmail", args);
+                return this.httpApi.query(this.apiUri + "/getUserWithEmail", args);
             };
             AccountService.prototype.createPassword = function (email, password) {
                 var args = {
                     email: email,
-                    password: password
+                    password: password,
                 };
-                return this.httpApi.postUriEncoded("/api/account/createPassword", args);
+                return this.httpApi.postUriEncoded(this.apiUri + "/createPassword", args);
             };
             AccountService.prototype.signIn = function (email, password, staySignedIn) {
                 var _this = this;
                 var args = {
                     email: email,
                     password: password,
-                    staySignedIn: staySignedIn
+                    staySignedIn: staySignedIn,
                 };
-                var signInTask = this.httpApi.postUriEncoded("/api/account/signIn", args);
+                var signInTask = this.httpApi.postUriEncoded(this.apiUri + "/signIn", args);
                 signInTask.then(function (result) {
                     if (result.status === Chavah.SignInStatus.Success) {
                         _this.currentUser = new Chavah.User(result.email, result.roles);
@@ -85,23 +86,23 @@ var BitShuva;
             AccountService.prototype.confirmEmail = function (email, confirmCode) {
                 var args = {
                     email: email,
-                    confirmCode: confirmCode
+                    confirmCode: confirmCode,
                 };
-                return this.httpApi.postUriEncoded("/api/account/ConfirmEmail", args);
+                return this.httpApi.postUriEncoded(this.apiUri + "/ConfirmEmail", args);
             };
             AccountService.prototype.sendPasswordResetEmail = function (email) {
                 var args = {
-                    email: email
+                    email: email,
                 };
-                return this.httpApi.postUriEncoded("/api/account/sendResetPasswordEmail", args);
+                return this.httpApi.postUriEncoded(this.apiUri + "/sendResetPasswordEmail", args);
             };
             AccountService.prototype.resetPassword = function (email, passwordResetCode, newPassword) {
                 var args = {
                     email: email,
                     passwordResetCode: passwordResetCode,
-                    newPassword: newPassword
+                    newPassword: newPassword,
                 };
-                return this.httpApi.postUriEncoded("/api/account/resetPassword", args);
+                return this.httpApi.postUriEncoded(this.apiUri + "/resetPassword", args);
             };
             return AccountService;
         }());
@@ -109,9 +110,10 @@ var BitShuva;
             "appNav",
             "initConfig",
             "httpApi",
-            "localStorageService"
+            "localStorageService",
         ];
         Chavah.AccountService = AccountService;
         Chavah.App.service("accountApi", AccountService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=AccountService.js.map

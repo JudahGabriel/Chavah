@@ -11,3 +11,4 @@ var BitShuva;
         })(SignInStatus = Chavah.SignInStatus || (Chavah.SignInStatus = {}));
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=SignInStatus.js.map

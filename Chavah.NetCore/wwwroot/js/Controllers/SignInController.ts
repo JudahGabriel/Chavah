@@ -1,16 +1,16 @@
 ﻿namespace BitShuva.Chavah {
     export class SignInController {
-        
+
+        static $inject = [
+            "accountApi",
+            "appNav",
+            "$scope",
+        ];
+
         email = "";
         showEmailError = false;
         showUserNotInSystem = false;
         isBusy = false;
-        
-        static $inject = [
-            "accountApi",
-            "appNav",
-            "$scope"
-        ];
 
         constructor(
             private accountApi: AccountService,
@@ -42,10 +42,11 @@
 
         userFetched(user: Server.IAppUser | null) {
             if (user == null) {
-                // If we didn't find a user, that means we need to redirect to the register account to create a new user.
+                // If we didn't find a user, that means we need to redirect to the register account 
+                // to create a new user.
                 this.showUserNotInSystem = true;
             } else if (user.requiresPasswordReset) {
-                // If we require password reset (e.g. they're imported from the 
+                // If we require password reset (e.g. they're imported from the
                 // old system and haven't created a new password yet), redirect to the create password page.
                 this.appNav.createPassword(this.email);
             } else {

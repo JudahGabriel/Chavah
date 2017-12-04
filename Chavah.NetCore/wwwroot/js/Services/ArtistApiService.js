@@ -13,19 +13,20 @@ var BitShuva;
                 var args = {
                     search: search,
                     skip: skip,
-                    take: take
+                    take: take,
                 };
                 return this.httpApi.query("/api/artists/all", args);
             };
             ArtistApiService.prototype.getByName = function (artistName) {
                 var args = {
-                    artistName: artistName
+                    artistName: artistName,
                 };
                 return this.httpApi.query("/api/artists/getByName", args, ArtistApiService.artistSelector);
             };
             ArtistApiService.prototype.save = function (artist) {
                 return this.httpApi.post("/api/artists/save", artist, ArtistApiService.artistSelector);
             };
+            // tslint:disable-next-line:member-ordering
             ArtistApiService.artistSelector = function (serverObj) {
                 return new Chavah.Artist(serverObj);
             };
@@ -36,3 +37,4 @@ var BitShuva;
         Chavah.App.service("artistApi", ArtistApiService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=ArtistApiService.js.map

@@ -23,7 +23,7 @@ namespace BitShuva.Chavah {
         artistInfo: Server.IArtist;
         tags: string[];
         purchaseUri: string;
-        //reasonPlayed: SongPick;
+        // reasonPlayed: SongPick;
         reasonsPlayed: Server.ISongPickReasons | null;
         albumId: string | null;
 
@@ -41,11 +41,13 @@ namespace BitShuva.Chavah {
         isShareExpanded = false;
         isEditingLyrics = false;
         isShowingEmbedCode = false;
+
         private _facebookShareUrl: string | null;
         private _googlePlusShareUrl: string | null;
         private _twitterShareUrl: string | null;
         private _reasonPlayedText: string | null;
 
+        // tslint:disable-next-line:member-ordering
         static readonly defaultSwatch: ISwatch = {
             getBodyTextColor: () => "black",
             getHex: () => "white",
@@ -53,8 +55,8 @@ namespace BitShuva.Chavah {
             getPopulation: () => 0,
             getTitleTextColor: () => "black",
             hsl: [255, 255, 255],
-            rgb: [255, 255, 255]
-        }
+            rgb: [255, 255, 255],
+        };
 
         constructor(song: Server.ISong) {
             angular.merge(this, song);
@@ -83,7 +85,7 @@ namespace BitShuva.Chavah {
         }
 
         get nthSongText(): string {
-            var value =
+            let value =
                 this.number === 0 ? "1st" :
                     this.number === 1 ? "1st" :
                         this.number === 2 ? "2nd" :
@@ -103,26 +105,28 @@ namespace BitShuva.Chavah {
 
         get facebookShareUrl(): string {
             if (!this._facebookShareUrl) {
-                var name = `${this.artist} - ${this.name}`.replace(new RegExp("&", 'g'), "and"); // Yes, replace ampersand. Even though we escape it via encodeURIComponent, Facebook barfs on it.
-                var url = `https://messianicradio.com?song=${this.id}`;
-                var albumArtUrl = `https://messianicradio.com/api/albums/getArtforSong?songId=${this.id}`;
+                // Yes, replace ampersand. Even though we escape it via encodeURIComponent, Facebook barfs on it.
+                let name = `${this.artist} - ${this.name}`.replace(new RegExp("&", "g"), "and");
+                let url = `https://messianicradio.com?song=${this.id}`;
+                let albumArtUrl = `https://messianicradio.com/api/albums/getArtforSong?songId=${this.id}`;
                 this._facebookShareUrl = "https://www.facebook.com/dialog/feed?app_id=256833604430846" +
                     `&link=${url}` +
                     `&picture=${encodeURIComponent(albumArtUrl)}` +
                     `&name=${encodeURIComponent(name)}` +
                     `&description=${encodeURIComponent("On " + this.album)}` +
+                    // tslint:disable-next-line:max-line-length
                     `&caption=${encodeURIComponent("Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music")}` +
                     `&redirect_uri=${encodeURIComponent("https://messianicradio.com/#/sharethanks")}`;
             }
-            
+
             return this._facebookShareUrl;
         }
 
         get twitterShareUrl(): string {
             if (!this._twitterShareUrl) {
-                var tweetText = 'Listening to "' + this.artist + " - " + this.name + '"';
-                var url = "https://messianicradio.com/?song=" + this.id;
-                var via = "messianicradio";
+                let tweetText = 'Listening to "' + this.artist + " - " + this.name + '"';
+                let url = "https://messianicradio.com/?song=" + this.id;
+                let via = "messianicradio";
                 this._twitterShareUrl = "https://twitter.com/share" +
                     "?text=" + encodeURIComponent(tweetText) +
                     "&url=" + encodeURIComponent(url) +
@@ -134,6 +138,7 @@ namespace BitShuva.Chavah {
 
         get googlePlusShareUrl(): string {
             if (!this._googlePlusShareUrl) {
+                // tslint:disable-next-line:max-line-length
                 this._googlePlusShareUrl = "https://plus.google.com/share?url=" + encodeURI("https://messianicradio.com/?song=" + this.id);
             }
 
@@ -145,9 +150,10 @@ namespace BitShuva.Chavah {
         }
 
         getEmbedCode(): string {
+            // tslint:disable-next-line:max-line-length
             return `<iframe style="border-top: medium none; height: 558px; border-right: medium none; width: 350px; border-bottom: medium none; border-left: medium none" src="https://messianicradio.com/home/embed?song=${this.id}" scrolling="none"></iframe>`;
         }
-        
+
         updateFrom(other: Song) {
             angular.merge(this, other);
         }
@@ -159,15 +165,17 @@ namespace BitShuva.Chavah {
             this.albumSwatchMuted = album.mutedColor || this.albumSwatchMuted;
             this.albumSwatchTextShadow = album.textShadowColor || this.albumSwatchTextShadow;
 
-            // Determine whether the foreground or background is lighter. Used in the now playing page to pick a color that looks readable on near-white background.
-            var bgBrightness = tinycolor(this.albumSwatchBackground).getBrightness();
-            var fgBrightness = tinycolor(this.albumSwatchForeground).getBrightness();
-            var isFgLighter = fgBrightness >= bgBrightness;
+            // Determine whether the foreground or background is lighter.
+            // Used in the now playing page to pick a color that looks readable on near-white background.
+            let bgBrightness = tinycolor(this.albumSwatchBackground).getBrightness();
+            let fgBrightness = tinycolor(this.albumSwatchForeground).getBrightness();
+            let isFgLighter = fgBrightness >= bgBrightness;
 
             this.albumSwatchLighter = isFgLighter ? this.albumSwatchForeground : this.albumSwatchBackground;
             this.albumSwatchDarker = isFgLighter ? this.albumSwatchBackground : this.albumSwatchForeground;
         }
 
+        // tslint:disable-next-line:member-ordering
         static empty(): Song {
             return new Song({
                 album: "",
@@ -186,7 +194,7 @@ namespace BitShuva.Chavah {
                 tags: [],
                 totalPlays: 0,
                 uri: "",
-                reasonsPlayed: this.createEmptySongPickReasons("songs/0")
+                reasonsPlayed: this.createEmptySongPickReasons("songs/0"),
             });
         }
 
@@ -198,16 +206,19 @@ namespace BitShuva.Chavah {
         private createReasonPlayedText(): string {
             // "we played this song because {{text}}"
 
-            var randomReason = "Chavah plays random songs from time to time to see what kind of music you like";
+            let randomReason = "Chavah plays random songs from time to time to see what kind of music you like";
             if (this.reasonsPlayed) {
 
                 // If there's a sole reason, just list that.
                 if (this.reasonsPlayed.soleReason !== null) {
                     switch (this.reasonsPlayed.soleReason) {
                         case SongPick.SomeoneRequestedSong: return "it was requested by a listener";
+                        // tslint:disable-next-line:max-line-length
                         case SongPick.SongFromAlbumRequested: return `you asked to hear another song from the ${this.album} album`;
+                        // tslint:disable-next-line:max-line-length
                         case SongPick.SongFromArtistRequested: return `you asked to hear another song from ${this.artist}`;
                         case SongPick.SongWithTagRequested: return `you asked to hear another song with this tag`;
+                        // tslint:disable-next-line:max-line-length
                         case SongPick.VeryPoorRank: return "...well, even the lowest-ranked songs will get played sometimes :-)";
                         case SongPick.YouRequestedSong: return "you asked Chavah to play it";
                         case SongPick.RandomSong:
@@ -217,7 +228,7 @@ namespace BitShuva.Chavah {
                 }
 
                 // There are zero or more reasons we played this.
-                var reasons: string[] = [];
+                let reasons: string[] = [];
                 if (this.reasonsPlayed.ranking === LikeLevel.Favorite) {
                     reasons.push("it's one of the highest ranked songs on Chavah");
                 } else if (this.reasonsPlayed.ranking === LikeLevel.Love) {
@@ -256,9 +267,10 @@ namespace BitShuva.Chavah {
                 }
 
                 // We're going to join all the reasons together into a single, comma-delimited string.
-                // e.g. "We played this song because you like this song, you love Ted Pearce, and it's one of the top-ranked songs on Chavah.
+                // e.g. "We played this song because you like this song, you love Ted Pearce,
+                // and it's one of the top-ranked songs on Chavah.
 
-                // No reasons? 
+                // No reasons?
                 if (reasons.length === 0) {
                     return `you might like it`;
                 }
@@ -280,8 +292,10 @@ namespace BitShuva.Chavah {
         }
 
         // Shuffles an array. Should be moved to a utility class, or maybe just bite the bullet and include lodash.
+        // tslint:disable-next-line:member-ordering
         static shuffle<T>(array: T[]): T[] {
-            var currentIndex = array.length, temporaryValue, randomIndex;
+            // tslint:disable-next-line:one-variable-per-declaration
+            let currentIndex = array.length, temporaryValue, randomIndex;
 
             // While there remain elements to shuffle...
             while (0 !== currentIndex) {
@@ -299,6 +313,7 @@ namespace BitShuva.Chavah {
             return array;
         }
 
+        // tslint:disable-next-line:member-ordering
         static createEmptySongPickReasons(songId: string): Server.ISongPickReasons {
             return {
                 album: LikeLevel.NotSpecified,
@@ -306,12 +321,12 @@ namespace BitShuva.Chavah {
                 ranking: LikeLevel.NotSpecified,
                 similar: LikeLevel.NotSpecified,
                 songThumbedUp: false,
-                songId: songId,
-                soleReason: null
+                songId,
+                soleReason: null,
             };
         }
 
-        //private getColorClass() {
+        // private getColorClass() {
         //    var rank = this.communityRank;
         //    var styleNumber =
         //        rank <= -10 ? 0 :
@@ -333,6 +348,6 @@ namespace BitShuva.Chavah {
         //                                                                        rank <= 700 ? 16 :
         //                                                                            17;
         //    return "song-rank-" + styleNumber;
-        //}
+        // }
     }
 }

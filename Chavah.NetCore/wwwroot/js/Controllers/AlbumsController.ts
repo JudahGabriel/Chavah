@@ -1,13 +1,14 @@
 ﻿namespace BitShuva.Chavah {
     export class AlbumsController {
-        search = "";
-        albums = new PagedList((skip, take) => this.albumApi.getAll(skip, take, this.search));
-        isSaving = false;
 
         static $inject = [
             "albumApi",
-            "appNav"
+            "appNav",
         ];
+
+        search = "";
+        albums = new PagedList((skip, take) => this.albumApi.getAll(skip, take, this.search));
+        isSaving = false;
 
         constructor(
             private readonly albumApi: AlbumApiService,

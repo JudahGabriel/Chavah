@@ -27,89 +27,93 @@ var BitShuva;
                 var url = "/api/songs/getByArtistAndAlbum";
                 var args = {
                     artist: artist,
-                    album: album
+                    album: album,
                 };
                 return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
             };
             SongApiService.prototype.getSongByAlbum = function (album) {
                 var url = "/api/songs/getByAlbum/";
                 var args = {
-                    album: album
+                    album: album,
                 };
                 return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
             };
             SongApiService.prototype.getSongWithTag = function (tag) {
                 var url = "/api/songs/getByTag";
                 var args = {
-                    tag: tag
+                    tag: tag,
                 };
                 return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
             };
             SongApiService.prototype.getSongByArtist = function (artist) {
                 var url = "/api/songs/getByArtist";
                 var args = {
-                    artist: artist
+                    artist: artist,
                 };
                 return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
             };
             SongApiService.prototype.getSongMatches = function (searchText) {
                 var url = "/api/songs/search";
                 var args = {
-                    searchText: searchText
+                    searchText: searchText,
                 };
                 return this.httpApi.query(url, args, SongApiService.songListConverter);
             };
             SongApiService.prototype.getTrendingSongs = function (skip, take) {
                 var args = {
                     skip: skip,
-                    take: take
+                    take: take,
                 };
                 return this.httpApi.query("/api/songs/getTrending", args, SongApiService.songPagedListConverter);
             };
             SongApiService.prototype.getPopularSongs = function (count) {
                 var args = {
-                    count: count
+                    count: count,
                 };
                 return this.httpApi.query("/api/songs/getpopular", args, SongApiService.songListConverter);
             };
             SongApiService.prototype.getLikes = function (count) {
                 var args = {
-                    count: count
+                    count: count,
                 };
                 return this.httpApi.query("/api/songs/getRandomLikedSongs", args, SongApiService.songListConverter);
             };
             SongApiService.prototype.getRecentPlays = function (count) {
                 var args = {
-                    count: count
+                    count: count,
                 };
                 return this.httpApi.query("/api/songs/getRecentPlays", args, SongApiService.songListConverter);
             };
             SongApiService.prototype.songCompleted = function (songId) {
                 var args = {
-                    songId: songId
+                    songId: songId,
                 };
                 return this.httpApi.postUriEncoded("/api/songs/songCompleted", args);
             };
             SongApiService.prototype.songFailed = function (error) {
                 return this.httpApi.post("/api/songs/audiofailed", error);
             };
+            // tslint:disable-next-line:member-ordering
             SongApiService.songPagedListConverter = function (dto) {
                 return {
                     items: dto.items.map(function (s) { return new Chavah.Song(s); }),
                     skip: dto.skip,
                     take: dto.take,
-                    total: dto.total
+                    total: dto.total,
                 };
             };
+            // tslint:disable-next-line:member-ordering
             SongApiService.songListConverter = function (songs) {
                 return songs.map(function (r) { return SongApiService.songConverter(r); });
             };
+            // tslint:disable-next-line:member-ordering
             SongApiService.songOrNullConverter = function (raw) {
                 if (raw) {
                     return SongApiService.songConverter(raw);
                 }
                 return null;
             };
+            // tslint:disable-next-line:member-ordering
             SongApiService.songConverter = function (raw) {
                 return new Chavah.Song(raw);
             };
@@ -120,3 +124,4 @@ var BitShuva;
         Chavah.App.service("songApi", SongApiService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=SongApiService.js.map

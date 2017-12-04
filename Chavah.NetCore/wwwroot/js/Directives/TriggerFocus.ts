@@ -5,9 +5,13 @@
      */
     class TriggerFocus {
 
-        constructor(private scope: ng.IScope, private element: JQuery, attributes: ng.IAttributes, timeout: ng.ITimeoutService, parse: ng.IParseService) {
-            var model = parse(attributes["triggerFocus"]);
-            scope.$watch(model, function (value) {
+        constructor(private scope: ng.IScope,
+                    private element: JQuery,
+                    attributes: ng.IAttributes,
+                    timeout: ng.ITimeoutService,
+                    parse: ng.IParseService) {
+            let model = parse(attributes["triggerFocus"]);
+            scope.$watch(model, value => {
                 if (value) {
                     timeout(() => element[0].focus());
                 }
@@ -17,6 +21,7 @@
         }
     }
 
+    // tslint:disable-next-line:max-classes-per-file
     class TriggerFocusBinder implements ng.IDirective {
         link: ng.IDirectiveLinkFn;
         restrict = "A";
@@ -26,9 +31,12 @@
         }
 
         unboundLink(scope: ng.IScope, element: JQuery, attributes: ng.IAttributes) {
+            // tslint:disable-next-line:no-unused-expression
             new TriggerFocus(scope, element, attributes, this.$timeout, this.$parse);
         }
     }
 
-    App.directive("triggerFocus", ["$timeout", "$parse", ($timeout: ng.ITimeoutService, $parse: ng.IParseService) => new TriggerFocusBinder($timeout, $parse)]);
+    App.directive("triggerFocus",
+        ["$timeout", "$parse",
+            ($timeout: ng.ITimeoutService, $parse: ng.IParseService) => new TriggerFocusBinder($timeout, $parse)]);
 }

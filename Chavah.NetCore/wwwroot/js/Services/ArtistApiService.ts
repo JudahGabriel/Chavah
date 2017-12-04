@@ -7,17 +7,17 @@
         }
 
         getAll(search = "", skip = 0, take = 1024): ng.IPromise<Server.IPagedList<Server.IArtist>> {
-            var args = {
-                search: search,
-                skip: skip,
-                take: take
+            let args = {
+                search,
+                skip,
+                take,
             };
             return this.httpApi.query("/api/artists/all", args);
         }
 
         getByName(artistName: string): ng.IPromise<Artist> {
-            var args = {
-                artistName: artistName
+            let args = {
+                artistName,
             };
             return this.httpApi.query("/api/artists/getByName", args, ArtistApiService.artistSelector);
         }
@@ -26,6 +26,7 @@
             return this.httpApi.post("/api/artists/save", artist, ArtistApiService.artistSelector);
         }
 
+        // tslint:disable-next-line:member-ordering
         static artistSelector(serverObj: Server.IArtist): Artist {
             return new Artist(serverObj);
         }

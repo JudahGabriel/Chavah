@@ -38,11 +38,12 @@ var BitShuva;
             };
             SignInController.prototype.userFetched = function (user) {
                 if (user == null) {
-                    // If we didn't find a user, that means we need to redirect to the register account to create a new user.
+                    // If we didn't find a user, that means we need to redirect to the register account 
+                    // to create a new user.
                     this.showUserNotInSystem = true;
                 }
                 else if (user.requiresPasswordReset) {
-                    // If we require password reset (e.g. they're imported from the 
+                    // If we require password reset (e.g. they're imported from the
                     // old system and haven't created a new password yet), redirect to the create password page.
                     this.appNav.createPassword(this.email);
                 }
@@ -60,9 +61,10 @@ var BitShuva;
         SignInController.$inject = [
             "accountApi",
             "appNav",
-            "$scope"
+            "$scope",
         ];
         Chavah.SignInController = SignInController;
         Chavah.App.controller("SignInController", SignInController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=SignInController.js.map

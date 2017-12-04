@@ -24,6 +24,7 @@ var BitShuva;
             }
             return EnterHandler;
         }());
+        // tslint:disable-next-line:max-classes-per-file
         var EnterHandlerBinder = (function () {
             function EnterHandlerBinder($parse) {
                 this.$parse = $parse;
@@ -31,6 +32,7 @@ var BitShuva;
                 this.link = this.unboundLink.bind(this);
             }
             EnterHandlerBinder.prototype.unboundLink = function (scope, element, attributes) {
+                // tslint:disable-next-line:no-unused-expression
                 new EnterHandler(scope, element, attributes, this.$parse);
             };
             return EnterHandlerBinder;
@@ -38,3 +40,4 @@ var BitShuva;
         Chavah.App.directive("enterHandler", ["$parse", function ($parse) { return new EnterHandlerBinder($parse); }]);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
+//# sourceMappingURL=EnterHandler.js.map

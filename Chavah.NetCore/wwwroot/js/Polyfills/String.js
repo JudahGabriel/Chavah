@@ -1,7 +1,8 @@
-// String.includes, ES6 standard https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/includes
+// String.includes, ES6 standard
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/includes
 if (!String.prototype.includes) {
     String.prototype.includes = function () {
-        'use strict';
+        "use strict";
         return String.prototype.indexOf.apply(this, arguments) !== -1;
     };
 }
@@ -24,3 +25,4 @@ if (!String.prototype.startsWith) {
         return this.lastIndexOf(searchString, position) === position;
     };
 }
+//# sourceMappingURL=String.js.map
