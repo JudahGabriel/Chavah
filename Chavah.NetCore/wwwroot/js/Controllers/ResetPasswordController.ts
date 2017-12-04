@@ -15,6 +15,13 @@
         passwordResetFailed = false;
         passwordResetFailedMessage = "";
 
+        static readonly regexContainsLetterAndNumber = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/; // https://stackoverflow.com/a/7684859/536
+
+        static $inject = [
+            "accountApi",
+            "$routeParams"
+        ];
+
         constructor(private accountApi: AccountService, private $routeParams: ng.route.IRouteParamsService) {
             this.email = $routeParams["email"];
             let rawConfirmCode: string = $routeParams["confirmCode"];
@@ -27,7 +34,7 @@
         }
 
         get isValidPassword(): boolean {
-            return !!this.password && this.password.length >= 6;
+            return !!this.password && this.password.length >= 6 && !!this.password.match(ResetPasswordController.regexContainsLetterAndNumber);
         }
 
         get showChangePasswordForm(): boolean {

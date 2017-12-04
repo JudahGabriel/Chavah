@@ -6,10 +6,13 @@ var BitShuva;
             function User(email, roles) {
                 this.email = email;
                 this.roles = roles;
-                this.isAdmin = roles && roles.includes("Admin");
+                this.isAdmin = roles && roles.includes(User.roles.admin);
             }
             return User;
         }());
+        User.roles = {
+            admin: "admin"
+        };
         Chavah.User = User;
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));
