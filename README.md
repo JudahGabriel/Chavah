@@ -6,7 +6,7 @@ Chavah Messianic Radio is the very best Messianic Jewish and Hebrew Roots music 
 
 ## Technologies
 1. ASP.NET Core 2.0
-2. TypeScriipt Version 2.3.4
+2. TypeScript Version 2.3.4
 3. AngularJs 1.5.7
 
 ## Setup project & Tools
