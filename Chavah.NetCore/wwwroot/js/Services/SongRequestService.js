@@ -3,10 +3,11 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var SongRequestApiService = (function () {
-            function SongRequestApiService(httpApi, audioPlayer, songApi) {
+            function SongRequestApiService(httpApi, audioPlayer, songApi, initConfig) {
                 this.httpApi = httpApi;
                 this.audioPlayer = audioPlayer;
                 this.songApi = songApi;
+                this.initConfig = initConfig;
                 this.pendingSongRequestIds = [];
                 this.hasPlayedRequestAnnouncement = false;
             }
@@ -39,7 +40,7 @@ var BitShuva;
                     var songRequestNumbers = [1, 3, 4, 5, 6, 7, 8, 9, 10];
                     // tslint:disable-next-line:max-line-length
                     var songRequestName = "SongRequest" + songRequestNumbers[Math.floor(Math.random() * songRequestNumbers.length)] + ".mp3";
-                    var songRequestUrl = "https://bitshuvafiles01.com/chavah/soundEffects/" + songRequestName;
+                    var songRequestUrl = this.initConfig.soundEffects + "/" + songRequestName;
                     this.audioPlayer.playNewUri(songRequestUrl);
                 }
                 else {
@@ -73,6 +74,7 @@ var BitShuva;
             "httpApi",
             "audioPlayer",
             "songApi",
+            "initConfig",
         ];
         Chavah.SongRequestApiService = SongRequestApiService;
         Chavah.App.service("songRequestApi", SongRequestApiService);

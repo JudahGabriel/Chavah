@@ -6,6 +6,7 @@
             "templatePaths",
             "$location",
             "$uibModal",
+            "initConfig",
         ];
 
         readonly promptSignInUrl = "#/promptsignin";
@@ -14,7 +15,8 @@
             private audioPlayer: AudioPlayerService,
             private templatePaths: ITemplatePaths,
             private $location: ng.ILocationService,
-            private $uibModal: ng.ui.bootstrap.IModalService) {
+            private $uibModal: ng.ui.bootstrap.IModalService,
+            private initConfig: Server.IHomeViewModel) {
 
             // Listen for when the song changes and update the document title.
             audioPlayer.song
@@ -87,9 +89,9 @@
         private updateDocumentTitle(song: Song | null) {
             // Update the document title so that the browser tab updates.
             if (song) {
-                document.title = `${song.name} by ${song.artist} on Chavah Messianic Radio`;
+                document.title = `${song.name} by ${song.artist} on ${this.initConfig.title}`;
             } else {
-                document.title = "Chavah Messianic Radio";
+                document.title = this.initConfig.title;
             }
         }
     }

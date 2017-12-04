@@ -15,7 +15,7 @@ namespace BitShuva.Services
 
         public SendGridEmailService(IOptions<AppSettings> appSettings, ILogger<SendGridEmailService> logger)
         {
-            this.appSettings = appSettings.Value;
+            this.appSettings = appSettings?.Value;
             this.logger = logger;
         }
 
@@ -42,10 +42,9 @@ namespace BitShuva.Services
 
         public async Task SendEmailAsync(IdentityMessage message)
         {
-            var apiKey = appSettings.Email.SendGridApiKey;
-            var client = new SendGrid.SendGridClient(apiKey);
+            var client = new SendGrid.SendGridClient(appSettings?.Email?.SendGridApiKey);
 
-            var from = new EmailAddress("chavah@messianicradio.com", "Chavah Messianic Radio");
+            var from = new EmailAddress(appSettings?.Email?.AdminEmail, appSettings?.Application?.Title);
 
             string subject = message.Subject;
             var to = new EmailAddress(message.Destination);

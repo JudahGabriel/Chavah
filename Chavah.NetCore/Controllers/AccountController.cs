@@ -1,11 +1,11 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Services;
 using BitShuva.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Raven.Client;
 using System;
 using System.Collections.Generic;
@@ -21,19 +21,22 @@ namespace BitShuva.Chavah.Controllers
         private readonly IAsyncDocumentSession asyncDocumentSession;
         private readonly SignInManager<AppUser> signInManager;
         private readonly IEmailSender emailSender;
+        private readonly AppSettings options;
 
         public AccountController(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             IAsyncDocumentSession asyncDocumentSession, 
             ILogger<AccountController> logger,
-            IEmailSender emailSender) 
+            IEmailSender emailSender,
+            IOptions<AppSettings> options) 
             : base(asyncDocumentSession, logger)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
             this.asyncDocumentSession = asyncDocumentSession;
             this.emailSender = emailSender;
+            this.options = options?.Value;
         }
 
         [HttpPost]
@@ -209,7 +212,7 @@ namespace BitShuva.Chavah.Controllers
                 await DbSession.StoreAsync(confirmToken);
                 DbSession.SetRavenExpiration(confirmToken, DateTime.UtcNow.AddDays(14));
                 
-                emailSender.QueueConfirmEmail(email, confirmToken.Token);
+                emailSender.QueueConfirmEmail(email, confirmToken.Token, options?.Application);
                 
                 logger.LogInformation("Sending new user confirmation email to {email} with confirm token {token}", email, confirmToken.Token);
                 return new RegisterResults
@@ -315,7 +318,7 @@ namespace BitShuva.Chavah.Controllers
             }
             
             var passwordResetCode = await userManager.GeneratePasswordResetTokenAsync(user);
-            emailSender.QueueResetPassword(email, passwordResetCode);
+            emailSender.QueueResetPassword(email, passwordResetCode, options.Application);
             
             logger.LogInformation("Sending reset password email to {email} with reset code {resetCode}", email, passwordResetCode);
             return new ResetPasswordResult

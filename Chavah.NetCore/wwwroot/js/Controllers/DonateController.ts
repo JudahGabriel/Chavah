@@ -4,19 +4,25 @@
         static $inject = [
             "artistApi",
             "$routeParams",
+            "initConfig",
         ];
 
         desiredArtistName: string | null = null;
-        donationTargetOptions = [
-            "Chavah Messianic Radio",
-            "All artists on Chavah Messianic Radio",
-        ];
-        donationTarget = this.donationTargetOptions[0];
+        donationTargetOptions: string[];
+        donationTarget;
+
         selectedArtist: Server.IArtist | null = null;
 
         constructor(
             artistApi: ArtistApiService,
-            $routeParams: ng.route.IRouteParamsService) {
+            $routeParams: ng.route.IRouteParamsService,
+            private initConfig: Server.IHomeViewModel) {
+
+            this.donationTargetOptions = [
+                this.initConfig.title,
+                `All artists on ${this.initConfig.title}`,
+            ];
+            this.donationTarget = this.donationTargetOptions[0];
 
             this.desiredArtistName = $routeParams["artist"];
             if (this.desiredArtistName) {

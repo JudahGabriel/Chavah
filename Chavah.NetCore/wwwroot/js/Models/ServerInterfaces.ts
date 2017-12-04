@@ -8,6 +8,11 @@
         notifications: Server.INotification[];
         embed: boolean;
         cacheBustedAngularViews: string[];
+        defaultUrl: string;
+        cdnUrl: string;
+        soundEffects: string;
+        title: string;
+        description: string;
     };
 
     export interface IAppUser {

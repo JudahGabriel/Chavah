@@ -15,18 +15,21 @@
                 </h4>
             </button>
             <ul class="dropdown-menu">
+                <li>
+                    <a href="#/nowplaying"><i class="fa fa-home"></i>  Home</a>
+                </li>
                 <li ng-show="vm.currentUserName">
-                    <a href="#/profile">Profile</a>
+                    <a href="#/profile"><i class="fa fa-user"></i>  Profile</a>
                 </li>
                 <li>
-                    <a href="#/about">About Chavah &amp; legal</a>
+                    <a href="#/about"><i class="fa fa-info-circle"></i>  About Chavah &amp; legal</a>
                 </li>
                 <li role="separator" class="divider"></li>
                 <li ng-hide="vm.currentUserName">
                     <a href="#/signin"><i class="fa fa-sign-in"></i> Sign In</a>
                 </li>
                 <li ng-show="vm.currentUserName">
-                    <a href="javascript:void(0)" ng-click="vm.signOut()">Sign out</a>
+                    <a href="javascript:void(0)" ng-click="vm.signOut()"><i class="fa fa-sign-out"></i> Sign out</a>
                 </li>
             </ul>
         </div>
@@ -60,6 +63,6 @@
         <span class="hebrew">חוה</span>
     </div>
     <div class="subtitle hidden-xs">
-        <span>music for Yeshua's disciples</span> 
+        <span>{{vm.desc}}</span> 
     </div>
 </header>

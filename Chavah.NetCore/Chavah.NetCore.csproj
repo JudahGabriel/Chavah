@@ -93,7 +93,6 @@
     <None Include="wwwroot\js\App.ts" />
     <None Include="wwwroot\js\common\List.ts" />
     <None Include="wwwroot\js\common\PagedList.ts" />
-    <None Include="wwwroot\js\common\TemplatePaths.ts" />
     <None Include="wwwroot\js\controllers\AlbumsController.ts" />
     <None Include="wwwroot\js\controllers\ApproveSongEditsController.ts" />
     <None Include="wwwroot\js\controllers\ConfirmEmailController.ts" />
@@ -122,9 +121,7 @@
     <None Include="wwwroot\js\directives\EnterHandler.ts" />
     <None Include="wwwroot\js\directives\TriggerFocus.ts" />
     <None Include="wwwroot\js\models\Album.ts" />
-    <None Include="wwwroot\js\models\AppRoute.ts" />
     <None Include="wwwroot\js\models\Artist.ts" />
-    <None Include="wwwroot\js\models\AudioErrorInfo.ts" />
     <None Include="wwwroot\js\models\AudioStatus.ts" />
     <None Include="wwwroot\js\models\CommunityRankStanding.ts" />
     <None Include="wwwroot\js\models\HeaderRoute.ts" />

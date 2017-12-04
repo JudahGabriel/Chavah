@@ -1,12 +1,11 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Raven.Client;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
@@ -14,9 +13,14 @@ namespace BitShuva.Chavah.Controllers
     [Route("api/[controller]/[action]")]
     public class LikesController : RavenController
     {
-        public LikesController(IAsyncDocumentSession dbSession, ILogger<LikesController> logger)
+        private readonly IOptions<AppSettings> options;
+
+        public LikesController(IAsyncDocumentSession dbSession, 
+                               ILogger<LikesController> logger,
+                               IOptions<AppSettings> options)
             : base(dbSession, logger)
         {
+            this.options = options;
         }
         
         [HttpPost]
@@ -90,9 +94,9 @@ namespace BitShuva.Chavah.Controllers
                     var activity = new Activity
                     {
                         DateTime = DateTime.Now,
-                        Title = string.Format("{0} - {1} was thumbed up ({2}) on Chavah Messianic Radio", song.Artist, song.Name, songRankString),
-                        Description = string.Format("\"{0}\" by {1} was thumbed up ({2}) on Chavah Messianic Radio.", song.Name, songArtist, songRankString),
-                        MoreInfoUri = song.GetSongShareLink()
+                        Title = $"{song.Artist} - {song.Name} was thumbed up ({songRankString}) on {options?.Value?.Application?.Title}",
+                        Description = $"\"{song.Name}\" by {songArtist} was thumbed up ({songRankString}) on {options?.Value?.Application?.Title}.",
+                        MoreInfoUri = song.GetSongShareLink(options?.Value?.Application?.DefaultUrl)
                     };
 
                     await this.DbSession.StoreAsync(activity);

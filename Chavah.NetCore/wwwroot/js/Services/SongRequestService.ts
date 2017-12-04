@@ -5,6 +5,7 @@
             "httpApi",
             "audioPlayer",
             "songApi",
+            "initConfig",
         ];
 
         private pendingSongRequestIds: string[] = [];
@@ -13,7 +14,8 @@
         constructor(
             private httpApi: HttpApiService,
             private audioPlayer: AudioPlayerService,
-            private songApi: SongApiService) {
+            private songApi: SongApiService,
+            private initConfig: Server.IHomeViewModel) {
         }
 
         hasPendingRequest() {
@@ -49,7 +51,7 @@
                 let songRequestNumbers = [1, 3, 4, 5, 6, 7, 8, 9, 10];
                 // tslint:disable-next-line:max-line-length
                 let songRequestName = "SongRequest" + songRequestNumbers[Math.floor(Math.random() * songRequestNumbers.length)] + ".mp3";
-                let songRequestUrl = "https://bitshuvafiles01.com/chavah/soundEffects/" + songRequestName;
+                let songRequestUrl = `${this.initConfig.soundEffects}/${songRequestName}`;
                 this.audioPlayer.playNewUri(songRequestUrl);
             } else {
                 this.hasPlayedRequestAnnouncement = false;

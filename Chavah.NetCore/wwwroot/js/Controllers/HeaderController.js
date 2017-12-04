@@ -26,6 +26,20 @@ var BitShuva;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(HeaderController.prototype, "title", {
+                get: function () {
+                    return this.initConfig.title;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(HeaderController.prototype, "desc", {
+                get: function () {
+                    return this.initConfig.description;
+                },
+                enumerable: true,
+                configurable: true
+            });
             HeaderController.prototype.encourageUserToViewNotifications = function () {
                 // If the user has some notifications, and some of them are unread, encourage the user to view them.
                 // Adding this functionality because we've found a great many users never click the notifications button.

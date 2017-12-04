@@ -37,16 +37,16 @@
     <meta name="msapplication-task" content="name=Chavah on Facebook;action-uri=http://www.facebook.com/pages/Chavah-Messianic-Radio/134887069882254;icon-uri=/content/images/jumplist_facebook.ico" />
     <meta name="msapplication-task" content="name=Chavah on Twitter;action-uri=http://twitter.com/chavahradio;icon-uri=/content/images/jumplist_twitter.ico" />
     <meta name="msapplication-navbutton-color" content="brown" />
-    <meta name="msapplication-starturl" content="http://messianicradio.com" />
-    <meta name="msapplication-tooltip" content="@appSettings.Value.Application.Title" />
+    <meta name="msapplication-starturl" content="@appSettings?.Value?.Application?.DefaultUrl" />
+    <meta name="msapplication-tooltip" content="@appSettings?.Value?.Application?.Title" />
 
     @*Windows 8 tile*@
-    <meta name="application-name" content="@appSettings.Value.Application.Title" />
+    <meta name="application-name" content="@appSettings?.Value?.Application?.Title" />
     <meta name="msapplication-TileColor" content="#080f24" />
-    <meta name="msapplication-TileImage" content="~/images/chavahLogoWindows8Tile.png" />
+    <meta name="msapplication-TileImage" content="~/images/LogoWindows8Tile.png" />
 
     @*Windows 8.1 tiles with notifications*@
-    <meta name="application-name" content="@appSettings.Value.Application.Title" />
+    <meta name="application-name" content="@appSettings?.Value?.Application?.Title" />
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="msapplication-square70x70logo" content="~/images/Windows81Tile/tiny.png" />
     <meta name="msapplication-square150x150logo" content="~/images/Windows81Tile/square.png" />
@@ -66,7 +66,7 @@
         // Show a Twitter summary card with the song info.
         <meta name="twitter:card" content="summary" />
         @*<meta name="twitter:card" content="summary_large_image" />*@
-        <meta name="twitter:url" content="https://messianicradio.com@(Model.Song.GetSongShareLink())" />
+        <meta name="twitter:url" content="@appSettings?.Value?.Application?.DefaultUrl@(Model.Song.GetSongShareLink(appSettings?.Value?.Application?.DefaultUrl))" />
             <meta name="twitter:title" content="@Model.Song.Name by @Model.Song.Artist" />
             <meta name="twitter:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
             <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
@@ -75,10 +75,10 @@
     {
         // No song? Show a Twitter summary card for Chavah itself, rather than for a song.
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="https://messianicradio.com" />
-        <meta name="twitter:title" content="Chavah Messianic Radio" />
+        <meta name="twitter:url" content="@appSettings?.Value?.Application?.DefaultUrl" />
+        <meta name="twitter:title" content="@appSettings?.Value?.Application?.Title" />
         <meta name="twitter:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
-        <meta name="twitter:image" content="https://messianicradio.com/content/images/chavahLogoTwitterCard.png" />
+        <meta name="twitter:image" content="@appSettings?.Value?.Application?.DefaultUrl/content/images/chavahLogoTwitterCard.png" />
     }
 
     @*Bring in our web fonts*@
@@ -95,7 +95,7 @@
     </environment>
 
     @*CSS for production*@
-    <environment include="Staging,Production">
+    <environment include="Test,Staging,Production">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/bundles/app.css" />
     </environment>
@@ -135,7 +135,7 @@
     </environment>
 
     @*JS for production*@
-    <environment names="Staging,Production">
+    <environment names="Test,Staging,Production">
         @*3rd party JS*@
         <script src="https://code.jquery.com/jquery-2.2.4.min.js" asp-fallback-src="~/lib/jquery/dist/jquery.min.js" asp-fallback-test="window.jQuery"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
@@ -145,6 +145,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.5.0/angular-local-storage.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" asp-fallback-src="~/lib/nprogress/nprogress.js" asp-fallback-test="window.NProgress"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js" asp-fallback-src="~/lib/moment/moment.js" asp-fallback-test="window.moment"></script>
         <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js" asp-fallback-src="~/lib/lodash/dist/lodash.js" asp-fallback-test="window._"></script>
@@ -174,9 +175,9 @@
 
             var userId = '@(Model != null && !string.IsNullOrEmpty(Model.UserEmail) ? Model.UserEmail : string.Empty)';
             if (userId) {
-                ga('create', 'UA-58465409-1', 'auto', { userId: userId });
+                ga('create', '@appSettings?.Value?.Application?.GoogleAnalytics', 'auto', { userId: userId });
             } else {
-                ga('create', 'UA-58465409-1', 'auto');
+                ga('create', '@appSettings?.Value?.Application?.GoogleAnalytics', 'auto');
             }
     </script>
 

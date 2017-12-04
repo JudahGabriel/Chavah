@@ -3,11 +3,13 @@
 
         static $inject = [
             "audioPlayer",
+            "initConfig",
         ];
 
         lastAnnouncementTime = new Date();
 
-        constructor(private audioPlayer: AudioPlayerService) {
+        constructor(private audioPlayer: AudioPlayerService,
+                    private initConfig: Server.IHomeViewModel) {
         }
 
         hasPendingAnnouncement() {
@@ -32,7 +34,7 @@
             let announcementNumbers = [1, 2, 3, 4, 5, 6];
             // tslint:disable-next-line:max-line-length
             let songRequestName = "StationId" + announcementNumbers[Math.floor(Math.random() * announcementNumbers.length)] + ".mp3";
-            let songUrl = "https://bitshuvafiles01.com/chavah/soundEffects/" + songRequestName;
+            let songUrl = `${this.initConfig.soundEffects}/${songRequestName}`;
             this.audioPlayer.playNewUri(songUrl);
         }
     }

@@ -3,8 +3,9 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var StationIdentifierService = (function () {
-            function StationIdentifierService(audioPlayer) {
+            function StationIdentifierService(audioPlayer, initConfig) {
                 this.audioPlayer = audioPlayer;
+                this.initConfig = initConfig;
                 this.lastAnnouncementTime = new Date();
             }
             StationIdentifierService.prototype.hasPendingAnnouncement = function () {
@@ -27,13 +28,14 @@ var BitShuva;
                 var announcementNumbers = [1, 2, 3, 4, 5, 6];
                 // tslint:disable-next-line:max-line-length
                 var songRequestName = "StationId" + announcementNumbers[Math.floor(Math.random() * announcementNumbers.length)] + ".mp3";
-                var songUrl = "https://bitshuvafiles01.com/chavah/soundEffects/" + songRequestName;
+                var songUrl = this.initConfig.soundEffects + "/" + songRequestName;
                 this.audioPlayer.playNewUri(songUrl);
             };
             return StationIdentifierService;
         }());
         StationIdentifierService.$inject = [
             "audioPlayer",
+            "initConfig",
         ];
         Chavah.StationIdentifierService = StationIdentifierService;
         Chavah.App.service("stationIdentifier", StationIdentifierService);

@@ -11,6 +11,8 @@
         currentUser: User | null;
         signedIn = new Rx.BehaviorSubject<boolean>(false);
 
+        private apiUri = "/api/account";
+
         constructor(
             private appNav: AppNavService,
             private initConfig: Server.IHomeViewModel,
@@ -28,7 +30,7 @@
         }
 
         signOut(): ng.IPromise<any> {
-            let signOutTask = this.httpApi.post("/api/account/SignOut", null);
+            let signOutTask = this.httpApi.post(`${this.apiUri}/SignOut`, null);
             signOutTask
                 .then(() => {
                     this.currentUser = null;
@@ -41,7 +43,7 @@
             let args = {
                 asOf: asOfDate,
             };
-            return this.httpApi.postUriEncoded("/api/account/clearNotifications", args);
+            return this.httpApi.postUriEncoded(`${this.apiUri}/clearNotifications`, args);
         }
 
         register(email: string, password: string): ng.IPromise<Server.IRegisterResults> {
@@ -49,14 +51,14 @@
                 email,
                 password,
             };
-            return this.httpApi.postUriEncoded("/api/account/register", args);
+            return this.httpApi.postUriEncoded(`${this.apiUri}/register`, args);
         }
 
-        getUserWithEmail(email: string): ng.IPromise<Server.IAppUser | null> {
+        getUserWithEmail(email: string | null): ng.IPromise<Server.IAppUser | null> {
             let args = {
                 email,
             };
-            return this.httpApi.query<Server.IAppUser | null>("/api/account/getUserWithEmail", args);
+            return this.httpApi.query<Server.IAppUser | null>(`${this.apiUri}/getUserWithEmail`, args);
         }
 
         createPassword(email: string, password: string): ng.IPromise<any> {
@@ -64,7 +66,7 @@
                 email,
                 password,
             };
-            return this.httpApi.postUriEncoded("/api/account/createPassword", args);
+            return this.httpApi.postUriEncoded(`${this.apiUri}/createPassword`, args);
         }
 
         signIn(email: string, password: string, staySignedIn: boolean): ng.IPromise<SignInResult> {
@@ -73,7 +75,7 @@
                 password,
                 staySignedIn,
             };
-            let signInTask = this.httpApi.postUriEncoded<SignInResult>("/api/account/signIn", args);
+            let signInTask = this.httpApi.postUriEncoded<SignInResult>(`${this.apiUri}/signIn`, args);
             signInTask.then(result => {
                 if (result.status === SignInStatus.Success) {
                     this.currentUser = new User(result.email!, result.roles);
@@ -99,14 +101,14 @@
                 confirmCode,
             };
 
-            return this.httpApi.postUriEncoded("/api/account/ConfirmEmail", args);
+            return this.httpApi.postUriEncoded(`${this.apiUri}/ConfirmEmail`, args);
         }
 
         sendPasswordResetEmail(email: string): ng.IPromise<Server.IResetPasswordResult> {
             let args = {
                 email,
             };
-            return this.httpApi.postUriEncoded("/api/account/sendResetPasswordEmail", args);
+            return this.httpApi.postUriEncoded(`${this.apiUri}/sendResetPasswordEmail`, args);
         }
 
         resetPassword(email: string,
@@ -117,7 +119,7 @@
                 passwordResetCode,
                 newPassword,
             };
-            return this.httpApi.postUriEncoded("/api/account/resetPassword", args);
+            return this.httpApi.postUriEncoded(`${this.apiUri}/resetPassword`, args);
         }
     }
 

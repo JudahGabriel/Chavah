@@ -4,7 +4,7 @@
     "noEmitOnError": true,
     "removeComments": false,
     "sourceMap": true,
-    "watch": true,
+    "watch": false,
     "target": "es5",
     "lib": [ "dom", "es5", "scripthost", "es2015.promise" ],
     "noEmitHelpers": true,

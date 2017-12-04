@@ -1,3 +1,4 @@
+using BitShuva.Chavah.Models;
 using BitShuva.Services;
 using System;
 using System.Text.Encodings.Web;
@@ -7,8 +8,6 @@ namespace BitShuva.Chavah.Common
 {
     public static class EmailSenderExtensions
     {
-        private const string appUrl = "https://messianicradio.com"; // TODO: grab this from app settings.
-
         public static void QueueEmailConfirmationAsync(this IEmailSender emailSender, string destination, string link)
         {
             var email = new IdentityMessage
@@ -20,13 +19,13 @@ namespace BitShuva.Chavah.Common
             emailSender.QueueEmail(email);
         }
 
-        public static void QueueResetPassword(this IEmailSender emailSender, string toEmail, string resetCode)
+        public static void QueueResetPassword(this IEmailSender emailSender, string toEmail, string resetCode, Application app)
         {
-            var subject = "Chavah Messianic Radio - reset your password";
+            var subject = $"{app.Title} - reset your password";
             var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
             var confirmationCodeEscaped = GetAngularRouteEscapedCode(resetCode);
-            var confirmUrl = $"{appUrl}/#/resetpassword/{emailEscaped}/{confirmationCodeEscaped}";
-            var html = $"Shalom from Chavah!<p>Please <strong><a href='{confirmUrl}'>click here</a></strong> if you wish to reset your password.</p>";
+            var confirmUrl = $"{app.DefaultUrl}/#/resetpassword/{emailEscaped}/{confirmationCodeEscaped}";
+            var html = $"Shalom from {app.Title}!<p>Please <strong><a href='{confirmUrl}'>click here</a></strong> if you wish to reset your password.</p>";
 
             var email = new IdentityMessage
             {
@@ -37,13 +36,13 @@ namespace BitShuva.Chavah.Common
             emailSender.QueueEmail(email);
         }
 
-        public static void QueueConfirmEmail(this IEmailSender emailSender, string toEmail, string confirmationCode)
+        public static void QueueConfirmEmail(this IEmailSender emailSender, string toEmail, string confirmationCode, Application app)
         {
-            var subject = "Chavah Messianic Radio - confirm your email";
+            var subject = $"{app.Title} - confirm your email";
             var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
             var confirmationCodeEscaped = GetAngularRouteEscapedCode(confirmationCode);
-            var confirmUrl = $"{appUrl}/#/confirmemail/{emailEscaped}/{confirmationCodeEscaped}";
-            var html = $"Shalom from Chavah!<p>Please <strong><a href='{confirmUrl}'>click here</a></strong> to confirm your email address.</p>";
+            var confirmUrl = $"{app.DefaultUrl}/#/confirmemail/{emailEscaped}/{confirmationCodeEscaped}";
+            var html = $"Shalom from {app.Title}!<p>Please <strong><a href='{confirmUrl}'>click here</a></strong> to confirm your email address.</p>";
 
             var email = new IdentityMessage
             {
