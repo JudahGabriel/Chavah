@@ -69,6 +69,7 @@
     <TypeScriptCompile Include="Models\UserSongPreferences.cs.d.ts">
       <DependentUpon>UserSongPreferences.cs</DependentUpon>
     </TypeScriptCompile>
+
   </ItemGroup>
 
   <ItemGroup>
@@ -262,6 +263,10 @@
     <Content Update="wwwroot\css\nprogress.min.css">
       <DependentUpon>nprogress.css</DependentUpon>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 
   <Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
