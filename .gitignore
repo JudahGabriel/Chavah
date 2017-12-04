@@ -271,6 +271,7 @@ Web.Debug.config
 # Chavah.NetCore exceptions
 /Chavah.NetCore/appsettings.Development.json
 /Chavah.NetCore/appsettings.Production.json
+/Chavah.NetCore/appsettings.Test.json
 /Chavah.NetCore/wwwroot/js/app.js
 /Chavah.NetCore/wwwroot/js/*/*.js
 /Chavah.NetCore/wwwroot/js/*/*.js.map
