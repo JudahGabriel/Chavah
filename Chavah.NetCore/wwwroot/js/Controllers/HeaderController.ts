@@ -4,6 +4,7 @@
         static $inject = [
             "initConfig",
             "accountApi",
+            "appNav",
             "$timeout",
         ];
 
@@ -12,6 +13,7 @@
 
         constructor(private readonly initConfig: Server.IHomeViewModel,
                     private readonly accountApi: AccountService,
+                    private appNav: AppNavService,
                     private readonly $timeout: ng.ITimeoutService,
         ) {
 
@@ -54,7 +56,8 @@
 
         signOut() {
             this.accountApi.signOut()
-                .then(() => window.location.reload());
+                //.then(() => window.location.reload());
+                .then(() => this.appNav.signOut());
         }
     }
 

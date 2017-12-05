@@ -18,6 +18,10 @@ var BitShuva;
             AppNavService.prototype.signIn = function () {
                 this.$location.url("/signin");
             };
+            AppNavService.prototype.signOut = function () {
+                this.$location.url("/nowplaying");
+                window.location.reload();
+            };
             AppNavService.prototype.nowPlaying = function () {
                 this.$location.url("/nowplaying");
             };

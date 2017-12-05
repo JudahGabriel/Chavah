@@ -27,8 +27,14 @@
             this.$location.url("/signin");
         }
 
+        signOut() {
+            this.$location.url("/nowplaying");
+            window.location.reload();
+        }
+
         nowPlaying() {
             this.$location.url("/nowplaying");
+          
         }
 
         promptSignIn() {

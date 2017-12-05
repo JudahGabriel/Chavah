@@ -131,6 +131,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
+        [Route("home/embed")]
         public Task<IActionResult> Embed(string user = null,
                               string artist = null,
                               string album = null,

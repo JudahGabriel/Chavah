@@ -3,10 +3,11 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var HeaderController = (function () {
-            function HeaderController(initConfig, accountApi, $timeout) {
+            function HeaderController(initConfig, accountApi, appNav, $timeout) {
                 var _this = this;
                 this.initConfig = initConfig;
                 this.accountApi = accountApi;
+                this.appNav = appNav;
                 this.$timeout = $timeout;
                 this.isNotificationPopoverOpened = false;
                 this.notifications = initConfig.notifications;
@@ -55,14 +56,16 @@ var BitShuva;
                 this.isNotificationPopoverOpened = false;
             };
             HeaderController.prototype.signOut = function () {
+                var _this = this;
                 this.accountApi.signOut()
-                    .then(function () { return window.location.reload(); });
+                    .then(function () { return _this.appNav.signOut(); });
             };
             return HeaderController;
         }());
         HeaderController.$inject = [
             "initConfig",
             "accountApi",
+            "appNav",
             "$timeout",
         ];
         Chavah.HeaderController = HeaderController;
