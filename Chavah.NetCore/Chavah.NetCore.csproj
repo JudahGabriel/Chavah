@@ -90,6 +90,7 @@
     <None Include="wwwroot\css\functions.less" />
     <None Include="wwwroot\css\nprogress.less" />
     <None Include="wwwroot\css\variables.less" />
+    <None Include="wwwroot\Heavenly70.html" />
     <None Include="wwwroot\js\App.ts" />
     <None Include="wwwroot\js\common\List.ts" />
     <None Include="wwwroot\js\common\PagedList.ts" />

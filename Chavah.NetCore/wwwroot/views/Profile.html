@@ -1,4 +1,4 @@
-﻿<section class="page profile-page" ng-controller="ProfileController as vm">
+﻿<section class="page profile-page" ng-controller="ProfileController as vm"  ng-init="vm.loadProfile()">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-offset-2">
             <h3>Profile information<br /><small class="text-muted">{{vm.profile.userName}}</small></h3>
