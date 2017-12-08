@@ -1,11 +1,6 @@
 ﻿namespace BitShuva.Chavah {
     export class ResetPasswordController {
 
-        static $inject = [
-            "accountApi",
-            "$routeParams",
-        ];
-
         readonly email = "";
         password = "";
         readonly confirmCode: string;

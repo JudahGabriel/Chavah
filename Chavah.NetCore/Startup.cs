@@ -69,15 +69,7 @@ namespace BitShuva.Chavah
             services.AddMemoryCache();
             services.AddMvc();
             services.UseBundles(); // Must be *after* .AddMvc()
-            //services.AddProgressiveWebApp(new PwaOptions
-            //{
-            //    CacheId = "v1.1",
-            //    RoutesToPreCache = "",
-            //    RegisterServiceWorker = true,
-            //    RegisterWebmanifest = true,
-            //    Strategy = ServiceWorkerStrategy.CacheFirstSafe,
-            //    OfflineRoute = "/offline.html"
-            //});
+            services.AddProgressiveWebApp();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

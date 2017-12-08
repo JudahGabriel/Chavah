@@ -36,7 +36,7 @@
     <PackageReference Include="RavenDB.StructuredLogger" Version="2.0.1" />
     <PackageReference Include="Sendgrid" Version="9.9.0" />
     <PackageReference Include="System.Interactive" Version="3.1.1" />
-    <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.25" />
+    <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.30" />
   </ItemGroup>
 
   <ItemGroup>
