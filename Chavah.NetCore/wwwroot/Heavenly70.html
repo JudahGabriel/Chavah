@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Chavah Messianic Radio - Heavenly 70, the very best Messianic music</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+<body style="padding: 10px;">
+    <div class="page-header">
+        <h1>Heavenly 70 Messianic Songs <br /><small>The top 70 Messianic songs, as ranked by the international Messianic community on <a href="http://messianicradio.com">Chavah Messianic Radio</a></small></h1>
+    </div>
+    <ol data-bind="foreach: songs">
+        <li>
+            <div class="media" style="box-shadow: 0 0 4px 0 gray; padding: 10px; margin: 10px;">
+                <a class="pull-left" href="#">
+                    <img class="media-object thumbnail" style="max-width: 150px; max-height: 150px;" data-bind="attr: { src: albumArtUri }" alt="...">
+                </a>
+                <div class="media-body">
+                    <h2 class="media-heading">
+                        <a href="#" target="_blank" data-bind="attr: { href: 'https://messianicradio.com?song=' + $data.id }">
+                            <span data-bind="text: '#' + ($index() + 1)"></span>
+                            <span data-bind="text: name"></span>
+                        </a>
+                        <span class="text-muted">ranked</span>
+                        <span data-bind="text: '+' + communityRank"></span>
+                    </h2>
+                    <h3>
+                        <p>
+                            <span class="text-muted">by</span>
+                            <a href="#" target="_blank" data-bind="text: artist, attr: { href: 'https://messianicradio.com?artist=' + artist }"></a>
+                        </p>
+                        <p>
+                            <span class="text-muted">on</span>
+                            <a href="#" target="_blank" data-bind="text: album, attr: { href: 'https://messianicradio.com?album=' + album }"></a>
+                        </p>
+                    </h3>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </li>
+    </ol>
+
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        $(function () {
+            var vm = {
+                songs: ko.observableArray()
+            };
+            ko.applyBindings(vm);
+
+            $.getJSON("/api/songs/heavenly70").done(function (results) { vm.songs(results) });
+        });
+        
+
+    </script>
+</body>
+</html>
