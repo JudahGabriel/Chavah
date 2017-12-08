@@ -46,12 +46,11 @@
         }
 
         markNotificationsAsRead() {
+            this.isNotificationPopoverOpened = false;
             if (this.notifications.some(n => n.isUnread)) {
                 this.notifications.forEach(n => n.isUnread = false);
                 this.accountApi.clearNotifications(this.notifications[0].date);
             }
-
-            this.isNotificationPopoverOpened = false;
         }
 
         signOut() {

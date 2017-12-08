@@ -49,11 +49,11 @@ var BitShuva;
                 }
             };
             HeaderController.prototype.markNotificationsAsRead = function () {
+                this.isNotificationPopoverOpened = false;
                 if (this.notifications.some(function (n) { return n.isUnread; })) {
                     this.notifications.forEach(function (n) { return n.isUnread = false; });
                     this.accountApi.clearNotifications(this.notifications[0].date);
                 }
-                this.isNotificationPopoverOpened = false;
             };
             HeaderController.prototype.signOut = function () {
                 var _this = this;

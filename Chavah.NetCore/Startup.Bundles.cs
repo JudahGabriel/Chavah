@@ -26,7 +26,6 @@ namespace BitShuva.Chavah
                     "css/nprogress.min.css",
                     "css/app/*.min.css"
                 });
-
             });
         }
     }
