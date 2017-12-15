@@ -86,5 +86,13 @@
   {
     "outputFile": "wwwroot/css/bootstrap-flatly.css",
     "inputFile": "wwwroot/css/bootstrap-flatly.less"
+  },
+  {
+    "outputFile": "wwwroot/css/animations.css",
+    "inputFile": "wwwroot/css/animations.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/hanukkah.css",
+    "inputFile": "wwwroot/css/app/hanukkah.less"
   }
 ]

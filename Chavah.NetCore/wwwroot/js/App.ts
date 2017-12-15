@@ -25,7 +25,7 @@
     }
     export const FindAppView = findCacheBustedView;
 
-    function createRoute(templateUrl: string, access = RouteAccess.Anonymous): IRoute {
+    function createRoute(templateUrl: string, access = RouteAccess.Anonymous): IAppRoute {
         let cacheBustedView = findCacheBustedView(templateUrl);
         return {
             templateUrl: cacheBustedView,
@@ -173,7 +173,7 @@
                 const route: IAppRoute = next.$$route;
 
                 // If we're an admin route, load the admin-specific scripts.
-                if (route && route.isAdmin) {
+                if (route && route.access === RouteAccess.Admin) {
                     adminScripts.install();
 
                     // Also, cancel navigation if we're not an admin user and redirect to sign-in.

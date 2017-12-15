@@ -137,9 +137,9 @@
     <environment names="Test,Staging,Production">
         @*3rd party JS*@
         @*
-        Note: we append a v= query string so that it's considered fingerprinted by our service worker.
-        Our service worker is configured to cache all resources that have the 'v=' query string.
-        Also note that for the service worker to add these to the cache, the CDN resources must have the crossorigin="anonymous" attribute.
+            Note: we append a v= query string so that it's considered fingerprinted by our service worker.
+            Our service worker is configured to cache all resources that have the 'v=' query string.
+            Also note that for the service worker to add these to the cache, the CDN resources must have the crossorigin="anonymous" attribute.
         *@
         <script src="https://code.jquery.com/jquery-2.2.4.min.js?v=1" crossorigin="anonymous" asp-fallback-src="~/lib/jquery/dist/jquery.min.js" asp-fallback-test="window.jQuery"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js?v=1" crossorigin="anonymous" asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
@@ -163,10 +163,11 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+    @Html.Partial("Hanukkah")
 
     @*TrackJS for diagnosing client-side errors*@
     @*<script type="text/javascript">window._trackJs = { token: '3f47a41e023149458b76ae8aa70bab84' };</script>
-    <script type="text/javascript" src="https://cdn.trackjs.com/releases/current/tracker.js"></script>*@
+        <script type="text/javascript" src="https://cdn.trackjs.com/releases/current/tracker.js"></script>*@
 
     @*Google analytics*@
     <script>

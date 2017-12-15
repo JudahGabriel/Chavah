@@ -68,10 +68,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\views\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\css\app\adminSidebar.less" />
     <None Include="wwwroot\css\app\albums.less" />
     <None Include="wwwroot\css\app\editArtist.less" />
@@ -260,6 +256,10 @@
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Partials\" />
   </ItemGroup>
 
   <Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
