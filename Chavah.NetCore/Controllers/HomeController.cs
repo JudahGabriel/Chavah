@@ -68,11 +68,11 @@ namespace BitShuva.Chavah.Controllers
             {
                 Embed = embed,
                 CacheBustedAngularViews = this.cacheBustedNgViews.Views,
-                Title = options?.Value?.Application.Title,
-                Description = options?.Value.Application?.Description,
-                DefaultUrl = options?.Value?.Application?.DefaultUrl,
-                CdnUrl = options?.Value?.Cdn?.HttpPath,
-                SoundEffects = $"{options?.Value?.Cdn?.HttpPath}{options?.Value?.Cdn?.SoundEffects}",
+                Title = options.Value.Application.Title,
+                Description = options.Value.Application?.Description,
+                DefaultUrl = options.Value.Application?.DefaultUrl,
+                CdnUrl = options.Value.Cdn.HttpPath,
+                SoundEffects = new Uri(new Uri(options.Value.Cdn.HttpPath), options.Value.Cdn.SoundEffects).ToString(),
             };
 
             var userName = User.Identity.Name;
