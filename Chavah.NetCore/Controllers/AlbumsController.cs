@@ -47,14 +47,12 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="fileName">The file name. Used for extracting the extension.</param>
         /// <param name="artist">The artist this album art applies to.</param>
         /// <param name="album">The name of the album this album art applies to.</param>
-        [Route("get")]
         [HttpGet]
         public Task<Album> Get(string id)
         {
             return DbSession.LoadAsync<Album>(id);
         }
-
-        [Route("getAll")]
+        
         [HttpGet]
         public async Task<PagedList<Album>> GetAll(int skip, int take, string search)
         {
@@ -77,12 +75,10 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpGet]
-        public async Task<HttpResponseMessage> GetAlbumArtBySongId(string songId)
+        public async Task<RedirectResult> GetAlbumArtBySongId(string songId)
         {
             var song = await DbSession.LoadNotNullAsync<Song>(songId);
-            var response = new HttpResponseMessage(HttpStatusCode.Moved);
-            response.Headers.Location = song.AlbumArtUri;
-            return response;
+            return Redirect(song.AlbumArtUri.ToString());
         }
         
         [HttpGet]
@@ -240,20 +236,19 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="imageUrl"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<HttpResponseMessage> ImageOnDomain(string imageUrl)
+        public async Task<FileContentResult> ImageOnDomain(string imageUrl)
         {
             if (string.IsNullOrWhiteSpace(imageUrl))
             {
                 throw new ArgumentNullException(nameof(imageUrl));
             }
 
+            
             var response = new HttpResponseMessage();
             using (var webClient = new WebClient())
             {
                 var bytes = await webClient.DownloadDataTaskAsync(imageUrl);
-                response.Content = new StreamContent(new MemoryStream(bytes)); // this file stream will be closed by lower layers of web api for you once the response is completed.
-                response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-                return response;
+                return File(bytes, "image/jpeg");
             }
         }
 

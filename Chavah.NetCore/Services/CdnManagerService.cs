@@ -32,9 +32,9 @@ namespace BitShuva.Chavah.Services
             this.hostingEnv = hostingEnv;
         }
 
-        public Uri FtpAddress => new Uri(cdnSettings?.FtpHost);
-        public Uri FtpWorkingDirectory => new Uri(cdnSettings?.FtpWorkingDirectory, UriKind.Relative);
-        public Uri FtpMusic => this.FtpWorkingDirectory.Combine(cdnSettings?.MusicDirectory);
+        //public Uri FtpAddress => new Uri(cdnSettings?.FtpHost);
+        //public Uri FtpWorkingDirectory => new Uri(cdnSettings?.FtpWorkingDirectory, UriKind.Relative);
+        //public Uri FtpMusic => this.FtpWorkingDirectory.Combine(cdnSettings?.MusicDirectory);
         //public Uri FtpAlbumArt => this.FtpAddress.Combine("album-art");
         //public Uri FtpArtistImages => this.FtpAddress.Combine("artist-images");
         public Uri HttpHost => new Uri(cdnSettings?.HttpPath);
@@ -56,7 +56,6 @@ namespace BitShuva.Chavah.Services
                 tempDownloadedFile = await DownloadFileLocally(tempHttpAddress);
                 using (var ftpConnection = await CreateFtpConnection())
                 {
-
                     // Inside the music directory, create the artist directory as needed.
                     await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings?.MusicDirectory);
                     var musicArtistDirs = await ftpConnection.ListDirectoriesAsync();
@@ -213,18 +212,14 @@ namespace BitShuva.Chavah.Services
             {
                 var artistFolder = GetAlphaNumericEnglish(song.Artist);
                 var songFileName = GetCdnSafeSongFileName(song.Artist, song.Album, song.Number, song.Name);
-                var songUri = FtpMusic.Combine(artistFolder, songFileName);
-                await connection.DeleteDirectoryAsync(songUri.AbsoluteUri);
+
+                // Go into the /music/[artist name] folder.
+                await connection.ChangeWorkingDirectoryAsync(this.cdnSettings.MusicDirectory);
+                await connection.ChangeWorkingDirectoryAsync(artistFolder);
+
+                await connection.DeleteFileAsync(songFileName);
             }
         }
-
-        //public static Uri DefaultAlbumArtUri
-        //{
-        //    get
-        //    {
-        //        return albumArtUri.Combine("default.jpg");
-        //    }
-        //}
 
         private async Task<FtpClient> CreateFtpConnection()
         {
@@ -233,7 +228,6 @@ namespace BitShuva.Chavah.Services
                 Host = this.cdnSettings?.FtpHost,
                 Username = this.cdnSettings?.FtpUserName,
                 Password = this.cdnSettings?.FtpPassword,
-                BaseDirectory = this.cdnSettings?.FtpWorkingDirectory
             });
             await client.LoginAsync();
             await client.ChangeWorkingDirectoryAsync(this.cdnSettings?.FtpWorkingDirectory);

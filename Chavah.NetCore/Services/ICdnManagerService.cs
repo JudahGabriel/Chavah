@@ -6,9 +6,9 @@ namespace BitShuva.Chavah.Services
 {
     public interface ICdnManagerService
     {
-        Uri FtpAddress { get; }
-        Uri FtpMusic { get; }
-        Uri FtpWorkingDirectory { get; }
+        //Uri FtpAddress { get; }
+        //Uri FtpMusic { get; }
+        //Uri FtpWorkingDirectory { get; }
         Uri HttpAlbumArt { get; }
         Uri HttpArtistImages { get; }
         Uri HttpHost { get; }
