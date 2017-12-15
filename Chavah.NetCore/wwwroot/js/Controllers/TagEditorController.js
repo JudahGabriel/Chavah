@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var TagEditorController = (function () {
+        var TagEditorController = /** @class */ (function () {
             function TagEditorController(tagApi) {
                 var _this = this;
                 this.tagApi = tagApi;
@@ -46,9 +46,9 @@ var BitShuva;
                         .finally(function () { return _this.isSaving = false; });
                 }
             };
+            TagEditorController.$inject = ["tagApi"];
             return TagEditorController;
         }());
-        TagEditorController.$inject = ["tagApi"];
         Chavah.TagEditorController = TagEditorController;
         Chavah.App.controller("TagEditorController", TagEditorController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

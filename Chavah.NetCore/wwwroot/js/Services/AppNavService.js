@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var AppNavService = (function () {
+        var AppNavService = /** @class */ (function () {
             function AppNavService(audioPlayer, templatePaths, $location, $uibModal, initConfig) {
                 var _this = this;
                 this.audioPlayer = audioPlayer;
@@ -79,15 +79,15 @@ var BitShuva;
                     document.title = this.initConfig.title;
                 }
             };
+            AppNavService.$inject = [
+                "audioPlayer",
+                "templatePaths",
+                "$location",
+                "$uibModal",
+                "initConfig",
+            ];
             return AppNavService;
         }());
-        AppNavService.$inject = [
-            "audioPlayer",
-            "templatePaths",
-            "$location",
-            "$uibModal",
-            "initConfig",
-        ];
         Chavah.AppNavService = AppNavService;
         Chavah.App.service("appNav", AppNavService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var HttpApiService = (function () {
+        var HttpApiService = /** @class */ (function () {
             function HttpApiService(loadingProgress, $http, localStorageService, $q) {
                 this.loadingProgress = loadingProgress;
                 this.$http = $http;
@@ -123,14 +123,14 @@ var BitShuva;
                 //    this.isShowingApiError = true;
                 // }
             };
+            HttpApiService.$inject = [
+                "loadingProgress",
+                "$http",
+                "localStorageService",
+                "$q",
+            ];
             return HttpApiService;
         }());
-        HttpApiService.$inject = [
-            "loadingProgress",
-            "$http",
-            "localStorageService",
-            "$q",
-        ];
         Chavah.HttpApiService = HttpApiService;
         Chavah.App.service("httpApi", HttpApiService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

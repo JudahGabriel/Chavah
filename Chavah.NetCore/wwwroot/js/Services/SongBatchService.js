@@ -6,7 +6,7 @@ var BitShuva;
          * SongBatchService fetches a group of songs in a single remote call.
          * This makes the UI more responsive, quickly playing the next song without having to make extra remote calls.
          */
-        var SongBatchService = (function () {
+        var SongBatchService = /** @class */ (function () {
             function SongBatchService(audioPlayer, songApi, songRequestApi, accountApi) {
                 var _this = this;
                 this.audioPlayer = audioPlayer;
@@ -62,14 +62,14 @@ var BitShuva;
                     this.fetchSongBatch();
                 }
             };
+            SongBatchService.$inject = [
+                "audioPlayer",
+                "songApi",
+                "songRequestApi",
+                "accountApi",
+            ];
             return SongBatchService;
         }());
-        SongBatchService.$inject = [
-            "audioPlayer",
-            "songApi",
-            "songRequestApi",
-            "accountApi",
-        ];
         Chavah.SongBatchService = SongBatchService;
         Chavah.App.service("songBatch", SongBatchService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

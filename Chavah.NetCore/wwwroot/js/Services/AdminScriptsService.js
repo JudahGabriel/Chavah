@@ -5,7 +5,7 @@ var BitShuva;
         /**
          * Service that adds admin-specific scripts to the document if not already added.
          */
-        var AdminScriptsService = (function () {
+        var AdminScriptsService = /** @class */ (function () {
             function AdminScriptsService() {
                 this.hasInstalled = false;
             }

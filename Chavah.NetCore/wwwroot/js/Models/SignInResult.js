@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var SignInResult = (function () {
+        var SignInResult = /** @class */ (function () {
             function SignInResult() {
             }
             return SignInResult;

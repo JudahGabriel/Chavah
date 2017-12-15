@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var SignInController = (function () {
+        var SignInController = /** @class */ (function () {
             function SignInController(accountApi, appNav, $scope) {
                 var _this = this;
                 this.accountApi = accountApi;
@@ -56,13 +56,13 @@ var BitShuva;
                 this.showUserNotInSystem = false;
                 this.showEmailError = false;
             };
+            SignInController.$inject = [
+                "accountApi",
+                "appNav",
+                "$scope",
+            ];
             return SignInController;
         }());
-        SignInController.$inject = [
-            "accountApi",
-            "appNav",
-            "$scope",
-        ];
         Chavah.SignInController = SignInController;
         Chavah.App.controller("SignInController", SignInController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

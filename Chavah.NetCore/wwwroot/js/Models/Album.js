@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var Album = (function () {
+        var Album = /** @class */ (function () {
             function Album(serverObj) {
                 this.isSaving = false;
                 angular.merge(this, serverObj);

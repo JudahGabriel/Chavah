@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var SongApiService = (function () {
+        var SongApiService = /** @class */ (function () {
             function SongApiService(httpApi) {
                 this.httpApi = httpApi;
             }
@@ -117,9 +117,9 @@ var BitShuva;
             SongApiService.songConverter = function (raw) {
                 return new Chavah.Song(raw);
             };
+            SongApiService.$inject = ["httpApi"];
             return SongApiService;
         }());
-        SongApiService.$inject = ["httpApi"];
         Chavah.SongApiService = SongApiService;
         Chavah.App.service("songApi", SongApiService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

@@ -5,7 +5,7 @@ var BitShuva;
         /**
          * Angular directive that calls a function when the enter key is pressed on an input element.
          */
-        var EnterHandler = (function () {
+        var EnterHandler = /** @class */ (function () {
             function EnterHandler(scope, element, attributes, parse) {
                 this.scope = scope;
                 this.element = element;
@@ -25,7 +25,7 @@ var BitShuva;
             return EnterHandler;
         }());
         // tslint:disable-next-line:max-classes-per-file
-        var EnterHandlerBinder = (function () {
+        var EnterHandlerBinder = /** @class */ (function () {
             function EnterHandlerBinder($parse) {
                 this.$parse = $parse;
                 this.restrict = "A";

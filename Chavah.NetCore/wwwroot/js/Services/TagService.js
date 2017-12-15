@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var TagService = (function () {
+        var TagService = /** @class */ (function () {
             function TagService(httpApi) {
                 this.httpApi = httpApi;
             }
@@ -28,9 +28,9 @@ var BitShuva;
                 };
                 return this.httpApi.query("/api/tags/searchTags", args);
             };
+            TagService.$inject = ["httpApi"];
             return TagService;
         }());
-        TagService.$inject = ["httpApi"];
         Chavah.TagService = TagService;
         Chavah.App.service("tagApi", TagService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

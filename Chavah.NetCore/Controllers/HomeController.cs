@@ -72,7 +72,7 @@ namespace BitShuva.Chavah.Controllers
                 Description = options.Value.Application?.Description,
                 DefaultUrl = options.Value.Application?.DefaultUrl,
                 CdnUrl = options.Value.Cdn.HttpPath,
-                SoundEffects = new Uri(new Uri(options.Value.Cdn.HttpPath), options.Value.Cdn.SoundEffects).ToString(),
+                SoundEffects = new Uri(options.Value.Cdn.HttpPath).Combine(options.Value.Cdn.SoundEffects).ToString()
             };
 
             var userName = User.Identity.Name;

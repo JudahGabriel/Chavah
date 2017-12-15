@@ -5,7 +5,7 @@ var BitShuva;
         /**
          * A cache of albums. Used to reduce traffic to the server when we need to fetch album colors for a particular song.
          */
-        var AlbumCacheService = (function () {
+        var AlbumCacheService = /** @class */ (function () {
             function AlbumCacheService(albumApi, $q) {
                 this.albumApi = albumApi;
                 this.$q = $q;
@@ -86,14 +86,14 @@ var BitShuva;
                 }
                 return null;
             };
+            AlbumCacheService.$inject = [
+                "albumApi",
+                "$q",
+            ];
+            AlbumCacheService.cacheKey = "album-art-cache";
+            AlbumCacheService.hasAttemptedRehydratedCache = false;
             return AlbumCacheService;
         }());
-        AlbumCacheService.$inject = [
-            "albumApi",
-            "$q",
-        ];
-        AlbumCacheService.cacheKey = "album-art-cache";
-        AlbumCacheService.hasAttemptedRehydratedCache = false;
         Chavah.AlbumCacheService = AlbumCacheService;
         Chavah.App.service("albumCache", AlbumCacheService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

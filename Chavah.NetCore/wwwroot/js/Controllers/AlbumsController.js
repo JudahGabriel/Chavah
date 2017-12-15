@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var AlbumsController = (function () {
+        var AlbumsController = /** @class */ (function () {
             function AlbumsController(albumApi, appNav) {
                 var _this = this;
                 this.albumApi = albumApi;
@@ -38,12 +38,12 @@ var BitShuva;
                     });
                 });
             };
+            AlbumsController.$inject = [
+                "albumApi",
+                "appNav",
+            ];
             return AlbumsController;
         }());
-        AlbumsController.$inject = [
-            "albumApi",
-            "appNav",
-        ];
         Chavah.AlbumsController = AlbumsController;
         Chavah.App.controller("AlbumsController", AlbumsController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

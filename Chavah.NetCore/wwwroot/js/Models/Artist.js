@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var Artist = (function () {
+        var Artist = /** @class */ (function () {
             function Artist(serverObj) {
                 this.isSaving = false;
                 if (!serverObj) {

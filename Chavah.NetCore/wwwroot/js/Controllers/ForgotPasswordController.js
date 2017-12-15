@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var ForgotPasswordController = (function () {
+        var ForgotPasswordController = /** @class */ (function () {
             function ForgotPasswordController(accountApi) {
                 this.accountApi = accountApi;
                 this.email = "";
@@ -52,11 +52,11 @@ var BitShuva;
                 this.resetPasswordSuccessfully = false;
                 this.resetErrorMessage = "";
             };
+            ForgotPasswordController.$inject = [
+                "accountApi",
+            ];
             return ForgotPasswordController;
         }());
-        ForgotPasswordController.$inject = [
-            "accountApi",
-        ];
         Chavah.ForgotPasswordController = ForgotPasswordController;
         Chavah.App.controller("ForgotPasswordController", ForgotPasswordController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

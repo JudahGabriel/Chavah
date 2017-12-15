@@ -5,7 +5,7 @@ var BitShuva;
         /**
          * Angular directive that triggers focus on an element given an expression that evaluates to true.
          */
-        var TriggerFocus = (function () {
+        var TriggerFocus = /** @class */ (function () {
             function TriggerFocus(scope, element, attributes, timeout, parse) {
                 this.scope = scope;
                 this.element = element;
@@ -20,7 +20,7 @@ var BitShuva;
             return TriggerFocus;
         }());
         // tslint:disable-next-line:max-classes-per-file
-        var TriggerFocusBinder = (function () {
+        var TriggerFocusBinder = /** @class */ (function () {
             function TriggerFocusBinder($timeout, $parse) {
                 this.$timeout = $timeout;
                 this.$parse = $parse;

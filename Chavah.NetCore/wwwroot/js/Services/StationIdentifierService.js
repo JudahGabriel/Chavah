@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var StationIdentifierService = (function () {
+        var StationIdentifierService = /** @class */ (function () {
             function StationIdentifierService(audioPlayer, initConfig) {
                 this.audioPlayer = audioPlayer;
                 this.initConfig = initConfig;
@@ -31,12 +31,12 @@ var BitShuva;
                 var songUrl = this.initConfig.soundEffects + "/" + songRequestName;
                 this.audioPlayer.playNewUri(songUrl);
             };
+            StationIdentifierService.$inject = [
+                "audioPlayer",
+                "initConfig",
+            ];
             return StationIdentifierService;
         }());
-        StationIdentifierService.$inject = [
-            "audioPlayer",
-            "initConfig",
-        ];
         Chavah.StationIdentifierService = StationIdentifierService;
         Chavah.App.service("stationIdentifier", StationIdentifierService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

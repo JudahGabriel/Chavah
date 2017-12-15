@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var SongListController = (function () {
+        var SongListController = /** @class */ (function () {
             function SongListController(audioPlayer) {
                 this.audioPlayer = audioPlayer;
             }
@@ -12,11 +12,11 @@ var BitShuva;
                 clone.setSolePickReason(Chavah.SongPick.YouRequestedSong);
                 this.audioPlayer.playNewSong(clone);
             };
+            SongListController.$inject = [
+                "audioPlayer",
+            ];
             return SongListController;
         }());
-        SongListController.$inject = [
-            "audioPlayer",
-        ];
         Chavah.SongListController = SongListController;
         Chavah.App.controller("SongListController", SongListController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

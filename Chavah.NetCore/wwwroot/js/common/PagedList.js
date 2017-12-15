@@ -5,7 +5,7 @@ var BitShuva;
         /**
          * A list that fetches chunks of items at a time. Provides optional caching via local storage.
          */
-        var PagedList = (function () {
+        var PagedList = /** @class */ (function () {
             function PagedList(fetcher, cacheKey, afterFetch) {
                 this.fetcher = fetcher;
                 this.cacheKey = cacheKey;

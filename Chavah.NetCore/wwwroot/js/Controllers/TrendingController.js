@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var TrendingController = (function () {
+        var TrendingController = /** @class */ (function () {
             function TrendingController(songApi, albumCache, audioPlayer) {
                 var _this = this;
                 this.songApi = songApi;
@@ -67,14 +67,14 @@ var BitShuva;
             TrendingController.prototype.playSong = function (song) {
                 this.audioPlayer.playSongById(song.id);
             };
+            TrendingController.maxVisibleSongs = 5;
+            TrendingController.$inject = [
+                "songApi",
+                "albumCache",
+                "audioPlayer",
+            ];
             return TrendingController;
         }());
-        TrendingController.maxVisibleSongs = 5;
-        TrendingController.$inject = [
-            "songApi",
-            "albumCache",
-            "audioPlayer",
-        ];
         Chavah.TrendingController = TrendingController;
         Chavah.App.controller("TrendingController", TrendingController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var AlbumApiService = (function () {
+        var AlbumApiService = /** @class */ (function () {
             function AlbumApiService(httpApi, $q) {
                 this.httpApi = httpApi;
                 this.$q = $q;
@@ -42,7 +42,7 @@ var BitShuva;
                 return this.httpApi.query("/api/albums/getByArtistAlbum", args, AlbumApiService.albumSelector);
             };
             AlbumApiService.prototype.save = function (album) {
-                return this.httpApi.post("/api/albums/save", album, AlbumApiService.albumSelector);
+                return this.httpApi.post("/api/albums/save", album, function (a) { return new Chavah.Album(a); });
             };
             AlbumApiService.prototype.getAlbums = function (albumIds) {
                 var args = {
@@ -86,12 +86,12 @@ var BitShuva;
                     total: serverObj.total,
                 };
             };
+            AlbumApiService.$inject = [
+                "httpApi",
+                "$q",
+            ];
             return AlbumApiService;
         }());
-        AlbumApiService.$inject = [
-            "httpApi",
-            "$q",
-        ];
         Chavah.AlbumApiService = AlbumApiService;
         Chavah.App.service("albumApi", AlbumApiService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

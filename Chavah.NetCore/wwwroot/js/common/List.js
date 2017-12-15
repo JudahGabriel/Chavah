@@ -5,7 +5,7 @@ var BitShuva;
         /**
          * A list that fetches its items asynchronously. Provides optional caching via local storage.
          */
-        var List = (function () {
+        var List = /** @class */ (function () {
             /**
              * Constructs a new list.
              * @param fetcher The function that fetches the items from the server.

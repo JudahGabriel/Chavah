@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var ApproveSongEditsController = (function () {
+        var ApproveSongEditsController = /** @class */ (function () {
             function ApproveSongEditsController(songApi, songEditApi, tagApi) {
                 var _this = this;
                 this.songApi = songApi;
@@ -93,13 +93,13 @@ var BitShuva;
             ApproveSongEditsController.prototype.searchTags = function (search) {
                 return this.tagApi.searchTags(search);
             };
+            ApproveSongEditsController.$inject = [
+                "songApi",
+                "songEditApi",
+                "tagApi",
+            ];
             return ApproveSongEditsController;
         }());
-        ApproveSongEditsController.$inject = [
-            "songApi",
-            "songEditApi",
-            "tagApi",
-        ];
         Chavah.ApproveSongEditsController = ApproveSongEditsController;
         Chavah.App.controller("ApproveSongEditsController", ApproveSongEditsController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

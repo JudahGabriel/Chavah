@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var AccountService = (function () {
+        var AccountService = /** @class */ (function () {
             function AccountService(appNav, initConfig, httpApi, localStorageService) {
                 this.appNav = appNav;
                 this.initConfig = initConfig;
@@ -104,14 +104,14 @@ var BitShuva;
                 };
                 return this.httpApi.postUriEncoded(this.apiUri + "/resetPassword", args);
             };
+            AccountService.$inject = [
+                "appNav",
+                "initConfig",
+                "httpApi",
+                "localStorageService",
+            ];
             return AccountService;
         }());
-        AccountService.$inject = [
-            "appNav",
-            "initConfig",
-            "httpApi",
-            "localStorageService",
-        ];
         Chavah.AccountService = AccountService;
         Chavah.App.service("accountApi", AccountService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

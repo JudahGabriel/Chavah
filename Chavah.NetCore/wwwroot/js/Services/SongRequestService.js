@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var SongRequestApiService = (function () {
+        var SongRequestApiService = /** @class */ (function () {
             function SongRequestApiService(httpApi, audioPlayer, songApi, initConfig) {
                 this.httpApi = httpApi;
                 this.audioPlayer = audioPlayer;
@@ -68,14 +68,14 @@ var BitShuva;
                     }
                 });
             };
+            SongRequestApiService.$inject = [
+                "httpApi",
+                "audioPlayer",
+                "songApi",
+                "initConfig",
+            ];
             return SongRequestApiService;
         }());
-        SongRequestApiService.$inject = [
-            "httpApi",
-            "audioPlayer",
-            "songApi",
-            "initConfig",
-        ];
         Chavah.SongRequestApiService = SongRequestApiService;
         Chavah.App.service("songRequestApi", SongRequestApiService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

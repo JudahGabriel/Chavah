@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var LikeApiService = (function () {
+        var LikeApiService = /** @class */ (function () {
             function LikeApiService(httpApi) {
                 this.httpApi = httpApi;
             }
@@ -18,9 +18,9 @@ var BitShuva;
                 };
                 return this.httpApi.postUriEncoded("/api/likes/like", args);
             };
+            LikeApiService.$inject = ["httpApi"];
             return LikeApiService;
         }());
-        LikeApiService.$inject = ["httpApi"];
         Chavah.LikeApiService = LikeApiService;
         Chavah.App.service("likeApi", LikeApiService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

@@ -6,7 +6,7 @@ var BitShuva;
          * Service that allows you to create deferred objects that show loading UI.
          * When the loading is completed, if no other load operations are occurring,  the loading UI will be hidden.
          */
-        var LoadingProgressService = (function () {
+        var LoadingProgressService = /** @class */ (function () {
             function LoadingProgressService($q) {
                 this.$q = $q;
                 this.resultsInProgress = 0;
@@ -40,9 +40,9 @@ var BitShuva;
                     NProgress.done();
                 }
             };
+            LoadingProgressService.$inject = ["$q"];
             return LoadingProgressService;
         }());
-        LoadingProgressService.$inject = ["$q"];
         Chavah.LoadingProgressService = LoadingProgressService;
         Chavah.App.service("loadingProgress", LoadingProgressService);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

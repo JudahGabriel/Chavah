@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var RequestSongController = (function () {
+        var RequestSongController = /** @class */ (function () {
             function RequestSongController(songApi, templatePaths, $uibModalInstance, $q) {
                 this.songApi = songApi;
                 this.templatePaths = templatePaths;
@@ -30,14 +30,14 @@ var BitShuva;
             RequestSongController.prototype.close = function () {
                 this.$uibModalInstance.close(null);
             };
+            RequestSongController.$inject = [
+                "songApi",
+                "templatePaths",
+                "$uibModalInstance",
+                "$q",
+            ];
             return RequestSongController;
         }());
-        RequestSongController.$inject = [
-            "songApi",
-            "templatePaths",
-            "$uibModalInstance",
-            "$q",
-        ];
         Chavah.RequestSongController = RequestSongController;
         Chavah.App.controller("RequestSongController", RequestSongController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

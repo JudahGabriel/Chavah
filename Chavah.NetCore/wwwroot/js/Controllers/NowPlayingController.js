@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var NowPlayingController = (function () {
+        var NowPlayingController = /** @class */ (function () {
             function NowPlayingController(songApi, songBatch, audioPlayer, albumCache, initConfig, appNav, accountApi, $q) {
                 var _this = this;
                 this.songApi = songApi;
@@ -236,18 +236,18 @@ var BitShuva;
                 }
                 return null;
             };
+            NowPlayingController.$inject = [
+                "songApi",
+                "songBatch",
+                "audioPlayer",
+                "albumCache",
+                "initConfig",
+                "appNav",
+                "accountApi",
+                "$q",
+            ];
             return NowPlayingController;
         }());
-        NowPlayingController.$inject = [
-            "songApi",
-            "songBatch",
-            "audioPlayer",
-            "albumCache",
-            "initConfig",
-            "appNav",
-            "accountApi",
-            "$q",
-        ];
         Chavah.NowPlayingController = NowPlayingController;
         Chavah.App.controller("NowPlayingController", NowPlayingController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

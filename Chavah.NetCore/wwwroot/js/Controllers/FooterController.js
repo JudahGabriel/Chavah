@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var FooterController = (function () {
+        var FooterController = /** @class */ (function () {
             function FooterController(audioPlayer, songBatch, likeApi, songRequestApi, accountApi, stationIdentifier, appNav, $scope) {
                 var _this = this;
                 this.audioPlayer = audioPlayer;
@@ -234,18 +234,18 @@ var BitShuva;
                     }
                 }
             };
+            FooterController.$inject = [
+                "audioPlayer",
+                "songBatch",
+                "likeApi",
+                "songRequestApi",
+                "accountApi",
+                "stationIdentifier",
+                "appNav",
+                "$scope",
+            ];
             return FooterController;
         }());
-        FooterController.$inject = [
-            "audioPlayer",
-            "songBatch",
-            "likeApi",
-            "songRequestApi",
-            "accountApi",
-            "stationIdentifier",
-            "appNav",
-            "$scope",
-        ];
         Chavah.FooterController = FooterController;
         Chavah.App.controller("FooterController", FooterController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));

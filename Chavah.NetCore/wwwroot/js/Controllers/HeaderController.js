@@ -2,7 +2,7 @@ var BitShuva;
 (function (BitShuva) {
     var Chavah;
     (function (Chavah) {
-        var HeaderController = (function () {
+        var HeaderController = /** @class */ (function () {
             function HeaderController(initConfig, accountApi, appNav, $timeout) {
                 var _this = this;
                 this.initConfig = initConfig;
@@ -60,14 +60,14 @@ var BitShuva;
                 this.accountApi.signOut()
                     .then(function () { return _this.appNav.signOut(); });
             };
+            HeaderController.$inject = [
+                "initConfig",
+                "accountApi",
+                "appNav",
+                "$timeout",
+            ];
             return HeaderController;
         }());
-        HeaderController.$inject = [
-            "initConfig",
-            "accountApi",
-            "appNav",
-            "$timeout",
-        ];
         Chavah.HeaderController = HeaderController;
         Chavah.App.controller("HeaderController", HeaderController);
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
