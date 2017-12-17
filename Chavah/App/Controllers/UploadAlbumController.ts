@@ -207,5 +207,5 @@
         }
     }
 
-    App.controller("UploadAlbumController", UploadAlbumController);
+    App.controller("UploadAlbumController", UploadAlbumController as any);
 }

@@ -39,5 +39,5 @@
         }
     }
 
-    App.controller("RequestSongController", RequestSongController);
+    App.controller("RequestSongController", RequestSongController as any);
 }

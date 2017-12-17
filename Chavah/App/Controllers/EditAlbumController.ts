@@ -157,5 +157,5 @@
         }
     }
 
-    App.controller("EditAlbumController", EditAlbumController);
+    App.controller("EditAlbumController", EditAlbumController as any);
 }

@@ -63,5 +63,5 @@
         }
     }
 
-    App.controller("TrendingController", TrendingController);
+    App.controller("TrendingController", TrendingController as any);
 }

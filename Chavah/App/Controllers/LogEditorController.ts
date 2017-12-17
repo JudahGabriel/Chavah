@@ -36,5 +36,5 @@
         }
     }
 
-    App.controller("LogEditorController", LogEditorController);
+    App.controller("LogEditorController", LogEditorController as any);
 }

@@ -44,5 +44,5 @@
         }
     }
 
-    App.controller("CreatePasswordController", CreatePasswordController);
+    App.controller("CreatePasswordController", CreatePasswordController as any);
 }

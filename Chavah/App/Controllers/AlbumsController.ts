@@ -32,5 +32,5 @@
         }
     }
 
-    App.controller("AlbumsController", AlbumsController);
+    App.controller("AlbumsController", AlbumsController as any);
 }

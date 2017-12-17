@@ -259,6 +259,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Providers\" />
     <Folder Include="Views\Partials\" />
   </ItemGroup>
 

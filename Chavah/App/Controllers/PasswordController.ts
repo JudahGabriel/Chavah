@@ -69,5 +69,5 @@
         }
     }
 
-    App.controller("PasswordController", PasswordController);
+    App.controller("PasswordController", PasswordController as any);
 }

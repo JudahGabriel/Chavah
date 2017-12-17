@@ -79,5 +79,5 @@
         }
     }
 
-    App.controller("RegisterController", RegisterController);
+    App.controller("RegisterController", RegisterController as any);
 }

@@ -65,5 +65,5 @@
         }
     }
 
-    App.controller("ResetPasswordController", ResetPasswordController);
+    App.controller("ResetPasswordController", ResetPasswordController as any);
 }

@@ -33,5 +33,5 @@
         }
     }
 
-    App.controller("DonateController", DonateController);
+    App.controller("DonateController", DonateController as any);
 }
