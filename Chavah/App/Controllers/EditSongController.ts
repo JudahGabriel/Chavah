@@ -103,5 +103,5 @@
         }
     }
 
-    App.controller("EditSongController", EditSongController);
+    App.controller("EditSongController", EditSongController as any);
 }

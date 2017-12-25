@@ -14,5 +14,5 @@
         }
     }
 
-    App.controller("SongEditApprovedController", SongEditApprovedController);
+    App.controller("SongEditApprovedController", SongEditApprovedController as any);
 }

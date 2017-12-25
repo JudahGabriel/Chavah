@@ -42,5 +42,5 @@
         }
     }
 
-    App.controller("ConfirmEmailController", ConfirmEmailController);
+    App.controller("ConfirmEmailController", ConfirmEmailController as any);
 }

@@ -27,5 +27,5 @@
         }
     }
 
-    App.controller("ShareThanksController", ShareThanksController);
+    App.controller("ShareThanksController", ShareThanksController as any);
 }

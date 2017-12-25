@@ -30,7 +30,7 @@
             var args = {
                 id: id
             };
-            return this.httpApi.query<Server.IAlbum | null>("/api/albums/get", args, AlbumApiService.albumSelector);
+            return this.httpApi.query<Album | null>("/api/albums/get", args, AlbumApiService.albumSelector);
         }
 
         getAll(skip: number, take: number, search: string | null): ng.IPromise<Server.IPagedList<Album>> {
@@ -47,11 +47,11 @@
                 artist: artist,
                 album: album
             };
-            return this.httpApi.query<Server.IAlbum | null>("/api/albums/getByArtistAlbum", args, AlbumApiService.albumSelector);
+            return this.httpApi.query<Album | null>("/api/albums/getByArtistAlbum", args, AlbumApiService.albumSelector);
         }
 
         save(album: Album): ng.IPromise<Album> {
-            return this.httpApi.post("/api/albums/save", album, AlbumApiService.albumSelector);
+            return this.httpApi.post<Album>("/api/albums/save", album, AlbumApiService.albumSelector as any);
         }
 
         getAlbums(albumIds: string[]): ng.IPromise<Album[]> {

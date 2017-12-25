@@ -10,6 +10,7 @@
             "appNav",
             "accountApi",
             "$q",
+            "sharing",
         ];
 
         songs: Song[] = [];
@@ -30,7 +31,8 @@
             private initConfig: Server.IHomeViewModel,
             private appNav: AppNavService,
             private accountApi: AccountService,
-            private $q: ng.IQService) {
+            private $q: ng.IQService,
+            private sharing: SharingService) {
 
             this.audioPlayer.song
                 .takeUntil(this.disposed)
@@ -51,7 +53,9 @@
             if (initConfig.embed) {
                 // If we're embedded on another page, queue up the song we're told to play.
                 // Don't play it automatically, though, because there may be multiple embeds on the same page.
-
+                //temp fix??? at least this will display the image for the emebed song
+                this.audioPlayer.playNewSong((this.initConfig as any).song as any);
+                this.audioPlayer.pause();
             } else {
                 // Play the next song if we don't already have one playing.
                 // We don't have one playing when first loading the UI.
@@ -75,9 +79,9 @@
         get currentSongShareUrl(): string {
             if (this.currentSong) {
                 if (this.currentSong.isShowingEmbedCode) {
-                    return this.currentSong.getEmbedCode();
+                    return this.sharing.getEmbedCode(this.currentSong.id);
                 }
-                return this.currentSong.shareUrl;
+                return this.sharing.shareUrl(this.currentSong.id);
             }
             return "";
         }

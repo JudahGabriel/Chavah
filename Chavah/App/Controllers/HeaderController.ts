@@ -50,5 +50,5 @@
         }
     }
 
-    App.controller("HeaderController", HeaderController);
+    App.controller("HeaderController", HeaderController as any);
 }

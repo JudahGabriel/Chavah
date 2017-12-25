@@ -108,5 +108,5 @@
         }
     }
 
-    App.controller("ApproveSongEditsController", ApproveSongEditsController)
+    App.controller("ApproveSongEditsController", ApproveSongEditsController as any)
 }

@@ -3,7 +3,7 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var NowPlayingController = /** @class */ (function () {
-            function NowPlayingController(songApi, songBatch, audioPlayer, albumCache, initConfig, appNav, accountApi, $q) {
+            function NowPlayingController(songApi, songBatch, audioPlayer, albumCache, initConfig, appNav, accountApi, $q, sharing) {
                 var _this = this;
                 this.songApi = songApi;
                 this.songBatch = songBatch;
@@ -13,6 +13,7 @@ var BitShuva;
                 this.appNav = appNav;
                 this.accountApi = accountApi;
                 this.$q = $q;
+                this.sharing = sharing;
                 this.songs = [];
                 this.trending = [];
                 this.recent = [];
@@ -35,6 +36,9 @@ var BitShuva;
                 if (initConfig.embed) {
                     // If we're embedded on another page, queue up the song we're told to play.
                     // Don't play it automatically, though, because there may be multiple embeds on the same page.
+                    //temp fix??? at least this will display the image for the emebed song
+                    this.audioPlayer.playNewSong(this.initConfig.song);
+                    this.audioPlayer.pause();
                 }
                 else {
                     // Play the next song if we don't already have one playing.
@@ -62,9 +66,9 @@ var BitShuva;
                 get: function () {
                     if (this.currentSong) {
                         if (this.currentSong.isShowingEmbedCode) {
-                            return this.currentSong.getEmbedCode();
+                            return this.sharing.getEmbedCode(this.currentSong.id);
                         }
-                        return this.currentSong.shareUrl;
+                        return this.sharing.shareUrl(this.currentSong.id);
                     }
                     return "";
                 },
@@ -245,6 +249,7 @@ var BitShuva;
                 "appNav",
                 "accountApi",
                 "$q",
+                "sharing",
             ];
             return NowPlayingController;
         }());

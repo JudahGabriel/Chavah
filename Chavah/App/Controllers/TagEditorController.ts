@@ -51,5 +51,5 @@
         }
     }
 
-    App.controller("TagEditorController", TagEditorController);
+    App.controller("TagEditorController", TagEditorController as any);
 }

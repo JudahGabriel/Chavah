@@ -247,5 +247,5 @@
         }
     }
 
-    App.controller("FooterController", FooterController);
+    App.controller("FooterController", FooterController as any);
 }

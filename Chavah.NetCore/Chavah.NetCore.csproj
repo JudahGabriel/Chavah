@@ -252,6 +252,9 @@
     <Content Update="wwwroot\css\nprogress.min.css">
       <DependentUpon>nprogress.css</DependentUpon>
     </Content>
+    <Content Update="wwwroot\js\Services\SharingService.js">
+      <DependentUpon>SharingService.ts</DependentUpon>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -259,6 +262,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Providers\" />
     <Folder Include="Views\Partials\" />
   </ItemGroup>
 

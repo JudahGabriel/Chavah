@@ -16,5 +16,5 @@
         }
     }
 
-    App.controller("SongListController", SongListController);
+    App.controller("SongListController", SongListController as any);
 }

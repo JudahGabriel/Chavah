@@ -55,5 +55,5 @@
         }
     }
 
-    App.controller("ForgotPasswordController", ForgotPasswordController);
+    App.controller("ForgotPasswordController", ForgotPasswordController as any);
 }

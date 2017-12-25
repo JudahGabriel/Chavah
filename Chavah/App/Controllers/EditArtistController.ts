@@ -56,5 +56,5 @@
         }
     }
 
-    App.controller("EditArtistController", EditArtistController)
+    App.controller("EditArtistController", EditArtistController as any)
 }

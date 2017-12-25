@@ -60,5 +60,5 @@
         }
     }
 
-    App.controller("SignInController", SignInController);
+    App.controller("SignInController", SignInController as any);
 }

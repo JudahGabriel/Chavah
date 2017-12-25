@@ -2,7 +2,9 @@
 using BitShuva.Chavah.Models.Indexes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Raven.Client;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
@@ -11,10 +13,13 @@ namespace BitShuva.Chavah.Controllers
     public class TestController : Controller
     {
         private readonly IAsyncDocumentSession session;
+        private readonly IActionDescriptorCollectionProvider provider;
 
-        public TestController(IAsyncDocumentSession session)
+        public TestController(IAsyncDocumentSession session, 
+                              IActionDescriptorCollectionProvider provider)
         {
             this.session = session;
+            this.provider = provider;
         }
 
         /// <summary>
@@ -43,20 +48,18 @@ namespace BitShuva.Chavah.Controllers
 
             return Ok(user);
         }
-       
-        // POST api/<controller>
-        public void Post([FromBody]string value)
-        {
-        }
 
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        [HttpGet("routes")]
+        public IActionResult GetRoutes()
         {
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
+            var routes = provider.ActionDescriptors.Items.Select(x => new {
+                Action = x?.RouteValues["Action"],
+                Controller = x?.RouteValues["Controller"],
+                Name = x?.AttributeRouteInfo?.Name,
+                Template = x?.AttributeRouteInfo?.Template,
+                Verb = x?.ActionConstraints
+            }).ToList();
+            return Ok(routes);
         }
     }
 }
