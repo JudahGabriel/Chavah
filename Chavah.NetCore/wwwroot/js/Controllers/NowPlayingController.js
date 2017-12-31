@@ -75,6 +75,36 @@ var BitShuva;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(NowPlayingController.prototype, "currentSongTwitterShareUrl", {
+                get: function () {
+                    if (this.currentSong) {
+                        return this.sharing.twitterShareUrl(this.currentSong);
+                    }
+                    return "#";
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(NowPlayingController.prototype, "currentSongFacebookShareUrl", {
+                get: function () {
+                    if (this.currentSong) {
+                        return this.sharing.facebookShareUrl(this.currentSong);
+                    }
+                    return "#";
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(NowPlayingController.prototype, "currentSongGooglePlusShareUrl", {
+                get: function () {
+                    if (this.currentSong) {
+                        return this.sharing.googlePlusShareUrl(this.currentSong.id);
+                    }
+                    return "#";
+                },
+                enumerable: true,
+                configurable: true
+            });
             NowPlayingController.prototype.getEditSongUrl = function () {
                 if (this.currentSong) {
                     if (this.accountApi.isSignedIn) {

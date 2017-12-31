@@ -86,6 +86,30 @@
             return "";
         }
 
+        get currentSongTwitterShareUrl(): string {
+            if (this.currentSong) {
+                return this.sharing.twitterShareUrl(this.currentSong);
+            }
+
+            return "#";
+        }
+
+        get currentSongFacebookShareUrl(): string {
+            if (this.currentSong) {
+                return this.sharing.facebookShareUrl(this.currentSong);
+            }
+
+            return "#";
+        }
+
+        get currentSongGooglePlusShareUrl(): string {
+            if (this.currentSong) {
+                return this.sharing.googlePlusShareUrl(this.currentSong.id);
+            }
+
+            return "#";
+        }
+
         getEditSongUrl(): string {
             if (this.currentSong) {
                 if (this.accountApi.isSignedIn) {

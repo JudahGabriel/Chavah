@@ -122,13 +122,13 @@
                     </div>
                     <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isShareExpaned }" role="tabpanel">
                         <div class="panel-body" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
-                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSong.facebookShareUrl}}" uib-tooltip="Share this song on Facebook" tooltip-append-to-body="true">
+                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSongFacebookShareUrl}}" uib-tooltip="Share this song on Facebook" tooltip-append-to-body="true">
                                 <i class="fa fa-facebook-official fa-3x" style="color: rgb(59, 88, 152)"></i>
                             </a>
-                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSong.twitterShareUrl}}" uib-tooltip="Tweet this song" tooltip-append-to-body="true">
+                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSongTwitterShareUrl}}" uib-tooltip="Tweet this song" tooltip-append-to-body="true">
                                 <i class="fa fa-twitter-square fa-3x" style="color: rgb(85, 172, 238)"></i>
                             </a>
-                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSong.googlePlusShareUrl}}" uib-tooltip="Share this song on Google+" tooltip-append-to-body="true">
+                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSongGooglePlusShareUrl}}" uib-tooltip="Share this song on Google+" tooltip-append-to-body="true">
                                 <i class="fa fa-google-plus-square fa-3x" style="color: rgb(219, 68, 55)"></i>
                             </a>
                             <br />
