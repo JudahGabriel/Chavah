@@ -1,4 +1,5 @@
 ﻿@inject IOptionsSnapshot<AppSettings> appSettings
+@model HomeViewModel
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,13 +55,6 @@
     <meta name="msapplication-square310x310logo" content="~/images/Windows81Tile/large.png" />
     <meta name="msapplication-notification" content="frequency=30;polling-uri=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/activityfeed&amp;id=1;polling-uri2=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=2;polling-uri3=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=3;polling-uri4=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=4;polling-uri5=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=5; cycle=1" />
 
-    @*Facebook share info. See https://developers.facebook.com/docs/sharing/webmasters/*@
-    <meta property="og:url" content="@appSettings?.Value?.Application?.DefaultUrl@(Model.Song.GetSongShareLink(appSettings?.Value?.Application?.DefaultUrl))" />
-    <meta property="og:type" content="music.listens" />
-    <meta property="og:title" content="@Model.Song.Name by @Model.Song.Artist" />
-    <meta property="og:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
-    <meta property="og:image" content="@Model.Song.AlbumArtUri" />
-
     @* Twitter card. When a user shares a song, we show a full card containing album art and song info. *@
     <meta name="twitter:creator" content="&#64;messianicradio">
     <meta name="twitter:site" content="&#64;messianicradio">
@@ -68,11 +62,18 @@
     {
         // Show a Twitter summary card with the song info.
         <meta name="twitter:card" content="summary" />
-        @*<meta name="twitter:card" content="summary_large_image" />*@
         <meta name="twitter:url" content="@appSettings?.Value?.Application?.DefaultUrl@(Model.Song.GetSongShareLink(appSettings?.Value?.Application?.DefaultUrl))" />
         <meta name="twitter:title" content="@Model.Song.Name by @Model.Song.Artist" />
         <meta name="twitter:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
         <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
+
+        @*Facebook share info. See https://developers.facebook.com/docs/sharing/webmasters/*@
+        <meta property="og:url" content="@appSettings?.Value?.Application?.DefaultUrl@(Model.Song.GetSongShareLink(appSettings?.Value?.Application?.DefaultUrl))" />
+        <meta property="og:type" content="music.song" />
+        <meta property="og:title" content="@Model.Song.Name by @Model.Song.Artist" />
+        <meta property="og:description" content="Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music on the web" />
+        @*We can't use Song.AlbumArtUri because that URL will be on a different domain, and Facebook restricts us to use only images on our domain. So we'll trick it with a redirect.*@
+        <meta property="og:image" content="@appSettings?.Value?.Application?.DefaultUrl/api/albums/getAlbumArtBySongId?songId=@Model.Song.Id" />
     }
     else
     {
@@ -81,7 +82,14 @@
         <meta name="twitter:url" content="@appSettings?.Value?.Application?.DefaultUrl" />
         <meta name="twitter:title" content="@appSettings?.Value?.Application?.Title" />
         <meta name="twitter:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
-        <meta name="twitter:image" content="@appSettings?.Value?.Application?.DefaultUrl/content/images/chavahLogoTwitterCard.png" />
+        <meta name="twitter:image" content="@appSettings?.Value?.Application?.DefaultUrl/images/chavah.png" />
+
+        @*Facebook share info for Chavah itself, rather than a song. https://developers.facebook.com/docs/sharing/webmasters/*@
+        <meta property="og:url" content="@appSettings?.Value?.Application?.DefaultUrl" />
+        <meta property="og:type" content="music.radio_station" />
+        <meta property="og:title" content="@appSettings?.Value?.Application?.Title" />
+        <meta property="og:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
+        <meta property="og:image" content="@appSettings?.Value?.Application?.DefaultUrl/images/chavah.png" />
     }
 
     @*CSS for development*@

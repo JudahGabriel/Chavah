@@ -41,7 +41,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         /// <summary>
-        /// Uploads the album art for a song. The album art will be applied to all songs matching the artist and album.
+        /// Gets the album with the specified ID.
         /// </summary>
         /// <param name="albumArtAddress">The HTTP address where the album art can be fetched. This is expected to be a temporary address created by FilePickr.</param>
         /// <param name="fileName">The file name. Used for extracting the extension.</param>
@@ -242,7 +242,6 @@ namespace BitShuva.Chavah.Controllers
             {
                 throw new ArgumentNullException(nameof(imageUrl));
             }
-
             
             var response = new HttpResponseMessage();
             using (var webClient = new WebClient())

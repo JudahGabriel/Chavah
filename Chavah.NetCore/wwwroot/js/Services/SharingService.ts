@@ -18,19 +18,21 @@
         }
 
         facebookShareUrl(song: Song): string {
-            let result: string                // Yes, replace ampersand. Even though we escape it via encodeURIComponent, Facebook barfs on it.
-                let name = `${song.artist} - ${song.name}`.replace(new RegExp("&", "g"), "and");
-                let url = `${this.initConfig.defaultUrl}/?song=${song.id}`;
-                let albumArtUrl = `${this.initConfig.defaultUrl}/api/albums/getArtforSong?songId=${song.id}`;
-                result = "https://www.facebook.com/dialog/feed?app_id=256833604430846" +
-                    `&link=${url}` +
-                    `&picture=${encodeURIComponent(albumArtUrl)}` +
-                    `&name=${encodeURIComponent(name)}` +
-                    `&description=${encodeURIComponent("On " + song.album)}` +
-                    // tslint:disable-next-line:max-line-length
-                    `&caption=${encodeURIComponent("Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music")}` +
-                    `&redirect_uri=${encodeURIComponent(`${this.initConfig.defaultUrl}/#/sharethanks`)}`;
-            return result;
+            // Yes, replace ampersand. Even though we escape it via encodeURIComponent, Facebook barfs on it.
+            let name = `${song.artist} - ${song.name}`.replace(new RegExp("&", "g"), "and");
+            let url = `${this.initConfig.defaultUrl}/?song=${song.id}`;
+
+            // We can't link to the song.albumArt, because it comes from a different domain (our CDN), which Facebook doesn't like.
+            // Instead, link to a URL on our domain that redirects to the album art on the CDN.
+            let albumArtUrl = `${this.initConfig.defaultUrl}/api/albums/getAlbumArtBySongId?songId=${song.id}`;
+            return "https://www.facebook.com/dialog/feed?app_id=256833604430846" +
+                `&link=${url}` +
+                `&picture=${encodeURIComponent(albumArtUrl)}` +
+                `&name=${encodeURIComponent(name)}` +
+                `&description=${encodeURIComponent("On " + song.album)}` +
+                // tslint:disable-next-line:max-line-length
+                `&caption=${encodeURIComponent("Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music")}` +
+                `&redirect_uri=${encodeURIComponent(`${this.initConfig.defaultUrl}/#/sharethanks`)}`;
         }
 
         twitterShareUrl(song: Song): string {
