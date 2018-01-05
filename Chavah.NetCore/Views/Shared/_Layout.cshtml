@@ -54,22 +54,25 @@
     <meta name="msapplication-square310x310logo" content="~/images/Windows81Tile/large.png" />
     <meta name="msapplication-notification" content="frequency=30;polling-uri=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/activityfeed&amp;id=1;polling-uri2=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=2;polling-uri3=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=3;polling-uri4=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=4;polling-uri5=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=5; cycle=1" />
 
-    @* Web app manifest. Browsers use this to install the app to the desktop if the users wants to. *@
-    @* Commented out: this won't work until our service worker supports offline fetch. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/ *@
-    @*<link rel="manifest" href="/WebAppManifest.json" />*@
+    @*Facebook share info. See https://developers.facebook.com/docs/sharing/webmasters/*@
+    <meta property="og:url" content="@appSettings?.Value?.Application?.DefaultUrl@(Model.Song.GetSongShareLink(appSettings?.Value?.Application?.DefaultUrl))" />
+    <meta property="og:type" content="music.listens" />
+    <meta property="og:title" content="@Model.Song.Name by @Model.Song.Artist" />
+    <meta property="og:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
+    <meta property="og:image" content="@Model.Song.AlbumArtUri" />
 
     @* Twitter card. When a user shares a song, we show a full card containing album art and song info. *@
-    <meta name="twitter:creator" content="&#64;chavahradio">
-    <meta name="twitter:site" content="&#64;chavahradio">
+    <meta name="twitter:creator" content="&#64;messianicradio">
+    <meta name="twitter:site" content="&#64;messianicradio">
     @if (Model != null && Model.Song != null)
     {
         // Show a Twitter summary card with the song info.
         <meta name="twitter:card" content="summary" />
         @*<meta name="twitter:card" content="summary_large_image" />*@
         <meta name="twitter:url" content="@appSettings?.Value?.Application?.DefaultUrl@(Model.Song.GetSongShareLink(appSettings?.Value?.Application?.DefaultUrl))" />
-            <meta name="twitter:title" content="@Model.Song.Name by @Model.Song.Artist" />
-            <meta name="twitter:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
-            <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
+        <meta name="twitter:title" content="@Model.Song.Name by @Model.Song.Artist" />
+        <meta name="twitter:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
+        <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
     }
     else
     {
@@ -80,7 +83,7 @@
         <meta name="twitter:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
         <meta name="twitter:image" content="@appSettings?.Value?.Application?.DefaultUrl/content/images/chavahLogoTwitterCard.png" />
     }
-    
+
     @*CSS for development*@
     <environment include="Development">
         <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css' />

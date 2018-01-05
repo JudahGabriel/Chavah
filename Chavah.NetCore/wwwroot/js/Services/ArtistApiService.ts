@@ -12,7 +12,7 @@
                 skip,
                 take,
             };
-            return this.httpApi.query("/api/artists/all", args);
+            return this.httpApi.query("/api/artists/getAll", args);
         }
 
         getByName(artistName: string): ng.IPromise<Artist> {

@@ -15,7 +15,7 @@ var BitShuva;
                     skip: skip,
                     take: take,
                 };
-                return this.httpApi.query("/api/artists/all", args);
+                return this.httpApi.query("/api/artists/getAll", args);
             };
             ArtistApiService.prototype.getByName = function (artistName) {
                 var args = {
