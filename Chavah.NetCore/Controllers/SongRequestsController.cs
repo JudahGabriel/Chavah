@@ -104,7 +104,9 @@ namespace BitShuva.Chavah.Controllers
                         DateTime = DateTime.Now,
                         Title = $"{song.Artist} - {song.Name} was requested by one of our listeners",
                         Description = $"\"{song.Name}\" by {song.Artist} was requested by one of our listeners on {options?.Value?.Application?.Title}.",
-                        MoreInfoUri = song.GetSongShareLink(options?.Value?.Application?.DefaultUrl)
+                        MoreInfoUri = song.GetSongShareLink(options?.Value?.Application?.DefaultUrl),
+                        EntityId = song.Id,
+                        Type = ActivityType.Request
                     };
                     await this.DbSession.StoreAsync(activity);
                     this.DbSession.SetRavenExpiration(activity, requestExpiration);

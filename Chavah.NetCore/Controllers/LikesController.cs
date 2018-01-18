@@ -98,7 +98,9 @@ namespace BitShuva.Chavah.Controllers
                         DateTime = DateTime.Now,
                         Title = $"{song.Artist} - {song.Name} was thumbed up ({songRankString}) on {options?.Value?.Application?.Title}",
                         Description = $"\"{song.Name}\" by {songArtist} was thumbed up ({songRankString}) on {options?.Value?.Application?.Title}.",
-                        MoreInfoUri = song.GetSongShareLink(options?.Value?.Application?.DefaultUrl)
+                        MoreInfoUri = song.GetSongShareLink(options?.Value?.Application?.DefaultUrl),
+                        EntityId = song.Id,
+                        Type = ActivityType.Like
                     };
 
                     await this.DbSession.StoreAsync(activity);

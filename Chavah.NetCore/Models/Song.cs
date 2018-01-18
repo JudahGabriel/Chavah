@@ -153,5 +153,15 @@ namespace BitShuva.Chavah.Models
         {
             return new Uri($"{url}/?song={this.Id}");
         }
+
+        public string GetCommunityRankText()
+        {
+            if (this.CommunityRank > 0)
+            {
+                return $"+{this.CommunityRank}";
+            }
+
+            return this.CommunityRank.ToString();
+        }
     }
 }
