@@ -94,5 +94,9 @@
   {
     "outputFile": "wwwroot/css/app/hanukkah.css",
     "inputFile": "wwwroot/css/app/hanukkah.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/logEditor.css",
+    "inputFile": "wwwroot/css/app/logEditor.less"
   }
 ]

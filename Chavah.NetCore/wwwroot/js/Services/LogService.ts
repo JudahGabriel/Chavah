@@ -6,19 +6,30 @@
         constructor(private httpApi: HttpApiService) {
         }
 
-        getAll(skip: number, take: number): ng.IPromise<Server.IPagedList<Server.ILogSummary>> {
+        getAll(skip: number, take: number, level: LogLevel | null, sort: LogSort): ng.IPromise<Server.IPagedList<StructuredLog>> {
             let args = {
                 skip,
                 take,
+                level: level,
+                sort: sort
             };
-            return this.httpApi.query("/api/logs/getAll", args);
+            return this.httpApi.query("/api/logs/getAll", args, LogService.pagedListSelector);
         }
 
         deleteLog(id: string): ng.IPromise<any> {
-            let args = {
+            const args = {
                 id,
             };
             return this.httpApi.postUriEncoded("/api/logs/delete", args);
+        }
+
+        static pagedListSelector(input: Server.IPagedList<Server.StructuredLog>): Server.IPagedList<StructuredLog> {
+            return {
+                skip: input.skip,
+                take: input.take,
+                total: input.total,
+                items: input.items.map(i => new StructuredLog(i))
+            };
         }
     }
 

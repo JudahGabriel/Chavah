@@ -3,15 +3,11 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var HeaderController = /** @class */ (function () {
-            function HeaderController(initConfig, accountApi, appNav, $timeout) {
-                var _this = this;
+            function HeaderController(initConfig, accountApi, appNav) {
                 this.initConfig = initConfig;
                 this.accountApi = accountApi;
                 this.appNav = appNav;
-                this.$timeout = $timeout;
-                this.isNotificationPopoverOpened = false;
                 this.notifications = initConfig.notifications;
-                $timeout(function () { return _this.encourageUserToViewNotifications(); }, 15000);
             }
             Object.defineProperty(HeaderController.prototype, "currentUserName", {
                 get: function () {
@@ -41,15 +37,7 @@ var BitShuva;
                 enumerable: true,
                 configurable: true
             });
-            HeaderController.prototype.encourageUserToViewNotifications = function () {
-                // If the user has some notifications, and some of them are unread, encourage the user to view them.
-                // Adding this functionality because we've found a great many users never click the notifications button.
-                if (this.notifications.length > 0 && this.notifications.some(function (n) { return n.isUnread; })) {
-                    this.isNotificationPopoverOpened = true;
-                }
-            };
             HeaderController.prototype.markNotificationsAsRead = function () {
-                this.isNotificationPopoverOpened = false;
                 if (this.notifications.some(function (n) { return n.isUnread; })) {
                     this.notifications.forEach(function (n) { return n.isUnread = false; });
                     this.accountApi.clearNotifications(this.notifications[0].date);
@@ -63,8 +51,7 @@ var BitShuva;
             HeaderController.$inject = [
                 "initConfig",
                 "accountApi",
-                "appNav",
-                "$timeout",
+                "appNav"
             ];
             return HeaderController;
         }());

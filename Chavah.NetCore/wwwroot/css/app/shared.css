@@ -44,3 +44,7 @@ body {
 .account-page .user-profile-icon {
   font-size: 7em;
 }
+.rounded-left {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}

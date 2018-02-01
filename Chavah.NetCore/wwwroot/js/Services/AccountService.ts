@@ -30,7 +30,7 @@
         }
 
         signOut(): ng.IPromise<any> {
-            let signOutTask = this.httpApi.post(`${this.apiUri}/SignOut`, null);
+            const signOutTask = this.httpApi.post(`${this.apiUri}/SignOut`, null);
             signOutTask
                 .then(() => {
                     this.currentUser = null;
@@ -40,7 +40,7 @@
         }
 
         clearNotifications(asOfDate: string): ng.IPromise<number> {
-            let args = {
+            const args = {
                 asOf: asOfDate,
             };
             return this.httpApi.postUriEncoded(`${this.apiUri}/clearNotifications`, args);
@@ -55,14 +55,14 @@
         }
 
         getUserWithEmail(email: string | null): ng.IPromise<Server.IAppUser | null> {
-            let args = {
+            const args = {
                 email,
             };
             return this.httpApi.query<Server.IAppUser | null>(`${this.apiUri}/getUserWithEmail`, args);
         }
 
         createPassword(email: string, password: string): ng.IPromise<any> {
-            let args = {
+            const args = {
                 email,
                 password,
             };
@@ -70,7 +70,7 @@
         }
 
         signIn(email: string, password: string, staySignedIn: boolean): ng.IPromise<SignInResult> {
-            let args = {
+            const args = {
                 email,
                 password,
                 staySignedIn,

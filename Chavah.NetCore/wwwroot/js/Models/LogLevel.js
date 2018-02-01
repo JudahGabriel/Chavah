@@ -4,10 +4,13 @@ var BitShuva;
     (function (Chavah) {
         var LogLevel;
         (function (LogLevel) {
-            LogLevel[LogLevel["Error"] = 0] = "Error";
-            LogLevel[LogLevel["Warn"] = 1] = "Warn";
-            LogLevel[LogLevel["Info"] = 2] = "Info";
-            LogLevel[LogLevel["Debug"] = 3] = "Debug";
+            LogLevel[LogLevel["Trace"] = 0] = "Trace";
+            LogLevel[LogLevel["Debug"] = 1] = "Debug";
+            LogLevel[LogLevel["Information"] = 2] = "Information";
+            LogLevel[LogLevel["Warning"] = 3] = "Warning";
+            LogLevel[LogLevel["Error"] = 4] = "Error";
+            LogLevel[LogLevel["Critical"] = 5] = "Critical";
+            LogLevel[LogLevel["None"] = 6] = "None";
         })(LogLevel = Chavah.LogLevel || (Chavah.LogLevel = {}));
     })(Chavah = BitShuva.Chavah || (BitShuva.Chavah = {}));
 })(BitShuva || (BitShuva = {}));

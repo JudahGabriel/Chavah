@@ -20,18 +20,36 @@ namespace BitShuva.Chavah.Controllers
         {
         }
 
-        [HttpGet]
-        public async Task<PagedList<StructuredLog>> GetAll(int skip, int take)
+        public async Task<PagedList<StructuredLog>> GetAll(int skip, int take, LogLevel? level, LogSort sort)
         {
-            var results = await DbSession.Query<StructuredLog>()
-                .Statistics(out var stats)
-                .OrderByDescending(l => l.LastOccurrence)
+            IQueryable<StructuredLog> query = this.DbSession.Query<StructuredLog>()
+                .Statistics(out var stats);
+
+            if (sort == LogSort.Newest)
+            {
+                query = query.OrderByDescending(l => l.LastOccurrence);
+            }
+            else if (sort == LogSort.Oldest)
+            {
+                query = query.OrderBy(l => l.FirstOccurrence);
+            }
+            else if (sort == LogSort.OccurrenceCount)
+            {
+                query = query.OrderByDescending(l => l.OccurrenceCount);
+            }
+
+            if (level.HasValue)
+            {
+                query = query.Where(q => q.Level == level.Value);
+            }
+
+            var logs = await query
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
             return new PagedList<StructuredLog>
             {
-                Items = results,
+                Items = logs,
                 Skip = skip,
                 Take = take,
                 Total = stats.TotalResults
@@ -41,11 +59,6 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task Delete(string id)
         {
-            if (!id.StartsWith("LogSummary/", StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new ArgumentException("ID must specify a LogSummary");
-            }
-
             var log = await DbSession.LoadNotNullAsync<StructuredLog>(id);
             DbSession.Delete(log);
         }

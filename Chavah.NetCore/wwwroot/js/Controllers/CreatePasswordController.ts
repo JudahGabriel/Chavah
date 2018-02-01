@@ -26,7 +26,7 @@
         }
 
         get isPasswordValid(): boolean {
-            return this.password.length >= 6;
+            return !!this.password && this.password.length >= 6 && !!this.password.match(ResetPasswordController.regexContainsLetterAndNumber);
         }
 
         createPassword() {

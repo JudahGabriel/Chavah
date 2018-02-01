@@ -1,8 +1,11 @@
 ﻿namespace BitShuva.Chavah {
     export enum LogLevel {
-        Error,
-        Warn,
-        Info,
+        Trace,
         Debug,
+        Information,
+        Warning,
+        Error,
+        Critical,
+        None
     }
 }

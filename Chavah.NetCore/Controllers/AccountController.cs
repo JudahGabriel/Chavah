@@ -114,7 +114,7 @@ namespace BitShuva.Chavah.Controllers
             // Find the user with that email.
             logger.LogInformation("Migrating user {email} from old system", email);
             var user = await DbSession.LoadAsync<AppUser>("AppUsers/" + email);
-            if (user == null || !user.RequiresPasswordReset || password.Length < 6)
+            if (user == null || !user.RequiresPasswordReset || password.Length < 6 || !password.Any(c => char.IsDigit(c)))
             {
                 throw new UnauthorizedAccessException();
             }
@@ -123,17 +123,15 @@ namespace BitShuva.Chavah.Controllers
             var removePasswordResult = await userManager.RemovePasswordAsync(user);
             if (!removePasswordResult.Succeeded)
             {
-                var errorMessage = "CreatePassword failed because we couldn't remove the old password.";
-                logger.LogWarning(errorMessage + "{result}", removePasswordResult);
-                throw new Exception(errorMessage);
+                throw new InvalidOperationException("CreatePassword failed because we couldn't remove the old password.")
+                    .WithData("result", string.Join(", ", removePasswordResult.Errors.Select(e => e.Description)));
             }
 
             var addPasswordResult = await userManager.AddPasswordAsync(user, password);
             if (!addPasswordResult.Succeeded)
             {
-                string error = "Unable to set the new password for the user.";
-                logger.LogWarning(error + " {result}", addPasswordResult);
-                throw new Exception(error);
+                throw new InvalidOperationException("Unable to set the new password for the user.")
+                    .WithData("result", string.Join(", ", addPasswordResult.Errors.Select(e => e.Description)));
             }
 
             user.RequiresPasswordReset = false;

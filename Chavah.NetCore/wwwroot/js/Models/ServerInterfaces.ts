@@ -167,14 +167,24 @@
         date: string;
     }
 
-    export interface ILogSummary {
+    export interface StructuredLog {
         id: string;
-        message: string;
-        exception: string;
+        messageTemplate: string;
+        occurrenceCount: number;
         level: LogLevel;
         firstOccurrence: string;
         lastOccurrence: string;
-        occurrences: any[];
-        occurrencesCount: number;
+        occurrences: Log[];
+    }
+
+    export interface Log {
+        message: string;
+        level: LogLevel;
+        created: string;
+        exception: string | null;
+        category: string;
+        eventId: number | null;
+        templateValues: {} | null;
+        scope: string | null;
     }
 }
