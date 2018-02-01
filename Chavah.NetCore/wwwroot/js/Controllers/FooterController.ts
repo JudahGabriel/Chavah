@@ -15,6 +15,7 @@
         volumeShown = false;
         volume = 1;
         isBuffering = false;
+        lastAudioErrorTime: Date | null = null;
 
         constructor(
             private audioPlayer: AudioPlayerService,
@@ -188,6 +189,18 @@
         audioStatusChanged(status: AudioStatus) {
             if (status === AudioStatus.Ended) {
                 this.playNextSong();
+            }
+
+            if (status === AudioStatus.Erred) {
+                // If it's been more than 30 seconds since the last error, play the next song.
+                // (We don't want to always play the next song, because if we're disconnected, all audio will fail.)
+                const minSecondsBetweenErrors = 30;
+                const hasBeen30SecSinceLastError = this.lastAudioErrorTime === null || moment().diff(moment(this.lastAudioErrorTime), "seconds") > minSecondsBetweenErrors;
+                if (hasBeen30SecSinceLastError) {
+                    this.playNextSong();
+                }
+
+                this.lastAudioErrorTime = new Date();
             }
 
             this.isBuffering = status === AudioStatus.Buffering || status === AudioStatus.Stalled;

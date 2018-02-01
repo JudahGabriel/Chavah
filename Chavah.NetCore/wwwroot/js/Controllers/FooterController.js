@@ -16,6 +16,7 @@ var BitShuva;
                 this.volumeShown = false;
                 this.volume = 1;
                 this.isBuffering = false;
+                this.lastAudioErrorTime = null;
                 var audio = document.querySelector("#audio");
                 this.audioPlayer.initialize(audio);
                 this.volume = audio.volume;
@@ -180,6 +181,16 @@ var BitShuva;
             FooterController.prototype.audioStatusChanged = function (status) {
                 if (status === Chavah.AudioStatus.Ended) {
                     this.playNextSong();
+                }
+                if (status === Chavah.AudioStatus.Erred) {
+                    // If it's been more than 30 seconds since the last error, play the next song.
+                    // (We don't want to always play the next song, because if we're disconnected, all audio will fail.)
+                    var minSecondsBetweenErrors = 30;
+                    var hasBeen30SecSinceLastError = this.lastAudioErrorTime === null || moment().diff(moment(this.lastAudioErrorTime), "seconds") > minSecondsBetweenErrors;
+                    if (hasBeen30SecSinceLastError) {
+                        this.playNextSong();
+                    }
+                    this.lastAudioErrorTime = new Date();
                 }
                 this.isBuffering = status === Chavah.AudioStatus.Buffering || status === Chavah.AudioStatus.Stalled;
                 this.$scope.$applyAsync();

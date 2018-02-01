@@ -34,7 +34,6 @@
 
         nowPlaying() {
             this.$location.url("/nowplaying");
-          
         }
 
         promptSignIn() {

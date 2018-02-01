@@ -13,10 +13,12 @@
                 <br />
                 <div class="row">
                     <div class="col-sm-12">
-                        <h4 class="song-list-title">
-                            <a href="#/popular">Popular</a>
-                        </h4>
-                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.popular"></div>
+                        <div ng-show="vm.likes.length">
+                            <h4 class="song-list-title">
+                                <a href="#/mylikes">Likes</a>
+                            </h4>
+                            <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.likes"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -203,19 +205,21 @@
             <div class="right-pane">
                 <div class="row">
                     <div class="col-sm-12">
-                        <h4 class="song-list-title">
-                            <a href="#/recentsongs">Recent</a>
-                        </h4>
-                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.recent"></div>
+                        <div ng-show="vm.recent.length > 0">
+                            <h4 class="song-list-title">
+                                <a href="#/recentsongs">Recent</a>
+                            </h4>
+                            <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.recent"></div>
+                        </div>
                     </div>
                 </div>
                 <br />
                 <div class="row">
                     <div class="col-sm-12">
                         <h4 class="song-list-title">
-                            <a href="#/mylikes">Likes</a>
+                            <a href="#/popular">Popular</a>
                         </h4>
-                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.likes"></div>
+                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.popular"></div>
                     </div>
                 </div>
             </div>
