@@ -47,7 +47,7 @@ namespace BitShuva.Chavah
 
             // Add RavenDB and identity.
             services
-                .AddRavenDocStore(Configuration) // Create a RavenDB DocumentStore singleton.
+                .AddRavenDocStore() // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession() // Create a RavenDB IAsyncDocumentSession for each request.
                 .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles. 
                 {

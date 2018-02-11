@@ -1,14 +1,14 @@
 ﻿using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Rss;
+using BitShuva.Chavah.Services;
 using Chavah.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SyndicationFeed;
 using Newtonsoft.Json;
-using Raven.Abstractions.Data;
-using Raven.Client;
-using Raven.Client.Linq;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +37,6 @@ namespace BitShuva.Chavah.Controllers
         {
             var lastRegisteredUsers = await DbSession
                 .Query<AppUser>()
-                .Where(u => u.Email != null)
                 .OrderByDescending(a => a.RegistrationDate)
                 .Take(100)
                 .ToListAsync();
@@ -85,36 +84,17 @@ namespace BitShuva.Chavah.Controllers
             };
             var jsonNotification = JsonConvert.SerializeObject(notification);
 
-            // Patch users to include this notification.
-            var patch = new ScriptedPatchRequest
-            {
-                Script = @"
-                        if (!this.Notifications) {
-                            this.Notifications = [];
-                        }
-
-                        this.Notifications.unshift(" + jsonNotification + @");
-                        if (this.Notifications.length > 10) {
-                            this.Notifications.length = 10;
-                        }"
-            };
-            var query = new IndexQuery { Query = $"Tag:AppUsers" };
-            var options = new BulkOperationOptions
-            {
-                AllowStale = true
-            };
-
-            try
-            {
-                DbSession.Advanced.DocumentStore.DatabaseCommands.UpdateByIndex("Raven/DocumentsByEntityName", query, patch, options);
-                //await patchOperation.WaitForCompletionAsync();
-            }
-            catch (Exception error)
-            {
-                logger.LogError(error, $"Error patching users to include notification.");
-                throw;
-            }
-
+            var patchScript = @"
+                this.Notifications.unshift(" + jsonNotification + @");
+                if (this.Notifications.length > 10) {
+                    this.Notifications.length = 10;
+                }
+";
+            var patch = new CollectionPatchService(
+                this.DbSession.Advanced.DocumentStore, 
+                typeof(AppUser), 
+                patchScript);
+            patch.ExecuteFireAndForget();
             return Json(notification);
         }
     }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Raven.Client.Documents;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,9 @@ namespace BitShuva.Chavah.Common
         /// </summary>
         /// <param name="svc"></param>
         /// <returns></returns>
-        public static IServiceCollection AddRavenDocStore(this IServiceCollection svc, IConfiguration configuration)
+        public static IServiceCollection AddRavenDocStore(this IServiceCollection svc)
         {
-            var settings = new DbConnection();
-            configuration.GetSection("DbConnection").Bind(settings);
-
+            var settings = svc.BuildServiceProvider().GetRequiredService<IOptions<AppSettings>>().Value.DbConnection;
             var docStore = new DocumentStore
             {
                 Urls = new[] { settings.Url },
