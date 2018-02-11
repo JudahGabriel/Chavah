@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Raven.Client;
+using Raven.Client.Documents;
 using System;
 using System.Collections.Generic;
 using System.Linq;

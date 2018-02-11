@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Common;
-using RavenDB.StructuredLog;
+using Raven.StructuredLog;
+using Raven.Client.Documents.Session;
 
 namespace BitShuva.Chavah.Controllers
 {

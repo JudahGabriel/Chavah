@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;

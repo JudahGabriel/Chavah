@@ -1,14 +1,11 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
-using BitShuva.Chavah.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Raven.Client;
-using Raven.Client.Linq;
-using RavenDB.StructuredLog;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Queries.Suggestions;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,9 +30,8 @@ namespace BitShuva.Chavah.Controllers
                 return new Song[0];
             }
 
-            var songs = await DbSession.LoadAsync<Song>(user.RecentSongIds.Take(count * 2));
+            var songs = await DbSession.LoadWithoutNulls<Song>(user.RecentSongIds.Take(count * 2));
             return songs
-                .Where(s => s != null)
                 .Distinct(s => s.Id)
                 .Take(count)
                 .ToList();
@@ -52,17 +48,16 @@ namespace BitShuva.Chavah.Controllers
 
             var likedSongIds = await this.DbSession
                 .Query<Like>()
+                .Include(l => l.SongId)
                 .Customize(x => x.RandomOrdering())
-                .Customize(x => x.Include<Like>(l => l.SongId))
                 .Where(l => l.Status == LikeStatus.Like && l.UserId == user.Id)
                 .Select(l => l.SongId)
                 .Take(count)
                 .ToListAsync();
 
-            var loadedSongs = await this.DbSession.LoadAsync<Song>(likedSongIds);
+            var loadedSongs = await this.DbSession.LoadWithoutNulls<Song>(likedSongIds);
             return loadedSongs
-                .Where(s => s != null)
-                .Select(s => s.ToDto());
+                .Select(s => s.ToDto(LikeStatus.Like, SongPick.LikedSong));
         }
 
         [HttpGet]
@@ -76,7 +71,7 @@ namespace BitShuva.Chavah.Controllers
             
             var likedSongIds = await this.DbSession
                 .Query<Like>()
-                .Customize(x => x.Include<Like>(l => l.SongId))
+                .Include(l => l.SongId)
                 .Statistics(out var stats)
                 .Where(l => l.Status == LikeStatus.Like && l.UserId == user.Id)
                 .OrderByDescending(l => l.Date)
@@ -85,10 +80,10 @@ namespace BitShuva.Chavah.Controllers
                 .Take(take)
                 .ToListAsync();
 
-            var songs = await this.DbSession.LoadAsync<Song>(likedSongIds);
+            var songs = await this.DbSession.LoadWithoutNulls<Song>(likedSongIds);
             return new PagedList<Song>
             {
-                Items = songs.Where(s => s != null).ToArray(),
+                Items = songs.ToArray(),
                 Skip = skip,
                 Take = take,
                 Total = stats.TotalResults
@@ -102,9 +97,9 @@ namespace BitShuva.Chavah.Controllers
             {
                 return q => this.DbSession
                     .Query<Song, Songs_Search>()
-                    .Search(s => s.Name, q, 2, SearchOptions.Guess, EscapeQueryOptions.AllowPostfixWildcard)
-                    .Search(s => s.Album, q, 1, SearchOptions.Guess, EscapeQueryOptions.AllowPostfixWildcard)
-                    .Search(s => s.Artist, q, 1, SearchOptions.Guess, EscapeQueryOptions.AllowPostfixWildcard)
+                    .Search(s => s.Name, q, 2, SearchOptions.Guess)
+                    .Search(s => s.Album, q, 1, SearchOptions.Guess)
+                    .Search(s => s.Artist, q, 1, SearchOptions.Guess)
                     .Take(50);
             });
 
@@ -114,9 +109,10 @@ namespace BitShuva.Chavah.Controllers
             // No results? See if we can suggest some near matches.
             if (results.Count == 0)
             {
-                var suggestResults = await makeQuery()(searchText + "*").SuggestAsync();
-                var suggestions = suggestResults.Suggestions;
-                var firstSuggestion = suggestions.FirstOrDefault();
+                var suggestResults = await makeQuery()(searchText + "*")
+                    .SuggestUsing(b => b.ByField(nameof(Songs_Search.Results.Name), searchText))
+                    .ExecuteAsync();
+                var firstSuggestion = suggestResults.Any() ? suggestResults.First().Value.Suggestions.FirstOrDefault() : null;
                 if (firstSuggestion != null)
                 {
                     // Run the query for that suggestion.
@@ -235,8 +231,6 @@ namespace BitShuva.Chavah.Controllers
             var userPreferences = default(UserSongPreferences);
             var songsWithRanking = default(IList<Songs_RankStandings.Result>);
 
-            var stopwatch = new System.Diagnostics.Stopwatch();
-            stopwatch.Start();
             // Aggressive caching for the UserSongPreferences and SongsWithRanking. These don't change often.
             using (var cache = DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
             {
@@ -258,7 +252,6 @@ namespace BitShuva.Chavah.Controllers
                 {
                     userPreferences = new UserSongPreferences();
                 }
-
             }
 
             // Run the song picking algorithm.
@@ -269,21 +262,21 @@ namespace BitShuva.Chavah.Controllers
             
             if (pickedSongs.Any(s => string.IsNullOrEmpty(s.SongId)))
             {
-                logger.LogWarning("Picked songs for batch, but returned one or more empty song IDs", pickedSongs);
+                logger.LogWarning("Picked songs for batch, but returned one or more empty song IDs {pickedSongs}", pickedSongs);
             }
 
             // Make a single trip to the database to load all the picked songs.
             var pickedSongIds = pickedSongs
                 .Select(s => s.SongId)
                 .ToList();
-            var songs = await DbSession.LoadAsync<Song>(pickedSongIds);
-            if (songs.Any(s => s == null))
+            var songs = await DbSession.LoadWithoutNulls<Song>(pickedSongIds);
+            if (pickedSongIds.Count != songs.Count)
             {
-                logger.LogWarning("Picked songs for batch, but some of the songs came back null.", (SongPicks: pickedSongs, SongIds: pickedSongIds));
+                logger.LogWarning("Picked songs for batch, but some of the songs came back null. PickedSongIds {pickedSongIds}. Picked songs: {pickedSongs}", pickedSongIds, pickedSongs);
             }
 
-            var songDtos = new List<Song>(songs.Length);
-            for (var i = 0; i < songs.Length; i++)
+            var songDtos = new List<Song>(songs.Count);
+            for (var i = 0; i < songs.Count; i++)
             {
                 var song = songs[i];
                 if (song != null)
@@ -398,7 +391,7 @@ namespace BitShuva.Chavah.Controllers
             var recentLikedSongIds = await this.DbSession
                 .Query<Like>()
                 .Statistics(out var stats)
-                .Customize(x => x.Include<Like>(l => l.SongId))
+                .Include(l => l.SongId)
                 .Where(l => l.Status == LikeStatus.Like)
                 .OrderByDescending(l => l.Date)
                 .Select(l => l.SongId)

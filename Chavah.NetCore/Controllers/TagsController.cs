@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +39,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task<IEnumerable<string>> SearchTags(string search)
         {
             var result = await DbSession.Query<Songs_Tags.Result, Songs_Tags>()
-                .Search(i => i.Name, search + "*", 1, SearchOptions.Guess, EscapeQueryOptions.AllowPostfixWildcard)
+                .Search(i => i.Name, search + "*", 1, SearchOptions.Guess)
                 .Take(10)
                 .ToListAsync();
             return result.Select(r => r.Name);
@@ -79,7 +81,7 @@ namespace BitShuva.Chavah.Controllers
                 { "oldTag", oldTag },
                 { "newTag", newTag }
             };
-            var patch = new CollectionPatchService(DbSession.Advanced.DocumentStore, "Songs", patchScript, patchVariables);
+            var patch = new CollectionPatchService(DbSession.Advanced.DocumentStore, typeof(Song), patchScript, patchVariables);
             await patch.ExecuteAsync();
 
             return newTag;

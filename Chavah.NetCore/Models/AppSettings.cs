@@ -3,7 +3,7 @@
 
     public class AppSettings
     {
-        public Connectionstrings ConnectionStrings { get; set; }
+        public DbConnection DbConnection { get; set; }
         public Application Application { get; set; }
         public Logging Logging { get; set; }
         public Email Email { get; set; }
@@ -13,9 +13,12 @@
         public Jwt Jwt { get; set; }
     }
 
-    public class Connectionstrings
+    public class DbConnection
     {
-        public string RavenConnection { get; set; }
+        public string Url { get; set; }
+        public string DatabaseName { get; set; }
+        public string CertFileName { get; set; }
+        public string CertPassword { get; set; }
     }
 
     public class Application

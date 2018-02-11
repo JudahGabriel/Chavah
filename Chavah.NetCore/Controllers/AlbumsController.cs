@@ -5,18 +5,17 @@ using BitShuva.Chavah.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Optional.Async;
-using Raven.Client;
-using Raven.Client.Linq;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -56,7 +55,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<PagedList<Album>> GetAll(int skip, int take, string search)
         {
-            var query = string.IsNullOrWhiteSpace(search) ?
+            IRavenQueryable<Album> query = string.IsNullOrWhiteSpace(search) ?
                 DbSession.Query<Album>() :
                 DbSession.Query<Album>().Where(a => a.Name.StartsWith(search) || a.Artist.StartsWith(search));
             var albums = await query

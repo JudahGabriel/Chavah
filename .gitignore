@@ -276,3 +276,5 @@ Web.Debug.config
 /Chavah.NetCore/wwwroot/js/*/*.js
 /Chavah.NetCore/wwwroot/js/*/*.js.map
 /Chavah.NetCore/zanz.config
+/Chavah.NetCore/ravencert.Development.pfx
+/Chavah.NetCore/ravencert.Production.pfx

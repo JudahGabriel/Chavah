@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.SyndicationFeed;
 using Raven.Client;
-using Raven.Client.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Extensions.Options;
+using Raven.Client.Documents.Session;
 
 namespace BitShuva.Chavah.Controllers
 {

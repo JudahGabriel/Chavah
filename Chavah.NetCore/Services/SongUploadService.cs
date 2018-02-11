@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Optional.Async;
 using Microsoft.Extensions.Logging;
+using Raven.Client.Documents;
 
 namespace BitShuva.Chavah.Services
 {
@@ -22,8 +23,10 @@ namespace BitShuva.Chavah.Services
         private readonly ILogger<SongUploadService> logger;
         private readonly IDocumentStore db;
 
-        public SongUploadService(ICdnManagerService cdnManagerService, 
-                                IDocumentStore db, ILogger<SongUploadService> logger)
+        public SongUploadService(
+            ICdnManagerService cdnManagerService, 
+            IDocumentStore db, 
+            ILogger<SongUploadService> logger)
         {
             this.cdnManagerService = cdnManagerService;
             this.logger = logger;

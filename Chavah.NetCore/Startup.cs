@@ -1,23 +1,17 @@
-﻿using BitShuva.Chavah.Models;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Indexes;
+using BitShuva.Chavah.Models.Patches;
 using BitShuva.Chavah.Services;
+using BitShuva.Services;
+using cloudscribe.Syndication.Models.Rss;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using BitShuva.Chavah.Models.Transformers;
-using BitShuva.Chavah.Common;
-using BitShuva.Services;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using BitShuva.Chavah.Models.Patches;
-using cloudscribe.Syndication.Models.Rss;
-using Raven.Client;
-using RavenDB.Identity;
-using BitShuva.Chavah.Models.Indexes;
-using WebEssentials.AspNetCore.Pwa;
-using RavenDB.StructuredLog;
+using Raven.Identity;
+using Raven.StructuredLog;
 using System;
 
 namespace BitShuva.Chavah
@@ -37,7 +31,7 @@ namespace BitShuva.Chavah
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
 
-            //// Add application services.
+            // Add application services.
             services.AddTransient<IEmailSender, SendGridEmailService>();
             services.AddTransient<ICdnManagerService, CdnManagerService>();
             services.AddScoped<IChannelProvider, RssChannelProvider>();
@@ -53,7 +47,7 @@ namespace BitShuva.Chavah
 
             // Add RavenDB and identity.
             services
-                .AddRavenDb(Configuration.GetConnectionString("RavenConnection")) // Create a RavenDB DocumentStore singleton.
+                .AddRavenDocStore(Configuration) // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession() // Create a RavenDB IAsyncDocumentSession for each request.
                 .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles. 
                 {
@@ -65,7 +59,6 @@ namespace BitShuva.Chavah
 
             services.RunDatabasePatches();
             services.InstallIndexes();
-            services.InstallTransformers();
             services.AddMemoryCache();
             services.AddMvc();
             services.UseBundles(); // Must be *after* .AddMvc()

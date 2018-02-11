@@ -1,4 +1,4 @@
-﻿using Raven.Abstractions.Indexing;
+﻿using Raven.Client.Documents.Indexes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace BitShuva.Chavah.Models.Indexes
     /// <summary>
     /// RavenDB index that indexes the fields we query songs on.
     /// </summary>
-    public class Songs_GeneralQuery : Raven.Client.Indexes.AbstractIndexCreationTask<Song>
+    public class Songs_GeneralQuery : AbstractIndexCreationTask<Song>
     {
         public Songs_GeneralQuery()
         {
@@ -26,9 +26,6 @@ namespace BitShuva.Chavah.Models.Indexes
                                     Tags = song.Tags,
                                     UploadDate = song.UploadDate
                                 };
-
-            Sort(nameof(Song.CommunityRank), SortOptions.Int);
-            Sort("__document_id", SortOptions.String);
         }
     }
 }

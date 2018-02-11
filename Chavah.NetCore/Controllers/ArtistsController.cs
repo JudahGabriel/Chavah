@@ -1,12 +1,10 @@
-﻿using BitShuva.Chavah.Common;
-using BitShuva.Chavah.Models;
+﻿using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Raven.Client;
-using Raven.Client.Linq;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,8 +36,8 @@ namespace BitShuva.Chavah.Controllers
 
         public async Task<PagedList<Artist>> GetAll(string search, int skip, int take)
         {
-            var stats = default(RavenQueryStatistics);
-            var query = this.DbSession.Query<Artist>().Statistics(out stats);
+            IQueryable<Artist> query = this.DbSession.Query<Artist>()
+                .Statistics(out var stats);
             if (!string.IsNullOrWhiteSpace(search))
             {
                 query = query.Where(a => a.Name.StartsWith(search.ToLower()));
@@ -49,7 +47,10 @@ namespace BitShuva.Chavah.Controllers
                 query = query.OrderBy(a => a.Name);
             }
 
-            var items = await query.Skip(skip).Take(take).ToListAsync();
+            var items = await query
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
             return new PagedList<Artist>
             {
                 Skip = skip,

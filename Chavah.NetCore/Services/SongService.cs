@@ -1,6 +1,8 @@
 ﻿using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;

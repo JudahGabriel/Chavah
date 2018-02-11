@@ -1,6 +1,4 @@
-﻿using Raven.Abstractions.Data;
-//using Raven.Abstractions.Extensions;
-using Raven.Client;
+﻿using Raven.Client.Documents;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,11 +37,7 @@ namespace BitShuva.Chavah.Models.Patches
             }
 
             // Now that we have all the songs and albums in memory, update the songs in bulk.
-            var bulkInsertOptions = new BulkInsertOptions
-            {
-                OverwriteExisting = true
-            };
-            using (var bulkInsert = db.BulkInsert(options: bulkInsertOptions))
+            using (var bulkInsert = db.BulkInsert())
             {
                 foreach (var album in albums)
                 {

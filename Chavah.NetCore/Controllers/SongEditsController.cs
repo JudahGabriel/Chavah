@@ -3,8 +3,8 @@ using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Raven.Client;
-using Raven.Client.Linq;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +58,7 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpGet]
-        public Task<IList<SongEdit>> GetPendingEdits(int take = 20)
+        public Task<List<SongEdit>> GetPendingEdits(int take = 20)
         {
             return this.DbSession.Query<SongEdit>()
                 .Where(s => s.Status == SongEditStatus.Pending)

@@ -3,9 +3,9 @@ using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Raven.Client;
-using RavenDB.StructuredLog;
-using System;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
+using Raven.StructuredLog;
 using System.Linq;
 using System.Threading.Tasks;
 

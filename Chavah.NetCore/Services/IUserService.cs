@@ -7,6 +7,6 @@ namespace BitShuva.Chavah.Services
     public interface IUserService
     {
         Task<AppUser> GetUser(string idenityName);
-        Task<IList<AppUser>> RegisteredUsers(int take);
+        Task<List<AppUser>> RegisteredUsers(int take);
     }
 }

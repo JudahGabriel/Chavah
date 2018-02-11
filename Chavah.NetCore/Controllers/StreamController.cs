@@ -1,8 +1,6 @@
 ﻿using BitShuva.Chavah.Models;
 using System.Linq;
 using System.Threading.Tasks;
-using Raven.Client;
-using Raven.Client.Linq;
 using System.Text;
 using System;
 using System.Collections.Generic;
@@ -10,6 +8,9 @@ using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
+using Raven.Client.Documents.Session;
+using Raven.Client.Documents.Linq;
+using Raven.Client.Documents;
 
 namespace BitShuva.Chavah.Controllers
 {

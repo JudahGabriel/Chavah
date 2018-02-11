@@ -1,14 +1,10 @@
-﻿using BitShuva.Chavah.Models;
-using System;
-using System.Collections.Generic;
+﻿using Raven.Client.Documents.Indexes;
+using Raven.Client.Documents.Linq.Indexing;
 using System.Linq;
-using System.Web;
-using Raven.Client.Linq.Indexing;
-using Raven.Abstractions.Indexing;
 
 namespace BitShuva.Chavah.Models.Indexes
 {
-    public class Songs_Search : Raven.Client.Indexes.AbstractIndexCreationTask<Song, Songs_Search.Results>
+    public class Songs_Search : AbstractIndexCreationTask<Song, Songs_Search.Results>
     {
         public Songs_Search()
         {
@@ -25,10 +21,10 @@ namespace BitShuva.Chavah.Models.Indexes
             Analyze(r => r.Artist, "Lucene.Net.Analysis.Standard.StandardAnalyzer");
             Analyze(r => r.Album, "Lucene.Net.Analysis.Standard.StandardAnalyzer");
             Analyze(r => r.HebrewName, "Lucene.Net.Analysis.Standard.StandardAnalyzer");
-            Index(r => r.Name, FieldIndexing.Analyzed);
-            Index(r => r.Artist, FieldIndexing.Analyzed);
-            Index(r => r.Album, FieldIndexing.Analyzed);
-            Index(r => r.HebrewName, FieldIndexing.Analyzed);
+            Index(r => r.Name, FieldIndexing.Default);
+            Index(r => r.Artist, FieldIndexing.Default);
+            Index(r => r.Album, FieldIndexing.Default);
+            Index(r => r.HebrewName, FieldIndexing.Default);
             Suggestion(r => r.Name);
             Suggestion(r => r.Artist);
             Suggestion(r => r.Album);

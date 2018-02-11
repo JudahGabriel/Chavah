@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System.Linq;
 using System.Threading.Tasks;
 

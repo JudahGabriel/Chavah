@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +43,8 @@ namespace BitShuva.Chavah.Controllers
         public async Task<dynamic> GetUpDownVotes(string songId)
         {
             var upVoteCount = await this.DbSession.Query<Like>().CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Like);
-            var downVoteCount = await this.DbSession.Query<Like>().CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Dislike);
+            var downVoteCount = await this.DbSession.Query<Like>()
+                .CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Dislike);
             return new
             {
                 UpVotes = upVoteCount,

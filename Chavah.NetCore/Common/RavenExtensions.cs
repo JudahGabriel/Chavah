@@ -1,7 +1,7 @@
 ﻿using Optional;
 using Raven.Client;
-using Raven.Client.Document;
-using Raven.Json.Linq;
+using Raven.Client.Documents.Session;
+using Raven.Client.Documents.Session.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +40,7 @@ namespace BitShuva.Chavah.Common
         public static async Task<IEnumerable<Option<T>>> LoadOptionAsync<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
         {
             var result = await session.LoadAsync<T>(ids);
-            return result.Select(v => v.SomeNotNull());
+            return result.Values.Select(v => v.SomeNotNull());
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace BitShuva.Chavah.Common
         public static async Task<IList<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
         {
             var result = await session.LoadAsync<T>(ids);
-            return result
+            return result.Values
                 .Where(item => item != null)
                 .ToList();
         }
@@ -155,7 +155,7 @@ namespace BitShuva.Chavah.Common
         public static async Task<IEnumerable<Option<T>>> LoadOptionAsync<T>(this IAsyncLoaderWithInclude<T> session, IEnumerable<string> ids)
         {
             var result = await session.LoadAsync<T>(ids);
-            return result.Select(v => v.SomeNotNull());
+            return result.Values.Select(v => v.SomeNotNull());
         }
 
         /// <summary>
@@ -178,18 +178,18 @@ namespace BitShuva.Chavah.Common
         /// Sets the Raven document expiration for this object. The document will be deleted from the database after the specified date.
         /// Note: This specified object must be .Store()'d in the database before calling this method.
         /// </summary>
-        public static void SetRavenExpiration<T>(this IAsyncDocumentSession dbSession, T obj, DateTime expiry)
+        public static void SetRavenExpiration<T>(this IAsyncDocumentSession dbSession, T obj, DateTimeOffset expiry)
         {
-            dbSession.Advanced.GetMetadataFor(obj)["Raven-Expiration-Date"] = new RavenJValue(expiry);
+            dbSession.Advanced.GetMetadataFor(obj)["@expires"] = expiry;
         }
 
         /// <summary>
         /// Sets the Raven document expiration for this object. The document will be deleted from the database after the specified date.
         /// Note: This specified object must be .Store()'d in the database before calling this method.
         /// </summary>
-        public static void SetRavenExpiration<T>(this IDocumentSession dbSession, T obj, DateTime expiry)
+        public static void SetRavenExpiration<T>(this IDocumentSession dbSession, T obj, DateTimeOffset expiry)
         {
-            dbSession.Advanced.GetMetadataFor(obj)["Raven-Expiration-Date"] = new RavenJValue(expiry);
+            dbSession.Advanced.GetMetadataFor(obj)["@expires"] = expiry;
         }
     }
 }
