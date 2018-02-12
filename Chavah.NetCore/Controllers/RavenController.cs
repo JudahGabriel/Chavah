@@ -27,7 +27,7 @@ namespace BitShuva.Chavah.Controllers
             // RavenDB best practice: during save, wait for the indexes to update.
             // This way, Post-Redirect-Get scenarios won't be affected by stale indexes.
             // For more info, see https://ravendb.net/docs/article-page/3.5/Csharp/client-api/session/saving-changes
-            //DbSession.Advanced.WaitForIndexesAfterSaveChanges(timeout: TimeSpan.FromSeconds(3), throwOnTimeout: false);
+            DbSession.Advanced.WaitForIndexesAfterSaveChanges(timeout: TimeSpan.FromSeconds(3), throwOnTimeout: false);
         }
 
         /// <summary>
