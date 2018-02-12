@@ -2,7 +2,6 @@
     export class AppNavService {
         
         static $inject = [
-            "audioPlayer",
             "templatePaths",
             "$location",
             "$uibModal",
@@ -12,15 +11,10 @@
         readonly promptSignInUrl = "#/promptsignin";
 
         constructor(
-            private audioPlayer: AudioPlayerService,
             private templatePaths: ITemplatePaths,
             private $location: ng.ILocationService,
             private $uibModal: ng.ui.bootstrap.IModalService,
             private initConfig: Server.IHomeViewModel) {
-
-            // Listen for when the song changes and update the document title.
-            audioPlayer.song
-                .subscribe(song => this.updateDocumentTitle(song));
         }
 
         signIn() {
@@ -89,15 +83,6 @@
          */
         getQueryParams(): any {
             return this.$location.search();
-        }
-
-        private updateDocumentTitle(song: Song | null) {
-            // Update the document title so that the browser tab updates.
-            if (song) {
-                document.title = `${song.name} by ${song.artist} on ${this.initConfig.title}`;
-            } else {
-                document.title = this.initConfig.title;
-            }
         }
     }
 

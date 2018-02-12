@@ -241,6 +241,7 @@ namespace BitShuva.Chavah.Controllers
             var user = await DbSession.LoadAsync<AppUser>(userId);
             if (user == null)
             {
+                logger.LogInformation("Rejected email confirmation because couldn't find {userId}", userId);
                 return new ConfirmEmailResult
                 {
                     Success = false,
@@ -286,6 +287,11 @@ namespace BitShuva.Chavah.Controllers
             {
                 errorMessage = "Tried to confirm email, but the confirmation code was for an incorrect user.";
                 logger.LogError(errorMessage, null, (expected: regToken.FlatMap(t => t.ApplicationUserId).ValueOr(""), actual: email));
+            }
+
+            if (!isValidToken)
+            {
+                logger.LogInformation("Rejected email confirmation. {errorMessage}", errorMessage);
             }
 
             return new ConfirmEmailResult

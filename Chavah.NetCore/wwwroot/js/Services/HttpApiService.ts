@@ -3,8 +3,9 @@
 
         static $inject = [
             "loadingProgress",
-            "$http",
+            "appNav",
             "localStorageService",
+            "$http",
             "$q",
         ];
 
@@ -12,8 +13,9 @@
 
         constructor(
             private loadingProgress: LoadingProgressService,
-            private $http: ng.IHttpService,
+            private appNav: AppNavService,
             private localStorageService: ng.local.storage.ILocalStorageService,
+            private $http: ng.IHttpService,
             private $q: ng.IQService) {
         }
 
@@ -128,17 +130,10 @@
         // }
 
         private onAjaxError(errorDetails: any, errorMessage: string) {
-            // If we got 401 unauthorized, the token is probably stale or invalid. Go to sign in.
-            // if (errorDetails && errorDetails.status === 401) {
-            //    this.appNav.signIn();
-            // } else {
-            //    this.errors.push({
-            //        error: errorDetails,
-            //        message: errorMessage
-            //    });
-
-            //    this.isShowingApiError = true;
-            // }
+             // If we got 401 unauthorized, our sign-in cookie is probably stale or invalid. Go to sign in.
+             if (errorDetails && errorDetails.status === 401) {
+                this.appNav.signIn();
+             }
         }
     }
 

@@ -23,14 +23,6 @@
     <Content Remove="wwwroot\js\Models\StructuredLog.ts" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Web.configz" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Web.configz" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="2.1.2" />

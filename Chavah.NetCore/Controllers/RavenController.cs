@@ -72,6 +72,17 @@ namespace BitShuva.Chavah.Controllers
             }
         }
 
+        public async Task<AppUser> GetCurrentUserOrThrow()
+        {
+            var currentUser = await this.GetCurrentUser();
+            if (currentUser == null)
+            {
+                throw new UnauthorizedAccessException().WithData("userName", this.User.Identity.Name);
+            }
+
+            return currentUser;
+        }
+
         public async Task<AppUser> GetCurrentUser()
         {
             if (this.currentUser != null)

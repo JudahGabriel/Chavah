@@ -3,10 +3,11 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var HttpApiService = /** @class */ (function () {
-            function HttpApiService(loadingProgress, $http, localStorageService, $q) {
+            function HttpApiService(loadingProgress, appNav, localStorageService, $http, $q) {
                 this.loadingProgress = loadingProgress;
-                this.$http = $http;
+                this.appNav = appNav;
                 this.localStorageService = localStorageService;
+                this.$http = $http;
                 this.$q = $q;
                 this.apiBaseUrl = "";
             }
@@ -112,21 +113,16 @@ var BitShuva;
             //    return "";
             // }
             HttpApiService.prototype.onAjaxError = function (errorDetails, errorMessage) {
-                // If we got 401 unauthorized, the token is probably stale or invalid. Go to sign in.
-                // if (errorDetails && errorDetails.status === 401) {
-                //    this.appNav.signIn();
-                // } else {
-                //    this.errors.push({
-                //        error: errorDetails,
-                //        message: errorMessage
-                //    });
-                //    this.isShowingApiError = true;
-                // }
+                // If we got 401 unauthorized, our sign-in cookie is probably stale or invalid. Go to sign in.
+                if (errorDetails && errorDetails.status === 401) {
+                    this.appNav.signIn();
+                }
             };
             HttpApiService.$inject = [
                 "loadingProgress",
-                "$http",
+                "appNav",
                 "localStorageService",
+                "$http",
                 "$q",
             ];
             return HttpApiService;

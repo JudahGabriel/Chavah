@@ -2,7 +2,10 @@
 namespace BitShuva.Chavah {
     export class AudioPlayerService {
 
-        static $inject = ["songApi"];
+        static $inject = [
+            "songApi",
+            "initConfig"
+        ];
 
         readonly status = new Rx.BehaviorSubject(AudioStatus.Paused);
         readonly song = new Rx.BehaviorSubject<Song | null>(null);
@@ -17,13 +20,13 @@ namespace BitShuva.Chavah {
 
         private lastPlayedTime = 0;
 
-        constructor(private songApi: SongApiService) {
-            // Commented out: finding out about audio errors on the client turns out to not be very useful;
-            // it's often caused by client-side issues outside our control (bad internet connection, etc.)
-            // Listen for audio errors.
-            // this.audioErrors
-            //    .throttle(10000) // If the CDN is down, we don't want to submit thousands of errors. Throttle it.
-            //    .subscribe(val => this.submitAudioError(val));
+        constructor(
+            private songApi: SongApiService,
+            private initConfig: Server.IHomeViewModel) {
+
+            // Listen for when the song changes and update the document title.
+            this.song
+                .subscribe(song => this.updateDocumentTitle(song));
         }
 
         initialize(audio: HTMLAudioElement) {
@@ -212,6 +215,15 @@ namespace BitShuva.Chavah {
 
         private submitAudioError(val: IAudioErrorInfo) {
             this.songApi.songFailed(val);
+        }
+
+        private updateDocumentTitle(song: Song | null) {
+            // Update the document title so that the browser tab updates.
+            if (song) {
+                document.title = `${song.name} by ${song.artist} on ${this.initConfig.title}`;
+            } else {
+                document.title = this.initConfig.title;
+            }
         }
     }
 

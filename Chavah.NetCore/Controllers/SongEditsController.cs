@@ -23,12 +23,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task<SongEdit> EditSong([FromBody] Song song)
         {
-            var user = await this.GetCurrentUser();
-            if (user == null)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
+            var user = await this.GetCurrentUserOrThrow();
             var existingSong = await this.DbSession.LoadNotNullAsync<Song>(song.Id);
             var songEdit = new SongEdit(existingSong, song)
             {

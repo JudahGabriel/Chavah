@@ -74,7 +74,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task RequestSong(string songId)
         {
-            var user = await this.GetCurrentUser();
+            var user = await this.GetCurrentUserOrThrow();
             var song = await this.DbSession.LoadAsync<Song>(songId);
 
             if (song != null && user != null)

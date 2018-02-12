@@ -55,27 +55,25 @@ namespace BitShuva.Chavah.Controllers
 
         private async Task<int> UpdateLikeStatus(string songId, LikeStatus likeStatus)
         {
-            var user = await this.GetCurrentUser();
+            var user = await this.GetCurrentUserOrThrow();
             var song = await this.DbSession.LoadAsync<Song>(songId);
-            var likeId = $"Likes/{user.Id}/{songId}";
-            if (user == null || song == null)
+            if (song == null)
             {
-                var error = new UnauthorizedAccessException($"User attempted to update like status, even though user or song wasn't found.");
-                error.Data.Add("User ID", user?.Id);
-                error.Data.Add("Song ID", song?.Id);
-                throw error;
+                throw new InvalidOperationException("User attempted to update like status, but song wasn't found.")
+                    .WithData("User ID", user.Id)
+                    .WithData("Song ID", songId);
             }
             
             var isReversal = false;
             var isNoChange = false;
-            
+
+            var likeId = $"Likes/{user.Id}/{songId}";
             var existingLike = await this.DbSession.LoadAsync<Like>(likeId);
             if (existingLike != null)
             {
                 isReversal = existingLike.Status != likeStatus;
                 isNoChange = existingLike.Status == likeStatus;
                 existingLike.Status = likeStatus;
-                await this.DbSession.StoreAsync(existingLike);
             }
             else
             {
