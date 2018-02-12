@@ -270,11 +270,6 @@ namespace BitShuva.Chavah.Controllers
                 .Select(s => s.SongId)
                 .ToList();
             var songs = await DbSession.LoadWithoutNulls<Song>(pickedSongIds);
-            if (pickedSongIds.Count != songs.Count)
-            {
-                logger.LogWarning("Picked songs for batch, but some of the songs came back null. PickedSongIds {pickedSongIds}. Picked songs: {pickedSongs}", pickedSongIds, pickedSongs);
-            }
-
             var songDtos = new List<Song>(songs.Count);
             for (var i = 0; i < songs.Count; i++)
             {
