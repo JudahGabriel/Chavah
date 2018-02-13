@@ -15,12 +15,12 @@
 
         constructor(
             private appNav: AppNavService,
-            private initConfig: Server.IHomeViewModel,
+            private initConfig: Server.HomeViewModel,
             private httpApi: HttpApiService,
             private localStorageService: ng.local.storage.ILocalStorageService) {
 
-            if (this.initConfig.userEmail) {
-                this.currentUser = new User(this.initConfig.userEmail, this.initConfig.userRoles);
+            if (this.initConfig.user) {
+                this.currentUser = new User(this.initConfig.user);
                 this.signedIn.onNext(true);
             }
         }
@@ -46,19 +46,19 @@
             return this.httpApi.postUriEncoded(`${this.apiUri}/clearNotifications`, args);
         }
 
-        register(email: string, password: string): ng.IPromise<Server.IRegisterResults> {
-            let args = {
+        register(email: string, password: string): ng.IPromise<Server.RegisterResults> {
+            const args = {
                 email,
                 password,
             };
             return this.httpApi.postUriEncoded(`${this.apiUri}/register`, args);
         }
 
-        getUserWithEmail(email: string | null): ng.IPromise<Server.IAppUser | null> {
+        getUserWithEmail(email: string | null): ng.IPromise<Server.AppUser | null> {
             const args = {
                 email,
             };
-            return this.httpApi.query<Server.IAppUser | null>(`${this.apiUri}/getUserWithEmail`, args);
+            return this.httpApi.query<Server.AppUser | null>(`${this.apiUri}/getUserWithEmail`, args);
         }
 
         createPassword(email: string, password: string): ng.IPromise<any> {
@@ -69,22 +69,22 @@
             return this.httpApi.postUriEncoded(`${this.apiUri}/createPassword`, args);
         }
 
-        signIn(email: string, password: string, staySignedIn: boolean): ng.IPromise<SignInResult> {
+        signIn(email: string, password: string, staySignedIn: boolean): ng.IPromise<Server.SignInResult> {
             const args = {
                 email,
                 password,
                 staySignedIn,
             };
-            let signInTask = this.httpApi.postUriEncoded<SignInResult>(`${this.apiUri}/signIn`, args);
+            const signInTask = this.httpApi.postUriEncoded<Server.SignInResult>(`${this.apiUri}/signIn`, args);
             signInTask.then(result => {
-                if (result.status === SignInStatus.Success) {
-                    this.currentUser = new User(result.email!, result.roles);
+                if (result.status === SignInStatus.Success && result.user) {
+                    this.currentUser = new User(result.user);
                     this.signedIn.onNext(true);
 
                     // If we have Google Analytics, notify about the signed in user.
-                    let ga = window["ga"];
+                    const ga = window["ga"];
                     if (ga) {
-                        ga("set", "userId", result.email);
+                        ga("set", "userId", result.user.email);
                     }
                 } else {
                     this.currentUser = null;
@@ -95,8 +95,8 @@
             return signInTask;
         }
 
-        confirmEmail(email: string, confirmCode: string): ng.IPromise<Server.IConfirmEmailResult> {
-            let args = {
+        confirmEmail(email: string, confirmCode: string): ng.IPromise<Server.ConfirmEmailResult> {
+            const args = {
                 email,
                 confirmCode,
             };
@@ -104,8 +104,8 @@
             return this.httpApi.postUriEncoded(`${this.apiUri}/ConfirmEmail`, args);
         }
 
-        sendPasswordResetEmail(email: string): ng.IPromise<Server.IResetPasswordResult> {
-            let args = {
+        sendPasswordResetEmail(email: string): ng.IPromise<Server.ResetPasswordResult> {
+            const args = {
                 email,
             };
             return this.httpApi.postUriEncoded(`${this.apiUri}/sendResetPasswordEmail`, args);
@@ -113,8 +113,8 @@
 
         resetPassword(email: string,
                       passwordResetCode: string,
-                      newPassword: string): ng.IPromise<Server.IResetPasswordResult> {
-            let args = {
+                      newPassword: string): ng.IPromise<Server.ResetPasswordResult> {
+            const args = {
                 email,
                 passwordResetCode,
                 newPassword,

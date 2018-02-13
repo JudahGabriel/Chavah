@@ -82,8 +82,7 @@ namespace BitShuva.Chavah.Controllers
             var result = new Models.SignInResult
             {
                 Status = SignInStatusFromResult(signInResult),
-                Email = user.Email,
-                Roles = new List<string>(user.Roles)
+                User = user
             };
 
             // If we've successfully signed in, store the json web token in the user.

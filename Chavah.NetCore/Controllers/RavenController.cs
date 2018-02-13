@@ -56,7 +56,6 @@ namespace BitShuva.Chavah.Controllers
                 {
                     using (logger.BeginKeyValueScope("user", context?.HttpContext?.User?.Identity?.Name))
                     using (logger.BeginKeyValueScope("action", context?.ActionDescriptor?.DisplayName))
-                    using (logger.BeginKeyValueScope("changes", DbSession.Advanced.WhatChanged()))
                     {
                         logger.LogError(saveError, $"Error saving changes for {next.Method?.Name}");
                     }

@@ -1,5 +1,5 @@
 namespace BitShuva.Chavah {
-    export class Song implements Server.ISong {
+    export class Song implements Server.Song {
         name: string;
         hebrewName: string | null;
         album: string;
@@ -20,11 +20,11 @@ namespace BitShuva.Chavah {
         albumArtOrArtistImage = "";
         isCumulativeRank = true;
         totalPlays: number;
-        artistInfo: Server.IArtist;
+        artistInfo: Server.Artist;
         tags: string[];
         purchaseUri: string;
         // reasonPlayed: SongPick;
-        reasonsPlayed: Server.ISongPickReasons | null;
+        reasonsPlayed: Server.SongPickReasons | null;
         albumId: string | null;
 
         albumSwatchBackground = "white";
@@ -55,7 +55,7 @@ namespace BitShuva.Chavah {
             rgb: [255, 255, 255],
         };
 
-        constructor(song: Server.ISong) {
+        constructor(song: Server.Song) {
             angular.merge(this, song);
 
             this.clientId = `${song.id}_${new Date().getTime() + Math.random()}`;
@@ -260,7 +260,7 @@ namespace BitShuva.Chavah {
         }
 
         // tslint:disable-next-line:member-ordering
-        static createEmptySongPickReasons(songId: string): Server.ISongPickReasons {
+        static createEmptySongPickReasons(songId: string): Server.SongPickReasons {
             return {
                 album: LikeLevel.NotSpecified,
                 artist: LikeLevel.NotSpecified,

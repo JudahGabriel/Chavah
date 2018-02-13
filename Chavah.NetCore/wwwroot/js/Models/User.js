@@ -3,11 +3,16 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var User = /** @class */ (function () {
-            function User(email, roles) {
-                this.email = email;
-                this.roles = roles;
-                this.isAdmin = roles && roles.includes(User.roles.admin);
+            function User(serverObj) {
+                angular.merge(this, serverObj);
             }
+            Object.defineProperty(User.prototype, "isAdmin", {
+                get: function () {
+                    return this.roles.includes(User.roles.admin);
+                },
+                enumerable: true,
+                configurable: true
+            });
             User.roles = {
                 admin: "admin"
             };

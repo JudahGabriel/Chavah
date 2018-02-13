@@ -28,11 +28,9 @@
     <link rel="icon" type="image/png" href="~/images/FavIcon128.png" sizes="128x128">
     <link rel="icon" type="image/png" href="~/images/FavIcon256.png" sizes="256x256">
     <!--<![endif]-->
+
     @* Apple iOS shortcut *@
-    <link rel="apple-touch-icon" href="~/images/FavIconAppleTile.png" )" />
-    @*<link rel="apple-touch-startup-image" href="~/Content/images/ios-startup-image-landscape.png" media="(orientation:landscape)" />
-        <link rel="apple-touch-startup-image" href="~/Content/images/ios-startup-image-portrait.png" media="(orientation:portrait)" />
-        <link rel="apple-touch-icon" href="~/Content/images/icon.png" />*@
+    <link rel="apple-touch-icon" href="~/images/FavIconAppleTile.png" />
 
     @*IE9, IE10, IE11 pinned site / jumplist*@
     <meta name="msapplication-task" content="name=Chavah on Facebook;action-uri=http://www.facebook.com/pages/Chavah-Messianic-Radio/134887069882254;icon-uri=/content/images/jumplist_facebook.ico" />
@@ -40,11 +38,6 @@
     <meta name="msapplication-navbutton-color" content="brown" />
     <meta name="msapplication-starturl" content="@appSettings?.Value?.Application?.DefaultUrl" />
     <meta name="msapplication-tooltip" content="@appSettings?.Value?.Application?.Title" />
-
-    @*Windows 8 tile*@
-    <meta name="application-name" content="@appSettings?.Value?.Application?.Title" />
-    <meta name="msapplication-TileColor" content="#080f24" />
-    <meta name="msapplication-TileImage" content="~/images/LogoWindows8Tile.png" />
 
     @*Windows 8.1 tiles with notifications*@
     <meta name="application-name" content="@appSettings?.Value?.Application?.Title" />
@@ -179,6 +172,7 @@
     @*@Html.Partial("Hanukkah")*@
 
     @*TrackJS for diagnosing client-side errors*@
+    @*Commented out: we're no longer using TrackJS*@
     @*<script type="text/javascript">window._trackJs = { token: '3f47a41e023149458b76ae8aa70bab84' };</script>
         <script type="text/javascript" src="https://cdn.trackjs.com/releases/current/tracker.js"></script>*@
 
@@ -191,7 +185,7 @@
                 m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
             })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-            var userId = '@(Model != null && !string.IsNullOrEmpty(Model.UserEmail) ? Model.UserEmail : string.Empty)';
+            var userId = '@(Model != null && Model.User != null ? Model.User.Email : string.Empty)';
             if (userId) {
                 ga('create', '@appSettings?.Value?.Application?.GoogleAnalytics', 'auto', { userId: userId });
             } else {

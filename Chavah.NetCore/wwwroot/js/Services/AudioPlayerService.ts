@@ -22,7 +22,7 @@ namespace BitShuva.Chavah {
 
         constructor(
             private songApi: SongApiService,
-            private initConfig: Server.IHomeViewModel) {
+            private initConfig: Server.HomeViewModel) {
 
             // Listen for when the song changes and update the document title.
             this.song

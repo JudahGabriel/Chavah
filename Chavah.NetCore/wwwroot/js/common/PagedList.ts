@@ -12,7 +12,7 @@
         noItemsText = "There are no results";
 
         constructor(
-            private fetcher: (skip: number, take: number) => ng.IPromise<Server.IPagedList<T>>,
+            private fetcher: (skip: number, take: number) => ng.IPromise<Server.PagedList<T>>,
             private readonly cacheKey?: string,
             private readonly afterFetch?: (items: T[]) => void) {
             if (cacheKey) {

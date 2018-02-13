@@ -1,5 +1,5 @@
 ﻿namespace BitShuva.Chavah {
-    export class Album implements Server.IAlbum {
+    export class Album implements Server.Album {
         artist: string;
         name: string;
         albumArtUri: string | null;
@@ -13,7 +13,7 @@
 
         isSaving = false;
 
-        constructor(serverObj: Server.IAlbum) {
+        constructor(serverObj: Server.Album) {
             angular.merge(this, serverObj);
         }
     }

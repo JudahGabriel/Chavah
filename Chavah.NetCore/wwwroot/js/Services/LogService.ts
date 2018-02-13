@@ -6,7 +6,7 @@
         constructor(private httpApi: HttpApiService) {
         }
 
-        getAll(skip: number, take: number, level: LogLevel | null, sort: LogSort): ng.IPromise<Server.IPagedList<StructuredLog>> {
+        getAll(skip: number, take: number, level: LogLevel | null, sort: LogSort): ng.IPromise<Server.PagedList<StructuredLog>> {
             let args = {
                 skip,
                 take,
@@ -23,7 +23,7 @@
             return this.httpApi.postUriEncoded("/api/logs/delete", args);
         }
 
-        static pagedListSelector(input: Server.IPagedList<Server.StructuredLog>): Server.IPagedList<StructuredLog> {
+        static pagedListSelector(input: Server.PagedList<Server.StructuredLog>): Server.PagedList<StructuredLog> {
             return {
                 skip: input.skip,
                 take: input.take,

@@ -10,8 +10,8 @@ var BitShuva;
                 this.localStorageService = localStorageService;
                 this.signedIn = new Rx.BehaviorSubject(false);
                 this.apiUri = "/api/account";
-                if (this.initConfig.userEmail) {
-                    this.currentUser = new Chavah.User(this.initConfig.userEmail, this.initConfig.userRoles);
+                if (this.initConfig.user) {
+                    this.currentUser = new Chavah.User(this.initConfig.user);
                     this.signedIn.onNext(true);
                 }
             }
@@ -67,13 +67,13 @@ var BitShuva;
                 };
                 var signInTask = this.httpApi.postUriEncoded(this.apiUri + "/signIn", args);
                 signInTask.then(function (result) {
-                    if (result.status === Chavah.SignInStatus.Success) {
-                        _this.currentUser = new Chavah.User(result.email, result.roles);
+                    if (result.status === Chavah.SignInStatus.Success && result.user) {
+                        _this.currentUser = new Chavah.User(result.user);
                         _this.signedIn.onNext(true);
                         // If we have Google Analytics, notify about the signed in user.
                         var ga = window["ga"];
                         if (ga) {
-                            ga("set", "userId", result.email);
+                            ga("set", "userId", result.user.email);
                         }
                     }
                     else {

@@ -7,16 +7,10 @@ var BitShuva;
                 this.httpApi = httpApi;
             }
             LikeApiService.prototype.dislikeSong = function (songId) {
-                var args = {
-                    songId: songId,
-                };
-                return this.httpApi.postUriEncoded("/api/likes/dislike", args);
+                return this.httpApi.postUriEncoded("/api/likes/dislike", { songId: songId });
             };
             LikeApiService.prototype.likeSong = function (songId) {
-                var args = {
-                    songId: songId,
-                };
-                return this.httpApi.postUriEncoded("/api/likes/like", args);
+                return this.httpApi.postUriEncoded("/api/likes/like", { songId: songId });
             };
             LikeApiService.$inject = ["httpApi"];
             return LikeApiService;

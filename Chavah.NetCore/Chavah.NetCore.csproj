@@ -132,7 +132,6 @@
     <None Include="wwwroot\js\models\LikeLevel.ts" />
     <None Include="wwwroot\js\models\LogLevel.ts" />
     <None Include="wwwroot\js\models\ServerInterfaces.ts" />
-    <None Include="wwwroot\js\models\SignInResult.ts" />
     <None Include="wwwroot\js\models\SignInStatus.ts" />
     <None Include="wwwroot\js\models\Song.ts" />
     <None Include="wwwroot\js\models\SongEditStatus.ts" />

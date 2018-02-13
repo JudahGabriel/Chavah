@@ -10,7 +10,7 @@
 
     export const App = angular.module("ChavahApp", modules);
 
-    const homeVm: Server.IHomeViewModel = window["BitShuva.Chavah.HomeViewModel"];
+    const homeVm: Server.HomeViewModel = window["BitShuva.Chavah.HomeViewModel"];
     App.constant("initConfig", homeVm);
 
     // Gets the relative path to a cache-busted angular view.

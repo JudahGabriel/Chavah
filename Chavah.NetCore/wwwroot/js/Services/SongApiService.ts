@@ -72,7 +72,7 @@
             return this.httpApi.query(url, args, SongApiService.songListConverter);
         }
 
-        getTrendingSongs(skip: number, take: number): ng.IPromise<Server.IPagedList<Song>> {
+        getTrendingSongs(skip: number, take: number): ng.IPromise<Server.PagedList<Song>> {
             let args = {
                 skip,
                 take,
@@ -115,7 +115,7 @@
         }
 
         // tslint:disable-next-line:member-ordering
-        private static songPagedListConverter(dto: Server.IPagedList<Server.ISong>): Server.IPagedList<Song> {
+        private static songPagedListConverter(dto: Server.PagedList<Server.Song>): Server.PagedList<Song> {
             return {
                 items: dto.items.map(s => new Song(s)),
                 skip: dto.skip,
@@ -125,12 +125,12 @@
         }
 
         // tslint:disable-next-line:member-ordering
-        private static songListConverter(songs: Server.ISong[]): Song[] {
+        private static songListConverter(songs: Server.Song[]): Song[] {
             return songs.map(r => SongApiService.songConverter(r));
         }
 
         // tslint:disable-next-line:member-ordering
-        private static songOrNullConverter(raw: Server.ISong | null): Song | null {
+        private static songOrNullConverter(raw: Server.Song | null): Song | null {
             if (raw) {
                 return SongApiService.songConverter(raw);
             }
@@ -139,7 +139,7 @@
         }
 
         // tslint:disable-next-line:member-ordering
-        private static songConverter(raw: Server.ISong): Song {
+        private static songConverter(raw: Server.Song): Song {
             return new Song(raw);
         }
     }

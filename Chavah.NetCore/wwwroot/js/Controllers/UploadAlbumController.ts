@@ -19,8 +19,8 @@ namespace BitShuva.Chavah {
         purchaseUrl = "";
         genre = "";
         allGenres = ["Messianic Jewish", "Hebrew Roots", "Jewish Christian", "Jewish", "Christian"];
-        artist: Server.IArtist | null = null;
-        allArtists: Server.IArtist[] = [];
+        artist: Server.Artist | null = null;
+        allArtists: Server.Artist[] = [];
         foreColor = Song.defaultSwatch.getBodyTextColor();
         backColor = Song.defaultSwatch.getHex();
         mutedColor = Song.defaultSwatch.getHex();
@@ -144,7 +144,7 @@ namespace BitShuva.Chavah {
         }
 
         // tslint:disable-next-line:member-ordering
-        static filePickerSongToAlbumSong(file: FilepickerInkBlob): Server.ISongUpload {
+        static filePickerSongToAlbumSong(file: FilepickerInkBlob): Server.SongUpload {
             return {
                 fileName: file["friendlyName"],
                 address: file.url,
@@ -176,7 +176,7 @@ namespace BitShuva.Chavah {
             return "";
         }
 
-        artistSelected(artist: Server.IArtist) {
+        artistSelected(artist: Server.Artist) {
             this.artist = angular.copy(artist);
         }
 
@@ -194,7 +194,7 @@ namespace BitShuva.Chavah {
             }
 
             if (!this.isUploading) {
-                let album: Server.IAlbumUpload = {
+                let album: Server.AlbumUpload = {
                     albumArtUri: this.albumArt.url,
                     artist: this.artist.name,
                     backColor: this.backColor,

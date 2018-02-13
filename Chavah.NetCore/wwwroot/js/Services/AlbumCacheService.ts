@@ -86,7 +86,7 @@
             try {
                 let cacheJson = localStorage.getItem(AlbumCacheService.cacheKey);
                 if (cacheJson) {
-                    let rawCacheItems: Server.IAlbum[] = JSON.parse(cacheJson);
+                    let rawCacheItems: Server.Album[] = JSON.parse(cacheJson);
                     if (rawCacheItems) {
                         return rawCacheItems.map(r => new Album(r));
                     }

@@ -58,7 +58,7 @@
             }
         }
 
-        registrationCompleted(results: Server.IRegisterResults) {
+        registrationCompleted(results: Server.RegisterResults) {
             if (results.success) {
                 this.showRegisterSuccess = true;
             } else if(results.needsConfirmation) {

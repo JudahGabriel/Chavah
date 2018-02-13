@@ -178,18 +178,18 @@ namespace BitShuva.Chavah.Common
         /// Sets the Raven document expiration for this object. The document will be deleted from the database after the specified date.
         /// Note: This specified object must be .Store()'d in the database before calling this method.
         /// </summary>
-        public static void SetRavenExpiration<T>(this IAsyncDocumentSession dbSession, T obj, DateTimeOffset expiry)
+        public static void SetRavenExpiration<T>(this IAsyncDocumentSession dbSession, T obj, DateTime expiry)
         {
-            dbSession.Advanced.GetMetadataFor(obj)["@expires"] = expiry;
+            dbSession.Advanced.GetMetadataFor(obj)["@expires"] = expiry.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>
         /// Sets the Raven document expiration for this object. The document will be deleted from the database after the specified date.
         /// Note: This specified object must be .Store()'d in the database before calling this method.
         /// </summary>
-        public static void SetRavenExpiration<T>(this IDocumentSession dbSession, T obj, DateTimeOffset expiry)
+        public static void SetRavenExpiration<T>(this IDocumentSession dbSession, T obj, DateTime expiry)
         {
-            dbSession.Advanced.GetMetadataFor(obj)["@expires"] = expiry;
+            dbSession.Advanced.GetMetadataFor(obj)["@expires"] = DateTime.UtcNow.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }

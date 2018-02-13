@@ -9,28 +9,22 @@
 
         profile: any;
 
-        constructor(private readonly initConfig: Server.IHomeViewModel,
+        constructor(
+            private readonly initConfig: Server.HomeViewModel,
             private readonly accountApi: AccountService,
-            private readonly $timeout: ng.ITimeoutService,
-        ) {
+            private readonly $timeout: ng.ITimeoutService) {
          
-
-            if (this.initConfig.userEmail) {
-                this.loadProfile();
-            } else {
-                //due to the variables set in window["BitShuva.Chavah.HomeViewModel"] we have to refresh.
-                //TODO: replace into localStrogage??
-                window.location.reload();
+            if (this.initConfig.user) {
+                this.loadProfile(this.initConfig.user);
             }
         }
 
-        loadProfile() {
-            this.accountApi.getUserWithEmail(this.initConfig.userEmail)
+        loadProfile(user: Server.AppUser) {
+            this.accountApi.getUserWithEmail(user.email)
                 .then(resp => {
                     this.profile = resp;
                     this.profile.lastSeen = moment(this.profile.lastSeen).format("LLL");
                     this.profile.registrationDate = moment(this.profile.registrationDate).format("LLL");
-
                 });
         }
     }

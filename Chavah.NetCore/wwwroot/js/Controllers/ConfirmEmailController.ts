@@ -36,7 +36,7 @@
                 }));
         }
 
-        confirmEmailCompleted(results: Server.IConfirmEmailResult) {
+        confirmEmailCompleted(results: Server.ConfirmEmailResult) {
             this.isConfirming = false;
             this.confirmSucceeded = results.success;
             this.confirmFailed = !this.confirmSucceeded;

@@ -7,13 +7,16 @@
             "appNav"
         ];
 
-        notifications: Server.INotification[];
+        notifications: Server.Notification[];
 
-        constructor(private readonly initConfig: Server.IHomeViewModel,
+        constructor(private readonly initConfig: Server.HomeViewModel,
                     private readonly accountApi: AccountService,
                     private appNav: AppNavService) {
 
-            this.notifications = initConfig.notifications;
+            this.notifications = initConfig.user ? initConfig.user.notifications : [];
+            this.accountApi.signedIn
+                .select(() => this.accountApi.currentUser)
+                .subscribe(user => this.signedInUserChanged(user));
         }
 
         get currentUserName(): string {
@@ -42,6 +45,12 @@
         signOut() {
             this.accountApi.signOut()
                 .then(() => this.appNav.signOut());
+        }
+
+        signedInUserChanged(user: User | null) {
+            if (user) {
+                this.notifications = user.notifications;
+            }
         }
     }
 

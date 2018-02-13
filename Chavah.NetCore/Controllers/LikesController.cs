@@ -34,9 +34,9 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpPost]
-        public async Task<int> Dislike(string songId)
+        public Task<int> Dislike(string songId)
         {
-            return await UpdateLikeStatus(songId, LikeStatus.Dislike);
+            return UpdateLikeStatus(songId, LikeStatus.Dislike);
         }
         
         [HttpGet]

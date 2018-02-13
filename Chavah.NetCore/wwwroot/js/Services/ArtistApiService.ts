@@ -6,7 +6,7 @@
         constructor(private httpApi: HttpApiService) {
         }
 
-        getAll(search = "", skip = 0, take = 1024): ng.IPromise<Server.IPagedList<Server.IArtist>> {
+        getAll(search = "", skip = 0, take = 1024): ng.IPromise<Server.PagedList<Server.Artist>> {
             let args = {
                 search,
                 skip,
@@ -22,12 +22,12 @@
             return this.httpApi.query("/api/artists/getByName", args, ArtistApiService.artistSelector);
         }
 
-        save(artist: Server.IArtist): ng.IPromise<Artist> {
+        save(artist: Server.Artist): ng.IPromise<Artist> {
             return this.httpApi.post("/api/artists/save", artist, ArtistApiService.artistSelector);
         }
 
         // tslint:disable-next-line:member-ordering
-        static artistSelector(serverObj: Server.IArtist): Artist {
+        static artistSelector(serverObj: Server.Artist): Artist {
             return new Artist(serverObj);
         }
     }
