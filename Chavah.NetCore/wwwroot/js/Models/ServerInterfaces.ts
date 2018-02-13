@@ -92,12 +92,14 @@
         newArtist: string;
         newAlbum: string;
         newName: string;
+        newHebrewName: string;
         newTags: string[];
         newLyrics: string;
         oldArtist: string;
         oldAlbum: string;
         oldLyrics: string;
         oldName: string;
+        oldHebrewName: string;
         oldTags: string[];
     }
 

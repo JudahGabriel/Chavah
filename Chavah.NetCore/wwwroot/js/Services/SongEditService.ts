@@ -9,6 +9,13 @@
         constructor(private httpApi: HttpApiService) {
         }
 
+        getSongEdit(songId: string): ng.IPromise<Server.SongEdit> {
+            const args = {
+                songId: songId
+            };
+            return this.httpApi.query("/api/songEdits/get", args);
+        }
+
         submit(song: Song): ng.IPromise<Server.SongEdit> {
             return this.httpApi.post("/api/songEdits/editSong", song);
         }

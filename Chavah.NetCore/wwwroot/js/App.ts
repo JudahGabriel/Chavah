@@ -25,7 +25,7 @@
     }
     export const FindAppView = findCacheBustedView;
 
-    function createRoute(templateUrl: string, access = RouteAccess.Anonymous): IAppRoute {
+    function createRoute(templateUrl: string, access = RouteAccess.Anonymous): AppRoute {
         let cacheBustedView = findCacheBustedView(templateUrl);
         return {
             templateUrl: cacheBustedView,
@@ -170,15 +170,23 @@
 
             // tslint:disable-next-line:variable-name
             $rootScope.$on("$routeChangeStart", (_e: ng.IAngularEvent, next: any) => {
-                const route: IAppRoute = next.$$route;
+                const route: AppRoute = next.$$route;
 
-                // If we're an admin route, load the admin-specific scripts.
-                if (route && route.access === RouteAccess.Admin) {
-                    adminScripts.install();
+                // One of our app routes?
+                if (route && route.access !== undefined) {
 
-                    // Also, cancel navigation if we're not an admin user and redirect to sign-in.
-                    if (!accountApi.isSignedIn) {
+                    // Redirect to sign in if needed.
+                    const needsToSignIn = !accountApi.isSignedIn && route.access !== RouteAccess.Anonymous;
+                    const needsAdminSignIn = route.access === RouteAccess.Admin && accountApi.currentUser && !accountApi.currentUser.isAdmin;
+                    if (needsToSignIn || needsAdminSignIn) {
                         appNav.signIn();
+                        return;
+                    }
+
+                    // If we're an admin route, load the admin-specific scripts.
+                    if (route.access === RouteAccess.Admin) {
+                        // Also, cancel navigation if we're not an admin user and redirect to sign-in.
+                        adminScripts.install();
                     }
                 }
             });

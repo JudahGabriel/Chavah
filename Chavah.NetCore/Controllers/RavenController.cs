@@ -54,7 +54,7 @@ namespace BitShuva.Chavah.Controllers
                 }
                 catch (Exception saveError)
                 {
-                    using (logger.BeginKeyValueScope("user", context?.HttpContext?.User?.Identity?.Name))
+                    using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
                     using (logger.BeginKeyValueScope("action", context?.ActionDescriptor?.DisplayName))
                     {
                         logger.LogError(saveError, $"Error saving changes for {next.Method?.Name}");
@@ -63,7 +63,7 @@ namespace BitShuva.Chavah.Controllers
             }
             else if (executedContext.Exception != null) // An exception occurred while executing the method.
             {
-                using (logger.BeginKeyValueScope("user", context?.HttpContext?.User?.Identity?.Name))
+                using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
                 using (logger.BeginKeyValueScope("action", executedContext.ActionDescriptor?.DisplayName))
                 {
                     logger.LogError(executedContext.Exception, executedContext.Exception.Message);

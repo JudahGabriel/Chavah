@@ -236,29 +236,7 @@ namespace BitShuva.Chavah {
 
             return randomReason;
         }
-
-        // Shuffles an array. Should be moved to a utility class, or maybe just bite the bullet and include lodash.
-        // tslint:disable-next-line:member-ordering
-        static shuffle<T>(array: T[]): T[] {
-            // tslint:disable-next-line:one-variable-per-declaration
-            let currentIndex = array.length, temporaryValue, randomIndex;
-
-            // While there remain elements to shuffle...
-            while (0 !== currentIndex) {
-
-                // Pick a remaining element...
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex -= 1;
-
-                // And swap it with the current element.
-                temporaryValue = array[currentIndex];
-                array[currentIndex] = array[randomIndex];
-                array[randomIndex] = temporaryValue;
-            }
-
-            return array;
-        }
-
+        
         // tslint:disable-next-line:member-ordering
         static createEmptySongPickReasons(songId: string): Server.SongPickReasons {
             return {
@@ -271,29 +249,5 @@ namespace BitShuva.Chavah {
                 soleReason: null,
             };
         }
-
-        // private getColorClass() {
-        //    var rank = this.communityRank;
-        //    var styleNumber =
-        //        rank <= -10 ? 0 :
-        //            rank <= -2 ? 1 :
-        //                rank <= 20 ? 2 :
-        //                    rank <= 40 ? 3 :
-        //                        rank <= 80 ? 4 :
-        //                            rank <= 100 ? 5 :
-        //                                rank <= 120 ? 6 :
-        //                                    rank <= 150 ? 7 :
-        //                                        rank <= 200 ? 8 :
-        //                                            rank <= 250 ? 9 :
-        //                                                rank <= 300 ? 10 :
-        //                                                    rank <= 350 ? 11 :
-        //                                                        rank <= 400 ? 12 :
-        //                                                            rank <= 450 ? 13 :
-        //                                                                rank <= 500 ? 14 :
-        //                                                                    rank <= 600 ? 15 :
-        //                                                                        rank <= 700 ? 16 :
-        //                                                                            17;
-        //    return "song-rank-" + styleNumber;
-        // }
     }
 }

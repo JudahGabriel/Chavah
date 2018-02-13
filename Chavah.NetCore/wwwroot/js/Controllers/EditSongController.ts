@@ -1,15 +1,6 @@
 ﻿namespace BitShuva.Chavah {
     export class EditSongController {
-
-        static $inject = [
-            "songApi",
-            "songEditApi",
-            "tagApi",
-            "accountApi",
-            "appNav",
-            "$routeParams",
-        ];
-
+        
         song: Song | null = null;
         tagsInput = "";
         isSaving = false;
@@ -19,25 +10,29 @@
         readonly isAdmin: boolean;
         isLyricsFocused = true;
         tagPlaceholder = "piano, violin, male vocal, hebrew, psalms";
+        readonly songId: string;
+
+        static $inject = [
+            "songEditApi",
+            "tagApi",
+            "accountApi",
+            "$routeParams",
+        ];
 
         constructor(
-            private songApi: SongApiService,
             private songEditApi: SongEditService,
             private tagApi: TagService,
             accountApi: AccountService,
-            appNav: AppNavService,
             $routeParams: ng.route.IRouteParamsService) {
+            
+            this.songId = "songs/" + $routeParams["id"];
+            this.isAdmin = !!accountApi.currentUser && accountApi.currentUser.isAdmin;
+        }
 
-            if (!accountApi.isSignedIn) {
-                appNav.promptSignIn();
-            } else {
-                let songId = "songs/" + $routeParams["id"];
-                if (songId) {
-                    songApi.getSongById(songId)
-                        .then(result => this.songLoaded(result));
-                }
-
-                this.isAdmin = !!accountApi.currentUser && accountApi.currentUser.isAdmin;
+        $onInit() {
+            if (this.songId) {
+                this.songEditApi.getSongEdit(this.songId)
+                    .then(result => this.songEditLoaded(result));
             }
         }
 
@@ -45,13 +40,19 @@
             return this.tagApi.searchTags(search);
         }
 
-        songLoaded(song: Song | null) {
-            this.song = song;
-            if (song) {
-                this.tags = song.tags || [];
-                if (this.tags.length > 0) {
-                    this.tagPlaceholder = "";
-                }
+        songEditLoaded(songEdit: Server.SongEdit) {
+            this.song = Song.empty();
+            this.song.id = songEdit.songId;
+            this.song.name = songEdit.newName;
+            this.song.hebrewName = songEdit.newHebrewName;
+            this.song.album = songEdit.newAlbum;
+            this.song.artist = songEdit.newArtist;
+            this.song.lyrics = songEdit.newLyrics;
+            this.song.albumArtUri = `/api/albums/getAlbumArtBySongId?songId=${songEdit.songId}`;
+            this.tags = songEdit.newTags;
+            
+            if (this.tags.length > 0) {
+                this.tagPlaceholder = "";
             }
         }
 
@@ -65,7 +66,7 @@
         }
 
         removeTag(tag: string) {
-            let tagIndex = this.tags.indexOf(tag);
+            const tagIndex = this.tags.indexOf(tag);
             if (tagIndex >= 0) {
                 this.tags.splice(tagIndex, 1);
             }

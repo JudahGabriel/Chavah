@@ -1,5 +1,5 @@
 ﻿namespace BitShuva.Chavah {
-    export interface IAppRoute extends ng.route.IRoute {
+    export interface AppRoute extends ng.route.IRoute {
         access: RouteAccess;
     }
 }
