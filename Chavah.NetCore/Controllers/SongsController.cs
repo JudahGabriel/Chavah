@@ -3,6 +3,7 @@ using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Optional.Collections;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Queries.Suggestions;
 using Raven.Client.Documents.Session;
@@ -93,33 +94,31 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<IEnumerable<Song>> Search(string searchText)
         {
-            var makeQuery = new Func<Func<string, IQueryable<Song>>>(() =>
-            {
-                return q => this.DbSession
+            // Run the query that the user typed in.
+            var results = await this.DbSession
                     .Query<Song, Songs_Search>()
-                    .Search(s => s.Name, q, 2, SearchOptions.Guess)
-                    .Search(s => s.Album, q, 1, SearchOptions.Guess)
-                    .Search(s => s.Artist, q, 1, SearchOptions.Guess)
-                    .Take(50);
-            });
+                    .Search(s => s.Name, searchText, 2)
+                    .Search(s => s.HebrewName, searchText, 2)
+                    .Search(s => s.Album, searchText)
+                    .Search(s => s.Artist, searchText)
+                    .ToListAsync();
 
-            var query = makeQuery()(searchText + "*");
-            var results = await query.ToListAsync();
-            
             // No results? See if we can suggest some near matches.
             if (results.Count == 0)
             {
-                var suggestResults = await makeQuery()(searchText + "*")
-                    .SuggestUsing(b => b.ByField(nameof(Songs_Search.Results.Name), searchText))
-                    .ExecuteAsync();
-                var firstSuggestion = suggestResults.Any() ? suggestResults.First().Value.Suggestions.FirstOrDefault() : null;
-                if (firstSuggestion != null)
-                {
-                    // Run the query for that suggestion.
-                    var newQuery = makeQuery();
-                    var suggestedResults = await newQuery(firstSuggestion).ToListAsync();
-                    return suggestedResults.Select(r => r.ToDto());
-                }
+                // Local function that asks for query suggestions. 
+                // If any suggestions are found, the query is run against the first suggestion.
+                var nameResults = await this.QuerySongSearchSuggestions(s => s.Name, searchText);
+                var hebrewNameResults = await this.QuerySongSearchSuggestions(s => s.HebrewName, searchText);
+                var artistResults = await this.QuerySongSearchSuggestions(s => s.Artist, searchText);
+                var albumResults = await this.QuerySongSearchSuggestions(s => s.Album, searchText);
+
+                // Combine all the suggestions.
+                return nameResults.Take(3)
+                    .Concat(hebrewNameResults.Take(3))
+                    .Concat(artistResults.Take(3))
+                    .Concat(albumResults.Take(3))
+                    .Select(s => s.ToDto());
             }
 
             return results.Select(r => r.ToDto());
@@ -185,8 +184,8 @@ namespace BitShuva.Chavah.Controllers
             var songsWithRanking = default(IList<Songs_RankStandings.Result>);
             
             // Aggressive caching for the UserSongPreferences and SongsWithRanking. These don't change often.
-            //using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
-            //{
+            using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
+            {
                 var user = await this.GetCurrentUser();
 
                 // This is NOT an unbounded result set:
@@ -205,7 +204,7 @@ namespace BitShuva.Chavah.Controllers
                 {
                     userPreferences = new UserSongPreferences();
                 }
-            //}
+            }
 
             // Run the song picking algorithm.
             var songPick = userPreferences.PickSong(songsWithRanking);
@@ -451,6 +450,30 @@ namespace BitShuva.Chavah.Controllers
             }
 
             return song.ToDto();
+        }
+
+        private async Task<List<Song>> QuerySongSearchSuggestions(System.Linq.Expressions.Expression<Func<Song, object>> field, string searchText)
+        {
+            var suggestResults = await this.DbSession
+                .Query<Song, Songs_Search>()
+                .SuggestUsing(b => b.ByField(field, searchText))
+                .ExecuteAsync();
+            var firstSuggestion = suggestResults
+                .FirstOrNone()
+                .Map(f => f.Value)
+                .NotNull()
+                .Map(f => f.Suggestions.FirstOrDefault())
+                .ValueOrDefault();
+            if (firstSuggestion != null)
+            {
+                // Run the query for that suggestion.
+                return await this.DbSession
+                    .Query<Song, Songs_Search>()
+                    .Search(field, firstSuggestion)
+                    .ToListAsync();
+            }
+
+            return new List<Song>(0);
         }
     }
 }

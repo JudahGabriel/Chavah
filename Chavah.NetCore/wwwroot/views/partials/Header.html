@@ -66,6 +66,12 @@
                                     Sign In
                                 </a>
                             </li>
+                            <li ng-hide="vm.currentUserName">
+                                <a href="#/register">
+                                    <i class="fa fa-user-plus fa-fw"></i>
+                                    Register
+                                </a>
+                            </li>
                             <li ng-show="vm.currentUserName">
                                 <a href="javascript:void(0)" ng-click="vm.signOut()">
                                     <i class="fa fa-sign-out fa-fw"></i> Sign out

@@ -17,14 +17,10 @@ namespace BitShuva.Chavah.Models.Indexes
                                Album = song.Album
                            };
 
-            Analyze(r => r.Name, "Lucene.Net.Analysis.Standard.StandardAnalyzer");
-            Analyze(r => r.Artist, "Lucene.Net.Analysis.Standard.StandardAnalyzer");
-            Analyze(r => r.Album, "Lucene.Net.Analysis.Standard.StandardAnalyzer");
-            Analyze(r => r.HebrewName, "Lucene.Net.Analysis.Standard.StandardAnalyzer");
-            Index(r => r.Name, FieldIndexing.Default);
-            Index(r => r.Artist, FieldIndexing.Default);
-            Index(r => r.Album, FieldIndexing.Default);
-            Index(r => r.HebrewName, FieldIndexing.Default);
+            Index(r => r.Name, FieldIndexing.Search);
+            Index(r => r.Artist, FieldIndexing.Search);
+            Index(r => r.Album, FieldIndexing.Search);
+            Index(r => r.HebrewName, FieldIndexing.Search);
             Suggestion(r => r.Name);
             Suggestion(r => r.Artist);
             Suggestion(r => r.Album);
