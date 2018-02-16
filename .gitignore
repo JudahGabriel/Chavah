@@ -264,6 +264,7 @@ paket-files/
 # Web config
 Web.Release.config
 Web.Debug.config
+Web.Configz
 /Chavah/App/*/*.js
 /Chavah/App/*/*.js.map
 
