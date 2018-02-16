@@ -18,20 +18,20 @@ namespace BitShuva.Chavah.Controllers
     /// <summary>
     /// Controller called by If This Then That (https://ifttt.com) to trigger Chavah notifications when external events (e.g. Chavah blog posts) occur.
     /// </summary>
-    [Route("[controller]/[action]")]
+    [Route("ifttt/[action]")]
     public class IftttController : RavenController
     {
         private readonly AppSettings appSettings;
-        
+
         public IftttController(
             IOptions<AppSettings> appSettings,
-            IAsyncDocumentSession dbSession, 
+            IAsyncDocumentSession dbSession,
             ILogger<IftttController> logger)
             : base(dbSession, logger)
         {
             this.appSettings = appSettings.Value;
         }
-                
+
         [HttpGet]
         public async Task<ActionResult> GetRegisteredUsers()
         {
@@ -51,7 +51,7 @@ namespace BitShuva.Chavah.Controllers
             })
             .ToList();
             feedItems.ForEach(i => i.AddLink(new SyndicationLink(new Uri(appSettings.Application.DefaultUrl + "/?newUser=" + i.Published.ToUnixTimeSeconds().ToString()))));
-         
+
             var feed = new SyndicationFeed("Chavah Messianic Radio",
                                            "The most recent registered users at Chavah Messianic Radio",
                                            new Uri(appSettings.Application.DefaultUrl), "Chavah", feedItems)
@@ -72,7 +72,7 @@ namespace BitShuva.Chavah.Controllers
             }
 
             logger.LogInformation("IFTTT CreateNotification called with {token}, {title}, {imgUrl}, {srcName}, {url}", secretToken, title, imgUrl, sourceName, url);
-            
+
             var notification = new Notification
             {
                 Date = DateTime.UtcNow,
@@ -91,8 +91,8 @@ namespace BitShuva.Chavah.Controllers
                 }
 ";
             var patch = new CollectionPatchService(
-                this.DbSession.Advanced.DocumentStore, 
-                typeof(AppUser), 
+                this.DbSession.Advanced.DocumentStore,
+                typeof(AppUser),
                 patchScript);
             patch.ExecuteFireAndForget();
             return Json(notification);
