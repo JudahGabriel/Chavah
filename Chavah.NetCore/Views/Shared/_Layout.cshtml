@@ -9,44 +9,42 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
     <meta name="mobile-web-app-capable" content="yes" />
 
-    @* iOS status bar style. See http://stackoverflow.com/questions/39749015/apple-mobile-web-app-status-bar-style-in-ios-10 *@
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
     @*This allows fixed position elements to work properly*@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 
     <meta name="description" content="The very best Messianic Jewish and Hebrew Roots radio on the web" />
-    <meta name="keywords" content="messianic jewish radio hebrew roots chavah christian music" />
+    <meta name="keywords" content="messianic jewish music hebrew roots radio chavah christian music" />
 
     @* Fav icons *@
     <!--[if IE]>
     <link rel="shortcut icon" type="image/ico" href="~/FavIcon.ico")">
     <!--<![endif]-->
     <!--[if !IE]>-->
-    <link rel="icon" type="image/png" href="~/images/FavIcon32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="~/images/FavIcon64.png" sizes="64x64">
-    <link rel="icon" type="image/png" href="~/images/FavIcon128.png" sizes="128x128">
-    <link rel="icon" type="image/png" href="~/images/FavIcon256.png" sizes="256x256">
+    <link rel="icon" type="image/png" href="~/images/chavah32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="~/images/chavah64x64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="~/images/chavah128x128.png" sizes="128x128">
+    <link rel="icon" type="image/png" href="~/images/chavah256x256.png" sizes="256x256">
     <!--<![endif]-->
-
     @* Apple iOS shortcut *@
-    <link rel="apple-touch-icon" href="~/images/FavIconAppleTile.png" />
+    <link rel="apple-touch-icon" href="~/images/chavah180x180.png" />
+
+    @* iOS status bar style. See http://stackoverflow.com/questions/39749015/apple-mobile-web-app-status-bar-style-in-ios-10 *@
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     @*IE9, IE10, IE11 pinned site / jumplist*@
     <meta name="msapplication-task" content="name=Chavah on Facebook;action-uri=http://www.facebook.com/pages/Chavah-Messianic-Radio/134887069882254;icon-uri=/content/images/jumplist_facebook.ico" />
     <meta name="msapplication-task" content="name=Chavah on Twitter;action-uri=http://twitter.com/messianicradio;icon-uri=/content/images/jumplist_twitter.ico" />
-    <meta name="msapplication-navbutton-color" content="brown" />
+    <meta name="msapplication-navbutton-color" content="#2f3d58" />
     <meta name="msapplication-starturl" content="@appSettings?.Value?.Application?.DefaultUrl" />
     <meta name="msapplication-tooltip" content="@appSettings?.Value?.Application?.Title" />
 
-    @*Windows 8.1 tiles with notifications*@
+    @*Windows 8.x tiles with notifications*@
     <meta name="application-name" content="@appSettings?.Value?.Application?.Title" />
-    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileColor" content="#2f3d58" />
     <meta name="msapplication-square70x70logo" content="~/images/Windows81Tile/tiny.png" />
     <meta name="msapplication-square150x150logo" content="~/images/Windows81Tile/square.png" />
     <meta name="msapplication-wide310x150logo" content="~/images/Windows81Tile/wide.png" />
     <meta name="msapplication-square310x310logo" content="~/images/Windows81Tile/large.png" />
-    <meta name="msapplication-notification" content="frequency=30;polling-uri=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/activityfeed&amp;id=1;polling-uri2=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=2;polling-uri3=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=3;polling-uri4=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=4;polling-uri5=http://notifications.buildmypinnedsite.com/?feed=http://messianicradio.com/durandal/activityfeed&amp;id=5; cycle=1" />
 
     @* Twitter card. When a user shares a song, we show a full card containing album art and song info. *@
     <meta name="twitter:creator" content="&#64;messianicradio">
