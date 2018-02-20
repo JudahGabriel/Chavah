@@ -34,7 +34,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" PrivateAssets="All" />
     <PackageReference Include="Optional" Version="3.2.0" />
     <PackageReference Include="Optional.Collections" Version="1.1.0" />
-    <PackageReference Include="RavenDB.Client" Version="4.0.0" />
+    <PackageReference Include="RavenDB.Client" Version="4.0.1" />
     <PackageReference Include="RavenDB.Identity" Version="4.0.1" />
     <PackageReference Include="RavenDB.StructuredLogger" Version="4.0.1" />
     <PackageReference Include="Sendgrid" Version="9.9.0" />
