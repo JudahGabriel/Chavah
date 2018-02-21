@@ -1,4 +1,4 @@
-﻿using BitShuva.Chavah.Services;
+﻿using BitShuva.Chavah.Common;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Queries;
 using System;
@@ -22,8 +22,16 @@ namespace BitShuva.Chavah.Models.Patches
                 {
                     Query = this.Script
                 };
-                var patchService = new CollectionPatchService(db, this.Collection, this.Script);
-                patchService.Execute(TimeSpan.FromMinutes(5));
+
+                var patch = db.PatchAll(this.Collection, this.Script);
+                try
+                {
+                    patch.WaitForCompletion(TimeSpan.FromMinutes(3));
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine("Patch didn't complete within the alloted time. " + error.Message);
+                }
             }
 
             AfterPatchComplete(db);

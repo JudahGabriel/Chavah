@@ -96,10 +96,6 @@
       "sizes": "44x44"
     },
     {
-      "src": "/images/chavah48x48.png",
-      "sizes": "48x48"
-    },
-    {
       "src": "/images/chavah512x512.png",
       "sizes": "512x512"
     },
@@ -144,8 +140,12 @@
       "sizes": "89x89"
     },
     {
-      "src": "/images/chavah96x96.png",
+      "src": "/images/windows-badge-large.png",
       "sizes": "96x96"
+    },
+    {
+      "src": "/images/windows-badge-small.png",
+      "sizes": "48x48"
     }
   ],
   "display": "standalone",

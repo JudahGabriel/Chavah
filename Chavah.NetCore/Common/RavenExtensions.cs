@@ -1,10 +1,13 @@
 ﻿using Optional;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
 using Raven.Client.Documents.Session.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -190,6 +193,51 @@ namespace BitShuva.Chavah.Common
         public static void SetRavenExpiration<T>(this IDocumentSession dbSession, T obj, DateTime expiry)
         {
             dbSession.Advanced.GetMetadataFor(obj)["@expires"] = DateTime.UtcNow.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        public static Operation PatchAll<T>(this IDocumentStore db, string jsPatchScript)
+        {
+            return PatchAll(db, db.Conventions.GetCollectionName(typeof(T)), jsPatchScript, default(Dictionary<string, object>).None());
+        }
+
+        public static Operation PatchAll<T>(this IDocumentStore db, string jsPatchScript, Option<Dictionary<string, object>> variables)
+        {
+            return PatchAll(db, db.Conventions.GetCollectionName(typeof(T)), jsPatchScript, variables);
+        }
+
+        public static Operation PatchAll(this IDocumentStore db, string collectionName, string jsPatchScript)
+        {
+            return PatchAll(db, collectionName, jsPatchScript, default(Dictionary<string, object>).None());
+        }
+
+        public static Operation PatchAll(this IDocumentStore db, string collectionName, string jsPatchScript, Option<Dictionary<string, object>> variables)
+        {
+            // Patch is in RQL. Example: "from AppUsers update { this.Foo = 123; }"
+            var rqlPatch = new StringBuilder();
+
+            // For each variable in the dictionary, declare the variable in the RQL script.
+            variables
+                .Map(i => i.AsEnumerable())
+                .ValueOr(Enumerable.Empty<KeyValuePair<string, object>>())
+                .Select(kv =>
+                {
+                    var variableValue = kv.Value?.ToString();
+                    var escapedVariableValue = variableValue?.Replace("\"", "\\\""); // replace any quotes with escaped quotes. 'Hi I am a "JS" string' -> 'Hi I am a \"JS\" string'
+                    var escapedWithQuotes = kv.Value is string ? "\"" + escapedVariableValue + "\"" : escapedVariableValue; // string? Surround the value with quotes. foo -> "foo"
+                    return $"var {kv.Key} = {escapedWithQuotes};"; // The actual variable declaration, e.g. var foo = "123";
+                })
+                .ForEach(v => rqlPatch.AppendLine(v));
+
+            rqlPatch.AppendLine($"from {collectionName}");
+            rqlPatch.AppendLine("update {");
+            rqlPatch.AppendLine(jsPatchScript);
+            rqlPatch.Append('}');
+
+            var patch = new PatchByQueryOperation(new Raven.Client.Documents.Queries.IndexQuery
+            {
+                Query = rqlPatch.ToString()
+            });
+            return db.Operations.Send(patch);
         }
     }
 }

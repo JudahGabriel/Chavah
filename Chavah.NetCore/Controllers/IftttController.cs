@@ -1,4 +1,5 @@
-﻿using BitShuva.Chavah.Models;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Rss;
 using BitShuva.Chavah.Services;
 using Chavah.Common;
@@ -90,11 +91,7 @@ namespace BitShuva.Chavah.Controllers
                     this.Notifications.length = 10;
                 }
 ";
-            var patch = new CollectionPatchService(
-                this.DbSession.Advanced.DocumentStore,
-                typeof(AppUser),
-                patchScript);
-            patch.ExecuteFireAndForget();
+            this.DbSession.Advanced.DocumentStore.PatchAll<AppUser>(patchScript);
             return Json(notification);
         }
     }
