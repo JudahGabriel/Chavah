@@ -78,13 +78,12 @@ namespace BitShuva.Chavah.Controllers
                 "slow",
                 "prayer",
                 "liturgy",
-                "instrumental",
                 "blessing",
                 "hymn"
             };
             var song = await DbSession.Query<Song, Songs_GeneralQuery>()
                 .Customize(x => x.RandomOrdering())
-                .Where(s => s.CommunityRankStanding != CommunityRankStanding.Poor && s.CommunityRankStanding != CommunityRankStanding.VeryPoor && s.Tags.ContainsAny(goodShabbatTags))
+                .Where(s => s.CommunityRank >= 10 && s.Tags.ContainsAny(goodShabbatTags))
                 .FirstOrDefaultAsync();
             return Redirect(song.Uri.ToString());
         }
