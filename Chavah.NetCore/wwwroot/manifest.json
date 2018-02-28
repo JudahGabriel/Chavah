@@ -4,6 +4,12 @@
   "description": "The very best Messianic Jewish and Hebrew Roots music on the web",
   "background_color": "#2f3d58",
   "theme_color": "#2f3d58",
+  "related_applications": [
+    {
+      "platform": "windows",
+      "url": "https://www.microsoft.com/en-us/store/p/chavah/9nhkjb6lpptv"
+    }
+  ],
   "icons": [
     {
       "src": "/images/chavah192x192.png",

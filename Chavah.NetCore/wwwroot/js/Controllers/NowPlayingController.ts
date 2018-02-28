@@ -10,7 +10,7 @@
             "appNav",
             "accountApi",
             "$q",
-            "sharing",
+            "sharing"
         ];
 
         songs: Song[] = [];

@@ -279,7 +279,7 @@ var BitShuva;
                 "appNav",
                 "accountApi",
                 "$q",
-                "sharing",
+                "sharing"
             ];
             return NowPlayingController;
         }());
