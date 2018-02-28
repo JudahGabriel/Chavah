@@ -1,7 +1,7 @@
 ﻿@inject IOptionsSnapshot<AppSettings> appSettings
 @model HomeViewModel
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 <head>
     <title>@ViewBag.PageTitle</title>
     <base href="/">
@@ -14,6 +14,9 @@
 
     <meta name="description" content="The very best Messianic Jewish and Hebrew Roots radio on the web" />
     <meta name="keywords" content="messianic jewish music hebrew roots radio chavah christian music" />
+
+    @*Chrome on Android sets the page toolbar color. https://developers.google.com/web/updates/2014/11/Support-for-theme-color-in-Chrome-39-for-Android *@
+    <meta name="theme-color" content="#2f3d58">
 
     @* Fav icons *@
     <!--[if IE]>

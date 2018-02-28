@@ -2,6 +2,8 @@
   "name": "Chavah Messianic Radio",
   "short_name": "Chavah",
   "description": "The very best Messianic Jewish and Hebrew Roots music on the web",
+  "background_color": "#2f3d58",
+  "theme_color": "#2f3d58",
   "icons": [
     {
       "src": "/images/chavah192x192.png",

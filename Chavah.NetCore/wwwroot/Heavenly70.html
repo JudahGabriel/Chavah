@@ -16,7 +16,7 @@
                 </a>
                 <div class="media-body">
                     <h2 class="media-heading">
-                        <a href="#" target="_blank" data-bind="attr: { href: 'https://messianicradio.com?song=' + $data.id }">
+                        <a href="#" target="_blank" rel="noopener" data-bind="attr: { href: 'https://messianicradio.com?song=' + $data.id }">
                             <span data-bind="text: '#' + ($index() + 1)"></span>
                             <span data-bind="text: name"></span>
                         </a>
@@ -26,11 +26,11 @@
                     <h3>
                         <p>
                             <span class="text-muted">by</span>
-                            <a href="#" target="_blank" data-bind="text: artist, attr: { href: 'https://messianicradio.com?artist=' + artist }"></a>
+                            <a href="#" target="_blank" rel="noopener" data-bind="text: artist, attr: { href: 'https://messianicradio.com?artist=' + artist }"></a>
                         </p>
                         <p>
                             <span class="text-muted">on</span>
-                            <a href="#" target="_blank" data-bind="text: album, attr: { href: 'https://messianicradio.com?album=' + album }"></a>
+                            <a href="#" target="_blank" rel="noopener" data-bind="text: album, attr: { href: 'https://messianicradio.com?album=' + album }"></a>
                         </p>
                     </h3>
                 </div>
