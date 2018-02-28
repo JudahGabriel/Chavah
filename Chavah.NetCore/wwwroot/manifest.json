@@ -140,11 +140,11 @@
       "sizes": "89x89"
     },
     {
-      "src": "/images/windows-badge-large.png",
+      "src": "/images/chavah96x96.png",
       "sizes": "96x96"
     },
     {
-      "src": "/images/windows-badge-small.png",
+      "src": "/images/chavah48x48.png",
       "sizes": "48x48"
     }
   ],

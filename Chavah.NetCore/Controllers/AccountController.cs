@@ -154,7 +154,7 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpPost]
-        public async Task<int> ClearNotifications(DateTimeOffset asOf)
+        public async Task<int> ClearNotifications(DateTime asOf)
         {
             var user = await this.GetCurrentUser();
             if (user != null)
