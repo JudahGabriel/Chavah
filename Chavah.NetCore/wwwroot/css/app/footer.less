@@ -27,7 +27,10 @@
         }
 
         &.active {
-            color: @text-color-light;
+            color: @text-color-darker; // @text-color-light;
+            .fa {
+                text-shadow: 0 0 30px @text-color-light;
+            }
         }
     }
 
@@ -75,18 +78,15 @@
         &.ng-hide {
             opacity: 0;
         }
-
         // Showing it: beginning stage.
         &.ng-hide-remove {
             opacity: 0;
         }
-
         // Showing it: final stage.
         &.ng-hide-remove-active {
             opacity: 0.5;
         }
     }
-
     /* Volume control. Courtesy https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/ */
     @track-color: #424242;
     @thumb-color: white;

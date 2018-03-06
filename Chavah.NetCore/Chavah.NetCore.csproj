@@ -10,9 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Providers\**" />
     <Compile Remove="wwwroot\js\views\**" />
+    <Content Remove="Providers\**" />
     <Content Remove="wwwroot\js\views\**" />
+    <EmbeddedResource Remove="Providers\**" />
     <EmbeddedResource Remove="wwwroot\js\views\**" />
+    <None Remove="Providers\**" />
     <None Remove="wwwroot\js\views\**" />
   </ItemGroup>
 
@@ -267,7 +271,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Providers\" />
     <Folder Include="Views\Partials\" />
   </ItemGroup>
 

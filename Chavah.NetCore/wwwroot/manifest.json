@@ -8,6 +8,10 @@
     {
       "platform": "windows",
       "url": "https://www.microsoft.com/en-us/store/p/chavah/9nhkjb6lpptv"
+    },
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.messianicradio"
     }
   ],
   "icons": [

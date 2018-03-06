@@ -1,0 +1,10 @@
+{
+    "generationTool": "pwabuilder",
+    "generationToolVersion": "2.0.3-rc.0",
+    "platformId": "cordova",
+    "platformPackage": "pwabuilder-cordova",
+    "platformVersion": "2.0.0-rc.1",
+    "generatedFrom": "CLI",
+    "generationDate": "2018-03-06 18:51:50 Z",
+    "generatedURL": "https://messianicradio.com/manifest.webmanifest"
+}
