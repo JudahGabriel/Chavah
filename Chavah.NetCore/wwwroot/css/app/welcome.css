@@ -1,0 +1,14 @@
+﻿/* Colors */
+@media (max-width: 767px) {
+  .welcome-page .header {
+    text-align: center;
+  }
+}
+.welcome-page hr {
+  border-color: #d7c146;
+}
+@media (max-width: 767px) {
+  .welcome-page .take-me-to-music {
+    display: block;
+  }
+}

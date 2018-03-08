@@ -98,5 +98,9 @@
   {
     "outputFile": "wwwroot/css/app/logEditor.css",
     "inputFile": "wwwroot/css/app/logEditor.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/welcome.css",
+    "inputFile": "wwwroot/css/app/welcome.less"
   }
 ]

@@ -8,6 +8,7 @@ using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Common;
 using Raven.StructuredLog;
 using Raven.Client.Documents.Session;
+using Raven.Client.Exceptions;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -66,7 +67,18 @@ namespace BitShuva.Chavah.Controllers
                 using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
                 using (logger.BeginKeyValueScope("action", executedContext.ActionDescriptor?.DisplayName))
                 {
-                    logger.LogError(executedContext.Exception, executedContext.Exception.Message);
+                    if (executedContext.Exception is UnauthorizedAccessException)
+                    {
+                        logger.LogWarning(executedContext.Exception, executedContext.Exception.Message);
+                    }
+                    else if (executedContext.Exception is RavenException ravenEx && ravenEx.Message.Contains("The server returned an invalid or unrecognized response", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        logger.LogError(ravenEx.Message);
+                    }
+                    else
+                    {
+                        logger.LogError(executedContext.Exception, executedContext.Exception.Message);
+                    }
                 }
             }
         }
