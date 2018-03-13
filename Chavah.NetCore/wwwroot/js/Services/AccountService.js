@@ -32,11 +32,8 @@ var BitShuva;
                 });
                 return signOutTask;
             };
-            AccountService.prototype.clearNotifications = function (asOfDate) {
-                var args = {
-                    asOf: asOfDate,
-                };
-                return this.httpApi.postUriEncoded(this.apiUri + "/clearNotifications", args);
+            AccountService.prototype.clearNotifications = function () {
+                return this.httpApi.post(this.apiUri + "/clearNotifications", null);
             };
             AccountService.prototype.register = function (email, password) {
                 var args = {

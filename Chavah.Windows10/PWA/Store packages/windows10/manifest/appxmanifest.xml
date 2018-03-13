@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:build="http://schemas.microsoft.com/developer/appx/2015/build" IgnorableNamespaces="uap mp build uap3"> 
-	<Identity Name="42541BitShuva.ChavahMessianicRadio" Publisher="CN=FE3F8351-7B71-4C35-8A07-183862BD9BDE" Version="3.2.1.0" ProcessorArchitecture="neutral"/> 
+	<Identity Name="42541BitShuva.ChavahMessianicRadio" Publisher="CN=FE3F8351-7B71-4C35-8A07-183862BD9BDE" Version="3.2.2.0" ProcessorArchitecture="neutral"/> 
 	<mp:PhoneIdentity PhoneProductId="bf6d9a1e-e44f-b224-01a0-16ef8ca35ee3" PhonePublisherId="00000000-0000-0000-0000-000000000000"/> 
 
 	<build:Metadata>
 		<build:Item Name="GenerationTool" Version="pwabuilder-api"/>
 		<build:Item Name="GenerationToolVersion" Version="2.0.1-rc.0"/>
-    <build:Item Name="PlatformId" Value="windows10"/>
-    <build:Item Name="PlatformPackage" Value="pwabuilder-windows10"/>
-    <build:Item Name="PlatformVersion" Version="2.0.2-beta.3"/>
+		<build:Item Name="PlatformId" Value="windows10"/>
+		<build:Item Name="PlatformPackage" Value="pwabuilder-windows10"/>
+		<build:Item Name="PlatformVersion" Version="2.0.2-beta.3"/>
 		<build:Item Name="GeneratedFrom" Value="Website Wizard"/>
 		<build:Item Name="GenerationDate" Value="2018-03-05 18:30:37 Z"/>
 		<build:Item Name="GeneratedURL" Value="https://messianicradio.com/manifest.webmanifest"/>
@@ -21,7 +21,7 @@
 	</Properties> 
 
 	<Dependencies> 
-		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.10240.0" MaxVersionTested="10.0.10240.0"/> 
+		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.14393.0" MaxVersionTested="10.0.16299.0"/> 
 	</Dependencies> 
 
 	<Resources>
@@ -35,7 +35,7 @@
 				 
 				<uap:DefaultTile Square71x71Logo="images\Square71x71Logo.png"/> 
 				<uap:InitialRotationPreference> 
-					<uap:Rotation Preference="portrait"/> 
+				<uap:Rotation Preference="portrait"/> 
 				</uap:InitialRotationPreference> 
 			</uap:VisualElements> 
 			<uap:ApplicationContentUriRules>

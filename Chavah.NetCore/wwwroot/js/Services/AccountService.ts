@@ -39,11 +39,8 @@
             return signOutTask;
         }
 
-        clearNotifications(asOfDate: string): ng.IPromise<number> {
-            const args = {
-                asOf: asOfDate,
-            };
-            return this.httpApi.postUriEncoded(`${this.apiUri}/clearNotifications`, args);
+        clearNotifications(): ng.IPromise<number> {
+            return this.httpApi.post(`${this.apiUri}/clearNotifications`, null);
         }
 
         register(email: string, password: string): ng.IPromise<Server.RegisterResults> {

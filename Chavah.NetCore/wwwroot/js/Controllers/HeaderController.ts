@@ -38,7 +38,7 @@
         markNotificationsAsRead() {
             if (this.notifications.some(n => n.isUnread)) {
                 this.notifications.forEach(n => n.isUnread = false);
-                this.accountApi.clearNotifications(this.notifications[0].date);
+                this.accountApi.clearNotifications();
             }
         }
 

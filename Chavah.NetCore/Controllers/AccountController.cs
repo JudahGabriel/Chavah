@@ -154,20 +154,14 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpPost]
-        public async Task<int> ClearNotifications(DateTime asOf)
+        public async Task<int> ClearNotifications()
         {
-            var user = await this.GetCurrentUser();
-            if (user != null)
-            {
-                var count = user.Notifications.Count;
-                user.Notifications
-                    .Where(n => n.Date <= asOf)
-                    .ForEach(n => n.IsUnread = false);
+            var user = await this.GetCurrentUserOrThrow();
+            var count = user.Notifications.Count;
+            user.Notifications
+                .ForEach(n => n.IsUnread = false);
 
-                return count;
-            }
-
-            return 0;
+            return count;
         }
         
         [HttpPost]
