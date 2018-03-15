@@ -78,7 +78,7 @@ namespace BitShuva.Chavah.Controllers
             var userName = User.Identity.Name;
             if (!string.IsNullOrEmpty(userName))
             {
-                viewModel.User = await userService.GetUser(userName);
+                viewModel.User = await GetCurrentUser();
             }
 
             var firstValidQuery = new[] { artist, album, song }.FirstOrDefault(s => !string.IsNullOrEmpty(s));

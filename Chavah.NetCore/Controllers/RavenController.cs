@@ -104,10 +104,7 @@ namespace BitShuva.Chavah.Controllers
             var email = this.User.Identity.Name;
             if (!string.IsNullOrEmpty(email))
             {
-                using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
-                {
-                    this.currentUser = await DbSession.LoadAsync<AppUser>("AppUsers/" + email);
-                }
+                this.currentUser = await DbSession.LoadAsync<AppUser>("AppUsers/" + email);
             }
 
             return currentUser;

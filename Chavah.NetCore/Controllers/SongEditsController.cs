@@ -31,7 +31,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task<SongEdit> Get(string songId)
         {
             var user = await this.GetCurrentUserOrThrow();
-            var song = await DbSession.LoadNotNullAsync<Song>(songId);
+            var song = await DbSession.LoadRequiredAsync<Song>(songId);
             var songEditId = GetSongEditId(songId, user.Id);
             var existingEdit = await DbSession.LoadOptionAsync<SongEdit>(songEditId);
 
@@ -46,7 +46,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task<SongEdit> EditSong([FromBody] Song song)
         {
             var user = await this.GetCurrentUserOrThrow();
-            var existingSong = await this.DbSession.LoadNotNullAsync<Song>(song.Id);
+            var existingSong = await this.DbSession.LoadRequiredAsync<Song>(song.Id);
 
             var songEditId = GetSongEditId(existingSong.Id, user.Id);
             var songEdit = new SongEdit(existingSong, song)

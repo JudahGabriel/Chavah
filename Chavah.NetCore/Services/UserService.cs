@@ -21,10 +21,7 @@ namespace BitShuva.Chavah.Services
 
         public async Task<AppUser> GetUser(string userId)
         {
-            using (_session.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
-            {
-                return await _session.LoadAsync<AppUser>($"AppUsers/{userId}");
-            }
+            return await _session.LoadAsync<AppUser>($"AppUsers/{userId}");
         }
 
         public Task<List<AppUser>> RegisteredUsers(int take)

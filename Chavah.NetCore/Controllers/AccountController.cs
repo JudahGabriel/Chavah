@@ -20,7 +20,7 @@ namespace BitShuva.Chavah.Controllers
         private readonly UserManager<AppUser> userManager;
         private readonly IAsyncDocumentSession asyncDocumentSession;
         private readonly SignInManager<AppUser> signInManager;
-        private readonly IEmailSender emailSender;
+        private readonly IEmailService emailSender;
         private readonly AppSettings options;
 
         public AccountController(
@@ -28,7 +28,7 @@ namespace BitShuva.Chavah.Controllers
             SignInManager<AppUser> signInManager,
             IAsyncDocumentSession asyncDocumentSession, 
             ILogger<AccountController> logger,
-            IEmailSender emailSender,
+            IEmailService emailSender,
             IOptions<AppSettings> options) 
             : base(asyncDocumentSession, logger)
         {

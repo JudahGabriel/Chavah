@@ -214,7 +214,7 @@ namespace BitShuva.Chavah.Controllers
                 return await this.PickRandomSong();
             }
 
-            var song = await DbSession.LoadNotNullAsync<Song>(songPick.SongId);            
+            var song = await DbSession.LoadRequiredAsync<Song>(songPick.SongId);            
             var songLikeDislike = userPreferences.Songs.FirstOrDefault(s => s.SongId == song.Id);
             var songLikeStatus = songLikeDislike != null && songLikeDislike.LikeCount > 0 ?
                 LikeStatus.Like : songLikeDislike != null && songLikeDislike.DislikeCount > 0 ?

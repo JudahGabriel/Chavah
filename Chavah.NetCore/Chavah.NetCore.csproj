@@ -32,15 +32,16 @@
     <PackageReference Include="BCrypt.Net-Next" Version="2.1.2" />
     <PackageReference Include="cloudscribe.Syndication.Web" Version="2.0.0" />
     <PackageReference Include="CoreFtp" Version="1.4.0" />
+    <PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
     <PackageReference Include="LigerShark.WebOptimizer.Core" Version="1.0.197" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" PrivateAssets="All" />
-    <PackageReference Include="Optional" Version="3.2.0" />
-    <PackageReference Include="Optional.Collections" Version="1.1.0" />
+    <PackageReference Include="Optional" Version="4.0.0" />
+    <PackageReference Include="Quartz" Version="3.0.4" />
     <PackageReference Include="RavenDB.Client" Version="4.0.2" />
     <PackageReference Include="RavenDB.Identity" Version="4.3.0" />
-    <PackageReference Include="RavenDB.StructuredLogger" Version="4.0.2" />
+    <PackageReference Include="RavenDB.StructuredLogger" Version="4.0.3" />
     <PackageReference Include="Sendgrid" Version="9.9.0" />
     <PackageReference Include="System.Interactive" Version="3.1.1" />
     <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.33" />

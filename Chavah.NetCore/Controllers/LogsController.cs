@@ -59,7 +59,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task Delete(string id)
         {
-            var log = await DbSession.LoadNotNullAsync<StructuredLog>(id);
+            var log = await DbSession.LoadRequiredAsync<StructuredLog>(id);
             DbSession.Delete(log);
         }
     }

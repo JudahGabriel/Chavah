@@ -68,7 +68,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<T> LoadNotNullAsync<T>(this IAsyncDocumentSession session, string id)
+        public static async Task<T> LoadRequiredAsync<T>(this IAsyncDocumentSession session, string id)
         {
             var result = await session.LoadAsync<T>(id);
             if (result == null)

@@ -45,7 +45,7 @@ namespace BitShuva.Chavah.Controllers
             var rssItems = new List<SyndicationLinkItem>(1);
             if (topThumbedUpSong != null)
             {
-                var song = await DbSession.LoadNotNullAsync<Song>(topThumbedUpSong.Key);
+                var song = await DbSession.LoadRequiredAsync<Song>(topThumbedUpSong.Key);
                 if (song != null)
                 {
                     var likeCount = topThumbedUpSong.Count();

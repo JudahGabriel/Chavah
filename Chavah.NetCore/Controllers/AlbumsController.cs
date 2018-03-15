@@ -76,7 +76,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<RedirectResult> GetAlbumArtBySongId(string songId)
         {
-            var song = await DbSession.LoadNotNullAsync<Song>(songId);
+            var song = await DbSession.LoadRequiredAsync<Song>(songId);
             return Redirect(song.AlbumArtUri.ToString());
         }
         
@@ -329,7 +329,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<HttpResponseMessage> GetArtForSong(string songId)
         {
-            var song = await DbSession.LoadNotNullAsync<Song>(songId);
+            var song = await DbSession.LoadRequiredAsync<Song>(songId);
             var response = new HttpResponseMessage(HttpStatusCode.Moved);
             response.Headers.Location = song.AlbumArtUri;
             return response;
@@ -350,7 +350,7 @@ namespace BitShuva.Chavah.Controllers
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task Delete(string albumId)
         {
-            var album = await DbSession.LoadNotNullAsync<Album>(albumId);
+            var album = await DbSession.LoadRequiredAsync<Album>(albumId);
             DbSession.Delete(album);
 
             // Any songs with this album as the album ID should be set to null.

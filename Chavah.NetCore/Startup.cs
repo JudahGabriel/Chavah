@@ -32,13 +32,16 @@ namespace BitShuva.Chavah
             services.Configure<AppSettings>(Configuration);
 
             // Add application services.
-            services.AddTransient<IEmailSender, SendGridEmailService>();
+            services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddTransient<ICdnManagerService, CdnManagerService>();
             services.AddScoped<IChannelProvider, RssChannelProvider>();
             services.AddTransient<ISongService, SongService>();
             services.AddTransient<ISongUploadService, SongUploadService>();
             services.AddTransient<IAlbumService, AlbumService>();
             services.AddTransient<IUserService, UserService>();
+
+            services.AddBackgroundQueueWithLogging(1, TimeSpan.FromSeconds(5));
+            services.AddEmailRetryService();
             services.AddCacheBustedAngularViews("/views");
 
             // Use our BCrypt for password hashing. Must be added before AddIdentity().
