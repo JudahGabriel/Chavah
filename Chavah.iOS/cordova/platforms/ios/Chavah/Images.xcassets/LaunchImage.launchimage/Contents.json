@@ -102,6 +102,7 @@
       "orientation" : "portrait",
       "idiom" : "ipad",
       "extent" : "to-status-bar",
+	  "filename": "chavah768x1004.png",
       "scale" : "1x"
     },
     {
@@ -115,17 +116,20 @@
       "orientation" : "landscape",
       "idiom" : "ipad",
       "extent" : "to-status-bar",
+	  "filename" : "chavah1024x768.png",
       "scale" : "1x"
     },
     {
       "orientation" : "landscape",
       "idiom" : "ipad",
+	  "filename" : "chavah1024x748.png",
       "extent" : "full-screen",
       "scale" : "1x"
     },
     {
       "orientation" : "portrait",
       "idiom" : "ipad",
+	  "filename": "chavah1536x2008.png",
       "extent" : "to-status-bar",
       "scale" : "2x"
     },
@@ -139,6 +143,7 @@
     {
       "orientation" : "landscape",
       "idiom" : "ipad",
+	  "filename" : "chavah2048x1496.png",
       "extent" : "to-status-bar",
       "scale" : "2x"
     },
@@ -146,6 +151,7 @@
       "orientation" : "landscape",
       "idiom" : "ipad",
       "extent" : "full-screen",
+	  "filename" : "chavah2048x1536.png",
       "scale" : "2x"
     }
   ],

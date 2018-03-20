@@ -168,8 +168,16 @@
       "sizes": "750x1334"
     },
     {
+      "src": "/images/chavah768x1004.png",
+      "sizes": "768x1004"
+    },
+    {
       "src": "/images/chavah768x1024.png",
       "sizes": "768x1024"
+    },
+    {
+      "src": "/images/chavah1024x748.png",
+      "sizes": "1024x748"
     },
     {
       "src": "/images/chavah1024x768.png",
@@ -188,8 +196,16 @@
       "sizes": "1334x750"
     },
     {
+      "src": "/images/chavah1536x2008.png",
+      "sizes": "1536x2008"
+    },
+    {
       "src": "/images/chavah1536x2048.png",
       "sizes": "1536x2048"
+    },
+    {
+      "src": "/images/chavah2048x1496.png",
+      "sizes": "2048x1496"
     },
     {
       "src": "/images/chavah2048x1536.png",
