@@ -116,13 +116,13 @@
       "orientation" : "landscape",
       "idiom" : "ipad",
       "extent" : "to-status-bar",
-	  "filename" : "chavah1024x768.png",
+	  "filename" : "chavah1024x748.png",
       "scale" : "1x"
     },
     {
       "orientation" : "landscape",
       "idiom" : "ipad",
-	  "filename" : "chavah1024x748.png",
+	  "filename" : "chavah1024x768.png",
       "extent" : "full-screen",
       "scale" : "1x"
     },
