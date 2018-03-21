@@ -314,11 +314,19 @@ namespace BitShuva.Chavah.Controllers
                     InvalidEmail = true
                 };
             }
+
+            var passwordResetToken = new AccountToken //await userManager.GeneratePasswordResetTokenAsync(user);
+            {
+                ApplicationUserId = userId,
+                Id = "AccountTokens/Reset/" + user.Email,
+                Token = Guid.NewGuid().ToString()
+            };
+            await DbSession.StoreAsync(passwordResetToken);
+            DbSession.SetRavenExpiration(passwordResetToken, DateTime.UtcNow.AddDays(14));
+
+            emailSender.QueueResetPassword(email, passwordResetToken.Token, options.Application);
             
-            var passwordResetCode = await userManager.GeneratePasswordResetTokenAsync(user);
-            emailSender.QueueResetPassword(email, passwordResetCode, options.Application);
-            
-            logger.LogInformation("Sending reset password email to {email} with reset code {resetCode}", email, passwordResetCode);
+            logger.LogInformation("Sending reset password email to {email} with reset code {resetCode}", email, passwordResetToken.Token);
             return new ResetPasswordResult
             {
                 Success = true,
@@ -344,7 +352,33 @@ namespace BitShuva.Chavah.Controllers
                     ErrorMessage = "Couldn't find user with email"
                 };
             }
-            
+
+            // Find the reset token.
+            var resetTokenId = $"AccountTokens/Reset/${user.Email}";
+            var resetToken = await DbSession.LoadAsync<AccountToken>(resetTokenId);
+            if (resetToken == null)
+            {
+                logger.LogWarning("Attempted to reset password for {email}, but could't find password reset token {tokenId}", user.Email, resetTokenId);
+                return new ResetPasswordResult
+                {
+                    Success = false,
+                    ErrorMessage = "Couldn't find a password reset token for your user"
+                };
+            }
+
+            // Verify the token is good.
+            var isValidToken = string.Equals(resetToken.Token, passwordResetCode, StringComparison.InvariantCultureIgnoreCase);
+            if (!isValidToken)
+            {
+                logger.LogWarning("Attempted to reset password for {email}, but the reset token was invalid. Expected {token} but found {invalidToken}", user.Email, resetToken.Token, passwordResetCode);
+                return new ResetPasswordResult
+                {
+                    Success = false,
+                    ErrorMessage = "Invalid password reset token"
+                };
+            }
+
+            var tempResetToken = userManager.GeneratePasswordResetTokenAsync(user);
             var passwordResetResult = await userManager.ResetPasswordAsync(user, passwordResetCode, newPassword);
             if (!passwordResetResult.Succeeded)
             {
