@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Raven.Client.Documents.Session;
+using Raven.StructuredLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -336,7 +337,7 @@ namespace BitShuva.Chavah.Controllers
             var user = await DbSession.LoadAsync<AppUser>(userId);
             if (user == null)
             {
-                logger.LogWarning($"Attempted to reset password, but couldn't find a user with that email", email);
+                logger.LogWarning("Attempted to reset password, but couldn't find a user with {email}", email);
                 return new ResetPasswordResult
                 {
                     Success = false,
@@ -347,7 +348,10 @@ namespace BitShuva.Chavah.Controllers
             var passwordResetResult = await userManager.ResetPasswordAsync(user, passwordResetCode, newPassword);
             if (!passwordResetResult.Succeeded)
             {
-               logger.LogWarning($"Unable to reset password", (Email: email, Code: passwordResetCode, Errors: string.Join(", ", passwordResetResult.Errors)));
+                using (logger.BeginKeyValueScope("errors", passwordResetResult.Errors.Select(e => e.Description)))
+                {
+                    logger.LogWarning("Unable to reset password using {email}, {code}", email, passwordResetCode);
+                }
             }
 
             return new ResetPasswordResult
