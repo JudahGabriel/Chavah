@@ -357,7 +357,7 @@ namespace BitShuva.Chavah.Controllers
             return new ResetPasswordResult
             {
                 Success = passwordResetResult.Succeeded,
-                ErrorMessage = string.Join(",", passwordResetResult.Errors)
+                ErrorMessage = string.Join(",", passwordResetResult.Errors.Select(e => e.Description))
             };
         }
 

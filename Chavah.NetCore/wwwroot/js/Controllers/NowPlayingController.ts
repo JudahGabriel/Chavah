@@ -176,7 +176,7 @@
                     this.fetchAlbumColors(this.getAllSongsOnScreen());
 
                     // Call ourselves every 30s.
-                    this.recurringFetchHandle = setTimeout(() => this.setupRecurringFetches(), 30000);
+                    this.recurringFetchHandle = setTimeout(() => this.setupRecurringFetches(), 60000);
                 });
         }
 

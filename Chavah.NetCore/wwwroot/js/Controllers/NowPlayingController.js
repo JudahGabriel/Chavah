@@ -163,7 +163,7 @@ var BitShuva;
                     .finally(function () {
                     _this.fetchAlbumColors(_this.getAllSongsOnScreen());
                     // Call ourselves every 30s.
-                    _this.recurringFetchHandle = setTimeout(function () { return _this.setupRecurringFetches(); }, 30000);
+                    _this.recurringFetchHandle = setTimeout(function () { return _this.setupRecurringFetches(); }, 60000);
                 });
             };
             NowPlayingController.prototype.fetchRecentPlays = function () {
