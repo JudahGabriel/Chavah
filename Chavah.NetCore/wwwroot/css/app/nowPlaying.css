@@ -1,14 +1,11 @@
 ﻿/* Colors */
 .now-playing-page .songs-container {
-  /*position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;*/
   width: 50%;
   margin: auto;
   height: 365px;
   margin-top: 20px;
+  display: flex;
+  justify-content: center;
 }
 @media (min-width: 1400px) {
   .now-playing-page .songs-container {
@@ -26,7 +23,6 @@
 .now-playing-page .song {
   min-width: 300px;
   display: inline-block;
-  /*border: 1px solid gray;*/
   background-color: white;
   padding: 5px;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
