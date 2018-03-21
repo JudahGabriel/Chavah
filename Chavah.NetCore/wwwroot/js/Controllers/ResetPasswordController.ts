@@ -10,7 +10,7 @@
         passwordResetFailed = false;
         passwordResetFailedMessage = "";
 
-        static readonly regexContainsLetterAndNumber = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/; // https://stackoverflow.com/a/7684859/536
+        static readonly regexContainsLetterAndNumber = /^(?=.*[a-zA-Z])(?=.*[0-9])/; // https://stackoverflow.com/a/4429970/536
         static $inject = [
             "accountApi",
             "$routeParams"
