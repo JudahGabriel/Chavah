@@ -354,7 +354,7 @@ namespace BitShuva.Chavah.Controllers
             }
 
             // Find the reset token.
-            var resetTokenId = $"AccountTokens/Reset/${user.Email}";
+            var resetTokenId = $"AccountTokens/Reset/{user.Email}";
             var resetToken = await DbSession.LoadAsync<AccountToken>(resetTokenId);
             if (resetToken == null)
             {
@@ -378,13 +378,13 @@ namespace BitShuva.Chavah.Controllers
                 };
             }
 
-            var tempResetToken = userManager.GeneratePasswordResetTokenAsync(user);
-            var passwordResetResult = await userManager.ResetPasswordAsync(user, passwordResetCode, newPassword);
+            var tempResetToken = await userManager.GeneratePasswordResetTokenAsync(user);
+            var passwordResetResult = await userManager.ResetPasswordAsync(user, tempResetToken, newPassword);
             if (!passwordResetResult.Succeeded)
             {
                 using (logger.BeginKeyValueScope("errors", passwordResetResult.Errors.Select(e => e.Description)))
                 {
-                    logger.LogWarning("Unable to reset password using {email}, {code}", email, passwordResetCode);
+                    logger.LogWarning("Unable to reset password for {email} using token {code}", email, passwordResetCode);
                 }
             }
 
