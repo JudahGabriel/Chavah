@@ -58,6 +58,7 @@
         welcome: "/Welcome.html",
         songEditApproved: "/SongEditApproved.html",
         privacyPolicy: "/PrivacyPolicy.html",
+        support: "/Support.html",
 
         // Sign in
         promptSignIn: "/PromptSignIn.html",
@@ -103,6 +104,7 @@
             .when("/welcome", createRoute(views.welcome))
             .when("/songeditapproved/:artist/:songName", createRoute(views.songEditApproved))
             .when("/privacy", createRoute(views.privacyPolicy))
+            .when("/support", createRoute(views.support))
 
             // Sign in
             .when("/promptsignin", createRoute(views.promptSignIn))

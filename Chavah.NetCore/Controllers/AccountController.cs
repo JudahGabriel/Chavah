@@ -395,6 +395,23 @@ namespace BitShuva.Chavah.Controllers
             };
         }
 
+        [HttpPost]
+        public SupportMessage SendSupportMessage([FromBody]SupportMessage message)
+        {
+            if (!string.IsNullOrEmpty(User.Identity.Name))
+            {
+                message.UserId = "AppUsers/" + User.Identity.Name;
+            }
+
+            using (logger.BeginKeyValueScope("message", message))
+            {
+                logger.LogInformation("Support message submitted");
+            }
+
+            this.emailSender.QueueSupportEmail(message, options.Email.SenderEmail);
+            return message;
+        }
+
         private SignInStatus SignInStatusFromResult(Microsoft.AspNetCore.Identity.SignInResult result)
         {
             if (result.Succeeded)

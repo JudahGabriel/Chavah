@@ -118,6 +118,16 @@
             };
             return this.httpApi.postUriEncoded(`${this.apiUri}/resetPassword`, args);
         }
+
+        sendSupportMessage(name: string, email: string, message: string): ng.IPromise<any> {
+            const args = {
+                name,
+                email,
+                message,
+                date: new Date().toISOString()
+            };
+            return this.httpApi.post(`${this.apiUri}/sendSupportMessage`, args);
+        }
     }
 
     App.service("accountApi", AccountService);

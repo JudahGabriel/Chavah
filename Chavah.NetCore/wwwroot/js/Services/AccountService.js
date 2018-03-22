@@ -101,6 +101,15 @@ var BitShuva;
                 };
                 return this.httpApi.postUriEncoded(this.apiUri + "/resetPassword", args);
             };
+            AccountService.prototype.sendSupportMessage = function (name, email, message) {
+                var args = {
+                    name: name,
+                    email: email,
+                    message: message,
+                    date: new Date().toISOString()
+                };
+                return this.httpApi.post(this.apiUri + "/sendSupportMessage", args);
+            };
             AccountService.$inject = [
                 "appNav",
                 "initConfig",
