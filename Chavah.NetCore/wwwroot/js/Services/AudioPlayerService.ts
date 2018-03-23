@@ -160,6 +160,22 @@ namespace BitShuva.Chavah {
             }
         }
 
+        /**
+         * Sets the volume level.
+         * @param level Should be between 0 and 1, where 1 is full volume, and 0 is muted.
+         */
+        setVolume(level: number) {
+            if (this.audio) {
+                this.audio.volume = 0;
+            }
+        }
+
+        skipToEnd() {
+            if (this.audio && this.audio.duration) {
+                this.audio.currentTime = this.audio.duration - 1;
+            }
+        }
+
         private aborted(args: any) {
             this.status.onNext(AudioStatus.Aborted);
             console.log("Audio aborted", this.audio.currentSrc, args);

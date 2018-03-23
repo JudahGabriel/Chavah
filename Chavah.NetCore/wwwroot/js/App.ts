@@ -142,22 +142,29 @@
         "accountApi",
         "appNav",
         "adminScripts",
+        "uwpNativeAudio",
         "$rootScope",
         "$location",
+        "$window",
         "$q",
         // tslint:disable-next-line:no-shadowed-variable
         (templatePaths: ITemplatePaths,
          accountApi: AccountService,
          appNav: AppNavService,
          adminScripts: AdminScriptsService,
+         uwpNativeAudio: UwpNativeAudioService,
          $rootScope: ng.IRootScopeService,
          $location: ng.ILocationService,
+         $window: ng.IWindowService,
          $q: ng.IQService) => {
 
             // Use Angular's Q object as Promise. This is needed to make async/await work properly with the UI.
             // See http://stackoverflow.com/a/41825004/536
-            window["Promise"] = $q;
+            $window["Promise"] = $q;
 
+            // If we're running as a UWP app, hook into the native audio controller. This lets us play audio in the background while running as a UWP app, and gives nice rich media display on Windows.
+            uwpNativeAudio.install();
+            
             // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.
             ($rootScope as any).Partials = templatePaths;
 
