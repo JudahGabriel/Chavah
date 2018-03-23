@@ -93,32 +93,31 @@
                     break;
 
                 case mediaButton.next:
-                    this.audioPlayer.pause();
                     this.audioPlayer.skipToEnd();
                     break;
             }
         }
 
         private windowsMediaPropertyChanged(eventIn: Windows.Media.SystemMediaTransportControlsPropertyChangedEventArgs) {
-            if (this.systemMedia) {
-                if (eventIn.property == Windows.Media.SystemMediaTransportControlsProperty.soundLevel) {
-                    switch (this.systemMedia.soundLevel) {
-                        case Windows.Media.SoundLevel.muted:
-                            this.audioPlayer.pause();
-                            break;
+            //if (this.systemMedia) {
+            //    if (eventIn.property == Windows.Media.SystemMediaTransportControlsProperty.soundLevel) {
+            //        switch (this.systemMedia.soundLevel) {
+            //            case Windows.Media.SoundLevel.muted:
+            //                this.audioPlayer.pause();
+            //                break;
 
-                        case Windows.Media.SoundLevel.full:
-                            this.audioPlayer.resume();
-                            this.audioPlayer.setVolume(1);
-                            break;
+            //            case Windows.Media.SoundLevel.full:
+            //                this.audioPlayer.resume();
+            //                this.audioPlayer.setVolume(1);
+            //                break;
 
-                        case Windows.Media.SoundLevel.low:
-                            this.audioPlayer.resume();
-                            this.audioPlayer.setVolume(2);
-                            break;
-                    }
-                }
-            }
+            //            case Windows.Media.SoundLevel.low:
+            //                this.audioPlayer.resume();
+            //                this.audioPlayer.setVolume(2);
+            //                break;
+            //        }
+            //    }
+            //}
         }
 
         private audioStatusChanged(status: AudioStatus) {
