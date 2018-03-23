@@ -42,6 +42,30 @@
                 this.audioPlayer.song
                     .distinctUntilChanged()
                     .subscribe(song => this.songChanged(song));
+
+                this.audioPlayer.status
+                    .distinctUntilChanged()
+                    .subscribe(status => this.audioStatusChanged(status));
+            }
+        }
+
+        private audioStatusChanged(status: AudioStatus) {
+            // When the audio status changes, let the host platform know about it.
+            // https://developer.mozilla.org/en-US/docs/Web/API/MediaSession/playbackState
+            if (this.mediaSession) {
+                switch (status) {
+                    case AudioStatus.Paused:
+                        this.mediaSession.playbackState = "paused";
+                        break;
+
+                    case AudioStatus.Playing:
+                        this.mediaSession.playbackState = "playing";
+                        break;
+
+                    default:
+                        this.mediaSession.playbackState = "none";
+                        break;
+                }
             }
         }
 
