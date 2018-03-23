@@ -142,6 +142,7 @@
         "accountApi",
         "appNav",
         "adminScripts",
+        "navigatorMediaSession",
         "uwpNativeAudio",
         "$rootScope",
         "$location",
@@ -152,6 +153,7 @@
          accountApi: AccountService,
          appNav: AppNavService,
          adminScripts: AdminScriptsService,
+         navigatorMediaSession: NavigatorMediaSessionService,
          uwpNativeAudio: UwpNativeAudioService,
          $rootScope: ng.IRootScopeService,
          $location: ng.ILocationService,
@@ -162,7 +164,8 @@
             // See http://stackoverflow.com/a/41825004/536
             $window["Promise"] = $q;
 
-            // If we're running as a UWP app, hook into the native audio controller. This lets us play audio in the background while running as a UWP app, and gives nice rich media display on Windows.
+            // Integrate with the host platform's audio services, e.g. lockscreen media buttons, "currently playing" media info panels, etc.
+            navigatorMediaSession.install();
             uwpNativeAudio.install();
             
             // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.

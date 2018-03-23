@@ -8,9 +8,7 @@
      * https://stackoverflow.com/questions/49240479/enabling-background-audio-in-my-windows-store-html5-app/49242890#49242890
      */
     export class UwpNativeAudioService {
-        //readonly winJsUrl = "https://cdnjs.cloudflare.com/ajax/libs/winjs/4.4.0/js/base.js";
-        systemMedia: Windows.Media.SystemMediaTransportControls | null = null;
-        timeline: Windows.Media.SystemMediaTransportControlsTimelineProperties | null = null;
+        private systemMedia: Windows.Media.SystemMediaTransportControls | null = null;
 
         static $inject = [
             "audioPlayer",
@@ -99,6 +97,7 @@
         }
 
         private windowsMediaPropertyChanged(eventIn: Windows.Media.SystemMediaTransportControlsPropertyChangedEventArgs) {
+            // COMMENTED OUT: We're seeing some weirdness with how Windows sends this event, causing our app to be muted until manually adjusting the volume. Commented out until we can better diagnose what's going on.
             //if (this.systemMedia) {
             //    if (eventIn.property == Windows.Media.SystemMediaTransportControlsProperty.soundLevel) {
             //        switch (this.systemMedia.soundLevel) {
