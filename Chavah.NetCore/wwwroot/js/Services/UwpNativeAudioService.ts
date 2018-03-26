@@ -4,15 +4,14 @@
      * This service hooks the web app up to Windows native audio control service, connecting the system's play/pause/volume/current song/etc.
      * to Chavah's current song.
      *
-     * This is required for playing backgroudn audio in a Windows app.
+     * This is required for playing background audio in a Windows app.
      * https://stackoverflow.com/questions/49240479/enabling-background-audio-in-my-windows-store-html5-app/49242890#49242890
      */
     export class UwpNativeAudioService {
         private systemMedia: Windows.Media.SystemMediaTransportControls | null = null;
 
         static $inject = [
-            "audioPlayer",
-            "songBatch"
+            "audioPlayer"
         ];
 
         constructor(
