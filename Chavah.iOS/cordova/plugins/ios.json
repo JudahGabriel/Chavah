@@ -15,6 +15,12 @@
     },
     "nl.kingsquare.cordova.background-audio": {
       "PACKAGE_NAME": "com.messianicradio"
+    },
+    "cordova-plugin-nowplaying": {
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
+    },
+    "cordova-plugin-remotecommand": {
+      "PACKAGE_NAME": "com.messianicradio"
     }
   },
   "dependent_plugins": {

@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		0207DA581B56EA530066E2B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0207DA571B56EA530066E2B4 /* Images.xcassets */; };
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
@@ -22,6 +21,8 @@
 		6B89A985DF344A13A1B659B8 /* BackgroundAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = FB13886BA14E45639039B664 /* BackgroundAudio.m */; };
 		7B388170EACC42FF828FAFF6 /* CDVHostedWebApp.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9F6215EEB44642A3AF6A50 /* CDVHostedWebApp.m */; };
 		8EAFA6BAB670491F8440A710 /* CDVConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = E0BB475B5B7448298F990799 /* CDVConnection.m */; };
+		81CCEA7324D544149D711304 /* MNowPlaying.m in Sources */ = {isa = PBXBuildFile; fileRef = A8F66B9771B44F07AC2287BC /* MNowPlaying.m */; };
+		48CA892DE09F46E297E39F03 /* MRemoteCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884EAD7A1C411E8C11E03B /* MRemoteCommand.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,10 @@
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = Chavah/config.xml; sourceTree = "<group>"; };
 		FB13886BA14E45639039B664 /* BackgroundAudio.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = BackgroundAudio.m; path = "nl.kingsquare.cordova.background-audio/BackgroundAudio.m"; sourceTree = "<group>"; };
 		FDC90D80A25C4F39AE8E4341 /* CDVReachability.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDVReachability.h; path = "cordova-plugin-network-information/CDVReachability.h"; sourceTree = "<group>"; };
+		A8F66B9771B44F07AC2287BC /* MNowPlaying.m */ = {isa = PBXFileReference; name = "MNowPlaying.m"; path = "cordova-plugin-nowplaying/MNowPlaying.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		98FB8D95011E4C33BBA52207 /* MNowPlaying.h */ = {isa = PBXFileReference; name = "MNowPlaying.h"; path = "cordova-plugin-nowplaying/MNowPlaying.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		11884EAD7A1C411E8C11E03B /* MRemoteCommand.m */ = {isa = PBXFileReference; name = "MRemoteCommand.m"; path = "cordova-plugin-remotecommand/MRemoteCommand.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		ACF711BBD03E4EC8AABE39F2 /* MRemoteCommand.h */ = {isa = PBXFileReference; name = "MRemoteCommand.h"; path = "cordova-plugin-remotecommand/MRemoteCommand.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,6 +188,10 @@
 				AA9F6215EEB44642A3AF6A50 /* CDVHostedWebApp.m */,
 				092800FEB7EB4459AA92F1F5 /* CDVHostedWebApp.h */,
 				FB13886BA14E45639039B664 /* BackgroundAudio.m */,
+				A8F66B9771B44F07AC2287BC /* MNowPlaying.m */,
+				98FB8D95011E4C33BBA52207 /* MNowPlaying.h */,
+				11884EAD7A1C411E8C11E03B /* MRemoteCommand.m */,
+				ACF711BBD03E4EC8AABE39F2 /* MRemoteCommand.h */,
 			);
 			name = Plugins;
 			path = Chavah/Plugins;
@@ -310,6 +319,8 @@
 				5C18C724787A49159287BEB5 /* CDVReachability.m in Sources */,
 				7B388170EACC42FF828FAFF6 /* CDVHostedWebApp.m in Sources */,
 				6B89A985DF344A13A1B659B8 /* BackgroundAudio.m in Sources */,
+				81CCEA7324D544149D711304 /* MNowPlaying.m in Sources */,
+				48CA892DE09F46E297E39F03 /* MRemoteCommand.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

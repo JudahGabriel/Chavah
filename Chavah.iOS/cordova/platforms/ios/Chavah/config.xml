@@ -35,6 +35,12 @@
         <param name="ios-package" onload="true" value="BackgroundAudio" />
         <param name="onload" value="true" />
     </feature>
+    <feature name="NowPlaying">
+        <param name="ios-package" value="MNowPlaying" />
+    </feature>
+    <feature name="RemoteCommand">
+        <param name="ios-package" value="MRemoteCommand" />
+    </feature>
     <name>Chavah</name>
     <description>The very best Messianic Jewish and Hebrew Roots music on the web</description>
     <author email="dev@cordova.apache.org" href="http://cordova.io">

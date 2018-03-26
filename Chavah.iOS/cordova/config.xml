@@ -63,4 +63,6 @@
     <platform name="wp8">
     </platform>
     <plugin name="nl.kingsquare.cordova.background-audio" spec="~1.0.1" />
+    <plugin name="cordova-plugin-nowplaying" spec="~1.0.0" />
+    <plugin name="cordova-plugin-remotecommand" spec="~1.0.0" />
 </widget>

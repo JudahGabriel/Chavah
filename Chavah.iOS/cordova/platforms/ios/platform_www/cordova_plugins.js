@@ -24,6 +24,22 @@ module.exports = [
         "clobbers": [
             "hostedwebapp"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-nowplaying/www/NowPlaying.js",
+        "id": "cordova-plugin-nowplaying.NowPlaying",
+        "pluginId": "cordova-plugin-nowplaying",
+        "clobbers": [
+            "window.NowPlaying"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-remotecommand/www/RemoteCommand.js",
+        "id": "cordova-plugin-remotecommand.RemoteCommand",
+        "pluginId": "cordova-plugin-remotecommand",
+        "clobbers": [
+            "window.RemoteCommand"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -32,7 +48,9 @@ module.exports.metadata =
     "cordova-plugin-whitelist": "1.3.3",
     "cordova-plugin-network-information": "2.0.1",
     "cordova-plugin-hostedwebapp": "0.3.2",
-    "nl.kingsquare.cordova.background-audio": "1.0.1"
+    "nl.kingsquare.cordova.background-audio": "1.0.1",
+    "cordova-plugin-nowplaying": "1.0.0",
+    "cordova-plugin-remotecommand": "1.0.0"
 }
 // BOTTOM OF METADATA
 });

@@ -1,0 +1,91 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "cordova-plugin-nowplaying",
+        "scope": null,
+        "escapedName": "cordova-plugin-nowplaying",
+        "name": "cordova-plugin-nowplaying",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "E:\\Dev\\chavah\\Chavah.iOS\\cordova"
+    ]
+  ],
+  "_from": "cordova-plugin-nowplaying@latest",
+  "_id": "cordova-plugin-nowplaying@1.0.2",
+  "_inCache": true,
+  "_location": "/cordova-plugin-nowplaying",
+  "_nodeVersion": "0.12.7",
+  "_npmUser": {
+    "name": "leon",
+    "email": "leon@radley.se"
+  },
+  "_npmVersion": "2.14.4",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "cordova-plugin-nowplaying",
+    "scope": null,
+    "escapedName": "cordova-plugin-nowplaying",
+    "name": "cordova-plugin-nowplaying",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-nowplaying/-/cordova-plugin-nowplaying-1.0.2.tgz",
+  "_shasum": "519ded8cd2530e3bc1dc01c1b4bba1543c84bb56",
+  "_shrinkwrap": null,
+  "_spec": "cordova-plugin-nowplaying",
+  "_where": "E:\\Dev\\chavah\\Chavah.iOS\\cordova",
+  "author": {
+    "name": "Leon Radley",
+    "url": "leon"
+  },
+  "bugs": {
+    "url": "https://github.com/Muntligt/cordova-plugin-nowplaying/issues"
+  },
+  "dependencies": {},
+  "description": "Cordova Plugin for setting MPNowPlayingInfoCenter.nowPlayingInfo. Only works with > iOS 7.1. Includes support for downloading MPMediaItemPropertyArtwork asynchronously",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "519ded8cd2530e3bc1dc01c1b4bba1543c84bb56",
+    "tarball": "https://registry.npmjs.org/cordova-plugin-nowplaying/-/cordova-plugin-nowplaying-1.0.2.tgz"
+  },
+  "gitHead": "1d3a864d6e6d31df035ab8a4aac3a7c2cecf08dd",
+  "homepage": "https://github.com/Muntligt/cordova-plugin-nowplaying#readme",
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova",
+    "cordova-ios",
+    "media",
+    "audio",
+    "nowplaying",
+    "MPNowPlayingInfoCenter",
+    "lockscreen"
+  ],
+  "license": "MIT",
+  "main": "src/www/NowPlaying.js",
+  "maintainers": [
+    {
+      "name": "leon",
+      "email": "leon@radley.se"
+    }
+  ],
+  "name": "cordova-plugin-nowplaying",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Muntligt/cordova-plugin-nowplaying.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.2"
+}

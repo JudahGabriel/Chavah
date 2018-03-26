@@ -32,5 +32,21 @@
     },
     "is_top_level": true,
     "variables": {}
+  },
+  "cordova-plugin-nowplaying": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-nowplaying"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-remotecommand": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-remotecommand"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

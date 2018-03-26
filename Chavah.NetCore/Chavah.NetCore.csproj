@@ -26,6 +26,7 @@
     <Content Remove="wwwroot\js\Controllers\SupportController.ts" />
     <Content Remove="wwwroot\js\Models\LogSort.ts" />
     <Content Remove="wwwroot\js\Models\StructuredLog.ts" />
+    <Content Remove="wwwroot\js\Services\IOSMediaSessionService.ts" />
     <Content Remove="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
     <Content Remove="wwwroot\js\Services\UwpNativeAudioService.ts" />
   </ItemGroup>
@@ -79,6 +80,7 @@
     <TypeScriptCompile Include="wwwroot\js\Controllers\SupportController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Models\LogSort.ts" />
     <TypeScriptCompile Include="wwwroot\js\Models\StructuredLog.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Services\IOSMediaSessionService.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\UwpNativeAudioService.ts" />
 

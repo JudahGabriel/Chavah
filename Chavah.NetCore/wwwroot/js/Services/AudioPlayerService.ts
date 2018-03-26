@@ -10,6 +10,7 @@ namespace BitShuva.Chavah {
         readonly status = new Rx.BehaviorSubject(AudioStatus.Paused);
         readonly song = new Rx.BehaviorSubject<Song | null>(null);
         readonly songCompleted = new Rx.BehaviorSubject<Song | null>(null);
+        readonly playedTime = new Rx.BehaviorSubject<number>(0);
         readonly playedTimeText = new Rx.BehaviorSubject<string>("");
         readonly remainingTimeText = new Rx.BehaviorSubject<string>("");
         readonly playedTimePercentage = new Rx.BehaviorSubject<number>(0);
@@ -210,18 +211,21 @@ namespace BitShuva.Chavah {
         }
 
         private playbackPositionChanged(args: any) {
-            let currentTime = this.audio.currentTime;
-            let currentTimeFloored = Math.floor(currentTime);
-            let currentTimeHasChanged = currentTimeFloored !== this.lastPlayedTime;
+            const currentTime = this.audio.currentTime;
+            const currentTimeFloored = Math.floor(currentTime);
+            const currentTimeHasChanged = currentTimeFloored !== this.lastPlayedTime;
             if (currentTimeHasChanged) {
                 this.lastPlayedTime = currentTimeFloored;
-                let duration = this.audio.duration;
-                this.duration.onNext(duration);
 
-                let currentPositionDate = new Date().setMinutes(0, currentTimeFloored);
-                let currentPosition = moment(currentPositionDate);
-                let remainingTimeDate = new Date().setMinutes(0, duration - currentTimeFloored);
-                let remainingTime = moment(remainingTimeDate);
+                // Update our duration and current time.
+                const duration = this.audio.duration;
+                this.duration.onNext(duration);
+                this.playedTime.onNext(currentTimeFloored);
+
+                const currentPositionDate = new Date().setMinutes(0, currentTimeFloored);
+                const currentPosition = moment(currentPositionDate);
+                const remainingTimeDate = new Date().setMinutes(0, duration - currentTimeFloored);
+                const remainingTime = moment(remainingTimeDate);
 
                 this.playedTimeText.onNext(currentPosition.format("m:ss"));
                 this.remainingTimeText.onNext(remainingTime.format("m:ss"));

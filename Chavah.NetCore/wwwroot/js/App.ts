@@ -144,6 +144,7 @@
         "adminScripts",
         "navigatorMediaSession",
         "uwpNativeAudio",
+        "iOSMediaSession",
         "$rootScope",
         "$location",
         "$window",
@@ -155,6 +156,7 @@
          adminScripts: AdminScriptsService,
          navigatorMediaSession: NavigatorMediaSessionService,
          uwpNativeAudio: UwpNativeAudioService,
+         iOSMediaSession: IOSMediaSessionService,
          $rootScope: ng.IRootScopeService,
          $location: ng.ILocationService,
          $window: ng.IWindowService,
@@ -165,8 +167,9 @@
             $window["Promise"] = $q;
 
             // Integrate with the host platform's audio services, e.g. lockscreen media buttons, "currently playing" media info panels, etc.
-            navigatorMediaSession.install();
-            uwpNativeAudio.install();
+            iOSMediaSession.install(); // iOS
+            navigatorMediaSession.install(); // Android, emerging web standard
+            uwpNativeAudio.install(); // Windows
             
             // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.
             ($rootScope as any).Partials = templatePaths;
