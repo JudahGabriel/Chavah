@@ -31,6 +31,7 @@
             // https://github.com/leon/cordova-plugin-remotecommand
             this.remoteCommand = window["RemoteCommand"];
             if (this.remoteCommand) {
+                this.setInitialNativeUIState();
                 this.listenForNativeUIEvents();
             }
         }
@@ -54,14 +55,18 @@
             }
         }
 
-        private listenForNativeUIEvents() {
-            // https://github.com/leon/cordova-plugin-remotecommand
+        private setInitialNativeUIState() {
             if (this.remoteCommand) {
                 this.remoteCommand.enabled("play", true);
                 this.remoteCommand.enabled("pause", true);
                 this.remoteCommand.enabled("nextTrack", true);
                 this.remoteCommand.enabled("previousTrack", false);
+            }
+        }
 
+        private listenForNativeUIEvents() {
+            // https://github.com/leon/cordova-plugin-remotecommand
+            if (this.remoteCommand) {
                 this.remoteCommand.on("play", () => this.audioPlayer.resume());
                 this.remoteCommand.on("pause", () => this.audioPlayer.pause());
                 this.remoteCommand.on("nextTrack", () => this.audioPlayer.skipToEnd());
