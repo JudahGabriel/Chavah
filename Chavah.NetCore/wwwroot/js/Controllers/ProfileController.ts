@@ -7,13 +7,17 @@
             "$timeout",
         ];
 
-        profile: any;
+        email: string;
+        lastSeen: string;
+        registrationDate: string;
+        phone: string;
 
         constructor(
             private readonly initConfig: Server.HomeViewModel,
-            private readonly accountApi: AccountService,
-            private readonly $timeout: ng.ITimeoutService) {
-         
+            private readonly accountApi: AccountService) {
+        }
+
+        $onInit() {
             if (this.initConfig.user) {
                 this.loadProfile(this.initConfig.user);
             }
@@ -21,10 +25,13 @@
 
         loadProfile(user: Server.AppUser) {
             this.accountApi.getUserWithEmail(user.email)
-                .then(resp => {
-                    this.profile = resp;
-                    this.profile.lastSeen = moment(this.profile.lastSeen).format("LLL");
-                    this.profile.registrationDate = moment(this.profile.registrationDate).format("LLL");
+                .then(user => {
+                    if (user) {
+                        this.email = user.email;
+                        this.lastSeen = moment(user.lastSeen).format("LLL");
+                        this.registrationDate = moment(user.registrationDate).format("LLL");
+                        this.phone = user.phoneNumber;
+                    }
                 });
         }
     }
