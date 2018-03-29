@@ -10,6 +10,8 @@
         private nowPlaying: any | null;
         private remoteCommand: any | null;
 
+        nowPlayingInfo: NowPlayingInfo | null = null;
+        
         static $inject = [
             "audioPlayer"
         ];
@@ -22,6 +24,12 @@
          * Checks if we're in iOS app and if so, hooks up the iOS lock screen media buttons to Chavah and syncs currently playing song info to the lockscreen.
          */
         install() {
+            // We need to wait until Cordova is ready.
+            // NOTE: In our testing on iOS, it looks like this event can only be listened to once. Attaching multiple event handlers doesn't fire the others.
+            document.addEventListener("deviceready", () => this.cordovaLoaded(), false);
+        }
+
+        private cordovaLoaded() {
             // https://github.com/leon/cordova-plugin-nowplaying
             this.nowPlaying = window["NowPlaying"];
             if (this.nowPlaying) {
@@ -42,6 +50,10 @@
                 this.audioPlayer.song
                     .distinctUntilChanged()
                     .subscribe(song => this.songChanged(song));
+
+                this.audioPlayer.status
+                    .distinctUntilChanged()
+                    .subscribe(status => this.songStatusChanged(status));
 
                 // Current track position changed
                 this.audioPlayer.playedTime
@@ -77,41 +89,40 @@
                         
             if (this.nowPlaying) {
                 const metadata: NowPlayingInfo = {
-                    title: "",
-                    artist: "",
-                    albumTitle: ""
                 };
 
                 if (song) {
                     metadata.albumTitle = song.album;
                     metadata.artist = song.artist;
                     metadata.title = song.hebrewName ? `${song.name} ${song.hebrewName}` : song.name;
-                    metadata.artwork = song.albumArtUri;
+                    metadata.artwork = `https://messianicradio.com/api/albums/getAlbumArtBySongId?songId=${song.id}`; //song.albumArtUri;
                     metadata.trackNumber = song.number;
                 }
 
+                this.nowPlayingInfo = metadata;
                 this.nowPlaying.set(metadata);
             }
         }
 
         private songCurrentTimeChanged(elapsed: number) {
-            if (this.nowPlaying) {
+            if (this.nowPlaying && this.nowPlayingInfo) {
                 // Update the track position information. Omitted properties will just use whatever was set last.
-                const metadata: NowPlayingInfo = {
-                    elapsedPlaybackTime: elapsed
-                };
-
-                this.nowPlaying.set(metadata);
+                this.nowPlayingInfo.elapsedPlaybackTime = elapsed;
+                this.nowPlaying.set(this.nowPlayingInfo);
             }
         }
 
         private songDurationChanged(duration: number) {
-            if (this.nowPlaying) {
-                const metadata: NowPlayingInfo = {
-                    playbackDuration: duration
-                };
+            if (this.nowPlaying && this.nowPlayingInfo) {
+                this.nowPlayingInfo.playbackDuration = duration;
+                this.nowPlaying.set(this.nowPlayingInfo);
+            }
+        }
 
-                this.nowPlaying.set(metadata);
+        private songStatusChanged(status: AudioStatus) {
+            if (this.nowPlaying && this.nowPlayingInfo) {
+                // Set the now playing info, otherwise iOS resets it using the HTML5 <audio> src.
+                this.nowPlaying.set(this.nowPlayingInfo);
             }
         }
     }

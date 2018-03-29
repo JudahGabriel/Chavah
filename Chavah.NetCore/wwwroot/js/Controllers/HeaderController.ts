@@ -1,13 +1,13 @@
 ﻿namespace BitShuva.Chavah {
     export class HeaderController {
+        
+        notifications: Server.Notification[];
 
         static $inject = [
             "initConfig",
             "accountApi",
             "appNav"
         ];
-
-        notifications: Server.Notification[];
 
         constructor(private readonly initConfig: Server.HomeViewModel,
                     private readonly accountApi: AccountService,
