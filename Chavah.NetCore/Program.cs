@@ -70,7 +70,7 @@ namespace BitShuva.Chavah
                 string certificateFileName = certificateSettings.GetValue<string>("filename");
                 string certificatePassword = certificateSettings.GetValue<string>("password");
 
-                var certPath = exePath + certificateFileName;
+                var certPath = Path.GetFullPath(exePath + certificateFileName);
                 return new X509Certificate2(certPath, certificatePassword);
             }
             catch (Exception ex)
