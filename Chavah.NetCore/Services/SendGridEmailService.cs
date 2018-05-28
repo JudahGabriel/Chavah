@@ -35,10 +35,10 @@ namespace BitShuva.Services
             this.backgroundWorker = queue;
         }
 
-        public async Task QueueSendEmail(string recipient, string subject, string body)
+        public async Task QueueSendEmail(string recipient, string subject, string body, string replyTo = null)
         {
             // Store the email on this thread.
-            var email = await StoreEmail(recipient, subject, body);
+            var email = await StoreEmail(recipient, subject, body, replyTo);
 
             // If we're not configured to send emails, punt.
             var sendEmails = this.emailSettings.SendEmails;
@@ -46,7 +46,7 @@ namespace BitShuva.Services
             {
                 // Queue up the email sending on a different thread.
                 logger.LogInformation("Queueing up {emailId} for sending.", email.Id);
-                this.backgroundWorker.Enqueue(cancelToken => TrySendEmailWithTimeoutAndRetry(email.Id, email.To, email.Subject, email.Body, cancelToken));
+                this.backgroundWorker.Enqueue(cancelToken => TrySendEmailWithTimeoutAndRetry(email.Id, email.To, email.Subject, email.Body, email.ReplyTo, cancelToken));
             }
             else
             {
@@ -65,7 +65,7 @@ namespace BitShuva.Services
             using (var dbSession = this.db.OpenAsyncSession())
             {
                 var email = await dbSession.LoadRequiredAsync<Email>(emailId);
-                var retryError = await TrySendEmailWithTimeout(email.To, email.Subject, email.Body);
+                var retryError = await TrySendEmailWithTimeout(email.To, email.Subject, email.Body, email.ReplyTo);
 
                 email.RetryCount++;
                 email.LastRetryDate = DateTimeOffset.UtcNow;
@@ -77,12 +77,12 @@ namespace BitShuva.Services
             }
         }
 
-        private Task TrySendEmailWithTimeoutAndRetry(string emailId, string recipient, string subject, string body, CancellationToken cancelToken)
+        private Task TrySendEmailWithTimeoutAndRetry(string emailId, string recipient, string subject, string body, string replyTo, CancellationToken cancelToken)
         {
             if (!cancelToken.IsCancellationRequested)
             {
                 // Send the email with a timeout.
-                var error = TrySendEmailWithTimeout(recipient, subject, body).ToAsyncOption();
+                var error = TrySendEmailWithTimeout(recipient, subject, body, replyTo).ToAsyncOption();
 
                 // The error will be None if success. If failed, mark it as failed, which will get queued up for email retry later.
                 return error
@@ -92,7 +92,7 @@ namespace BitShuva.Services
             return Task.CompletedTask;
         }
 
-        private async Task<Email> StoreEmail(string recipient, string subject, string body)
+        private async Task<Email> StoreEmail(string recipient, string subject, string body, string replyTo)
         {
             using (var dbSession = this.db.OpenAsyncSession())
             {
@@ -100,12 +100,13 @@ namespace BitShuva.Services
                 {
                     To = recipient,
                     Subject = subject,
-                    Body = body
+                    Body = body,
+                    ReplyTo = replyTo
                 };
                 await dbSession.StoreAsync(email);
 
-                // Expire it in 6 months.
-                dbSession.SetRavenExpiration(email, DateTime.UtcNow.AddMonths(6));
+                // Expire it in 2 months.
+                dbSession.SetRavenExpiration(email, DateTime.UtcNow.AddMonths(2));
 
                 await dbSession.SaveChangesAsync();
                 return email;
@@ -134,7 +135,7 @@ namespace BitShuva.Services
             }
         }
 
-        private async Task<Option<Exception>> TrySendEmailWithTimeout(string recipient, string subject, string body)
+        private async Task<Option<Exception>> TrySendEmailWithTimeout(string recipient, string subject, string body, string replyTo)
         {
             try
             {
@@ -145,9 +146,15 @@ namespace BitShuva.Services
                     IsBodyHtml = true,
                     From = new MailAddress(emailSettings.SenderEmail, emailSettings.SenderName)
                 };
+
+                if (!string.IsNullOrEmpty(replyTo))
+                {
+                    email.ReplyToList.Add(replyTo);
+                }
+
                 email.To.Add(recipient);
                 await SendEmailAsync(email);
-                logger.LogInformation("Sent email notification to {recipient} with {subject}", recipient, subject);
+                logger.LogInformation("Sent email notification from {sender} to {recipient} with {subject}, {body}, {replyto}", email.From?.Address, recipient, subject, body, email.ReplyToList?.ToString());
                 return Option.None<Exception>();
             }
             catch (Exception error)
