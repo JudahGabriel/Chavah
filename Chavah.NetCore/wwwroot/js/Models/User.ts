@@ -7,6 +7,7 @@
         requiresPasswordReset: boolean;
         recentSongIds: string[];
         notifications: Server.Notification[];
+        volume: number;
 
         accessFailedCount: number;
         claims: any[];

@@ -41,7 +41,7 @@ namespace BitShuva.Chavah.Common
         {
             var subject = $"Support message from listener on Chavah Messianic Radio";
             var body = $"<p>You received the following message via Chavah's support page:</p><p>From: {message.Name}, {message.Email}<br>User: {message.UserId}<br>Dated: {message.Date.ToString()}<br>Message:</p><p>{message.Message}</p>";
-            emailSender.QueueSendEmail(recipient, subject, body);
+            emailSender.QueueSendEmail(recipient, subject, body, message.Email);
         }
 
         private static string GetAngularRouteEscapedCode(string input)

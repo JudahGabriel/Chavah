@@ -253,6 +253,11 @@ var BitShuva;
                 shareUrlInput.select();
                 document.execCommand("copy");
             };
+            NowPlayingController.prototype.tryNativeShare = function () {
+                if (this.currentSong && this.currentSong.isShareExpanded) {
+                    this.sharing.nativeShareUrl(this.currentSong);
+                }
+            };
             NowPlayingController.prototype.getUrlQueryOrNull = function (term) {
                 var queryString = window.location.search;
                 if (queryString) {

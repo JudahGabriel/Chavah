@@ -95,8 +95,10 @@
                     metadata.albumTitle = song.album;
                     metadata.artist = song.artist;
                     metadata.title = song.hebrewName ? `${song.name} ${song.hebrewName}` : song.name;
-                    metadata.artwork = `https://messianicradio.com/api/albums/getAlbumArtBySongId?songId=${song.id}`; //song.albumArtUri;
                     metadata.trackNumber = song.number;
+
+                    // Artwork must be on our domain. Send it to our domain with a redirect to the CDN.
+                    metadata.artwork = `https://messianicradio.com/api/albums/getAlbumArtBySongId?songId=${song.id}`;
                 }
 
                 this.nowPlayingInfo = metadata;

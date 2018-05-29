@@ -110,6 +110,12 @@ var BitShuva;
                 };
                 return this.httpApi.post(this.apiUri + "/sendSupportMessage", args);
             };
+            AccountService.prototype.saveVolume = function (volume) {
+                var args = {
+                    volume: volume
+                };
+                return this.httpApi.postUriEncoded("/api/users/saveVolume", args);
+            };
             AccountService.$inject = [
                 "appNav",
                 "initConfig",

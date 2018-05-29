@@ -284,6 +284,12 @@
             document.execCommand("copy");
         }
 
+        tryNativeShare() {
+            if (this.currentSong && this.currentSong.isShareExpanded) {
+                this.sharing.nativeShareUrl(this.currentSong);
+            }
+        }
+
         private getUrlQueryOrNull(term: string): string | null {
             let queryString = window.location.search;
             if (queryString) {
