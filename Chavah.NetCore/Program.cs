@@ -36,7 +36,7 @@ namespace BitShuva.Chavah
                .UseStartup<Startup>()
                .UseKestrel(options =>
                {
-                   options.Listen(IPAddress.Loopback, 44363, listenOptions =>
+                   options.Listen(IPAddress.Any, 443, listenOptions =>
                    {
                        listenOptions.UseHttps(certificate);
                    });

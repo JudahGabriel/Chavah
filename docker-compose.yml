@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  chavah.netcore:
+    image: ${DOCKER_REGISTRY}chavahnetcore
+    build:
+      context: .
+      dockerfile: Chavah.NetCore/Dockerfile
