@@ -5,7 +5,7 @@
     <UserSecretsId>aspnet-Chavah.NetCore-DEB242BD-3478-479B-B8C4-F7B1A52CA62D</UserSecretsId>
     <AssemblyName>BitShuva.Chavah</AssemblyName>
     <RootNamespace>BitShuva.Chavah</RootNamespace>
-    <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
     <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json</RestoreSources>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>

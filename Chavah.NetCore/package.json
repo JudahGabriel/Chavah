@@ -4,7 +4,7 @@
   "description": "Messianic Radio",
   "scripts": {
     "postinstall": "bower install",
-    "build": "node_modules/.bin/tsc",
+    "build": "tsc -p .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -46,6 +46,6 @@
     "bower": "^1.8.4",
     "npx": "^10.0.1",
     "tslint": "^5.9.1",
-    "typescript": "^2.6.2"
+    "typescript": "^2.8.3"
   }
 }
