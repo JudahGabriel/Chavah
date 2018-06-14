@@ -3,6 +3,7 @@ using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Optional.Async;
 using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
@@ -31,10 +32,19 @@ namespace BitShuva.Chavah.Controllers
         {
             var userId = this.GetUserIdOrThrow();
             var commentThreadId = "CommentThread/" + model.SongId;
-            var getCommentThread = DbSession.Advanced.Lazily.LoadRequiredAsync<CommentThread>(commentThreadId);
+
+            // Get the comment thread for this song. It may be null; we created these on-demand.
+            var getCommentThread = DbSession.Advanced.Lazily.LoadOptionAsync<CommentThread>(commentThreadId);
             var getSongTask = DbSession.Advanced.Lazily.LoadRequiredAsync<Song>(model.SongId);
-            var commentThread = await getCommentThread.Value;
             var song = await getSongTask.Value;
+            var commentThread = await getCommentThread.Value
+                .ToAsyncOption()
+                .ValueOr(() =>
+                {
+                    var newThread = new CommentThread { SongId = model.SongId };
+                    DbSession.StoreAsync(newThread, newThread.Id);
+                    return newThread;
+                });
             
             // Add the comment and update the song's comment count.
             commentThread.Comments.Add(new Comment
