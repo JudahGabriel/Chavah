@@ -37,7 +37,6 @@ namespace BitShuva.Chavah.Models
         public string AlbumId { get; set; }
         // Add a property here? It should probably be added to .ToDto()
         
-        [Newtonsoft.Json.JsonIgnore]
         public SongPickReasons ReasonsPlayed { get; set; }
 
         public static Song FromFileName(string fileName)
