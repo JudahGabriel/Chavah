@@ -66,12 +66,6 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        public string ReqFoo(string songId)
-        {
-            return "ok! " + songId;
-        }
-
-        [HttpPost]
         public async Task RequestSong(string songId)
         {
             var user = await this.GetCurrentUserOrThrow();

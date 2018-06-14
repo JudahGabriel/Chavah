@@ -4,6 +4,7 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
 using Raven.Client.Documents.Session.Loaders;
+using Raven.Client.Documents.Session.Operations.Lazy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,6 +78,30 @@ namespace BitShuva.Chavah.Common
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Lazily loads a document from the session. When the value is accessed, an exception will be thrown if the document is null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="session"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static Lazy<Task<T>> LoadRequiredAsync<T>(this IAsyncLazySessionOperations sessionOps, string id)
+        {
+            var loadTask = sessionOps.LoadAsync<T>(id);
+            var wrappedLazy = new Lazy<Task<T>>(() =>
+            {
+                var result = loadTask.Value;
+                if (result == null)
+                {
+                    throw new ArgumentException($"Tried to lazily load {id}, but it wasn't found in the database.");
+                }
+
+                return result;
+            }, isThreadSafe: false);
+
+            return wrappedLazy;
         }
 
         /// <summary>

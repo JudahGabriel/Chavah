@@ -15,7 +15,6 @@ namespace BitShuva.Chavah.Models
             this.Genres = new List<string>();
         }
 
-
         public string Name { get; set; }
         public string HebrewName { get; set; }
         public int Number { get; set; }
@@ -35,6 +34,7 @@ namespace BitShuva.Chavah.Models
         public string Lyrics { get; set; }
         public int TotalPlays { get; set; }
         public string AlbumId { get; set; }
+        public int CommentCount { get; set; }
         // Add a property here? It should probably be added to .ToDto()
         
         public SongPickReasons ReasonsPlayed { get; set; }
@@ -134,7 +134,8 @@ namespace BitShuva.Chavah.Models
                 Lyrics = this.Lyrics,
                 TotalPlays = this.TotalPlays,
                 ReasonsPlayed = pickReasons,
-                AlbumId = this.AlbumId
+                AlbumId = this.AlbumId,
+                CommentCount = this.CommentCount
             };
         }
 

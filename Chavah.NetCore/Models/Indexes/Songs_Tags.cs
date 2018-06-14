@@ -29,7 +29,7 @@ namespace BitShuva.Chavah.Models.Indexes
                                     Name = g.Key
                                 };
 
-            Index(r => r.Name, FieldIndexing.Exact);
+            Index(r => r.Name, FieldIndexing.Search);
         }
     }
 }
