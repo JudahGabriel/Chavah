@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>aspnet-Chavah.NetCore-DEB242BD-3478-479B-B8C4-F7B1A52CA62D</UserSecretsId>
     <AssemblyName>BitShuva.Chavah</AssemblyName>
     <RootNamespace>BitShuva.Chavah</RootNamespace>

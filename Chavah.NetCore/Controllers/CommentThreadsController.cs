@@ -35,6 +35,8 @@ namespace BitShuva.Chavah.Controllers
 
             // Get the comment thread for this song. It may be null; we created these on-demand.
             var getCommentThread = DbSession.Advanced.Lazily.LoadOptionAsync<CommentThread>(commentThreadId);
+
+            // Get the song because we'll need to increment its .CommentCount.
             var getSongTask = DbSession.Advanced.Lazily.LoadRequiredAsync<Song>(model.SongId);
             var song = await getSongTask.Value;
             var commentThread = await getCommentThread.Value
@@ -50,8 +52,9 @@ namespace BitShuva.Chavah.Controllers
             commentThread.Comments.Add(new Comment
             {
                 Content = model.Comment,
-                Date = DateTime.UtcNow,
-                UserId = userId
+                Date = DateTimeOffset.UtcNow,
+                UserId = userId,
+                UserDisplayName = userId.Contains('@') ? userId.Substring(0, userId.LastIndexOf('@')) : userId
             });
             song.CommentCount = commentThread.Comments.Count;
 
