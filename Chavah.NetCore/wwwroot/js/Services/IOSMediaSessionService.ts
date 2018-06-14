@@ -30,17 +30,21 @@
         }
 
         private cordovaLoaded() {
-            // https://github.com/leon/cordova-plugin-nowplaying
-            this.nowPlaying = window["NowPlaying"];
-            if (this.nowPlaying) {
-                this.listenForAudioEvents();
-            }
+            try {
+                // https://github.com/leon/cordova-plugin-nowplaying
+                this.nowPlaying = window["NowPlaying"];
+                if (this.nowPlaying) {
+                    this.listenForAudioEvents();
+                }
 
-            // https://github.com/leon/cordova-plugin-remotecommand
-            this.remoteCommand = window["RemoteCommand"];
-            if (this.remoteCommand) {
-                this.setInitialNativeUIState();
-                this.listenForNativeUIEvents();
+                // https://github.com/leon/cordova-plugin-remotecommand
+                this.remoteCommand = window["RemoteCommand"];
+                if (this.remoteCommand) {
+                    this.setInitialNativeUIState();
+                    this.listenForNativeUIEvents();
+                }
+            } catch (error) {
+                console.log("Error installing iOS Cordova hooks for media session", error);
             }
         }
 
