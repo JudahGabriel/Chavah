@@ -54,7 +54,7 @@ namespace BitShuva.Chavah.Controllers
                 Content = model.Comment,
                 Date = DateTimeOffset.UtcNow,
                 UserId = userId,
-                UserDisplayName = userId.Contains('@') ? userId.Substring(0, userId.LastIndexOf('@')) : userId
+                UserDisplayName = Comment.GetUserDisplayNameFromId(userId)
             });
             song.CommentCount = commentThread.Comments.Count;
 
