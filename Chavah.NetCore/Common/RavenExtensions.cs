@@ -4,6 +4,7 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
 using Raven.Client.Documents.Session.Loaders;
+using Raven.Client.Documents.Session.Operations.Lazy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,13 +81,42 @@ namespace BitShuva.Chavah.Common
         }
 
         /// <summary>
+        /// Lazily loads a document from the session. When the value is accessed, an exception will be thrown if the document is null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="session"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static Lazy<Task<T>> LoadRequiredAsync<T>(this IAsyncLazySessionOperations sessionOps, string id)
+        {
+            var loadTask = sessionOps.LoadAsync<T>(id);
+            var wrappedLazy = new Lazy<Task<T>>(() =>
+            {
+                // When unwrapping the Lazy, return a task that does the actually loading.
+                var result = loadTask.Value;
+                return result.ContinueWith(t =>
+                {
+                    // When unwrapping the Task, return the result of the task. But if it's null, throw an execption.
+                    if (t.Result == null)
+                    {
+                        throw new ArgumentException($"Tried to lazily load {id}, but it wasn't found in the database.");
+                    }
+
+                    return t.Result;
+                }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            }, isThreadSafe: false);
+
+            return wrappedLazy;
+        }
+
+        /// <summary>
         /// Loads a document from the session and throws the specified exception if null.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<T> LoadNotNullAsync<T, TException>(this IAsyncDocumentSession session, string id, Func<TException> thrower)
+        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncDocumentSession session, string id, Func<TException> thrower)
             where TException : Exception
         {
             var result = await session.LoadAsync<T>(id);
@@ -105,7 +135,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<T> LoadNotNullAsync<T>(this IAsyncLoaderWithInclude<T> session, string id)
+        public static async Task<T> LoadRequiredAsync<T>(this IAsyncLoaderWithInclude<T> session, string id)
         {
             var result = await session.LoadAsync<T>(id);
             if (result == null)
@@ -123,7 +153,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<T> LoadNotNullAsync<T, TException>(this IAsyncLoaderWithInclude<T> session, string id, Func<TException> thrower)
+        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncLoaderWithInclude<T> session, string id, Func<TException> thrower)
             where TException : Exception
         {
             var result = await session.LoadAsync<T>(id);
@@ -175,6 +205,25 @@ namespace BitShuva.Chavah.Common
                 return default(T).None();
             }
             return session.Load<T>(id).SomeNotNull();
+        }
+
+        /// <summary>
+        /// Lazily loads an entity from the Raven. The result is wrapped as an optional value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lazyOps"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static Lazy<Task<Option<T>>> LoadOptionAsync<T>(this IAsyncLazySessionOperations lazyOps, string id)
+        {
+            var loadTask = lazyOps.LoadAsync<T>(id);
+            var optionTask = new Lazy<Task<Option<T>>>(() =>
+            {
+                var result = loadTask.Value;
+                return result.ContinueWith(t => t.Result.SomeNotNull(), TaskContinuationOptions.OnlyOnRanToCompletion);
+            }, isThreadSafe: false);
+
+            return optionTask;
         }
 
         /// <summary>

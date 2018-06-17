@@ -110,6 +110,17 @@ namespace BitShuva.Chavah.Controllers
             return currentUser;
         }
 
+        protected string GetUserIdOrThrow()
+        {
+            var userId = this.GetUserId();
+            if (!string.IsNullOrEmpty(userId))
+            {
+                return userId;
+            }
+
+            throw new UnauthorizedAccessException();
+        }
+
         protected string GetUserId()
         {
             if (this.User.Identity.IsAuthenticated && !string.IsNullOrEmpty(this.User.Identity.Name))
