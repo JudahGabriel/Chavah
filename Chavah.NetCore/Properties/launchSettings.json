@@ -9,12 +9,12 @@
   },
   "profiles": {
     "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "https://localhost:44363/",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+        "commandName": "IISExpress",
+        "launchBrowser": true,
+        "launchUrl": "https://localhost:44363/",
+        "environmentVariables": {
+            "ASPNETCORE_ENVIRONMENT": "Development"
+        }
     },
     "BitShuva.Chavah": {
         "commandName": "Project",
@@ -22,7 +22,7 @@
         "environmentVariables": {
             "ASPNETCORE_ENVIRONMENT": "Development"
         },
-        "applicationUrl": "https://127.0.0.1:443/"
+        "applicationUrl": "https://127.0.0.1:44363/"
     }
   }
 }

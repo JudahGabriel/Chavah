@@ -1,13 +1,11 @@
-FROM microsoft/aspnetcore:2.0 AS base
+FROM microsoft/dotnet:2.1.0-aspnetcore-runtime AS base
 WORKDIR /app
-EXPOSE 44363
-EXPOSE 44363
 
-FROM microsoft/aspnetcore-build:2.0 AS build
+FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
 COPY Chavah.NetCore/Chavah.NetCore.csproj Chavah.NetCore/
-COPY D:\Dev\GitHub\Chavah\Chavah.NetCore\nuget.config Chavah.NetCore/
 RUN dotnet restore Chavah.NetCore/Chavah.NetCore.csproj
+
 COPY . .
 WORKDIR /src/Chavah.NetCore
 RUN dotnet build Chavah.NetCore.csproj -c Release -o /app

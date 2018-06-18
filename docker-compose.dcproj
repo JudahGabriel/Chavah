@@ -6,7 +6,7 @@
     <ProjectGuid>03fe4951-bba5-4da8-ac3b-4f7ca0fa113c</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/</DockerServiceUrl>
-    <DockerServiceName>chavah.netcore</DockerServiceName>
+    <DockerServiceName>chavah.web</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

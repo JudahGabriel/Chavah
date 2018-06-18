@@ -21,17 +21,23 @@ namespace BitShuva.Chavah
             if (env == "Development")
             {
                 var cert = GetCertificate();
-                BuildWebHost(args, cert).Run();
+                CreateWebHostBuilder(args, cert)
+                    .Build()
+                    .Run();
             }
             else
             {
-               BuildWebHost(args).Run();
+                CreateWebHostBuilder(args)
+                    .Build()
+                    .Run();
             }
 
+            //CreateWebHostBuilder(args).Build().Run();
 
         }
-   
-        public static IWebHost BuildWebHost(string[] args, X509Certificate2 certificate) =>
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args,
+                                    X509Certificate2 certificate) =>
            WebHost.CreateDefaultBuilder(args)
                .UseStartup<Startup>()
                .UseKestrel(options =>
@@ -41,12 +47,11 @@ namespace BitShuva.Chavah
                        listenOptions.UseHttps(certificate);
                    });
                })
-               .Build();
+                .UseUrls("https:*:443");
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+                .UseStartup<Startup>();
 
         /// <summary>
         /// Returns the certificate based on the environment variable setting
