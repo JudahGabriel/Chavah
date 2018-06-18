@@ -279,8 +279,35 @@
         }
 
         copyShareUrl() {
+            // iOS share functionality.
             let shareUrlInput = document.querySelector("#currentSongShareLink") as HTMLInputElement;
-            shareUrlInput.select();
+            var isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
+
+            // iOS has specific rules about copying text. https://stackoverflow.com/a/43001673/536
+            if (isiOSDevice) {
+
+                var editable = shareUrlInput.contentEditable;
+                var readOnly = shareUrlInput.readOnly;
+
+                shareUrlInput.contentEditable = "true"; // yes, a string: "true", "false", "inheritable" https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/contentEditable
+                shareUrlInput.readOnly = false;
+
+                var range = document.createRange();
+                range.selectNodeContents(shareUrlInput);
+
+                var selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+
+                shareUrlInput.setSelectionRange(0, 999999);
+                shareUrlInput.contentEditable = editable;
+                shareUrlInput.readOnly = readOnly;
+
+            } else {
+                // Not iOS? Just select the text box containing the URL to share.
+                shareUrlInput.select();
+            }
+            
             document.execCommand("copy");
         }
 
