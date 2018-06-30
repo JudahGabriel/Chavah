@@ -23,6 +23,7 @@
   <ItemGroup>
     <Content Remove="bundleconfig.json" />
     <Content Remove="wwwroot\js\common\ToggleOption.ts" />
+    <Content Remove="wwwroot\js\Controllers\MyLikesController.ts" />
     <Content Remove="wwwroot\js\Controllers\SupportController.ts" />
     <Content Remove="wwwroot\js\Models\LogSort.ts" />
     <Content Remove="wwwroot\js\Models\StructuredLog.ts" />
@@ -78,6 +79,7 @@
       <DependentUpon>UserSongPreferences.cs</DependentUpon>
     </TypeScriptCompile>
     <TypeScriptCompile Include="wwwroot\js\common\ToggleOption.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Controllers\MyLikesController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\SupportController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Models\LogSort.ts" />
     <TypeScriptCompile Include="wwwroot\js\Models\StructuredLog.ts" />

@@ -158,7 +158,7 @@ var BitShuva;
                     .then(function (results) { return _this.updateSongList(_this.trending, results.items); })
                     .then(function () { return _this.songApi.getPopularSongs(3); })
                     .then(function (results) { return _this.updateSongList(_this.popular, results); })
-                    .then(function () { return _this.songApi.getLikes(3); })
+                    .then(function () { return _this.songApi.getRandomLikedSongs(3); })
                     .then(function (results) { return _this.updateSongList(_this.likes, results); })
                     .finally(function () {
                     _this.fetchAlbumColors(_this.getAllSongsOnScreen());

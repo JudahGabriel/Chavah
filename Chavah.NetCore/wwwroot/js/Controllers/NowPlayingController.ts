@@ -170,7 +170,7 @@
                 .then(results => this.updateSongList(this.trending, results.items))
                 .then(() => this.songApi.getPopularSongs(3))
                 .then(results => this.updateSongList(this.popular, results))
-                .then(() => this.songApi.getLikes(3))
+                .then(() => this.songApi.getRandomLikedSongs(3))
                 .then(results => this.updateSongList(this.likes, results))
                 .finally(() => {
                     this.fetchAlbumColors(this.getAllSongsOnScreen());

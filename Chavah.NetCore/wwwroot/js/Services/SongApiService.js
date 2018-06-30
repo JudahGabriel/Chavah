@@ -72,7 +72,7 @@ var BitShuva;
                 };
                 return this.httpApi.query("/api/songs/getpopular", args, SongApiService.songListConverter);
             };
-            SongApiService.prototype.getLikes = function (count) {
+            SongApiService.prototype.getRandomLikedSongs = function (count) {
                 var args = {
                     count: count,
                 };
