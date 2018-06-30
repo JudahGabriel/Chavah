@@ -1,0 +1,91 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "cordova-plugin-remotecommand",
+        "scope": null,
+        "escapedName": "cordova-plugin-remotecommand",
+        "name": "cordova-plugin-remotecommand",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "E:\\Dev\\chavah\\Chavah.iOS\\cordova"
+    ]
+  ],
+  "_from": "cordova-plugin-remotecommand@latest",
+  "_id": "cordova-plugin-remotecommand@1.0.0",
+  "_inCache": true,
+  "_location": "/cordova-plugin-remotecommand",
+  "_nodeVersion": "0.12.7",
+  "_npmUser": {
+    "name": "leon",
+    "email": "leon@radley.se"
+  },
+  "_npmVersion": "2.14.4",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "cordova-plugin-remotecommand",
+    "scope": null,
+    "escapedName": "cordova-plugin-remotecommand",
+    "name": "cordova-plugin-remotecommand",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-remotecommand/-/cordova-plugin-remotecommand-1.0.0.tgz",
+  "_shasum": "9ece7c56f701eedc09f39205b55eb93e5c23606a",
+  "_shrinkwrap": null,
+  "_spec": "cordova-plugin-remotecommand",
+  "_where": "E:\\Dev\\chavah\\Chavah.iOS\\cordova",
+  "author": {
+    "name": "Leon Radley",
+    "url": "leon"
+  },
+  "bugs": {
+    "url": "https://github.com/Muntligt/cordova-plugin-remotecommand/issues"
+  },
+  "dependencies": {},
+  "description": "Cordova Plugin to listen to all remote commands such as play, pause, nextTrack...",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "9ece7c56f701eedc09f39205b55eb93e5c23606a",
+    "tarball": "https://registry.npmjs.org/cordova-plugin-remotecommand/-/cordova-plugin-remotecommand-1.0.0.tgz"
+  },
+  "gitHead": "71e5d4497aa0c784928ee9989df648e87927ca9f",
+  "homepage": "https://github.com/Muntligt/cordova-plugin-remotecommand#readme",
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova",
+    "cordova-ios",
+    "media",
+    "lockscreen",
+    "commandcenter",
+    "command",
+    "MPRemoteCommand"
+  ],
+  "license": "MIT",
+  "main": "src/www/RemoteCommand.js",
+  "maintainers": [
+    {
+      "name": "leon",
+      "email": "leon@radley.se"
+    }
+  ],
+  "name": "cordova-plugin-remotecommand",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Muntligt/cordova-plugin-remotecommand.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}

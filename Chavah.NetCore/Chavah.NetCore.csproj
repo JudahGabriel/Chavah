@@ -10,25 +10,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Providers\**" />
     <Compile Remove="wwwroot\js\views\**" />
+    <Content Remove="Providers\**" />
     <Content Remove="wwwroot\js\views\**" />
+    <EmbeddedResource Remove="Providers\**" />
     <EmbeddedResource Remove="wwwroot\js\views\**" />
+    <None Remove="Providers\**" />
     <None Remove="wwwroot\js\views\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="bundleconfig.json" />
     <Content Remove="wwwroot\js\common\ToggleOption.ts" />
+    <Content Remove="wwwroot\js\Controllers\MyLikesController.ts" />
+    <Content Remove="wwwroot\js\Controllers\SupportController.ts" />
     <Content Remove="wwwroot\js\Models\LogSort.ts" />
     <Content Remove="wwwroot\js\Models\StructuredLog.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Web.configz" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Web.configz" />
+    <Content Remove="wwwroot\js\Services\AdAnnouncerService.ts" />
+    <Content Remove="wwwroot\js\Services\IOSMediaSessionService.ts" />
+    <Content Remove="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
+    <Content Remove="wwwroot\js\Services\UwpNativeAudioService.ts" />
   </ItemGroup>
 
 
@@ -36,15 +38,16 @@
     <PackageReference Include="BCrypt.Net-Next" Version="2.1.2" />
     <PackageReference Include="cloudscribe.Syndication.Web" Version="2.0.0" />
     <PackageReference Include="CoreFtp" Version="1.4.0" />
+    <PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
     <PackageReference Include="LigerShark.WebOptimizer.Core" Version="1.0.197" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" PrivateAssets="All" />
-    <PackageReference Include="Optional" Version="3.2.0" />
-    <PackageReference Include="Optional.Collections" Version="1.1.0" />
-    <PackageReference Include="RavenDB.Client" Version="3.5.5" />
-    <PackageReference Include="RavenDB.Identity" Version="3.0.0" />
-    <PackageReference Include="RavenDB.StructuredLogger" Version="2.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" PrivateAssets="All" />
+    <PackageReference Include="Optional" Version="4.0.0" />
+    <PackageReference Include="Quartz" Version="3.0.4" />
+    <PackageReference Include="RavenDB.Client" Version="4.0.2" />
+    <PackageReference Include="RavenDB.Identity" Version="4.3.0" />
+    <PackageReference Include="RavenDB.StructuredLogger" Version="4.0.3" />
     <PackageReference Include="Sendgrid" Version="9.9.0" />
     <PackageReference Include="System.Interactive" Version="3.1.1" />
     <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.33" />
@@ -76,8 +79,14 @@
       <DependentUpon>UserSongPreferences.cs</DependentUpon>
     </TypeScriptCompile>
     <TypeScriptCompile Include="wwwroot\js\common\ToggleOption.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Controllers\MyLikesController.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Controllers\SupportController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Models\LogSort.ts" />
     <TypeScriptCompile Include="wwwroot\js\Models\StructuredLog.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Services\AdAnnouncerService.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Services\IOSMediaSessionService.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Services\UwpNativeAudioService.ts" />
 
   </ItemGroup>
 
@@ -140,7 +149,6 @@
     <None Include="wwwroot\js\models\LikeLevel.ts" />
     <None Include="wwwroot\js\models\LogLevel.ts" />
     <None Include="wwwroot\js\models\ServerInterfaces.ts" />
-    <None Include="wwwroot\js\models\SignInResult.ts" />
     <None Include="wwwroot\js\models\SignInStatus.ts" />
     <None Include="wwwroot\js\models\Song.ts" />
     <None Include="wwwroot\js\models\SongEditStatus.ts" />
@@ -276,8 +284,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Providers\" />
     <Folder Include="Views\Partials\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ravencert.Development.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ravencert.Production.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">

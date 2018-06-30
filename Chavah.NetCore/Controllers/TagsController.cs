@@ -1,10 +1,15 @@
-﻿using BitShuva.Chavah.Models;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Optional;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Operations;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +42,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task<IEnumerable<string>> SearchTags(string search)
         {
             var result = await DbSession.Query<Songs_Tags.Result, Songs_Tags>()
-                .Search(i => i.Name, search + "*", 1, SearchOptions.Guess, EscapeQueryOptions.AllowPostfixWildcard)
+                .Search(i => i.Name, search + "*", 1, SearchOptions.Guess)
                 .Take(10)
                 .ToListAsync();
             return result.Select(r => r.Name);
@@ -79,9 +84,8 @@ namespace BitShuva.Chavah.Controllers
                 { "oldTag", oldTag },
                 { "newTag", newTag }
             };
-            var patch = new CollectionPatchService(DbSession.Advanced.DocumentStore, "Songs", patchScript, patchVariables);
-            await patch.ExecuteAsync();
-
+            var patch = DbSession.Advanced.DocumentStore.PatchAll<Song>(patchScript, patchVariables.Some());
+            await this.PatchWithTimeout(patch, TimeSpan.FromSeconds(30));
             return newTag;
         }
 
@@ -108,8 +112,21 @@ namespace BitShuva.Chavah.Controllers
             {
                 { "tag", tag }
             };
-            var patch = new CollectionPatchService(DbSession.Advanced.DocumentStore, "Songs", patchScript, patchVariables);
-            await patch.ExecuteAsync();
+
+            var patch = DbSession.Advanced.DocumentStore.PatchAll<Song>(patchScript, patchVariables.Some());
+            await PatchWithTimeout(patch, TimeSpan.FromSeconds(30));
+        }
+
+        private async Task PatchWithTimeout(Operation patch, TimeSpan timeout)
+        {
+            try
+            {
+                await patch.WaitForCompletionAsync(timeout);
+            }
+            catch (Exception error)
+            {
+                logger.LogWarning(error, "Patching tags didn't finish in the alloted time");
+            }
         }
     }
 }

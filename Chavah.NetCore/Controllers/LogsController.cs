@@ -3,9 +3,9 @@ using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Raven.Client;
-using RavenDB.StructuredLog;
-using System;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
+using Raven.StructuredLog;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -59,7 +59,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task Delete(string id)
         {
-            var log = await DbSession.LoadNotNullAsync<StructuredLog>(id);
+            var log = await DbSession.LoadRequiredAsync<StructuredLog>(id);
             DbSession.Delete(log);
         }
     }

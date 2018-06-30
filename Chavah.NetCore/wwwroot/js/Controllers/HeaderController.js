@@ -4,10 +4,14 @@ var BitShuva;
     (function (Chavah) {
         var HeaderController = /** @class */ (function () {
             function HeaderController(initConfig, accountApi, appNav) {
+                var _this = this;
                 this.initConfig = initConfig;
                 this.accountApi = accountApi;
                 this.appNav = appNav;
-                this.notifications = initConfig.notifications;
+                this.notifications = initConfig.user ? initConfig.user.notifications : [];
+                this.accountApi.signedIn
+                    .select(function () { return _this.accountApi.currentUser; })
+                    .subscribe(function (user) { return _this.signedInUserChanged(user); });
             }
             Object.defineProperty(HeaderController.prototype, "currentUserName", {
                 get: function () {
@@ -40,13 +44,18 @@ var BitShuva;
             HeaderController.prototype.markNotificationsAsRead = function () {
                 if (this.notifications.some(function (n) { return n.isUnread; })) {
                     this.notifications.forEach(function (n) { return n.isUnread = false; });
-                    this.accountApi.clearNotifications(this.notifications[0].date);
+                    this.accountApi.clearNotifications();
                 }
             };
             HeaderController.prototype.signOut = function () {
                 var _this = this;
                 this.accountApi.signOut()
                     .then(function () { return _this.appNav.signOut(); });
+            };
+            HeaderController.prototype.signedInUserChanged = function (user) {
+                if (user) {
+                    this.notifications = user.notifications;
+                }
             };
             HeaderController.$inject = [
                 "initConfig",

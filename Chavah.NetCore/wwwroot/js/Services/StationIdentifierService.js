@@ -25,7 +25,7 @@ var BitShuva;
                 return false;
             };
             StationIdentifierService.prototype.playStationIdAnnouncement = function () {
-                var announcementNumbers = [1, 2, 3, 4, 5, 6];
+                var announcementNumbers = [1, 2, 3, 4, 5, 6, 7];
                 // tslint:disable-next-line:max-line-length
                 var songRequestName = "StationId" + announcementNumbers[Math.floor(Math.random() * announcementNumbers.length)] + ".mp3";
                 var songUrl = this.initConfig.soundEffects + "/" + songRequestName;

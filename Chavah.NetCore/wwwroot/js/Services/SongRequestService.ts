@@ -15,7 +15,7 @@
             private httpApi: HttpApiService,
             private audioPlayer: AudioPlayerService,
             private songApi: SongApiService,
-            private initConfig: Server.IHomeViewModel) {
+            private initConfig: Server.HomeViewModel) {
         }
 
         hasPendingRequest() {

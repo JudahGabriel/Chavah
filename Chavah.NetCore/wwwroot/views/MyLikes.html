@@ -1,9 +1,19 @@
-﻿<section class="page my-likes-page">
-    <h3>The My Likes page is under construction. Thanks for your patience.</h3>
-    <h3>
-        <a href="#/nowplaying">
-            <i class="fa fa-arrow-left"></i>
-            Return to home
-        </a>
-    </h3>
+﻿<div ng-include="Partials.goBack"></div>
+<section class="page my-likes-page" ng-controller="MyLikesController as vm">
+    <div class="songs-container">
+        <div class="song-item" ng-repeat="song in vm.songs.items" ng-click="vm.playSong(song)" ng-style="{ 'background-color': song.albumSwatchBackground }" uib-tooltip="Click to play this song" tooltip-append-to-body="true">
+            <img ng-src="{{song.albumArtUri}}" alt="{{song.album}} album art">
+            <div class="song-info"
+                    ng-attr-title="{{song.name}} by {{song.artist}} on {{song.album}}"
+                    ng-style="song.hasSetAlbumArtColors ? { 'background-color': song.albumSwatchBackground, 'color': song.albumSwatchForeground } : { }">
+                {{song.name}}
+                <br />
+                <span class="text-muted">By</span>
+                {{song.artist}}
+                <br />
+                <span class="text-muted">On</span>
+                {{song.album}}
+            </div>
+        </div>
+    </div>
 </section>

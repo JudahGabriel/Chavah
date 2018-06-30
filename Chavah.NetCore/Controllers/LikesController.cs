@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,16 +34,17 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpPost]
-        public async Task<int> Dislike(string songId)
+        public Task<int> Dislike(string songId)
         {
-            return await UpdateLikeStatus(songId, LikeStatus.Dislike);
+            return UpdateLikeStatus(songId, LikeStatus.Dislike);
         }
         
         [HttpGet]
         public async Task<dynamic> GetUpDownVotes(string songId)
         {
             var upVoteCount = await this.DbSession.Query<Like>().CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Like);
-            var downVoteCount = await this.DbSession.Query<Like>().CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Dislike);
+            var downVoteCount = await this.DbSession.Query<Like>()
+                .CountAsync(l => l.SongId == songId && l.Status == LikeStatus.Dislike);
             return new
             {
                 UpVotes = upVoteCount,
@@ -52,27 +55,25 @@ namespace BitShuva.Chavah.Controllers
 
         private async Task<int> UpdateLikeStatus(string songId, LikeStatus likeStatus)
         {
-            var user = await this.GetCurrentUser();
+            var user = await this.GetCurrentUserOrThrow();
             var song = await this.DbSession.LoadAsync<Song>(songId);
-            var likeId = $"Likes/{user.Id}/{songId}";
-            if (user == null || song == null)
+            if (song == null)
             {
-                var error = new UnauthorizedAccessException($"User attempted to update like status, even though user or song wasn't found.");
-                error.Data.Add("User ID", user?.Id);
-                error.Data.Add("Song ID", song?.Id);
-                throw error;
+                throw new InvalidOperationException("User attempted to update like status, but song wasn't found.")
+                    .WithData("User ID", user.Id)
+                    .WithData("Song ID", songId);
             }
             
             var isReversal = false;
             var isNoChange = false;
-            
+
+            var likeId = $"Likes/{user.Id}/{songId}";
             var existingLike = await this.DbSession.LoadAsync<Like>(likeId);
             if (existingLike != null)
             {
                 isReversal = existingLike.Status != likeStatus;
                 isNoChange = existingLike.Status == likeStatus;
                 existingLike.Status = likeStatus;
-                await this.DbSession.StoreAsync(existingLike);
             }
             else
             {

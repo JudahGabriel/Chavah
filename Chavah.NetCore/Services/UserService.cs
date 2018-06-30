@@ -1,5 +1,7 @@
 ﻿using BitShuva.Chavah.Models;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +21,12 @@ namespace BitShuva.Chavah.Services
 
         public async Task<AppUser> GetUser(string userId)
         {
-            using (_session.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
-            {
-                return await _session.LoadAsync<AppUser>($"AppUsers/{userId}");
-            }
+            return await _session.LoadAsync<AppUser>($"AppUsers/{userId}");
         }
 
-        public async Task<IList<AppUser>> RegisteredUsers(int take)
+        public Task<List<AppUser>> RegisteredUsers(int take)
         {
-            return await _session
+            return _session
                 .Query<AppUser>()
                 .Where(u => u.Email != null)
                 .OrderByDescending(a => a.RegistrationDate)

@@ -1,10 +1,5 @@
-﻿using BitShuva.Chavah.Models;
-using Raven.Abstractions.Indexing;
-using Raven.Client.Indexes;
-using System;
-using System.Collections.Generic;
+﻿using Raven.Client.Documents.Indexes;
 using System.Linq;
-using System.Web;
 
 namespace BitShuva.Chavah.Models.Indexes
 {
@@ -34,7 +29,7 @@ namespace BitShuva.Chavah.Models.Indexes
                                     Name = g.Key
                                 };
 
-            Index(r => r.Name, FieldIndexing.Analyzed);
+            Index(r => r.Name, FieldIndexing.Search);
         }
     }
 }

@@ -3,8 +3,8 @@ using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Raven.Client;
-using Raven.Client.Linq;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,15 +66,9 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        public string ReqFoo(string songId)
-        {
-            return "ok! " + songId;
-        }
-
-        [HttpPost]
         public async Task RequestSong(string songId)
         {
-            var user = await this.GetCurrentUser();
+            var user = await this.GetCurrentUserOrThrow();
             var song = await this.DbSession.LoadAsync<Song>(songId);
 
             if (song != null && user != null)
@@ -149,7 +143,7 @@ namespace BitShuva.Chavah.Controllers
                 await this.DbSession.SaveChangesAsync();
                 return req;
             }
-            catch (Raven.Abstractions.Exceptions.ConcurrencyException)
+            catch (Raven.Client.Exceptions.ConcurrencyException)
             {
                 // We get this error often as this song request will get updated frequently in a brief period of time.
                 // In such a case, try loading it directly from storage, rather than queried from index.

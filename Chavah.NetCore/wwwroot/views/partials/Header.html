@@ -25,7 +25,7 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li ng-repeat="notification in vm.notifications" ng-class="{ unread: notification.isUnread }">
-                                <a href="#" ng-href="{{notification.url}}" target="_blank">
+                                <a href="#" ng-href="{{notification.url}}" target="_blank" rel="noopener">
                                     <img class="img-responsive source-img pull-left" ng-src="{{notification.imageUrl}}" ng-show="notification.imageUrl" />
                                     <span class="description">
                                         <strong>{{notification.title}}</strong>
@@ -57,13 +57,22 @@
                                 <a href="#/profile"><i class="fa fa-user fa-fw"></i> My profile</a>
                             </li>
                             <li>
-                                <a href="#/about"><i class="fa fa-info-circle fa-fw"></i>  About Chavah &amp; legal</a>
+                                <a href="#/support"><i class="fa fa-envelope-o fa-fw"></i> Contact</a>
+                            </li>
+                            <li>
+                                <a href="#/about"><i class="fa fa-info-circle fa-fw"></i>  About</a>
                             </li>
                             <li role="separator" class="divider"></li>
                             <li ng-hide="vm.currentUserName">
                                 <a href="#/signin">
                                     <i class="fa fa-sign-in fa-fw"></i>
                                     Sign In
+                                </a>
+                            </li>
+                            <li ng-hide="vm.currentUserName">
+                                <a href="#/register">
+                                    <i class="fa fa-user-plus fa-fw"></i>
+                                    Register
                                 </a>
                             </li>
                             <li ng-show="vm.currentUserName">

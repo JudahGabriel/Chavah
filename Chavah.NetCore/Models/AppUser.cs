@@ -1,9 +1,7 @@
-﻿using RavenDB.Identity;
+﻿using Raven.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-
 namespace BitShuva.Chavah.Models
 {
     /// <summary>
@@ -28,6 +26,11 @@ namespace BitShuva.Chavah.Models
         public List<string> RecentSongIds { get; set; } = new List<string>();
         //public string Jwt { get; set; }
         public List<Notification> Notifications { get; set; } = new List<Notification>();
+
+        /// <summary>
+        /// The last set volume, from 0 (muted) to 1 (full volume).
+        /// </summary>
+        public double Volume { get; set; } = 1;
 
         public void AddNotification(Notification notification)
         {

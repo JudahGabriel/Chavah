@@ -1,5 +1,12 @@
 ﻿namespace BitShuva.Chavah {
     export class FooterController {
+        
+        volumeShown = false;
+        volumeVal = new Rx.Subject<number>();
+        isBuffering = false;
+        lastAudioErrorTime: Date | null = null;
+        stalledTimerHandle: number | null = null;
+        audio: HTMLAudioElement | null = null;
 
         static $inject = [
             "audioPlayer",
@@ -8,14 +15,10 @@
             "songRequestApi",
             "accountApi",
             "stationIdentifier",
+            "adAnnouncer",
             "appNav",
-            "$scope",
+            "$scope"
         ];
-
-        volumeShown = false;
-        volume = 1;
-        isBuffering = false;
-        lastAudioErrorTime: Date | null = null;
 
         constructor(
             private audioPlayer: AudioPlayerService,
@@ -24,13 +27,10 @@
             private songRequestApi: SongRequestApiService,
             private accountApi: AccountService,
             private stationIdentifier: StationIdentifierService,
+            private adAnnouncer: AdAnnouncerService,
             private appNav: AppNavService,
             private $scope: ng.IScope) {
-
-            let audio = document.querySelector("#audio") as HTMLVideoElement;
-            this.audioPlayer.initialize(audio);
-            this.volume = audio.volume;
-
+            
             // Notify the scope when the audio status changes.
             this.audioPlayer.status
                 .debounce(100)
@@ -50,20 +50,11 @@
                 .distinctUntilChanged()
                 .subscribe(percent => $(".footer .trackbar").width(percent + "%"));
 
-            $scope.$watch(() => this.volume, () => audio.volume = this.volume);
-
-            // MediaSession:
-            // This is a new browser API being adopted on some mobile platforms (at the time of this writing, Android),
-            // which shows media information above the
-            // For more info, see https://developers.google.com/web/updates/2017/02/media-session#set_metadata
-            if ("mediaSession" in navigator) {
-                // Setup media session handlers so that a native play/pause/next
-                // buttons do the same thing as our footer's play/pause/next.
-                this.setupMediaSessionHandlers();
-
-                // Listen for when the song changes so that we show the song info on the phone lock screen.
-                this.audioPlayer.song.subscribe(songOrNull => this.updateMediaSession(songOrNull));
-            }
+            // If we sign in, restore the volume preference for the user.
+            this.accountApi.signedIn
+                .distinctUntilChanged()
+                .where(isSignedIn => isSignedIn)
+                .subscribe(_ => this.restoreVolumeFromSignedInUser())
         }
 
         get likesCurrentSong(): boolean {
@@ -107,6 +98,39 @@
             }
 
             return "fa-volume-down";
+        }
+
+        get volume() {
+            if (this.audio) {
+                return this.audio.volume;
+            }
+
+            return 1;
+        }
+
+        set volume(val: number) {
+            if (this.audio) {
+                this.audio.volume = val;
+            }
+
+            this.volumeVal.onNext(val);
+        }
+
+        $onInit() {
+            this.audio = document.querySelector("#audio") as HTMLVideoElement;
+            if (!this.audio) {
+                throw new Error("Couldn't locate #audio element");
+            }
+
+            this.audioPlayer.initialize(this.audio);
+            this.restoreVolumeFromSignedInUser();
+
+            // Wait for changes to the volume level and save them.
+            this.volumeVal
+                .distinctUntilChanged()
+                .debounce(2000)
+                .where(v => !!this.accountApi.currentUser && this.accountApi.currentUser.volume !== v)
+                .subscribe(val => this.saveVolumePreference(val));
         }
 
         toggleVolumnShown() {
@@ -181,7 +205,9 @@
             } else if (this.stationIdentifier.hasPendingAnnouncement()) {
                 // Play the station identifier if need be.
                 this.stationIdentifier.playStationIdAnnouncement();
-            } else {
+            } else if (this.adAnnouncer.hasPendingAnnouncement()) {
+                this.adAnnouncer.playAdAnnouncement();
+            }else {
                 this.songBatch.playNext();
             }
         }
@@ -201,6 +227,19 @@
                 }
 
                 this.lastAudioErrorTime = new Date();
+            } else if (status === AudioStatus.Stalled) {
+                // Sometimes on mobile platforms (especially older Android) we 
+                // get into a stalled state and never recover.
+                // To rectify this, check if we're still stalled 7 seconds later
+                // and if so, play the next song.
+                if (this.stalledTimerHandle) {
+                    clearTimeout(this.stalledTimerHandle);
+                    this.stalledTimerHandle = setTimeout(() => {
+                        if (this.audioPlayer.status.getValue() === AudioStatus.Stalled) {
+                            this.playNextSong();
+                        }
+                    }, 5000);
+                }
             }
 
             this.isBuffering = status === AudioStatus.Buffering || status === AudioStatus.Stalled;
@@ -230,33 +269,18 @@
             }
         }
 
-        private setupMediaSessionHandlers() {
-            try {
-                let mediaSession = navigator["mediaSession"] as any;
-                mediaSession.setActionHandler("play", () => this.playPause());
-                mediaSession.setActionHandler("pause", () => this.playPause());
-                mediaSession.setActionHandler("nexttrack", () => this.playNextSong());
-            } catch (error) {
-                // Can't setup media session action handlers? No worries. Continue as normal.
+        restoreVolumeFromSignedInUser() {
+            if (this.accountApi.currentUser) {
+                // Set the volume to whatever the user last set it.
+                // Min value is 0.1, otherwise users may wonder why they don't hear audio
+                this.volume = Math.max(0.1, this.accountApi.currentUser.volume);
             }
         }
 
-        private updateMediaSession(song: Song | null) {
-            if (song) {
-                let metadata: IMediaMetadata = {
-                    album: song.album,
-                    artist: song.artist,
-                    title: song.name,
-                    artwork: [
-                        { src: song.albumArtUri, sizes: "300x300", type: "image/jpg" }
-                    ],
-                };
-
-                try {
-                    navigator["mediaSession"].metadata = new window["MediaMetadata"](metadata);
-                } catch (error) {
-                    // Can't update the media session? No worries; eat the error and proceed as normal.
-                }
+        saveVolumePreference(volume: number) {
+            if (this.accountApi.currentUser && this.accountApi.currentUser.volume !== volume) {
+                this.accountApi.currentUser.volume = volume;
+                this.accountApi.saveVolume(volume);
             }
         }
     }

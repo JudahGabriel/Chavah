@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Raven.Client;
+using Raven.Client.Documents.Session;
+using Raven.StructuredLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace BitShuva.Chavah.Controllers
         private readonly UserManager<AppUser> userManager;
         private readonly IAsyncDocumentSession asyncDocumentSession;
         private readonly SignInManager<AppUser> signInManager;
-        private readonly IEmailSender emailSender;
+        private readonly IEmailService emailSender;
         private readonly AppSettings options;
 
         public AccountController(
@@ -28,7 +29,7 @@ namespace BitShuva.Chavah.Controllers
             SignInManager<AppUser> signInManager,
             IAsyncDocumentSession asyncDocumentSession, 
             ILogger<AccountController> logger,
-            IEmailSender emailSender,
+            IEmailService emailSender,
             IOptions<AppSettings> options) 
             : base(asyncDocumentSession, logger)
         {
@@ -82,8 +83,7 @@ namespace BitShuva.Chavah.Controllers
             var result = new Models.SignInResult
             {
                 Status = SignInStatusFromResult(signInResult),
-                Email = user.Email,
-                Roles = new List<string>(user.Roles)
+                User = user
             };
 
             // If we've successfully signed in, store the json web token in the user.
@@ -155,20 +155,14 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpPost]
-        public async Task<int> ClearNotifications(DateTimeOffset asOf)
+        public async Task<int> ClearNotifications()
         {
-            var user = await this.GetCurrentUser();
-            if (user != null)
-            {
-                var count = user.Notifications.Count;
-                user.Notifications
-                    .Where(n => n.Date <= asOf)
-                    .ForEach(n => n.IsUnread = false);
+            var user = await this.GetCurrentUserOrThrow();
+            var count = user.Notifications.Count;
+            user.Notifications
+                .ForEach(n => n.IsUnread = false);
 
-                return count;
-            }
-
-            return 0;
+            return count;
         }
         
         [HttpPost]
@@ -241,6 +235,7 @@ namespace BitShuva.Chavah.Controllers
             var user = await DbSession.LoadAsync<AppUser>(userId);
             if (user == null)
             {
+                logger.LogInformation("Rejected email confirmation because couldn't find {userId}", userId);
                 return new ConfirmEmailResult
                 {
                     Success = false,
@@ -288,6 +283,11 @@ namespace BitShuva.Chavah.Controllers
                 logger.LogError(errorMessage, null, (expected: regToken.FlatMap(t => t.ApplicationUserId).ValueOr(""), actual: email));
             }
 
+            if (!isValidToken)
+            {
+                logger.LogInformation("Rejected email confirmation. {errorMessage}", errorMessage);
+            }
+
             return new ConfirmEmailResult
             {
                 Success = isValidToken,
@@ -314,11 +314,19 @@ namespace BitShuva.Chavah.Controllers
                     InvalidEmail = true
                 };
             }
+
+            var passwordResetToken = new AccountToken //await userManager.GeneratePasswordResetTokenAsync(user);
+            {
+                ApplicationUserId = userId,
+                Id = "AccountTokens/Reset/" + user.Email,
+                Token = Guid.NewGuid().ToString()
+            };
+            await DbSession.StoreAsync(passwordResetToken);
+            DbSession.SetRavenExpiration(passwordResetToken, DateTime.UtcNow.AddDays(14));
+
+            emailSender.QueueResetPassword(email, passwordResetToken.Token, options.Application);
             
-            var passwordResetCode = await userManager.GeneratePasswordResetTokenAsync(user);
-            emailSender.QueueResetPassword(email, passwordResetCode, options.Application);
-            
-            logger.LogInformation("Sending reset password email to {email} with reset code {resetCode}", email, passwordResetCode);
+            logger.LogInformation("Sending reset password email to {email} with reset code {resetCode}", email, passwordResetToken.Token);
             return new ResetPasswordResult
             {
                 Success = true,
@@ -337,25 +345,71 @@ namespace BitShuva.Chavah.Controllers
             var user = await DbSession.LoadAsync<AppUser>(userId);
             if (user == null)
             {
-                logger.LogWarning($"Attempted to reset password, but couldn't find a user with that email", email);
+                logger.LogWarning("Attempted to reset password, but couldn't find a user with {email}", email);
                 return new ResetPasswordResult
                 {
                     Success = false,
                     ErrorMessage = "Couldn't find user with email"
                 };
             }
-            
-            var passwordResetResult = await userManager.ResetPasswordAsync(user, passwordResetCode, newPassword);
+
+            // Find the reset token.
+            var resetTokenId = $"AccountTokens/Reset/{user.Email}";
+            var resetToken = await DbSession.LoadAsync<AccountToken>(resetTokenId);
+            if (resetToken == null)
+            {
+                logger.LogWarning("Attempted to reset password for {email}, but could't find password reset token {tokenId}", user.Email, resetTokenId);
+                return new ResetPasswordResult
+                {
+                    Success = false,
+                    ErrorMessage = "Couldn't find a password reset token for your user"
+                };
+            }
+
+            // Verify the token is good.
+            var isValidToken = string.Equals(resetToken.Token, passwordResetCode, StringComparison.InvariantCultureIgnoreCase);
+            if (!isValidToken)
+            {
+                logger.LogWarning("Attempted to reset password for {email}, but the reset token was invalid. Expected {token} but found {invalidToken}", user.Email, resetToken.Token, passwordResetCode);
+                return new ResetPasswordResult
+                {
+                    Success = false,
+                    ErrorMessage = "Invalid password reset token"
+                };
+            }
+
+            var tempResetToken = await userManager.GeneratePasswordResetTokenAsync(user);
+            var passwordResetResult = await userManager.ResetPasswordAsync(user, tempResetToken, newPassword);
             if (!passwordResetResult.Succeeded)
             {
-               logger.LogWarning($"Unable to reset password", (Email: email, Code: passwordResetCode, Errors: string.Join(", ", passwordResetResult.Errors)));
+                using (logger.BeginKeyValueScope("errors", passwordResetResult.Errors.Select(e => e.Description)))
+                {
+                    logger.LogWarning("Unable to reset password for {email} using token {code}", email, passwordResetCode);
+                }
             }
 
             return new ResetPasswordResult
             {
                 Success = passwordResetResult.Succeeded,
-                ErrorMessage = string.Join(",", passwordResetResult.Errors)
+                ErrorMessage = string.Join(",", passwordResetResult.Errors.Select(e => e.Description))
             };
+        }
+
+        [HttpPost]
+        public SupportMessage SendSupportMessage([FromBody]SupportMessage message)
+        {
+            if (!string.IsNullOrEmpty(User.Identity.Name))
+            {
+                message.UserId = "AppUsers/" + User.Identity.Name;
+            }
+
+            using (logger.BeginKeyValueScope("message", message))
+            {
+                logger.LogInformation("Support message submitted");
+            }
+
+            this.emailSender.QueueSupportEmail(message, options.Email.SenderEmail);
+            return message;
         }
 
         private SignInStatus SignInStatusFromResult(Microsoft.AspNetCore.Identity.SignInResult result)

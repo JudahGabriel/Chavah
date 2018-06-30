@@ -1,5 +1,7 @@
 ﻿namespace BitShuva.Chavah {
     export class HeaderController {
+        
+        notifications: Server.Notification[];
 
         static $inject = [
             "initConfig",
@@ -7,13 +9,14 @@
             "appNav"
         ];
 
-        notifications: Server.INotification[];
-
-        constructor(private readonly initConfig: Server.IHomeViewModel,
+        constructor(private readonly initConfig: Server.HomeViewModel,
                     private readonly accountApi: AccountService,
                     private appNav: AppNavService) {
 
-            this.notifications = initConfig.notifications;
+            this.notifications = initConfig.user ? initConfig.user.notifications : [];
+            this.accountApi.signedIn
+                .select(() => this.accountApi.currentUser)
+                .subscribe(user => this.signedInUserChanged(user));
         }
 
         get currentUserName(): string {
@@ -35,13 +38,19 @@
         markNotificationsAsRead() {
             if (this.notifications.some(n => n.isUnread)) {
                 this.notifications.forEach(n => n.isUnread = false);
-                this.accountApi.clearNotifications(this.notifications[0].date);
+                this.accountApi.clearNotifications();
             }
         }
 
         signOut() {
             this.accountApi.signOut()
                 .then(() => this.appNav.signOut());
+        }
+
+        signedInUserChanged(user: User | null) {
+            if (user) {
+                this.notifications = user.notifications;
+            }
         }
     }
 

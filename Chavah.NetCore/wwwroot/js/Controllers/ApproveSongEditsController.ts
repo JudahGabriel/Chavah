@@ -7,8 +7,8 @@
             "tagApi",
         ];
 
-        pendingEdits: Server.ISongEdit[] = [];
-        currentEdit: Server.ISongEdit | null = null;
+        pendingEdits: Server.SongEdit[] = [];
+        currentEdit: Server.SongEdit | null = null;
         isSaving = false;
         hasLoaded = false;
         tagsInput: string = "";
@@ -22,13 +22,13 @@
                 .then(results => this.pendingEditsLoaded(results));
         }
 
-        pendingEditsLoaded(results: Server.ISongEdit[]) {
+        pendingEditsLoaded(results: Server.SongEdit[]) {
             this.pendingEdits = results;
             this.setCurrentEdit(results[0]);
             this.hasLoaded = true;
         }
 
-        setCurrentEdit(songEdit: Server.ISongEdit | null) {
+        setCurrentEdit(songEdit: Server.SongEdit | null) {
             this.currentEdit = songEdit;
         }
 

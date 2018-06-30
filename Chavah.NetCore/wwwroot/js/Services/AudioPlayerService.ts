@@ -2,11 +2,15 @@
 namespace BitShuva.Chavah {
     export class AudioPlayerService {
 
-        static $inject = ["songApi"];
+        static $inject = [
+            "songApi",
+            "initConfig"
+        ];
 
         readonly status = new Rx.BehaviorSubject(AudioStatus.Paused);
         readonly song = new Rx.BehaviorSubject<Song | null>(null);
         readonly songCompleted = new Rx.BehaviorSubject<Song | null>(null);
+        readonly playedTime = new Rx.BehaviorSubject<number>(0);
         readonly playedTimeText = new Rx.BehaviorSubject<string>("");
         readonly remainingTimeText = new Rx.BehaviorSubject<string>("");
         readonly playedTimePercentage = new Rx.BehaviorSubject<number>(0);
@@ -17,13 +21,13 @@ namespace BitShuva.Chavah {
 
         private lastPlayedTime = 0;
 
-        constructor(private songApi: SongApiService) {
-            // Commented out: finding out about audio errors on the client turns out to not be very useful;
-            // it's often caused by client-side issues outside our control (bad internet connection, etc.)
-            // Listen for audio errors.
-            // this.audioErrors
-            //    .throttle(10000) // If the CDN is down, we don't want to submit thousands of errors. Throttle it.
-            //    .subscribe(val => this.submitAudioError(val));
+        constructor(
+            private songApi: SongApiService,
+            private initConfig: Server.HomeViewModel) {
+
+            // Listen for when the song changes and update the document title.
+            this.song
+                .subscribe(song => this.updateDocumentTitle(song));
         }
 
         initialize(audio: HTMLAudioElement) {
@@ -157,6 +161,22 @@ namespace BitShuva.Chavah {
             }
         }
 
+        /**
+         * Sets the volume level.
+         * @param level Should be between 0 and 1, where 1 is full volume, and 0 is muted.
+         */
+        setVolume(level: number) {
+            if (this.audio) {
+                this.audio.volume = 0;
+            }
+        }
+
+        skipToEnd() {
+            if (this.audio && this.audio.duration) {
+                this.audio.currentTime = this.audio.duration - 1;
+            }
+        }
+
         private aborted(args: any) {
             this.status.onNext(AudioStatus.Aborted);
             console.log("Audio aborted", this.audio.currentSrc, args);
@@ -187,22 +207,26 @@ namespace BitShuva.Chavah {
 
         private stalled(args: any) {
             this.status.onNext(AudioStatus.Stalled);
+            
             console.log("Audio stalled, unable to stream in audio data.", this.audio.currentSrc, args);
         }
 
         private playbackPositionChanged(args: any) {
-            let currentTime = this.audio.currentTime;
-            let currentTimeFloored = Math.floor(currentTime);
-            let currentTimeHasChanged = currentTimeFloored !== this.lastPlayedTime;
+            const currentTime = this.audio.currentTime;
+            const currentTimeFloored = Math.floor(currentTime);
+            const currentTimeHasChanged = currentTimeFloored !== this.lastPlayedTime;
             if (currentTimeHasChanged) {
                 this.lastPlayedTime = currentTimeFloored;
-                let duration = this.audio.duration;
-                this.duration.onNext(duration);
 
-                let currentPositionDate = new Date().setMinutes(0, currentTimeFloored);
-                let currentPosition = moment(currentPositionDate);
-                let remainingTimeDate = new Date().setMinutes(0, duration - currentTimeFloored);
-                let remainingTime = moment(remainingTimeDate);
+                // Update our duration and current time.
+                const duration = this.audio.duration;
+                this.duration.onNext(duration);
+                this.playedTime.onNext(currentTimeFloored);
+
+                const currentPositionDate = new Date().setMinutes(0, currentTimeFloored);
+                const currentPosition = moment(currentPositionDate);
+                const remainingTimeDate = new Date().setMinutes(0, duration - currentTimeFloored);
+                const remainingTime = moment(remainingTimeDate);
 
                 this.playedTimeText.onNext(currentPosition.format("m:ss"));
                 this.remainingTimeText.onNext(remainingTime.format("m:ss"));
@@ -212,6 +236,15 @@ namespace BitShuva.Chavah {
 
         private submitAudioError(val: IAudioErrorInfo) {
             this.songApi.songFailed(val);
+        }
+
+        private updateDocumentTitle(song: Song | null) {
+            // Update the document title so that the browser tab updates.
+            if (song) {
+                document.title = `${song.name} by ${song.artist} on ${this.initConfig.title}`;
+            } else {
+                document.title = this.initConfig.title;
+            }
         }
     }
 

@@ -15,10 +15,11 @@ namespace BitShuva.Chavah.Models
             Debug = true;
 #endif
         }
-
-        public string UserEmail { get; set; }
-        public List<string> UserRoles { get; set; } = new List<string>();
-        public List<Notification> Notifications { get; set; } = new List<Notification>();
+        
+        /// <summary>
+        /// The currently signed in user, or null if there is no user signed in.
+        /// </summary>
+        public AppUser User { get; set; }
         public bool Debug { get; set; }
         public string Redirect { get; set; }
         public bool Embed { get; set; }

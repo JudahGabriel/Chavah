@@ -1,11 +1,9 @@
 ﻿module BitShuva.Chavah.Server {
-    export interface IHomeViewModel {
+    export interface HomeViewModel {
         debug: boolean;
         songId: string | null;
         redirect: string | null;
-        userEmail: string | null;
-        userRoles: string[];
-        notifications: Server.INotification[];
+        user: AppUser | null;
         embed: boolean;
         cacheBustedAngularViews: string[];
         defaultUrl: string;
@@ -15,15 +13,14 @@
         description: string;
     };
 
-    export interface IAppUser {
+    export interface AppUser {
         totalPlays: number;
         registrationDate: string;
         lastSeen: string;
         totalSongRequests: number;
         requiresPasswordReset: boolean;
         recentSongIds: string[];
-        notifications: Server.INotification[];
-
+        notifications: Server.Notification[];
         accessFailedCount: number;
         claims: any[];
         email: string;
@@ -42,7 +39,7 @@
         twoFactorAuthEnabled: boolean;
     }
 
-    export interface ISong {
+    export interface Song {
         name: string;
         number: number;
         album: string;
@@ -59,34 +56,34 @@
         tags: string[];
         artistImages: string[];
         purchaseUri: string;
-        reasonsPlayed: Server.ISongPickReasons | null;
+        reasonsPlayed: Server.SongPickReasons | null;
     }
 
-    export interface IUpDownVotes {
+    export interface UpDownVotes {
         upVotes: number;
         downVotes: number;
         songId: string;
     }
 
-    export interface IArtist {
+    export interface Artist {
         name: string;
         images: string[];
         bio: string;
     }
 
-    export interface IPagedList<T> {
+    export interface PagedList<T> {
         items: T[];
         total: number;
         skip: number;
         take: number;
     }
 
-    export interface ISongUpload {
+    export interface SongUpload {
         address: string;
         fileName: string;
     }
 
-    export interface ISongEdit {
+    export interface SongEdit {
         id: string;
         status: SongEditStatus;
         submitDate: string;
@@ -95,20 +92,22 @@
         newArtist: string;
         newAlbum: string;
         newName: string;
+        newHebrewName: string;
         newTags: string[];
         newLyrics: string;
         oldArtist: string;
         oldAlbum: string;
         oldLyrics: string;
         oldName: string;
+        oldHebrewName: string;
         oldTags: string[];
     }
 
-    export interface IAlbumUpload {
+    export interface AlbumUpload {
         name: string,
         artist: string,
         albumArtUri: string,
-        songs: Server.ISongUpload[],
+        songs: Server.SongUpload[],
         purchaseUrl: string,
         genres: string,
         foreColor: string,
@@ -117,7 +116,7 @@
         textShadowColor: string
     }
 
-    export interface IAlbum {
+    export interface Album {
         artist: string;
         name: string;
         albumArtUri: string | null;
@@ -130,25 +129,25 @@
         songCount: number;
     }
 
-    export interface IRegisterResults {
+    export interface RegisterResults {
         success: boolean;
         errorMessage: string | null;
         isAlreadyRegistered: boolean;
         needsConfirmation: boolean;
     }
 
-    export interface IConfirmEmailResult {
+    export interface ConfirmEmailResult {
         success: boolean;
         errorMessage: string;
     }
 
-    export interface IResetPasswordResult {
+    export interface ResetPasswordResult {
         success: boolean;
         errorMessage: string;
         invalidEmail: boolean;
     }
 
-    export interface ISongPickReasons {
+    export interface SongPickReasons {
         songId: string;
         artist: LikeLevel;
         album: LikeLevel;
@@ -158,7 +157,7 @@
         soleReason: SongPick | null;
     }
 
-    export interface INotification {
+    export interface Notification {
         title: string;
         url: string;
         isUnread: boolean;
@@ -186,5 +185,11 @@
         eventId: number | null;
         templateValues: {} | null;
         scope: string | null;
+    }
+
+    export interface SignInResult {
+        status: SignInStatus;
+        errorMessge: string | null;
+        user: User | null;
     }
 }

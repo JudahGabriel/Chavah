@@ -1,0 +1,55 @@
+﻿<section class="support-page" ng-controller="SupportController as vm">
+    <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+
+            <!--Default view-->
+            <div class="jumbotron" ng-show="vm.state === 'unsubmitted'">
+                <h2><i class="fa fa-info-circle text-info"></i> Chavah Support</h2>
+                <p class="text-muted">Need help? Hitting an issue? Questions, comments, or feedback? We're listening.</p>
+                <form>
+                    <div class="form-group">
+                        <label for="nameInput">Name</label>
+                        <input type="text" class="form-control" id="nameInput" placeholder="Your name" ng-model="vm.name">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailInput">Email address</label>
+                        <input type="email" class="form-control" id="emailInput" placeholder="Your email" ng-model="vm.email">
+                    </div>
+                    <div class="form-group">
+                        <label for="messageInput">Message</label>
+                        <textarea class="form-control" rows="5" ng-model="vm.message" placeholder="Type your message"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" ng-disabled="!vm.canSubmit" ng-click="vm.submit()">Submit</button>
+                </form>
+            </div>
+
+            <!--Success-->
+            <div class="jumbotron" ng-show="vm.state === 'success'">
+                <h2><i class="fa fa-check-circle text-success"></i> Message received</h2>
+                <p>
+                    Chavah will follow up with you by email. Thanks for reaching out.
+                </p>
+                <p>
+                    <a class="btn btn-primary" href="#/">
+                        <i class="fa fa-arrow-circle-left"></i>
+                        Take me back to the music
+                    </a>
+                </p>
+            </div>
+
+            <!--Failure-->
+            <div class="jumbotron" ng-show="vm.state === 'error'">
+                <h2><i class="fa fa-exclamation-circle text-danger"></i> Unable to reach Chavah support</h2>
+                <p>
+                    There seems to be a problem. Please email us directly: <a href="mailto:chavah@messianicradio.com">chavah@messianicradio.com</a>
+                </p>
+                <p>
+                    <a class="btn btn-primary" href="#/">
+                        <i class="fa fa-arrow-circle-left"></i>
+                        Take me back to the music
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>

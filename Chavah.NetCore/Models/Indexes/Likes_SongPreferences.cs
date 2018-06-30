@@ -1,8 +1,5 @@
-﻿using Raven.Client.Indexes;
-using System;
-using System.Collections.Generic;
+﻿using Raven.Client.Documents.Indexes;
 using System.Linq;
-using System.Web;
 
 namespace BitShuva.Chavah.Models.Indexes
 {

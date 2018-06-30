@@ -42,7 +42,7 @@
             <h1 class="text-center current-song-name" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
                 {{vm.currentSong.name}}
             </h1>
-            <h1 class="text-center current-song-name hebrew" ng-show="vm.currentSong.hebrewName" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}" lang="he">
+            <h1 class="text-center current-song-name hebrew" lang="he" ng-show="vm.currentSong.hebrewName" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
                 {{vm.currentSong.hebrewName}}
             </h1>
             <div class="text-center">
@@ -89,7 +89,7 @@
                 </h4>
 
                 <!--Edit tags when we have 1 or more.-->
-                <a class="btn btn-link edit-tags-btn" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-show="vm.currentSong.tags.length >= 1" uib-tooltip="Add or change the tags for this song">
+                <a class="btn btn-link edit-tags-btn" href="#" ng-href="{{'#/edit/' + vm.currentSong.id}}" ng-show="vm.currentSong.tags.length >= 1" uib-tooltip="Add or change the tags for this song" aria-label="Edit tags for this song">
                     <span class="fa-stack fa-lg" aria-hidden="true">
                         <i class="fa fa-tags fa-stack-2x" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}"></i>
                         <i class="fa fa-pencil fa-stack-1x" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchLighter } : { 'color': 'white' }"></i>
@@ -116,21 +116,22 @@
             <!--Share-->
             <div class="panel-group expander share-expander" role="tablist">
                 <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}">
-                        <h3 class="panel-title text-center" ng-click="vm.currentSong.isShareExpaned = !vm.currentSong.isShareExpaned">
-                            <i class="fa fa-share" style="font-size: 22px;"></i> Share
-                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isShareExpaned, 'fa-angle-up': vm.currentSong.isShareExpaned }"></i>
+                    <div class="panel-heading" role="tab" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}" ng-click="vm.tryNativeShare()">
+                        <h3 class="panel-title text-center" ng-click="vm.currentSong.isShareExpanded = !vm.currentSong.isShareExpanded">
+                            <i class="fa fa-share" style="font-size: 22px;"></i> 
+                            Share
+                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isShareExpanded, 'fa-angle-up': vm.currentSong.isShareExpanded }"></i>
                         </h3>
                     </div>
-                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isShareExpaned }" role="tabpanel">
+                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isShareExpanded }" role="tabpanel">
                         <div class="panel-body" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
-                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSongFacebookShareUrl}}" uib-tooltip="Share this song on Facebook" tooltip-append-to-body="true">
+                            <a href="#" class="social-link" target="_blank" rel="noopener" ng-href="{{vm.currentSongFacebookShareUrl}}" uib-tooltip="Share this song on Facebook" tooltip-append-to-body="true">
                                 <i class="fa fa-facebook-official fa-3x" style="color: rgb(59, 88, 152)"></i>
                             </a>
-                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSongTwitterShareUrl}}" uib-tooltip="Tweet this song" tooltip-append-to-body="true">
+                            <a href="#" class="social-link" target="_blank" rel="noopener" ng-href="{{vm.currentSongTwitterShareUrl}}" uib-tooltip="Tweet this song" tooltip-append-to-body="true">
                                 <i class="fa fa-twitter-square fa-3x" style="color: rgb(85, 172, 238)"></i>
                             </a>
-                            <a href="#" class="social-link" target="_blank" ng-href="{{vm.currentSongGooglePlusShareUrl}}" uib-tooltip="Share this song on Google+" tooltip-append-to-body="true">
+                            <a href="#" class="social-link" target="_blank" rel="noopener" ng-href="{{vm.currentSongGooglePlusShareUrl}}" uib-tooltip="Share this song on Google+" tooltip-append-to-body="true">
                                 <i class="fa fa-google-plus-square fa-3x" style="color: rgb(219, 68, 55)"></i>
                             </a>
                             <br />
@@ -146,7 +147,7 @@
                                 </div>
                                 <input type="url" id="currentSongShareLink" class="form-control" ng-model="vm.currentSongShareUrl" onclick="this.select()" readonly="readonly" />
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" uib-tooltip="Copy" uib-popover="Copied!" popover-placement="right" popover-popup-close-delay="1500" popover-trigger="'outsideClick'" ng-click="vm.copyShareUrl()">
+                                    <button class="btn btn-default" type="button" uib-tooltip="Copy" uib-popover="Copied!" popover-placement="top" popover-popup-close-delay="1500" popover-trigger="'outsideClick'" ng-click="vm.copyShareUrl()">
                                         <i class="fa fa-copy" title="Copy the link to this song"></i>
                                     </button>
                                 </span>
@@ -192,7 +193,7 @@
                             <a href="#/donate" ng-href="{{vm.currentArtistDonateUrl}}" class="btn btn-primary"><i class="fa fa-paypal"></i> Donate to {{vm.currentSong.artist}}</a>
                             <br class="visible-xs-block" />
                             <br class="visible-xs-block" />
-                            <a href="#" target="_blank" ng-show="vm.currentSong.purchaseUri" ng-href="{{vm.currentSong.purchaseUri}}" class="btn btn-primary"><i class="fa fa-music"></i> Purchase {{vm.currentSong.artist}}'s music</a>
+                            <a href="#" target="_blank" rel="noopener" ng-show="vm.currentSong.purchaseUri" ng-href="{{vm.currentSong.purchaseUri}}" class="btn btn-primary"><i class="fa fa-music"></i> Purchase {{vm.currentSong.artist}}'s music</a>
                             <br />
                         </div>
                     </div>

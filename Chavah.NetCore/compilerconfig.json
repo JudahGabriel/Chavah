@@ -98,5 +98,17 @@
   {
     "outputFile": "wwwroot/css/app/logEditor.css",
     "inputFile": "wwwroot/css/app/logEditor.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/welcome.css",
+    "inputFile": "wwwroot/css/app/welcome.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/Support.css",
+    "inputFile": "wwwroot/css/app/Support.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/myLikes.css",
+    "inputFile": "wwwroot/css/app/myLikes.less"
   }
 ]

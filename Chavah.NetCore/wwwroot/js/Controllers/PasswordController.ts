@@ -47,7 +47,7 @@
             }
         }
 
-        signInCompleted(result: SignInResult) {
+        signInCompleted(result: Server.SignInResult) {
             if (result.status === SignInStatus.Success) {
                 this.signInSuccessful = true;
                 this.$timeout(() => this.appNav.nowPlaying(), 2000);

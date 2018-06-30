@@ -10,7 +10,7 @@
 
     export const App = angular.module("ChavahApp", modules);
 
-    const homeVm: Server.IHomeViewModel = window["BitShuva.Chavah.HomeViewModel"];
+    const homeVm: Server.HomeViewModel = window["BitShuva.Chavah.HomeViewModel"];
     App.constant("initConfig", homeVm);
 
     // Gets the relative path to a cache-busted angular view.
@@ -25,7 +25,7 @@
     }
     export const FindAppView = findCacheBustedView;
 
-    function createRoute(templateUrl: string, access = RouteAccess.Anonymous): IAppRoute {
+    function createRoute(templateUrl: string, access = RouteAccess.Anonymous): AppRoute {
         let cacheBustedView = findCacheBustedView(templateUrl);
         return {
             templateUrl: cacheBustedView,
@@ -57,6 +57,8 @@
         about: "/Legal.html",
         welcome: "/Welcome.html",
         songEditApproved: "/SongEditApproved.html",
+        privacyPolicy: "/PrivacyPolicy.html",
+        support: "/Support.html",
 
         // Sign in
         promptSignIn: "/PromptSignIn.html",
@@ -101,6 +103,8 @@
             .when("/about", createRoute(views.about))
             .when("/welcome", createRoute(views.welcome))
             .when("/songeditapproved/:artist/:songName", createRoute(views.songEditApproved))
+            .when("/privacy", createRoute(views.privacyPolicy))
+            .when("/support", createRoute(views.support))
 
             // Sign in
             .when("/promptsignin", createRoute(views.promptSignIn))
@@ -138,22 +142,35 @@
         "accountApi",
         "appNav",
         "adminScripts",
+        "navigatorMediaSession",
+        "uwpNativeAudio",
+        "iOSMediaSession",
         "$rootScope",
         "$location",
+        "$window",
         "$q",
         // tslint:disable-next-line:no-shadowed-variable
         (templatePaths: ITemplatePaths,
          accountApi: AccountService,
          appNav: AppNavService,
          adminScripts: AdminScriptsService,
+         navigatorMediaSession: NavigatorMediaSessionService,
+         uwpNativeAudio: UwpNativeAudioService,
+         iOSMediaSession: IOSMediaSessionService,
          $rootScope: ng.IRootScopeService,
          $location: ng.ILocationService,
+         $window: ng.IWindowService,
          $q: ng.IQService) => {
 
             // Use Angular's Q object as Promise. This is needed to make async/await work properly with the UI.
             // See http://stackoverflow.com/a/41825004/536
-            window["Promise"] = $q;
+            $window["Promise"] = $q;
 
+            // Integrate with the host platform's audio services, e.g. lockscreen media buttons, "currently playing" media info panels, etc.
+            iOSMediaSession.install(); // iOS
+            navigatorMediaSession.install(); // Android, emerging web standard
+            uwpNativeAudio.install(); // Windows
+            
             // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.
             ($rootScope as any).Partials = templatePaths;
 
@@ -170,15 +187,23 @@
 
             // tslint:disable-next-line:variable-name
             $rootScope.$on("$routeChangeStart", (_e: ng.IAngularEvent, next: any) => {
-                const route: IAppRoute = next.$$route;
+                const route: AppRoute = next.$$route;
 
-                // If we're an admin route, load the admin-specific scripts.
-                if (route && route.access === RouteAccess.Admin) {
-                    adminScripts.install();
+                // One of our app routes?
+                if (route && route.access !== undefined) {
 
-                    // Also, cancel navigation if we're not an admin user and redirect to sign-in.
-                    if (!accountApi.isSignedIn) {
+                    // Redirect to sign in if needed.
+                    const needsToSignIn = !accountApi.isSignedIn && route.access !== RouteAccess.Anonymous;
+                    const needsAdminSignIn = route.access === RouteAccess.Admin && accountApi.currentUser && !accountApi.currentUser.isAdmin;
+                    if (needsToSignIn || needsAdminSignIn) {
                         appNav.signIn();
+                        return;
+                    }
+
+                    // If we're an admin route, load the admin-specific scripts.
+                    if (route.access === RouteAccess.Admin) {
+                        // Also, cancel navigation if we're not an admin user and redirect to sign-in.
+                        adminScripts.install();
                     }
                 }
             });

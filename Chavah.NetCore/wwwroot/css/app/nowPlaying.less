@@ -3,15 +3,13 @@
 .now-playing-page {
 
     .songs-container {
-        /*position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;*/
         width: 50%;
         margin: auto;
         height: 365px;
         margin-top: 20px;
+        display: flex;
+        justify-content: center; // flex + justify-content makes the songs centered in the page.
+
         // on very large screens, shift the songs to the right a bit.
         @media (min-width: 1400px) {
             padding-left: 20px;
@@ -28,7 +26,6 @@
     .song {
         min-width: 300px;
         display: inline-block;
-        /*border: 1px solid gray;*/
         background-color: white;
         padding: 5px;
         box-shadow: 0 0 20px 0 rgba(0,0,0, .5);
@@ -198,6 +195,7 @@
         pre {
             font-family: @title-font;
             font-size: 20px;
+            white-space: pre-wrap; // wrap long lines so that we don't get a horizontal scrollbar
         }
 
         .submit-lyrics {

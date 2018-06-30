@@ -103,6 +103,8 @@ header .notifications-btn button {
 }
 header .notifications-btn .dropdown-menu {
   min-width: 350px;
+  max-height: 500px;
+  overflow: auto;
 }
 @media (max-width: 767px) {
   header .notifications-btn .dropdown-menu {

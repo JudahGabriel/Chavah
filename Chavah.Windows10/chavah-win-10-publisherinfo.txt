@@ -1,0 +1,8 @@
+pwabuilder.com
+
+BitShuva
+CN=FE3F8351-7B71-4C35-8A07-183862BD9BDE
+42541BitShuva.ChavahMessianicRadio
+3.1.0.0
+
+Background color: #2f3d58

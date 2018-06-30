@@ -11,12 +11,12 @@
         donationTargetOptions: string[];
         donationTarget;
 
-        selectedArtist: Server.IArtist | null = null;
+        selectedArtist: Server.Artist | null = null;
 
         constructor(
             artistApi: ArtistApiService,
             $routeParams: ng.route.IRouteParamsService,
-            private initConfig: Server.IHomeViewModel) {
+            private initConfig: Server.HomeViewModel) {
 
             this.donationTargetOptions = [
                 this.initConfig.title,
@@ -34,7 +34,7 @@
                 .then(results => this.allArtistsFetched(results.items));
         }
 
-        allArtistsFetched(artists: Server.IArtist[]) {
+        allArtistsFetched(artists: Server.Artist[]) {
             let artistNames = artists.map(a => a.name);
             this.donationTargetOptions.push(...artistNames);
         }

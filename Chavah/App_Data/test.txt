@@ -1,1 +1,0 @@
-﻿This file exists to ensure the web server has read/write permissions to this folder.

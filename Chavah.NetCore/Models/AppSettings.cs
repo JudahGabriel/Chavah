@@ -3,19 +3,22 @@
 
     public class AppSettings
     {
-        public Connectionstrings ConnectionStrings { get; set; }
+        public DbConnection DbConnection { get; set; }
         public Application Application { get; set; }
         public Logging Logging { get; set; }
-        public Email Email { get; set; }
+        public EmailSettings Email { get; set; }
         public Cdn Cdn { get; set; }
         public Filepickr FilePickr { get; set; }
         public Ifttt Ifttt { get; set; }
         public Jwt Jwt { get; set; }
     }
 
-    public class Connectionstrings
+    public class DbConnection
     {
-        public string RavenConnection { get; set; }
+        public string Url { get; set; }
+        public string DatabaseName { get; set; }
+        public string CertFileName { get; set; }
+        public string CertPassword { get; set; }
     }
 
     public class Application
@@ -47,10 +50,12 @@
         public string Microsoft { get; set; }
     }
 
-    public class Email
+    public class EmailSettings
     {
         public string SendGridApiKey { get; set; }
-        public string AdminEmail { get; set; }
+        public bool SendEmails { get; set; }
+        public string SenderName { get; set; }
+        public string SenderEmail { get; set; }
     }
 
     public class Cdn

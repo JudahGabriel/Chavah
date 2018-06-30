@@ -1,8 +1,8 @@
 ﻿using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Raven.Client;
-using Raven.Client.Linq;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
-    [Route("api/users")]
+    [Route("api/[controller]/[action]")]
     public class UsersController : RavenController
     {
         private static readonly DateTime startTime = DateTime.UtcNow;
@@ -22,7 +22,6 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        [Route("getRecent")]
         public async Task<RecentUserSummary> GetRecent(int minutes)
         {
             var recent = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(minutes));
@@ -41,7 +40,14 @@ namespace BitShuva.Chavah.Controllers
                 BeginningTime = DateTime.UtcNow.Subtract(startTime)
             };
         }
-        
+
+        [HttpPost]
+        public async Task SaveVolume(double volume)
+        {
+            var user = await this.GetCurrentUserOrThrow();
+            user.Volume = volume;
+        }
+
         //[HttpGet]
         //public async Task<UserProfile> GetUserProfile()
         //{

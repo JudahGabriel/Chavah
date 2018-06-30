@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.SyndicationFeed;
 using Raven.Client;
-using Raven.Client.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Extensions.Options;
+using Raven.Client.Documents.Session;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -76,17 +76,9 @@ namespace BitShuva.Chavah.Controllers
             };
 
             var userName = User.Identity.Name;
-            AppUser currentUser = null;
             if (!string.IsNullOrEmpty(userName))
             {
-                currentUser = await userService.GetUser(userName);
-            }
-
-            if (currentUser != null)
-            {
-                viewModel.UserEmail = currentUser.Email;
-                viewModel.UserRoles = new List<string>(currentUser.Roles);
-                viewModel.Notifications = currentUser.Notifications;
+                viewModel.User = await GetCurrentUser();
             }
 
             var firstValidQuery = new[] { artist, album, song }.FirstOrDefault(s => !string.IsNullOrEmpty(s));

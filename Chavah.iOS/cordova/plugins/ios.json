@@ -1,0 +1,31 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-hostedwebapp": {
+      "PACKAGE_NAME": "com.messianicradio"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.messianicradio"
+    },
+    "nl.kingsquare.cordova.background-audio": {
+      "PACKAGE_NAME": "com.messianicradio"
+    },
+    "cordova-plugin-nowplaying": {
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
+    },
+    "cordova-plugin-remotecommand": {
+      "PACKAGE_NAME": "com.messianicradio"
+    }
+  },
+  "dependent_plugins": {
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "com.messianicradio"
+    }
+  }
+}

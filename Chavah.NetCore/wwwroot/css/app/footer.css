@@ -26,7 +26,10 @@
   color: #e9dd9a;
 }
 .footer .btn-link.active {
-  color: #e9dd9a;
+  color: #d7c146;
+}
+.footer .btn-link.active .fa {
+  text-shadow: 0 0 30px #e9dd9a;
 }
 .footer .audio-status {
   position: absolute;

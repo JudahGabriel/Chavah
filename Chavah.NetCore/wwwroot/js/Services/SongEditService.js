@@ -6,6 +6,12 @@ var BitShuva;
             function SongEditService(httpApi) {
                 this.httpApi = httpApi;
             }
+            SongEditService.prototype.getSongEdit = function (songId) {
+                var args = {
+                    songId: songId
+                };
+                return this.httpApi.query("/api/songEdits/get", args);
+            };
             SongEditService.prototype.submit = function (song) {
                 return this.httpApi.post("/api/songEdits/editSong", song);
             };

@@ -9,7 +9,6 @@ namespace BitShuva.Chavah.Models
     {
         public SignInStatus Status { get; set; }
         public string ErrorMessage { get; set; }
-        public string Email { get; set; }
-        public List<string> Roles { get; set; } = new List<string>();
+        public AppUser User { get; set; }
     }
 }

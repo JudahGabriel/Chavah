@@ -9,7 +9,7 @@
         lastAnnouncementTime = new Date();
 
         constructor(private audioPlayer: AudioPlayerService,
-                    private initConfig: Server.IHomeViewModel) {
+                    private initConfig: Server.HomeViewModel) {
         }
 
         hasPendingAnnouncement() {
@@ -31,7 +31,7 @@
         }
 
         playStationIdAnnouncement() {
-            let announcementNumbers = [1, 2, 3, 4, 5, 6];
+            let announcementNumbers = [1, 2, 3, 4, 5, 6, 7];
             // tslint:disable-next-line:max-line-length
             let songRequestName = "StationId" + announcementNumbers[Math.floor(Math.random() * announcementNumbers.length)] + ".mp3";
             let songUrl = `${this.initConfig.soundEffects}/${songRequestName}`;

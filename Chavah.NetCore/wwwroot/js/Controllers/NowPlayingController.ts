@@ -10,7 +10,7 @@
             "appNav",
             "accountApi",
             "$q",
-            "sharing",
+            "sharing"
         ];
 
         songs: Song[] = [];
@@ -28,7 +28,7 @@
             private songBatch: SongBatchService,
             private audioPlayer: AudioPlayerService,
             private albumCache: AlbumCacheService,
-            private initConfig: Server.IHomeViewModel,
+            private initConfig: Server.HomeViewModel,
             private appNav: AppNavService,
             private accountApi: AccountService,
             private $q: ng.IQService,
@@ -170,13 +170,13 @@
                 .then(results => this.updateSongList(this.trending, results.items))
                 .then(() => this.songApi.getPopularSongs(3))
                 .then(results => this.updateSongList(this.popular, results))
-                .then(() => this.songApi.getLikes(3))
+                .then(() => this.songApi.getRandomLikedSongs(3))
                 .then(results => this.updateSongList(this.likes, results))
                 .finally(() => {
                     this.fetchAlbumColors(this.getAllSongsOnScreen());
 
                     // Call ourselves every 30s.
-                    this.recurringFetchHandle = setTimeout(() => this.setupRecurringFetches(), 30000);
+                    this.recurringFetchHandle = setTimeout(() => this.setupRecurringFetches(), 60000);
                 });
         }
 
@@ -279,9 +279,42 @@
         }
 
         copyShareUrl() {
+            // iOS share functionality.
             let shareUrlInput = document.querySelector("#currentSongShareLink") as HTMLInputElement;
-            shareUrlInput.select();
+            var isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
+
+            // iOS has specific rules about copying text. https://stackoverflow.com/a/43001673/536
+            if (isiOSDevice) {
+
+                var editable = shareUrlInput.contentEditable;
+                var readOnly = shareUrlInput.readOnly;
+
+                shareUrlInput.contentEditable = "true"; // yes, a string: "true", "false", "inheritable" https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/contentEditable
+                shareUrlInput.readOnly = false;
+
+                var range = document.createRange();
+                range.selectNodeContents(shareUrlInput);
+
+                var selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+
+                shareUrlInput.setSelectionRange(0, 999999);
+                shareUrlInput.contentEditable = editable;
+                shareUrlInput.readOnly = readOnly;
+
+            } else {
+                // Not iOS? Just select the text box containing the URL to share.
+                shareUrlInput.select();
+            }
+            
             document.execCommand("copy");
+        }
+
+        tryNativeShare() {
+            if (this.currentSong && this.currentSong.isShareExpanded) {
+                this.sharing.nativeShareUrl(this.currentSong);
+            }
         }
 
         private getUrlQueryOrNull(term: string): string | null {

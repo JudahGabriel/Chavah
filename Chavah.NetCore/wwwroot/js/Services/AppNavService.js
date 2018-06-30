@@ -3,17 +3,12 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var AppNavService = /** @class */ (function () {
-            function AppNavService(audioPlayer, templatePaths, $location, $uibModal, initConfig) {
-                var _this = this;
-                this.audioPlayer = audioPlayer;
+            function AppNavService(templatePaths, $location, $uibModal, initConfig) {
                 this.templatePaths = templatePaths;
                 this.$location = $location;
                 this.$uibModal = $uibModal;
                 this.initConfig = initConfig;
                 this.promptSignInUrl = "#/promptsignin";
-                // Listen for when the song changes and update the document title.
-                audioPlayer.song
-                    .subscribe(function (song) { return _this.updateDocumentTitle(song); });
             }
             AppNavService.prototype.signIn = function () {
                 this.$location.url("/signin");
@@ -70,17 +65,7 @@ var BitShuva;
             AppNavService.prototype.getQueryParams = function () {
                 return this.$location.search();
             };
-            AppNavService.prototype.updateDocumentTitle = function (song) {
-                // Update the document title so that the browser tab updates.
-                if (song) {
-                    document.title = song.name + " by " + song.artist + " on " + this.initConfig.title;
-                }
-                else {
-                    document.title = this.initConfig.title;
-                }
-            };
             AppNavService.$inject = [
-                "audioPlayer",
                 "templatePaths",
                 "$location",
                 "$uibModal",

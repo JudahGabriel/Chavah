@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +45,7 @@ namespace BitShuva.Chavah.Controllers
             var rssItems = new List<SyndicationLinkItem>(1);
             if (topThumbedUpSong != null)
             {
-                var song = await DbSession.LoadNotNullAsync<Song>(topThumbedUpSong.Key);
+                var song = await DbSession.LoadRequiredAsync<Song>(topThumbedUpSong.Key);
                 if (song != null)
                 {
                     var likeCount = topThumbedUpSong.Count();

@@ -1,14 +1,15 @@
-﻿using BitShuva.Chavah.Models;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Rss;
+using BitShuva.Chavah.Services;
 using Chavah.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SyndicationFeed;
 using Newtonsoft.Json;
-using Raven.Abstractions.Data;
-using Raven.Client;
-using Raven.Client.Linq;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,22 +23,21 @@ namespace BitShuva.Chavah.Controllers
     public class IftttController : RavenController
     {
         private readonly AppSettings appSettings;
-        
+
         public IftttController(
             IOptions<AppSettings> appSettings,
-            IAsyncDocumentSession dbSession, 
+            IAsyncDocumentSession dbSession,
             ILogger<IftttController> logger)
             : base(dbSession, logger)
         {
             this.appSettings = appSettings.Value;
         }
-                
+
         [HttpGet]
         public async Task<ActionResult> GetRegisteredUsers()
         {
             var lastRegisteredUsers = await DbSession
                 .Query<AppUser>()
-                .Where(u => u.Email != null)
                 .OrderByDescending(a => a.RegistrationDate)
                 .Take(100)
                 .ToListAsync();
@@ -52,7 +52,7 @@ namespace BitShuva.Chavah.Controllers
             })
             .ToList();
             feedItems.ForEach(i => i.AddLink(new SyndicationLink(new Uri(appSettings.Application.DefaultUrl + "/?newUser=" + i.Published.ToUnixTimeSeconds().ToString()))));
-         
+
             var feed = new SyndicationFeed("Chavah Messianic Radio",
                                            "The most recent registered users at Chavah Messianic Radio",
                                            new Uri(appSettings.Application.DefaultUrl), "Chavah", feedItems)
@@ -73,7 +73,7 @@ namespace BitShuva.Chavah.Controllers
             }
 
             logger.LogInformation("IFTTT CreateNotification called with {token}, {title}, {imgUrl}, {srcName}, {url}", secretToken, title, imgUrl, sourceName, url);
-            
+
             var notification = new Notification
             {
                 Date = DateTime.UtcNow,
@@ -85,36 +85,13 @@ namespace BitShuva.Chavah.Controllers
             };
             var jsonNotification = JsonConvert.SerializeObject(notification);
 
-            // Patch users to include this notification.
-            var patch = new ScriptedPatchRequest
-            {
-                Script = @"
-                        if (!this.Notifications) {
-                            this.Notifications = [];
-                        }
-
-                        this.Notifications.unshift(" + jsonNotification + @");
-                        if (this.Notifications.length > 10) {
-                            this.Notifications.length = 10;
-                        }"
-            };
-            var query = new IndexQuery { Query = $"Tag:AppUsers" };
-            var options = new BulkOperationOptions
-            {
-                AllowStale = true
-            };
-
-            try
-            {
-                DbSession.Advanced.DocumentStore.DatabaseCommands.UpdateByIndex("Raven/DocumentsByEntityName", query, patch, options);
-                //await patchOperation.WaitForCompletionAsync();
-            }
-            catch (Exception error)
-            {
-                logger.LogError(error, $"Error patching users to include notification.");
-                throw;
-            }
-
+            var patchScript = @"
+                this.Notifications.unshift(" + jsonNotification + @");
+                if (this.Notifications.length > 10) {
+                    this.Notifications.length = 10;
+                }
+";
+            this.DbSession.Advanced.DocumentStore.PatchAll<AppUser>(patchScript);
             return Json(notification);
         }
     }

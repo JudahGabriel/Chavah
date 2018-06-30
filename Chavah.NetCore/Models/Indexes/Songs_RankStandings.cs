@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using BitShuva.Chavah.Models;
+using Raven.Client.Documents.Indexes;
 
 namespace BitShuva.Chavah.Models.Indexes
 {
@@ -10,7 +11,7 @@ namespace BitShuva.Chavah.Models.Indexes
     /// RavenDB index that groups songs by CommunityRankStanding.
     /// Used for generating the list of songs from which our song picker algorithm chooses a song based on user preferences.
     /// </summary>
-    public class Songs_RankStandings : Raven.Client.Indexes.AbstractIndexCreationTask<Song, Songs_RankStandings.Result>
+    public class Songs_RankStandings : AbstractIndexCreationTask<Song, Songs_RankStandings.Result>
     {
         public Songs_RankStandings()
         {

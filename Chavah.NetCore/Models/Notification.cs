@@ -15,7 +15,7 @@ namespace BitShuva.Chavah.Models
         public DateTime Date { get; set; } = DateTime.UtcNow;
 
         private const string chavahAuthorImageUrl = "https://bitshuvafiles01.com/chavah/judah.jpg?v=1";
-        private const string chavahSystemNotificationImage = "https://bitshuvafiles01.com/chavah/chavah-blog.jpg?v=1";
+        private const string chavahSystemNotificationImage = "https://bitshuvafiles01.com/chavah/chavah-blog.jpg?v=2";
 
         public static Notification Welcome()
         {

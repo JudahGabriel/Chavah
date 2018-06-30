@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Indexes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,7 @@ namespace BitShuva.Chavah.Models.Indexes
         public static void InstallIndexes(this IServiceCollection services)
         {
             var db = services.BuildServiceProvider().GetRequiredService<IDocumentStore>();
-            Raven.Client.Indexes.IndexCreation.CreateIndexes(typeof(Startup).Assembly, db);
+            IndexCreation.CreateIndexes(typeof(Startup).Assembly, db);
         }
     }
 }

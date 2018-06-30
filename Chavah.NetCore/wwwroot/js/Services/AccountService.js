@@ -10,8 +10,8 @@ var BitShuva;
                 this.localStorageService = localStorageService;
                 this.signedIn = new Rx.BehaviorSubject(false);
                 this.apiUri = "/api/account";
-                if (this.initConfig.userEmail) {
-                    this.currentUser = new Chavah.User(this.initConfig.userEmail, this.initConfig.userRoles);
+                if (this.initConfig.user) {
+                    this.currentUser = new Chavah.User(this.initConfig.user);
                     this.signedIn.onNext(true);
                 }
             }
@@ -32,11 +32,8 @@ var BitShuva;
                 });
                 return signOutTask;
             };
-            AccountService.prototype.clearNotifications = function (asOfDate) {
-                var args = {
-                    asOf: asOfDate,
-                };
-                return this.httpApi.postUriEncoded(this.apiUri + "/clearNotifications", args);
+            AccountService.prototype.clearNotifications = function () {
+                return this.httpApi.post(this.apiUri + "/clearNotifications", null);
             };
             AccountService.prototype.register = function (email, password) {
                 var args = {
@@ -67,13 +64,13 @@ var BitShuva;
                 };
                 var signInTask = this.httpApi.postUriEncoded(this.apiUri + "/signIn", args);
                 signInTask.then(function (result) {
-                    if (result.status === Chavah.SignInStatus.Success) {
-                        _this.currentUser = new Chavah.User(result.email, result.roles);
+                    if (result.status === Chavah.SignInStatus.Success && result.user) {
+                        _this.currentUser = new Chavah.User(result.user);
                         _this.signedIn.onNext(true);
                         // If we have Google Analytics, notify about the signed in user.
                         var ga = window["ga"];
                         if (ga) {
-                            ga("set", "userId", result.email);
+                            ga("set", "userId", result.user.email);
                         }
                     }
                     else {
@@ -103,6 +100,21 @@ var BitShuva;
                     newPassword: newPassword,
                 };
                 return this.httpApi.postUriEncoded(this.apiUri + "/resetPassword", args);
+            };
+            AccountService.prototype.sendSupportMessage = function (name, email, message) {
+                var args = {
+                    name: name,
+                    email: email,
+                    message: message,
+                    date: new Date().toISOString()
+                };
+                return this.httpApi.post(this.apiUri + "/sendSupportMessage", args);
+            };
+            AccountService.prototype.saveVolume = function (volume) {
+                var args = {
+                    volume: volume
+                };
+                return this.httpApi.postUriEncoded("/api/users/saveVolume", args);
             };
             AccountService.$inject = [
                 "appNav",

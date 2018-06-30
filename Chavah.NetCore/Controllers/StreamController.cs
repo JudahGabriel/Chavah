@@ -1,8 +1,6 @@
 ﻿using BitShuva.Chavah.Models;
 using System.Linq;
 using System.Threading.Tasks;
-using Raven.Client;
-using Raven.Client.Linq;
 using System.Text;
 using System;
 using System.Collections.Generic;
@@ -10,6 +8,9 @@ using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
+using Raven.Client.Documents.Session;
+using Raven.Client.Documents.Linq;
+using Raven.Client.Documents;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -77,13 +78,12 @@ namespace BitShuva.Chavah.Controllers
                 "slow",
                 "prayer",
                 "liturgy",
-                "instrumental",
                 "blessing",
                 "hymn"
             };
             var song = await DbSession.Query<Song, Songs_GeneralQuery>()
                 .Customize(x => x.RandomOrdering())
-                .Where(s => s.CommunityRankStanding != CommunityRankStanding.Poor && s.CommunityRankStanding != CommunityRankStanding.VeryPoor && s.Tags.ContainsAny(goodShabbatTags))
+                .Where(s => s.CommunityRank >= 10 && s.Tags.ContainsAny(goodShabbatTags))
                 .FirstOrDefaultAsync();
             return Redirect(song.Uri.ToString());
         }
@@ -104,7 +104,7 @@ namespace BitShuva.Chavah.Controllers
             }
 
             var songPick = userPreferences.PickSong(songsWithRanking);
-            var song = await DbSession.LoadNotNullAsync<Song>(songPick.SongId);
+            var song = await DbSession.LoadRequiredAsync<Song>(songPick.SongId);
             return Redirect(song.Uri.ToString());
         }
     }

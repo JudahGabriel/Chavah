@@ -33,7 +33,8 @@ body {
   overflow-y: auto;
 }
 .hebrew {
-  font-family: David, 'EB Garamond', serif;
+  font-family: 'EB Garamond', serif;
+  direction: rtl;
 }
 .account-page .account-form {
   background-color: rgba(255, 255, 255, 0.9);

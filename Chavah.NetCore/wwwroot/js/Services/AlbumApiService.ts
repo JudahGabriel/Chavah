@@ -14,7 +14,7 @@
         /**
          * Uploads a new album. Returns a promise containing the ID of the new album.
          */
-        upload(album: Server.IAlbumUpload): ng.IPromise<string> {
+        upload(album: Server.AlbumUpload): ng.IPromise<string> {
             return this.httpApi.post("/api/albums/upload", album);
         }
 
@@ -33,7 +33,7 @@
             return this.httpApi.query<Album | null>("/api/albums/get", args, AlbumApiService.albumSelector);
         }
 
-        getAll(skip: number, take: number, search: string | null): ng.IPromise<Server.IPagedList<Album>> {
+        getAll(skip: number, take: number, search: string | null): ng.IPromise<Server.PagedList<Album>> {
             let args = {
                 skip,
                 take,
@@ -82,7 +82,7 @@
         }
 
         // tslint:disable-next-line:member-ordering
-        static albumSelector(serverObj: Server.IAlbum | null): Album | null {
+        static albumSelector(serverObj: Server.Album | null): Album | null {
             if (serverObj) {
                 return new Album(serverObj);
             }
@@ -91,12 +91,12 @@
         }
 
         // tslint:disable-next-line:member-ordering
-        static albumArraySelector(serverObjs: Server.IAlbum[]): Album[] {
+        static albumArraySelector(serverObjs: Server.Album[]): Album[] {
             return serverObjs.map(s => AlbumApiService.albumSelector(s)!);
         }
 
         // tslint:disable-next-line:member-ordering
-        static albumPagedListSelector(serverObj: Server.IPagedList<Server.IAlbum>): Server.IPagedList<Album> {
+        static albumPagedListSelector(serverObj: Server.PagedList<Server.Album>): Server.PagedList<Album> {
             return {
                 items: AlbumApiService.albumArraySelector(serverObj.items),
                 skip: serverObj.skip,

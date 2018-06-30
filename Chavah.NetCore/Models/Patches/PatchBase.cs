@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Raven.Abstractions.Data;
-using Raven.Client;
+﻿using BitShuva.Chavah.Common;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Queries;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace BitShuva.Chavah.Models.Patches
 {
@@ -21,20 +18,20 @@ namespace BitShuva.Chavah.Models.Patches
 
             if (!string.IsNullOrEmpty(this.Collection) && !string.IsNullOrEmpty(this.Script))
             {
-                var patch = new ScriptedPatchRequest
+                var indexQuery = new IndexQuery
                 {
-                    Script = this.Script
+                    Query = this.Script
                 };
-                var query = new IndexQuery
+
+                var patch = db.PatchAll(this.Collection, this.Script);
+                try
                 {
-                    Query = $"Tag:{Collection}"
-                };
-                var options = new BulkOperationOptions
+                    patch.WaitForCompletion(TimeSpan.FromMinutes(3));
+                }
+                catch (Exception error)
                 {
-                    AllowStale = true
-                };
-                var patchOperation = db.DatabaseCommands.UpdateByIndex("Raven/DocumentsByEntityName", query, patch, options);
-                patchOperation.WaitForCompletion();
+                    Console.WriteLine("Patch didn't complete within the alloted time. " + error.Message);
+                }
             }
 
             AfterPatchComplete(db);
@@ -52,7 +49,7 @@ namespace BitShuva.Chavah.Models.Patches
 
         protected List<T> Stream<T>(IDocumentStore db, Func<T, bool> filter)
         {
-            var entityName = db.Conventions.GetTypeTagName(typeof(T));
+            var entityName = db.Conventions.GetCollectionName(typeof(T));
             var items = new List<T>(500);
             using (var session = db.OpenSession())
             {

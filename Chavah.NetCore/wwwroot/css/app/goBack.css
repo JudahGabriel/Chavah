@@ -5,6 +5,7 @@
   position: absolute;
   left: 0;
   box-shadow: 0 0 10px gray;
+  min-height: 55px;
 }
 .go-back a {
   color: #e9dd9a;

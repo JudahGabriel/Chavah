@@ -3,35 +3,55 @@ using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Raven.Client;
-using Raven.Client.Linq;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Optional;
+using Optional.Async;
 
 namespace BitShuva.Chavah.Controllers
 {
     [Route("api/[controller]/[action]")]
+    [Authorize]
     public class SongEditsController : RavenController
     {
         public SongEditsController(IAsyncDocumentSession dbSession, ILogger<SongEditsController> logger)
             : base(dbSession, logger)
         {
         }
+
+        /// <summary>
+        /// Gets a song edit for the current user. If the user hasn't edited this song before, a new one will be created.
+        /// </summary>
+        /// <param name="songId"></param>
+        /// <returns></returns>
+        public async Task<SongEdit> Get(string songId)
+        {
+            var user = await this.GetCurrentUserOrThrow();
+            var song = await DbSession.LoadRequiredAsync<Song>(songId);
+            var songEditId = GetSongEditId(songId, user.Id);
+            var existingEdit = await DbSession.LoadOptionAsync<SongEdit>(songEditId);
+
+            // If the existing edit is pending, return that. 
+            // Otherwise, return a fresh song edit.
+            return existingEdit
+                .Filter(e => e.Status == SongEditStatus.Pending)
+                .ValueOr(() => new SongEdit(song, song));
+        }
         
         [HttpPost]
         public async Task<SongEdit> EditSong([FromBody] Song song)
         {
-            var user = await this.GetCurrentUser();
-            if (user == null)
-            {
-                throw new UnauthorizedAccessException();
-            }
+            var user = await this.GetCurrentUserOrThrow();
+            var existingSong = await this.DbSession.LoadRequiredAsync<Song>(song.Id);
 
-            var existingSong = await this.DbSession.LoadNotNullAsync<Song>(song.Id);
+            var songEditId = GetSongEditId(existingSong.Id, user.Id);
             var songEdit = new SongEdit(existingSong, song)
             {
+                Id = songEditId,
                 UserId = user.Id
             };
             if (songEdit.HasAnyChanges())
@@ -45,6 +65,7 @@ namespace BitShuva.Chavah.Controllers
                 {
                     // Store the song edit and await admin approval.
                     await DbSession.StoreAsync(songEdit);
+                    DbSession.SetRavenExpiration(songEdit, DateTime.UtcNow.AddDays(30 * 6));
 
                     // Notify admins that a new song edit needs approval.
                     var admins = await DbSession.Query<AppUser>()
@@ -58,7 +79,8 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpGet]
-        public Task<IList<SongEdit>> GetPendingEdits(int take = 20)
+        [Authorize(Roles = AppUser.AdminRole)]
+        public Task<List<SongEdit>> GetPendingEdits(int take = 20)
         {
             return this.DbSession.Query<SongEdit>()
                 .Where(s => s.Status == SongEditStatus.Pending)
@@ -101,6 +123,11 @@ namespace BitShuva.Chavah.Controllers
             }
 
             return existingEdit;
+        }
+
+        private static string GetSongEditId(string songId, string userId)
+        {
+            return $"SongEdits/{songId}/{userId}";
         }
     }
 }

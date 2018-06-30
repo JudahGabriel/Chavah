@@ -39,7 +39,7 @@
             }
         }
 
-        passwordResetCompleted(result: Server.IResetPasswordResult) {
+        passwordResetCompleted(result: Server.ResetPasswordResult) {
             if (result.success) {
                 this.resetPasswordSuccessfully = true;
             } else if (result.invalidEmail) {

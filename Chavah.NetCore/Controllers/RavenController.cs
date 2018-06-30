@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Common;
-using RavenDB.StructuredLog;
+using Raven.StructuredLog;
+using Raven.Client.Documents.Session;
+using Raven.Client.Exceptions;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -53,9 +55,8 @@ namespace BitShuva.Chavah.Controllers
                 }
                 catch (Exception saveError)
                 {
-                    using (logger.BeginKeyValueScope("user", context?.HttpContext?.User?.Identity?.Name))
+                    using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
                     using (logger.BeginKeyValueScope("action", context?.ActionDescriptor?.DisplayName))
-                    using (logger.BeginKeyValueScope("changes", DbSession.Advanced.WhatChanged()))
                     {
                         logger.LogError(saveError, $"Error saving changes for {next.Method?.Name}");
                     }
@@ -63,12 +64,34 @@ namespace BitShuva.Chavah.Controllers
             }
             else if (executedContext.Exception != null) // An exception occurred while executing the method.
             {
-                using (logger.BeginKeyValueScope("user", context?.HttpContext?.User?.Identity?.Name))
+                using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
                 using (logger.BeginKeyValueScope("action", executedContext.ActionDescriptor?.DisplayName))
                 {
-                    logger.LogError(executedContext.Exception, executedContext.Exception.Message);
+                    if (executedContext.Exception is UnauthorizedAccessException)
+                    {
+                        logger.LogWarning(executedContext.Exception, executedContext.Exception.Message);
+                    }
+                    else if (executedContext.Exception is RavenException ravenEx && ravenEx.Message.Contains("The server returned an invalid or unrecognized response", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        logger.LogError(ravenEx.Message);
+                    }
+                    else
+                    {
+                        logger.LogError(executedContext.Exception, executedContext.Exception.Message);
+                    }
                 }
             }
+        }
+
+        public async Task<AppUser> GetCurrentUserOrThrow()
+        {
+            var currentUser = await this.GetCurrentUser();
+            if (currentUser == null)
+            {
+                throw new UnauthorizedAccessException().WithData("userName", this.User.Identity.Name);
+            }
+
+            return currentUser;
         }
 
         public async Task<AppUser> GetCurrentUser()
@@ -81,13 +104,21 @@ namespace BitShuva.Chavah.Controllers
             var email = this.User.Identity.Name;
             if (!string.IsNullOrEmpty(email))
             {
-                using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(3)))
-                {
-                    this.currentUser = await DbSession.LoadAsync<AppUser>("AppUsers/" + email);
-                }
+                this.currentUser = await DbSession.LoadAsync<AppUser>("AppUsers/" + email);
             }
 
             return currentUser;
+        }
+
+        protected string GetUserIdOrThrow()
+        {
+            var userId = this.GetUserId();
+            if (!string.IsNullOrEmpty(userId))
+            {
+                return userId;
+            }
+
+            throw new UnauthorizedAccessException();
         }
 
         protected string GetUserId()
