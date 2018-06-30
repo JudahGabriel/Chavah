@@ -62,7 +62,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        public async Task<PagedList<Song>> GetLikedSongs(int skip, int take)
+        public async Task<PagedList<Song>> GetLikes(int skip, int take)
         {
             var userId = this.GetUserId();
             

@@ -78,6 +78,13 @@ var BitShuva;
                 };
                 return this.httpApi.query("/api/songs/getRandomLikedSongs", args, SongApiService.songListConverter);
             };
+            SongApiService.prototype.getLikes = function (skip, take) {
+                var args = {
+                    skip: skip,
+                    take: take
+                };
+                return this.httpApi.query("/api/songs/getLikes", args, SongApiService.songPagedListConverter);
+            };
             SongApiService.prototype.getRecentPlays = function (count) {
                 var args = {
                     count: count,
