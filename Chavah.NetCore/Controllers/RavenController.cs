@@ -99,5 +99,16 @@ namespace BitShuva.Chavah.Controllers
 
             return null;
         }
+
+        protected string GetUserIdOrThrow()
+        {
+            var userId = this.GetUserId();
+            if (!string.IsNullOrEmpty(userId))
+            {
+                return userId;
+            }
+
+            throw new UnauthorizedAccessException("Couldn't find user").WithData("userId", userId);
+        }
     }
 }

@@ -68,27 +68,24 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<PagedList<Song>> GetLikedSongs(int skip, int take)
         {
-            var user = await this.GetCurrentUser();
-            if (user == null)
-            {
-                return new PagedList<Song>();
-            }
+            var userId = this.GetUserId();
             
             var likedSongIds = await this.DbSession
                 .Query<Like>()
-                .Customize(x => x.Include<Like>(l => l.SongId))
-                .Statistics(out var stats)
-                .Where(l => l.Status == LikeStatus.Like && l.UserId == user.Id)
-                .OrderByDescending(l => l.Date)
-                .Select(l => l.SongId)
+                .Include(l => l.SongId) // We want to load the songs
+                .Statistics(out var stats) // Stats so that we can find total number of matches.
+                .Where(l => l.Status == LikeStatus.Like && l.UserId == userId)
+                .OrderByDescending(l => l.Date) // Most recent likes first
+                .Select(l => l.SongId) // We don't actually need the Like object; just the Songs
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
 
-            var songs = await this.DbSession.LoadAsync<Song>(likedSongIds);
+            // The songs were already loaded into the session via   the previous .Include call.
+            var songs = await this.DbSession.LoadWithoutNulls<Song>(likedSongIds);
             return new PagedList<Song>
             {
-                Items = songs.Where(s => s != null).ToArray(),
+                Items = songs,
                 Skip = skip,
                 Take = take,
                 Total = stats.TotalResults
