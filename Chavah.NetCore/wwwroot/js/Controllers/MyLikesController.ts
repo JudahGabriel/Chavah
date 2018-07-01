@@ -5,12 +5,14 @@
 
         static $inject = [
             "songApi",
-            "audioPlayer"
+            "audioPlayer",
+            "appNav"
         ];
 
         constructor(
             private readonly songApi: SongApiService,
-            private readonly audioPlayer: AudioPlayerService) {
+            private readonly audioPlayer: AudioPlayerService,
+            private readonly appNav: AppNavService) {
 
             this.songs.take = 20;
         }
@@ -30,6 +32,7 @@
 
         playSong(song: Song) {
             this.audioPlayer.playSongById(song.id);
+            this.appNav.nowPlaying();
         }
     }
 
