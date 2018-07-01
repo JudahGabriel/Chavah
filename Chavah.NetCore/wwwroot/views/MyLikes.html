@@ -1,11 +1,23 @@
 ﻿<div ng-include="Partials.goBack"></div>
 <section class="page my-likes-page" ng-controller="MyLikesController as vm">
+
+    <h3>My Liked Songs</h3>
+    <div class="input-group search-box-container pull-right">
+        <span class="input-group-addon" id="basic-addon1">
+            <i class="fa fa-search"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Type a song, artist, or album" aria-describedby="basic-addon1" ng-model="vm.search" ng-model-options="{ debounce: 500 }">
+    </div>
+
+    <div class="clearfix"></div>
+
     <div class="songs-container">
+
         <div class="song-item" ng-repeat="song in vm.songs.items" ng-click="vm.playSong(song)" ng-style="{ 'background-color': song.albumSwatchBackground }" uib-tooltip="Click to play this song" tooltip-append-to-body="true">
             <img ng-src="{{song.albumArtUri}}" alt="{{song.album}} album art">
             <div class="song-info"
-                    ng-attr-title="{{song.name}} by {{song.artist}} on {{song.album}}"
-                    ng-style="song.hasSetAlbumArtColors ? { 'background-color': song.albumSwatchBackground, 'color': song.albumSwatchForeground } : { }">
+                 ng-attr-title="{{song.name}} by {{song.artist}} on {{song.album}}"
+                 ng-style="song.hasSetAlbumArtColors ? { 'background-color': song.albumSwatchBackground, 'color': song.albumSwatchForeground } : { }">
                 {{song.name}}
                 <br />
                 <span class="text-muted">By</span>
@@ -15,5 +27,21 @@
                 {{song.album}}
             </div>
         </div>
+
+        <h3 class="text-info" ng-show="vm.songs.isLoading">
+            <i class="fa fa-circle-o-notch fa-spin"></i>
+            <span>Loading your liked songs...</span>
+        </h3>
+
+        <h3 class="text-info" ng-show="vm.songs.isLoadedAndEmpty">
+            <i class="fa fa-info-circle"></i>
+            <span>You haven't liked any songs yet. Click the <i class="fa fa-thumbs-up"></i> button to like a song.</span>
+        </h3>
+
+        <h4 class="text-center" ng-show="vm.songs.isLoadedWithData">
+            <br />
+            Showing {{vm.songs.items.length}} of {{vm.songs.itemsTotalCount}} liked songs
+            <button ng-show="vm.songs.hasMoreItems" ng-click="vm.songs.fetchNextChunk()">Show more</button>
+        </h4>
     </div>
 </section>

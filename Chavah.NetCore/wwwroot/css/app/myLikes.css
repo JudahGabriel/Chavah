@@ -1,15 +1,32 @@
-﻿body .songs-container {
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
+﻿/* Colors */
+.my-likes-page {
+  margin-top: 70px;
+}
+.my-likes-page h3 {
+  display: inline-block;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+.my-likes-page .search-box-container {
+  max-width: 300px;
+}
+.my-likes-page .songs-container {
   width: 100%;
   padding: 10px;
 }
-body .song-item {
-  height: 150px;
-  width: 150px;
-  width: 31%;
-  margin: 1%;
+.my-likes-page .song-item {
   padding: 10px;
+  display: inline-block;
+  margin: 5px;
+  cursor: pointer;
+}
+.my-likes-page .song-item img {
+  max-width: 300px;
+  height: auto;
+  /* Phones use smaller images sizes */
+}
+@media (max-width: 767px) {
+  .my-likes-page .song-item img {
+    max-width: 150px;
+  }
 }

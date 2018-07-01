@@ -95,10 +95,11 @@
             return this.httpApi.query("/api/songs/getRandomLikedSongs", args, SongApiService.songListConverter);
         }
 
-        getLikes(skip: number, take: number): ng.IPromise<Server.PagedList<Song>> {
+        getLikes(skip: number, take: number, search?: string): ng.IPromise<Server.PagedList<Song>> {
             const args = {
                 skip,
-                take
+                take,
+                search
             };
 
             return this.httpApi.query("/api/songs/getLikes", args, SongApiService.songPagedListConverter);

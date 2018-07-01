@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Optional.Collections;
 using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Queries.Suggestions;
 using Raven.Client.Documents.Session;
 using System;
@@ -62,15 +63,29 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        public async Task<PagedList<Song>> GetLikes(int skip, int take)
+        public async Task<PagedList<Song>> GetLikes(int skip, int take, string search = null)
         {
             var userId = this.GetUserId();
+
+            var query = this.DbSession
+                    .Query<Like, Likes_SongSearch>()
+                    .Where(l => l.UserId == userId)
+                    .As<Likes_SongSearch.Result>();
+
+            // If we're doing  a search;
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query
+                    .As<Likes_SongSearch.Result>()
+                    .Search(s => s.Name, search + "*")
+                    .Search(s => s.HebrewName, search + "*")
+                    .Search(s => s.Album, search + "*")
+                    .Search(s => s.Artist, search + "*");
+            }
             
-            var likedSongIds = await this.DbSession
-                .Query<Like>()
+            var likedSongIds = await query
                 .Include(l => l.SongId) // We want to load the songs
                 .Statistics(out var stats) // Stats so that we can find total number of matches.
-                .Where(l => l.Status == LikeStatus.Like && l.UserId == userId)
                 .OrderByDescending(l => l.Date) // Most recent likes first
                 .Select(l => l.SongId) // We don't actually need the Like object; just the Songs
                 .Skip(skip)
@@ -94,8 +109,8 @@ namespace BitShuva.Chavah.Controllers
             // Run the query that the user typed in.
             var results = await this.DbSession
                     .Query<Song, Songs_Search>()
-                    .Search(s => s.Name, searchText, 2)
-                    .Search(s => s.HebrewName, searchText, 2)
+                    .Search(s => s.Name, searchText)
+                    .Search(s => s.HebrewName, searchText)
                     .Search(s => s.Album, searchText)
                     .Search(s => s.Artist, searchText)
                     .ToListAsync();
@@ -103,7 +118,6 @@ namespace BitShuva.Chavah.Controllers
             // No results? See if we can suggest some near matches.
             if (results.Count == 0)
             {
-                // Local function that asks for query suggestions. 
                 // If any suggestions are found, the query is run against the first suggestion.
                 var nameResults = await this.QuerySongSearchSuggestions(s => s.Name, searchText);
                 var hebrewNameResults = await this.QuerySongSearchSuggestions(s => s.HebrewName, searchText);
