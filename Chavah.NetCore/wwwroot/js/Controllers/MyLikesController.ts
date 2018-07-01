@@ -34,6 +34,10 @@
             this.audioPlayer.playSongById(song.id);
             this.appNav.nowPlaying();
         }
+
+        loadMore() {
+            this.songs.fetchNextChunk();
+        }
     }
 
     App.controller("MyLikesController", MyLikesController);

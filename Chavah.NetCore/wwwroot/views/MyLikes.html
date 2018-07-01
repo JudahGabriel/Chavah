@@ -35,13 +35,17 @@
 
         <h3 class="text-info" ng-show="vm.songs.isLoadedAndEmpty">
             <i class="fa fa-info-circle"></i>
-            <span>You haven't liked any songs yet. Click the <i class="fa fa-thumbs-up"></i> button to like a song.</span>
+
+            <span ng-hide="vm.search">You haven't liked any songs yet. Click the <i class="fa fa-thumbs-up"></i> button to like a song.</span>
+            <span ng-show="vm.search">No songs matching your search.</span>
         </h3>
 
         <h4 class="text-center" ng-show="vm.songs.isLoadedWithData">
             <br />
             Showing {{vm.songs.items.length}} of {{vm.songs.itemsTotalCount}} liked songs
-            <button ng-show="vm.songs.hasMoreItems" ng-click="vm.songs.fetchNextChunk()">Show more</button>
+            <br />
+            <br />
+            <button class="btn btn-default" ng-show="vm.songs.hasMoreItems" ng-click="vm.loadMore()">Show more</button>
         </h4>
     </div>
 </section>
