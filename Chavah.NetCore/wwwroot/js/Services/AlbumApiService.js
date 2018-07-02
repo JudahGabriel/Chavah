@@ -50,6 +50,14 @@ var BitShuva;
                 };
                 return this.httpApi.query("/api/albums/getAlbums", args, AlbumApiService.albumArraySelector);
             };
+            AlbumApiService.prototype.getLikedAlbums = function (skip, take, search) {
+                var args = {
+                    skip: skip,
+                    take: take,
+                    search: search
+                };
+                return this.httpApi.query("/api/albums/getLikedAlbums", args);
+            };
             // getAlbumsForSongs(songIds: string[]): ng.IPromise<Album[]> {
             //    var songIdsCsv = songIds.join(",");
             //    if (songIdsCsv.length === 0) {

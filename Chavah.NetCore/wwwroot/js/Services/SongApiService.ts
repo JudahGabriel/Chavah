@@ -30,16 +30,25 @@
             let url = "/api/songs/getByArtistAndAlbum";
             const args = {
                 artist,
-                album,
+                album
             };
 
             return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
         getSongByAlbum(album: string): ng.IPromise<Song | null> {
-            let url = "/api/songs/getByAlbum/";
+            const url = "/api/songs/getByAlbum/";
             const args = {
-                album,
+                album
+            };
+
+            return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
+        }
+
+        getSongByAlbumId(albumId: string): ng.IPromise<Song | null> {
+            const url = "/api/songs/getByAlbumId/";
+            const args = {
+                albumId
             };
 
             return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
@@ -102,7 +111,7 @@
                 search
             };
 
-            return this.httpApi.query("/api/songs/getLikes", args, SongApiService.songPagedListConverter);
+            return this.httpApi.query("/api/songs/getLikedSongs", args, SongApiService.songPagedListConverter);
         }
 
         getRecentPlays(count: number): ng.IPromise<Song[]> {

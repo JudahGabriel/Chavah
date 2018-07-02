@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Optional.Async;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Queries;
 using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
@@ -170,6 +171,17 @@ namespace BitShuva.Chavah.Controllers
                 existingAlbum = new Album();
             }
 
+            var existingArtist = await DbSession.Query<Artist>()
+                .FirstOrDefaultAsync(a => a.Name == album.Artist);
+            if (existingArtist == null)
+            {
+                existingArtist = new Artist
+                {
+                    Bio = "",
+                    Name = album.Artist
+                };
+            }
+
             existingAlbum.AlbumArtUri = albumArtUriCdn;
             existingAlbum.Artist = album.Artist;
             existingAlbum.BackgroundColor = album.BackColor;
@@ -204,7 +216,8 @@ namespace BitShuva.Chavah.Controllers
                     PurchaseUri = album.PurchaseUrl,
                     UploadDate = DateTime.UtcNow,
                     Uri = null,
-                    AlbumId = existingAlbum.Id
+                    AlbumId = existingAlbum.Id,
+                    ArtistId = existingArtist.Id
                 };
                 await this.DbSession.StoreAsync(song);
 
@@ -358,6 +371,35 @@ namespace BitShuva.Chavah.Controllers
                 .Where(s => s.AlbumId == albumId)
                 .ToListAsync();
             songsWithAlbum.ForEach(s => s.AlbumId = "");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<PagedList<AlbumWithNetLikeCount>> GetLikedAlbums(int skip, int take, string search)
+        {
+            var userId = this.GetUserIdOrThrow();
+            var query = DbSession.Query<Like, Likes_ByAlbum>()
+                .Where(u => u.UserId == userId)
+                .ProjectInto<AlbumWithNetLikeCount>()
+                .Where(a => a.NetLikeCount > 0);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Search(a => a.Name, search + "*");
+            }
+
+            var albums = await query
+                .Statistics(out var stats)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+            return new PagedList<AlbumWithNetLikeCount>
+            {
+                Items = albums,
+                Skip = skip,
+                Take = take,
+                Total = stats.TotalResults
+            };
         }
     }
 }

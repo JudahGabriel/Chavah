@@ -1,6 +1,7 @@
 ﻿using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
@@ -82,6 +83,35 @@ namespace BitShuva.Chavah.Controllers
                 AverageRank = Math.Round(songsByArtist.Average(s => s.CommunityRank)),
                 Best = orderedByRank.First().Name + " at " + orderedByRank.First().CommunityRank.ToString(),
                 Worst = orderedByRank.Last().Name + " at " + orderedByRank.Last().CommunityRank.ToString()
+            };
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<PagedList<ArtistWithNetLikeCount>> GetLikedArtists(int skip, int take, string search)
+        {
+            var userId = this.GetUserIdOrThrow();
+            var query = DbSession.Query<Like, Likes_ByArtist>()
+                .Statistics(out var stats)
+                .Where(u => u.UserId == userId)
+                .ProjectInto<ArtistWithNetLikeCount>()
+                .Where(a => a.NetLikeCount > 0);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Search(a => a.Name, search + "*");
+            }
+
+            var artists = await query
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+            return new PagedList<ArtistWithNetLikeCount>
+            {
+                Items = artists,
+                Skip = skip,
+                Take = take,
+                Total = stats.TotalResults
             };
         }
 

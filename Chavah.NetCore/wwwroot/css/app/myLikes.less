@@ -3,35 +3,52 @@
 .my-likes-page {
     margin-top: 70px;
 
-    h3 {
-        display: inline-block;
+    .page-title {
         margin-top: 5px;
-        margin-left: 10px;
+    }
+
+    .nav-tabs {
+        display: inline-block;
     }
 
     .search-box-container {
         max-width: 300px;
+        margin-right: 15px;
     }
 
     .songs-container {
         width: 100%;
-        padding: 10px;
     }
 
     .song-item {
         padding: 10px;
         display: inline-block;
-        margin: 5px;
+        margin: 15px 15px 0 0;
         cursor: pointer;
 
         img {
             max-width: 300px;
             height: auto;
-
             /* Phones use smaller images sizes */
             @media(max-width: @screen-xs-max) {
                 max-width: 150px;
             }
+        }
+
+        .song-info {
+            margin-top: 5px;
+        }
+    }
+
+    .artist-item {
+        padding: 10px;
+        display: inline-block;
+        margin: 15px 15px 0 0;
+        cursor: pointer;
+        background-color: @gray-lighter;
+
+        .artist-image {
+            max-width: 100px;
         }
     }
 }
