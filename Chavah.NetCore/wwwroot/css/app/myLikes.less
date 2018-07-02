@@ -1,0 +1,37 @@
+﻿@import "../variables.less";
+
+.my-likes-page {
+    margin-top: 70px;
+
+    h3 {
+        display: inline-block;
+        margin-top: 5px;
+        margin-left: 10px;
+    }
+
+    .search-box-container {
+        max-width: 300px;
+    }
+
+    .songs-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .song-item {
+        padding: 10px;
+        display: inline-block;
+        margin: 5px;
+        cursor: pointer;
+
+        img {
+            max-width: 300px;
+            height: auto;
+
+            /* Phones use smaller images sizes */
+            @media(max-width: @screen-xs-max) {
+                max-width: 150px;
+            }
+        }
+    }
+}

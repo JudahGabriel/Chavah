@@ -42,7 +42,7 @@
             <h1 class="text-center current-song-name" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
                 {{vm.currentSong.name}}
             </h1>
-            <h1 class="text-center current-song-name hebrew" lang="he" ng-show="vm.currentSong.hebrewName" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}" lang="he">
+            <h1 class="text-center current-song-name hebrew" lang="he" ng-show="vm.currentSong.hebrewName" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchDarker } : {}">
                 {{vm.currentSong.hebrewName}}
             </h1>
             <div class="text-center">
@@ -116,13 +116,14 @@
             <!--Share-->
             <div class="panel-group expander share-expander" role="tablist">
                 <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}">
-                        <h3 class="panel-title text-center" ng-click="vm.currentSong.isShareExpaned = !vm.currentSong.isShareExpaned">
-                            <i class="fa fa-share" style="font-size: 22px;"></i> Share
-                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isShareExpaned, 'fa-angle-up': vm.currentSong.isShareExpaned }"></i>
+                    <div class="panel-heading" role="tab" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'background-color': vm.currentSong.albumSwatchBackground, 'color': vm.currentSong.albumSwatchForeground } : {}" ng-click="vm.tryNativeShare()">
+                        <h3 class="panel-title text-center" ng-click="vm.currentSong.isShareExpanded = !vm.currentSong.isShareExpanded">
+                            <i class="fa fa-share" style="font-size: 22px;"></i> 
+                            Share
+                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isShareExpanded, 'fa-angle-up': vm.currentSong.isShareExpanded }"></i>
                         </h3>
                     </div>
-                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isShareExpaned }" role="tabpanel">
+                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isShareExpanded }" role="tabpanel">
                         <div class="panel-body" ng-style="vm.currentSong.hasSetAlbumArtColors ? { 'color': vm.currentSong.albumSwatchForeground, 'background-color': vm.currentSong.albumSwatchBackground } : {}">
                             <a href="#" class="social-link" target="_blank" rel="noopener" ng-href="{{vm.currentSongFacebookShareUrl}}" uib-tooltip="Share this song on Facebook" tooltip-append-to-body="true">
                                 <i class="fa fa-facebook-official fa-3x" style="color: rgb(59, 88, 152)"></i>
@@ -146,7 +147,7 @@
                                 </div>
                                 <input type="url" id="currentSongShareLink" class="form-control" ng-model="vm.currentSongShareUrl" onclick="this.select()" readonly="readonly" />
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" uib-tooltip="Copy" uib-popover="Copied!" popover-placement="right" popover-popup-close-delay="1500" popover-trigger="'outsideClick'" ng-click="vm.copyShareUrl()">
+                                    <button class="btn btn-default" type="button" uib-tooltip="Copy" uib-popover="Copied!" popover-placement="top" popover-popup-close-delay="1500" popover-trigger="'outsideClick'" ng-click="vm.copyShareUrl()">
                                         <i class="fa fa-copy" title="Copy the link to this song"></i>
                                     </button>
                                 </span>

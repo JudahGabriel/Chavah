@@ -158,7 +158,7 @@ var BitShuva;
                     .then(function (results) { return _this.updateSongList(_this.trending, results.items); })
                     .then(function () { return _this.songApi.getPopularSongs(3); })
                     .then(function (results) { return _this.updateSongList(_this.popular, results); })
-                    .then(function () { return _this.songApi.getLikes(3); })
+                    .then(function () { return _this.songApi.getRandomLikedSongs(3); })
                     .then(function (results) { return _this.updateSongList(_this.likes, results); })
                     .finally(function () {
                     _this.fetchAlbumColors(_this.getAllSongsOnScreen());
@@ -249,9 +249,34 @@ var BitShuva;
                 return false;
             };
             NowPlayingController.prototype.copyShareUrl = function () {
+                // iOS share functionality.
                 var shareUrlInput = document.querySelector("#currentSongShareLink");
-                shareUrlInput.select();
+                var isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
+                // iOS has specific rules about copying text. https://stackoverflow.com/a/43001673/536
+                if (isiOSDevice) {
+                    var editable = shareUrlInput.contentEditable;
+                    var readOnly = shareUrlInput.readOnly;
+                    shareUrlInput.contentEditable = "true"; // yes, a string: "true", "false", "inheritable" https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/contentEditable
+                    shareUrlInput.readOnly = false;
+                    var range = document.createRange();
+                    range.selectNodeContents(shareUrlInput);
+                    var selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    shareUrlInput.setSelectionRange(0, 999999);
+                    shareUrlInput.contentEditable = editable;
+                    shareUrlInput.readOnly = readOnly;
+                }
+                else {
+                    // Not iOS? Just select the text box containing the URL to share.
+                    shareUrlInput.select();
+                }
                 document.execCommand("copy");
+            };
+            NowPlayingController.prototype.tryNativeShare = function () {
+                if (this.currentSong && this.currentSong.isShareExpanded) {
+                    this.sharing.nativeShareUrl(this.currentSong);
+                }
             };
             NowPlayingController.prototype.getUrlQueryOrNull = function (term) {
                 var queryString = window.location.search;

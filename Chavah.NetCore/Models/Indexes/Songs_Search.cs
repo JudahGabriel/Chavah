@@ -11,8 +11,8 @@ namespace BitShuva.Chavah.Models.Indexes
             Map = songs => from song in songs
                            select new
                            {
-                               Name = song.Name.Boost(3),
-                               HebrewName = song.HebrewName.Boost(3),
+                               Name = song.Name.Boost(2),
+                               HebrewName = song.HebrewName.Boost(2),
                                Artist = song.Artist,
                                Album = song.Album
                            };

@@ -72,11 +72,19 @@ var BitShuva;
                 };
                 return this.httpApi.query("/api/songs/getpopular", args, SongApiService.songListConverter);
             };
-            SongApiService.prototype.getLikes = function (count) {
+            SongApiService.prototype.getRandomLikedSongs = function (count) {
                 var args = {
                     count: count,
                 };
                 return this.httpApi.query("/api/songs/getRandomLikedSongs", args, SongApiService.songListConverter);
+            };
+            SongApiService.prototype.getLikes = function (skip, take, search) {
+                var args = {
+                    skip: skip,
+                    take: take,
+                    search: search
+                };
+                return this.httpApi.query("/api/songs/getLikes", args, SongApiService.songPagedListConverter);
             };
             SongApiService.prototype.getRecentPlays = function (count) {
                 var args = {

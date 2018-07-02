@@ -18,6 +18,7 @@ namespace BitShuva.Chavah.Models
                 Body = smtpEmail.Body,
                 Bcc = smtpEmail.Bcc?.ToString() ?? string.Empty,
                 CC = smtpEmail.CC?.ToString() ?? string.Empty,
+                ReplyTo = smtpEmail.From?.ToString() ?? null,
                 Created = DateTimeOffset.UtcNow,
                 Subject = smtpEmail.Subject,
                 To = smtpEmail.To?.ToString() ?? string.Empty
@@ -26,6 +27,7 @@ namespace BitShuva.Chavah.Models
 
         public string Id { get; set; }
         public string To { get; set; }
+        public string ReplyTo { get; set; }
         public string CC { get; set; }
         public string Bcc { get; set; }
         public string Subject { get; set; }

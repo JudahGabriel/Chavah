@@ -3,7 +3,7 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var FooterController = /** @class */ (function () {
-            function FooterController(audioPlayer, songBatch, likeApi, songRequestApi, accountApi, stationIdentifier, appNav, $scope) {
+            function FooterController(audioPlayer, songBatch, likeApi, songRequestApi, accountApi, stationIdentifier, adAnnouncer, appNav, $scope) {
                 var _this = this;
                 this.audioPlayer = audioPlayer;
                 this.songBatch = songBatch;
@@ -11,15 +11,15 @@ var BitShuva;
                 this.songRequestApi = songRequestApi;
                 this.accountApi = accountApi;
                 this.stationIdentifier = stationIdentifier;
+                this.adAnnouncer = adAnnouncer;
                 this.appNav = appNav;
                 this.$scope = $scope;
                 this.volumeShown = false;
-                this.volume = 1;
+                this.volumeVal = new Rx.Subject();
                 this.isBuffering = false;
                 this.lastAudioErrorTime = null;
-                var audio = document.querySelector("#audio");
-                this.audioPlayer.initialize(audio);
-                this.volume = audio.volume;
+                this.stalledTimerHandle = null;
+                this.audio = null;
                 // Notify the scope when the audio status changes.
                 this.audioPlayer.status
                     .debounce(100)
@@ -37,18 +37,11 @@ var BitShuva;
                 this.audioPlayer.playedTimePercentage
                     .distinctUntilChanged()
                     .subscribe(function (percent) { return $(".footer .trackbar").width(percent + "%"); });
-                $scope.$watch(function () { return _this.volume; }, function () { return audio.volume = _this.volume; });
-                // MediaSession:
-                // This is a new browser API being adopted on some mobile platforms (at the time of this writing, Android),
-                // which shows media information above the
-                // For more info, see https://developers.google.com/web/updates/2017/02/media-session#set_metadata
-                if ("mediaSession" in navigator) {
-                    // Setup media session handlers so that a native play/pause/next
-                    // buttons do the same thing as our footer's play/pause/next.
-                    this.setupMediaSessionHandlers();
-                    // Listen for when the song changes so that we show the song info on the phone lock screen.
-                    this.audioPlayer.song.subscribe(function (songOrNull) { return _this.updateMediaSession(songOrNull); });
-                }
+                // If we sign in, restore the volume preference for the user.
+                this.accountApi.signedIn
+                    .distinctUntilChanged()
+                    .where(function (isSignedIn) { return isSignedIn; })
+                    .subscribe(function (_) { return _this.restoreVolumeFromSignedInUser(); });
             }
             Object.defineProperty(FooterController.prototype, "likesCurrentSong", {
                 get: function () {
@@ -105,6 +98,37 @@ var BitShuva;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(FooterController.prototype, "volume", {
+                get: function () {
+                    if (this.audio) {
+                        return this.audio.volume;
+                    }
+                    return 1;
+                },
+                set: function (val) {
+                    if (this.audio) {
+                        this.audio.volume = val;
+                    }
+                    this.volumeVal.onNext(val);
+                },
+                enumerable: true,
+                configurable: true
+            });
+            FooterController.prototype.$onInit = function () {
+                var _this = this;
+                this.audio = document.querySelector("#audio");
+                if (!this.audio) {
+                    throw new Error("Couldn't locate #audio element");
+                }
+                this.audioPlayer.initialize(this.audio);
+                this.restoreVolumeFromSignedInUser();
+                // Wait for changes to the volume level and save them.
+                this.volumeVal
+                    .distinctUntilChanged()
+                    .debounce(2000)
+                    .where(function (v) { return !!_this.accountApi.currentUser && _this.accountApi.currentUser.volume !== v; })
+                    .subscribe(function (val) { return _this.saveVolumePreference(val); });
+            };
             FooterController.prototype.toggleVolumnShown = function () {
                 this.volumeShown = !this.volumeShown;
             };
@@ -174,11 +198,15 @@ var BitShuva;
                     // Play the station identifier if need be.
                     this.stationIdentifier.playStationIdAnnouncement();
                 }
+                else if (this.adAnnouncer.hasPendingAnnouncement()) {
+                    this.adAnnouncer.playAdAnnouncement();
+                }
                 else {
                     this.songBatch.playNext();
                 }
             };
             FooterController.prototype.audioStatusChanged = function (status) {
+                var _this = this;
                 if (status === Chavah.AudioStatus.Ended) {
                     this.playNextSong();
                 }
@@ -191,6 +219,20 @@ var BitShuva;
                         this.playNextSong();
                     }
                     this.lastAudioErrorTime = new Date();
+                }
+                else if (status === Chavah.AudioStatus.Stalled) {
+                    // Sometimes on mobile platforms (especially older Android) we 
+                    // get into a stalled state and never recover.
+                    // To rectify this, check if we're still stalled 7 seconds later
+                    // and if so, play the next song.
+                    if (this.stalledTimerHandle) {
+                        clearTimeout(this.stalledTimerHandle);
+                        this.stalledTimerHandle = setTimeout(function () {
+                            if (_this.audioPlayer.status.getValue() === Chavah.AudioStatus.Stalled) {
+                                _this.playNextSong();
+                            }
+                        }, 5000);
+                    }
                 }
                 this.isBuffering = status === Chavah.AudioStatus.Buffering || status === Chavah.AudioStatus.Stalled;
                 this.$scope.$applyAsync();
@@ -215,34 +257,17 @@ var BitShuva;
                     case Chavah.AudioStatus.Stalled: return "Stalled...";
                 }
             };
-            FooterController.prototype.setupMediaSessionHandlers = function () {
-                var _this = this;
-                try {
-                    var mediaSession = navigator["mediaSession"];
-                    mediaSession.setActionHandler("play", function () { return _this.playPause(); });
-                    mediaSession.setActionHandler("pause", function () { return _this.playPause(); });
-                    mediaSession.setActionHandler("nexttrack", function () { return _this.playNextSong(); });
-                }
-                catch (error) {
-                    // Can't setup media session action handlers? No worries. Continue as normal.
+            FooterController.prototype.restoreVolumeFromSignedInUser = function () {
+                if (this.accountApi.currentUser) {
+                    // Set the volume to whatever the user last set it.
+                    // Min value is 0.1, otherwise users may wonder why they don't hear audio
+                    this.volume = Math.max(0.1, this.accountApi.currentUser.volume);
                 }
             };
-            FooterController.prototype.updateMediaSession = function (song) {
-                if (song) {
-                    var metadata = {
-                        album: song.album,
-                        artist: song.artist,
-                        title: song.name,
-                        artwork: [
-                            { src: song.albumArtUri, sizes: "300x300", type: "image/jpg" }
-                        ],
-                    };
-                    try {
-                        navigator["mediaSession"].metadata = new window["MediaMetadata"](metadata);
-                    }
-                    catch (error) {
-                        // Can't update the media session? No worries; eat the error and proceed as normal.
-                    }
+            FooterController.prototype.saveVolumePreference = function (volume) {
+                if (this.accountApi.currentUser && this.accountApi.currentUser.volume !== volume) {
+                    this.accountApi.currentUser.volume = volume;
+                    this.accountApi.saveVolume(volume);
                 }
             };
             FooterController.$inject = [
@@ -252,8 +277,9 @@ var BitShuva;
                 "songRequestApi",
                 "accountApi",
                 "stationIdentifier",
+                "adAnnouncer",
                 "appNav",
-                "$scope",
+                "$scope"
             ];
             return FooterController;
         }());

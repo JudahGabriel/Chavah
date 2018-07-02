@@ -20,11 +20,15 @@
          * As of March 2018, only Chrome on Android supports this.
          */
         install() {
-            const supportsMediaSession = 'mediaSession' in navigator;
-            if (supportsMediaSession) {
-                this.mediaSession = navigator['mediaSession'];
-                this.listenForUIEvents();
-                this.listenForAudioEvents();
+            try {
+                const supportsMediaSession = 'mediaSession' in navigator;
+                if (supportsMediaSession) {
+                    this.mediaSession = navigator['mediaSession'];
+                    this.listenForUIEvents();
+                    this.listenForAudioEvents();
+                }
+            } catch (error) {
+                console.log("Unable to install navigator media session", error);
             }
         }
 
