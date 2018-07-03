@@ -69,7 +69,7 @@
         }
 
         loadMoreArtists() {
-            this.albums.fetchNextChunk();
+            this.artists.fetchNextChunk();
         }
 
         setCategory(category: LikesCategory) {
