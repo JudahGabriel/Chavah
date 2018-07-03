@@ -28,6 +28,8 @@
             private readonly appNav: AppNavService) {
 
             this.songs.take = 20;
+            this.albums.take = 20;
+            this.artists.take = 20;
         }
 
         get search(): string {

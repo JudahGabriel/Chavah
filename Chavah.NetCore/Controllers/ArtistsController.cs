@@ -95,7 +95,8 @@ namespace BitShuva.Chavah.Controllers
                 .Statistics(out var stats)
                 .Where(u => u.UserId == userId)
                 .ProjectInto<ArtistWithNetLikeCount>()
-                .Where(a => a.NetLikeCount > 0);
+                .Where(a => a.NetLikeCount > 0)
+                .OrderByDescending(a => a.NetLikeCount);
 
             if (!string.IsNullOrWhiteSpace(search))
             {

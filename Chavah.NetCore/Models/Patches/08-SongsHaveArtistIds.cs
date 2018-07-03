@@ -18,6 +18,7 @@ namespace BitShuva.Chavah.Models.Patches
 
         protected override void BeforePatch(IDocumentStore db)
         {
+            
             // Load all the songs and group them by artist.
             var songsByArtist = this.Stream<Song>(db, s => true).GroupBy(s => s.Artist);
 

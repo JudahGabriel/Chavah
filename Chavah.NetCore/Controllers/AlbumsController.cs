@@ -198,7 +198,6 @@ namespace BitShuva.Chavah.Controllers
 
             // Store the songs in the DB.
             var songNumber = 1;
-            
             foreach (var albumSong in album.Songs)
             {
                 //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
@@ -381,7 +380,8 @@ namespace BitShuva.Chavah.Controllers
             var query = DbSession.Query<Like, Likes_ByAlbum>()
                 .Where(u => u.UserId == userId)
                 .ProjectInto<AlbumWithNetLikeCount>()
-                .Where(a => a.NetLikeCount > 0);
+                .Where(a => a.NetLikeCount > 0)
+                .OrderByDescending(a => a.NetLikeCount);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
