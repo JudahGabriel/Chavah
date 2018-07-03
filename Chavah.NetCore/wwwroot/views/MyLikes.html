@@ -75,8 +75,9 @@
                     <span ng-show="album.netLikeCount > 0">+</span><span>{{album.netLikeCount}}</span>
                 </h3>
                 <p>
-                    ({{album.likeCount}} song<span ng-show="album.likeCount != 1">s</span> thumbed-up, {{album.dislikeCount}} song<span ng-show="album.dislikeCount != 1">s</span> thumbed-down.)
+                    {{album.likeCount}} song<span ng-show="album.likeCount != 1">s</span> <i class="fa fa-thumbs-up"></i>
                 </p>
+                <p>{{album.dislikeCount}} song<span ng-show="album.dislikeCount != 1">s</span> <i class="fa fa-thumbs-down"></i></p>
             </div>
         </div>
 
@@ -105,13 +106,18 @@
     <!-- artists -->
     <div class="artists-container" ng-if="vm.activeCategory === 'Artists'">
         <div class="artist-item" ng-repeat="artist in vm.artists.items" ng-click="vm.playArtist(artist)" uib-tooltip="Click to play a song from this artist" tooltip-append-to-body="true">
-            <img class="artist-image" ng-repeat="image in artist.images" ng-src="{{image}}" />
-            <h2>{{artist.name}}</h2>
+            <div class="artist-image-placeholder">
+                <h2>{{artist.name}}</h2>
+            </div>
+            
             <h3 class="text-center">
                 <span ng-show="artist.netLikeCount > 0">+</span><span>{{artist.netLikeCount}}</span>
             </h3>
             <p>
-                ({{artist.likeCount}} song<span ng-show="artist.likeCount != 1">s</span> thumbed-up, {{artist.dislikeCount}} song<span ng-show="artist.dislikeCount != 1">s</span> thumbed-down.)
+                {{artist.likeCount}} song<span ng-show="artist.likeCount != 1">s</span> <i class="fa fa-thumbs-up"></i>
+            </p>
+            <p>
+                {{artist.dislikeCount}} song<span ng-show="artist.dislikeCount != 1">s</span> <i class="fa fa-thumbs-down"></i>
             </p>
         </div>
 

@@ -18,6 +18,7 @@ namespace BitShuva.Chavah.Models.Indexes
                            let song = LoadDocument<Song>(like.SongId)
                            let artist = LoadDocument<Artist>(song.ArtistId)
                            let isLiked = like.Status == LikeStatus.Like
+                           where artist != null && song != null
                            select new ArtistWithNetLikeCount
                            {
                                Id = artist.Id,
@@ -31,17 +32,16 @@ namespace BitShuva.Chavah.Models.Indexes
                            };
 
             Reduce = results => from result in results
-                                group result by result.Id into artistGroup
+                                group result by new { result.Id, result.UserId } into artistGroup
                                 let netLikeCount = artistGroup.Sum(i => i.NetLikeCount)
-                                orderby netLikeCount descending
                                 let artist = artistGroup.First()
                                 select new ArtistWithNetLikeCount
                                 {
-                                    Id = artist.Id,
+                                    Id = artistGroup.Key.Id,
                                     Name = artist.Name,
                                     Bio = artist.Bio,
                                     Images = artist.Images,
-                                    UserId = artist.UserId,
+                                    UserId = artistGroup.Key.UserId,
                                     NetLikeCount = artistGroup.Sum(a => a.NetLikeCount),
                                     LikeCount = artistGroup.Sum(a => a.LikeCount),
                                     DislikeCount = artistGroup.Sum(a => a.DislikeCount),
