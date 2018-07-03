@@ -33,6 +33,7 @@
 }
 .my-likes-page .song-item .song-info {
   margin-top: 5px;
+  max-width: 300px;
 }
 .my-likes-page .artist-item {
   padding: 10px;
@@ -43,10 +44,18 @@
 }
 .my-likes-page .artist-item .artist-image-placeholder {
   width: 300px;
-  height: 100px;
+  height: 300px;
   text-align: center;
   vertical-align: middle;
 }
 .my-likes-page .artist-item .artist-image-placeholder h2 {
-  height: 100%;
+  margin-top: 0;
+  padding-top: 30%;
+}
+.my-likes-page .artist-item .artist-image {
+  background-size: cover;
+  width: 300px;
+  height: 300px;
+  box-shadow: 0 0 3px 1px gray;
+  border-radius: 200px;
 }
