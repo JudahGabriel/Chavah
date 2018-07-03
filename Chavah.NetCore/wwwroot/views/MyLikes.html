@@ -108,7 +108,7 @@
         <div class="artist-item" ng-repeat="artist in vm.artists.items" ng-click="vm.playArtist(artist)" uib-tooltip="Click to play a song from this artist" tooltip-append-to-body="true">
             <h2 class="artist-name text-center">{{artist.name}}</h2>
 
-            <div class="artist-image" ng-show="artist.images.length" ng-style="{ 'background-image': 'url(\'' + artist.images[0] + '\')' }">
+            <div class="artist-image" ng-show="artist.images.length"  background-image="artist.images[0]">
             </div>
             <div class="artist-image-placeholder" ng-show="artist.images.length === 0">
                 <h2>
