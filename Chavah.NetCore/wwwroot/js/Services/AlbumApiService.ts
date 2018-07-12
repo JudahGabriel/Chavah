@@ -19,7 +19,7 @@
         }
 
         changeArt(albumId: string, artUri: string) {
-            let args = {
+            const args = {
                 albumId,
                 artUri,
             };
@@ -27,14 +27,14 @@
         }
 
         get(id: string): ng.IPromise<Album | null> {
-            let args = {
+            const args = {
                 id,
             };
             return this.httpApi.query<Album | null>("/api/albums/get", args, AlbumApiService.albumSelector);
         }
 
         getAll(skip: number, take: number, search: string | null): ng.IPromise<Server.PagedList<Album>> {
-            let args = {
+            const args = {
                 skip,
                 take,
                 search,
@@ -43,7 +43,7 @@
         }
 
         getByArtistAndAlbumName(artist: string, album: string): ng.IPromise<Album | null> {
-            let args = {
+            const args = {
                 artist,
                 album,
             };
@@ -56,10 +56,19 @@
         }
 
         getAlbums(albumIds: string[]): ng.IPromise<Album[]> {
-            let args = {
+            const args = {
                 albumIdsCsv: albumIds.join(","),
             };
             return this.httpApi.query("/api/albums/getAlbums", args, AlbumApiService.albumArraySelector);
+        }
+
+        getLikedAlbums(skip: number, take: number, search: string): ng.IPromise<Server.PagedList<Server.AlbumWithNetLikeCount>> {
+            const args = {
+                skip,
+                take,
+                search
+            };
+            return this.httpApi.query("/api/albums/getLikedAlbums", args);
         }
 
         // getAlbumsForSongs(songIds: string[]): ng.IPromise<Album[]> {

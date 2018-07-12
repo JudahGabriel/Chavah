@@ -1,10 +1,12 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Optional.Collections;
 using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Queries.Suggestions;
 using Raven.Client.Documents.Session;
 using System;
@@ -62,29 +64,45 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        public async Task<PagedList<Song>> GetLikedSongs(int skip, int take)
+        [Authorize]
+        public async Task<PagedList<SongWithAlbumColors>> GetLikedSongs(int skip, int take, string search = null)
         {
-            var user = await this.GetCurrentUser();
-            if (user == null)
+            var userId = this.GetUserId();
+            var query = this.DbSession.Query<Like, Likes_SongSearch>()
+                .Where(l => l.UserId == userId)
+                .ProjectInto<Likes_SongSearch.Result>();
+
+            // If we're doing  a search;
+            if (!string.IsNullOrEmpty(search))
             {
-                return new PagedList<Song>();
+                query = query
+                    .Search(s => s.Name, search + "*")
+                    .Search(s => s.HebrewName, search + "*")
+                    .Search(s => s.Album, search + "*")
+                    .Search(s => s.Artist, search + "*");
             }
             
-            var likedSongIds = await this.DbSession
-                .Query<Like>()
-                .Include(l => l.SongId)
-                .Statistics(out var stats)
-                .Where(l => l.Status == LikeStatus.Like && l.UserId == user.Id)
-                .OrderByDescending(l => l.Date)
-                .Select(l => l.SongId)
+            var likes = await query
+                .Include(l => l.SongId) // We want to load the songs
+                .Statistics(out var stats) // Stats so that we can find total number of matches.
+                .OrderByDescending(l => l.Date) // Most recent likes first
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
 
-            var songs = await this.DbSession.LoadWithoutNulls<Song>(likedSongIds);
-            return new PagedList<Song>
+            // The songs were already loaded into the session via the previous .Include call.
+            var songs = await this.DbSession.LoadWithoutNulls<Song>(likes.Select(l => l.SongId));
+
+            // Add the album swatches to these songs.
+            var songsWithAlbumColors = songs
+                .Select(s => SongWithAlbumColors.FromSong(s, likes
+                    .FirstOrNone(l => l.SongId == s.Id) // Find the like for this song
+                    .Map(l => l as IHasAlbumSwatches))) // Map it as IHasAlbumSwatches
+                .ToList();
+
+            return new PagedList<SongWithAlbumColors>
             {
-                Items = songs.ToArray(),
+                Items = songsWithAlbumColors,
                 Skip = skip,
                 Take = take,
                 Total = stats.TotalResults
@@ -97,8 +115,8 @@ namespace BitShuva.Chavah.Controllers
             // Run the query that the user typed in.
             var results = await this.DbSession
                     .Query<Song, Songs_Search>()
-                    .Search(s => s.Name, searchText, 2)
-                    .Search(s => s.HebrewName, searchText, 2)
+                    .Search(s => s.Name, searchText)
+                    .Search(s => s.HebrewName, searchText)
                     .Search(s => s.Album, searchText)
                     .Search(s => s.Artist, searchText)
                     .ToListAsync();
@@ -106,7 +124,6 @@ namespace BitShuva.Chavah.Controllers
             // No results? See if we can suggest some near matches.
             if (results.Count == 0)
             {
-                // Local function that asks for query suggestions. 
                 // If any suggestions are found, the query is run against the first suggestion.
                 var nameResults = await this.QuerySongSearchSuggestions(s => s.Name, searchText);
                 var hebrewNameResults = await this.QuerySongSearchSuggestions(s => s.HebrewName, searchText);
@@ -355,6 +372,20 @@ namespace BitShuva.Chavah.Controllers
             var songOrNull = await this.DbSession.Query<Song, Songs_GeneralQuery>()
                     .Customize(c => c.RandomOrdering())
                     .FirstOrDefaultAsync(s => s.Album == albumUnescaped);
+            if (songOrNull != null)
+            {
+                return await GetSongDto(songOrNull, SongPick.SongFromAlbumRequested);
+            }
+
+            return null;
+        }
+
+        [HttpGet]
+        public async Task<Song> GetByAlbumId(string albumId)
+        {
+            var songOrNull = await this.DbSession.Query<Song, Songs_GeneralQuery>()
+                    .Customize(c => c.RandomOrdering())
+                    .FirstOrDefaultAsync(s => s.AlbumId == albumId);
             if (songOrNull != null)
             {
                 return await GetSongDto(songOrNull, SongPick.SongFromAlbumRequested);

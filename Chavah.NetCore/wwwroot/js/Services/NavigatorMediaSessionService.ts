@@ -57,18 +57,22 @@
             // When the audio status changes, let the host platform know about it.
             // https://developer.mozilla.org/en-US/docs/Web/API/MediaSession/playbackState
             if (this.mediaSession) {
-                switch (status) {
-                    case AudioStatus.Paused:
-                        this.mediaSession.playbackState = "paused";
-                        break;
+                try {
+                    switch (status) {
+                        case AudioStatus.Paused:
+                            this.mediaSession.playbackState = "paused";
+                            break;
 
-                    case AudioStatus.Playing:
-                        this.mediaSession.playbackState = "playing";
-                        break;
+                        case AudioStatus.Playing:
+                            this.mediaSession.playbackState = "playing";
+                            break;
 
-                    default:
-                        this.mediaSession.playbackState = "none";
-                        break;
+                        default:
+                            this.mediaSession.playbackState = "none";
+                            break;
+                    }
+                } catch (error) {
+                    console.log("Unable to set media session playback state", error);
                 }
             }
         }
@@ -99,7 +103,11 @@
                     });
                 }
 
-                this.mediaSession.metadata = new window["MediaMetadata"](metadata);
+                try {
+                    this.mediaSession.metadata = new window["MediaMetadata"](metadata);
+                } catch (error) {
+                    console.log("unable to set mediaSession metadata", error);
+                }
             }
         }
     }

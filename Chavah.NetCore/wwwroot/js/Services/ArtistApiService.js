@@ -26,6 +26,14 @@ var BitShuva;
             ArtistApiService.prototype.save = function (artist) {
                 return this.httpApi.post("/api/artists/save", artist, ArtistApiService.artistSelector);
             };
+            ArtistApiService.prototype.getLikedArtists = function (skip, take, search) {
+                var args = {
+                    skip: skip,
+                    take: take,
+                    search: search
+                };
+                return this.httpApi.query("/api/artists/getLikedArtists", args);
+            };
             // tslint:disable-next-line:member-ordering
             ArtistApiService.artistSelector = function (serverObj) {
                 return new Chavah.Artist(serverObj);

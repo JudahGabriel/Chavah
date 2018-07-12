@@ -53,6 +53,11 @@ namespace BitShuva.Chavah.Controllers
                 {
                     await DbSession.SaveChangesAsync();
                 }
+                catch (TaskCanceledException)
+                {
+                    // If the browser cancelled the request, there's no need to do the full logging.
+                    logger.LogInformation("Task cancelled");
+                }
                 catch (Exception saveError)
                 {
                     using (logger.BeginKeyValueScope("user", User?.Identity?.Name))

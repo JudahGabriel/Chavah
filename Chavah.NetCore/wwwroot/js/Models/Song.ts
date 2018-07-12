@@ -4,6 +4,7 @@ namespace BitShuva.Chavah {
         hebrewName: string | null;
         album: string;
         artist: string;
+        artistId: string;
         artistImages: string[];
         albumArtUri: string;
         uri: string;
@@ -55,9 +56,14 @@ namespace BitShuva.Chavah {
             rgb: [255, 255, 255],
         };
 
-        constructor(song: Server.Song) {
+        constructor(song: Server.Song | Server.SongWithAlbumColors) {
             angular.merge(this, song);
 
+            // If we were sent a SongWithAlbumColors, mark our "has set album art colors" to true.
+            if ('albumSwatchBackground' in song) {
+                this.hasSetAlbumArtColors = true;    
+            }
+            
             this.clientId = `${song.id}_${new Date().getTime() + Math.random()}`;
         }
 
@@ -125,8 +131,10 @@ namespace BitShuva.Chavah {
         static empty(): Song {
             return new Song({
                 album: "",
+                albumId: "",
                 albumArtUri: "",
                 artist: "",
+                artistId: "",
                 communityRank: 0,
                 communityRankStanding: 0,
                 id: "songs/0",

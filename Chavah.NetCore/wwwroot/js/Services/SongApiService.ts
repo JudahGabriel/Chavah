@@ -28,18 +28,27 @@
 
         getSongByArtistAndAlbum(artist: string, album: string): ng.IPromise<Song | null> {
             let url = "/api/songs/getByArtistAndAlbum";
-            let args = {
+            const args = {
                 artist,
-                album,
+                album
             };
 
             return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
         getSongByAlbum(album: string): ng.IPromise<Song | null> {
-            let url = "/api/songs/getByAlbum/";
-            let args = {
-                album,
+            const url = "/api/songs/getByAlbum/";
+            const args = {
+                album
+            };
+
+            return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
+        }
+
+        getSongByAlbumId(albumId: string): ng.IPromise<Song | null> {
+            const url = "/api/songs/getByAlbumId/";
+            const args = {
+                albumId
             };
 
             return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
@@ -47,7 +56,7 @@
 
         getSongWithTag(tag: string): ng.IPromise<Song | null> {
             let url = "/api/songs/getByTag";
-            let args = {
+            const args = {
                 tag,
             };
 
@@ -56,7 +65,7 @@
 
         getSongByArtist(artist: string): ng.IPromise<Song | null> {
             let url = "/api/songs/getByArtist";
-            let args = {
+            const args = {
                 artist,
             };
 
@@ -65,7 +74,7 @@
 
         getSongMatches(searchText: string): ng.IPromise<Song[]> {
             let url = "/api/songs/search";
-            let args = {
+            const args = {
                 searchText,
             };
 
@@ -73,7 +82,7 @@
         }
 
         getTrendingSongs(skip: number, take: number): ng.IPromise<Server.PagedList<Song>> {
-            let args = {
+            const args = {
                 skip,
                 take,
             };
@@ -81,22 +90,32 @@
         }
 
         getPopularSongs(count: number): ng.IPromise<Song[]> {
-            let args = {
+            const args = {
                 count,
             };
             return this.httpApi.query("/api/songs/getpopular", args, SongApiService.songListConverter);
         }
 
-        getLikes(count: number): ng.IPromise<Song[]> {
-            let args = {
+        getRandomLikedSongs(count: number): ng.IPromise<Song[]> {
+            const args = {
                 count,
             };
 
             return this.httpApi.query("/api/songs/getRandomLikedSongs", args, SongApiService.songListConverter);
         }
 
+        getLikes(skip: number, take: number, search?: string): ng.IPromise<Server.PagedList<Song>> {
+            const args = {
+                skip,
+                take,
+                search
+            };
+
+            return this.httpApi.query("/api/songs/getLikedSongs", args, SongApiService.songPagedListConverter);
+        }
+
         getRecentPlays(count: number): ng.IPromise<Song[]> {
-            let args = {
+            const args = {
                 count,
             };
 
@@ -104,7 +123,7 @@
         }
 
         songCompleted(songId: string): ng.IPromise<any> {
-            let args = {
+            const args = {
                 songId,
             };
             return this.httpApi.postUriEncoded("/api/songs/songCompleted", args);
