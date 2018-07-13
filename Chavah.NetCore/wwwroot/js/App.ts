@@ -98,7 +98,7 @@
             .when("/popular", createRoute(views.popular))
             .when("/recent", createRoute(views.recent))
             .when("/mylikes", createRoute(views.myLikes))
-            .when("/edit/songs/:id", createRoute(views.editSong))
+            .when("/edit/songs/:id", createRoute(views.editSong, RouteAccess.Authenticated))
             .when("/sharethanks/:artist?", createRoute(views.shareThanks))
             .when("/about", createRoute(views.about))
             .when("/welcome", createRoute(views.welcome))
