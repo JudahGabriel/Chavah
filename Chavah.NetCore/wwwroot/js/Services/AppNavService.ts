@@ -65,7 +65,7 @@
         }
 
         showSongRequestDialog(): ng.ui.bootstrap.IModalServiceInstance {
-            let requestSongDialog = this.$uibModal.open({
+            const requestSongDialog = this.$uibModal.open({
                 controller: "RequestSongController as vm",
                 templateUrl: this.templatePaths.songRequestModal,
                 windowClass: "request-song-modal",
