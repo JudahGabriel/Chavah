@@ -106,5 +106,9 @@
   {
     "outputFile": "wwwroot/css/app/Support.css",
     "inputFile": "wwwroot/css/app/Support.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/myLikes.css",
+    "inputFile": "wwwroot/css/app/myLikes.less"
   }
 ]

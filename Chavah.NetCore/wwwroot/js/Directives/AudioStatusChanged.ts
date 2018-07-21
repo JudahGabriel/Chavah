@@ -1,4 +1,4 @@
-﻿namespace Chavah {
+﻿//namespace Chavah {
     /**
      * Angular directive that handles a changed event from a file input.
      */
@@ -23,4 +23,4 @@
     //}
 
     //App.directive("fileUploadChanged", ["$parse", ($parse: ng.IParseService) => new FileUploadChangedBinder($parse)]);
-}
+//}

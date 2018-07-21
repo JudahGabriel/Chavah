@@ -1,9 +1,151 @@
-﻿<section class="page my-likes-page">
-    <h3>The My Likes page is under construction. Thanks for your patience.</h3>
-    <h3>
-        <a href="#/nowplaying">
-            <i class="fa fa-arrow-left"></i>
-            Return to home
-        </a>
-    </h3>
+﻿<div ng-include="Partials.goBack"></div>
+<section class="page my-likes-page" ng-controller="MyLikesController as vm">
+
+    <h2 class="page-title">My Likes</h2>
+
+    <ul class="nav nav-tabs">
+        <li role="presentation" ng-repeat="category in vm.allCategories" ng-class="{ active: vm.activeCategory === category }" ng-click="vm.setCategory(category)">
+            <a href="javascript:void(0)">{{category}}</a>
+        </li>
+    </ul>
+
+    <div class="input-group search-box-container pull-right">
+        <span class="input-group-addon" id="basic-addon1">
+            <i class="fa fa-search"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Type a song, artist, or album" aria-describedby="basic-addon1" ng-model="vm.search" ng-model-options="{ debounce: 500 }">
+    </div>
+
+    <div class="clearfix"></div>
+
+    <!-- songs -->
+    <div class="songs-container" ng-if="vm.activeCategory === 'Songs'">
+        <div class="song-item" ng-repeat="song in vm.songs.items" ng-click="vm.playSong(song)" ng-style="{ 'background-color': song.albumSwatchBackground }" uib-tooltip="Click to play this song" tooltip-append-to-body="true">
+            <img ng-src="{{song.albumArtUri}}" alt="{{song.album}} album art">
+            <div class="song-info"
+                 ng-attr-title="{{song.name}} by {{song.artist}} on {{song.album}}"
+                 ng-style="song.hasSetAlbumArtColors ? { 'background-color': song.albumSwatchBackground, 'color': song.albumSwatchForeground } : { }">
+                {{song.name}}
+                <br />
+                <span class="text-muted">By</span>
+                {{song.artist}}
+                <br />
+                <span class="text-muted">On</span>
+                {{song.album}}
+            </div>
+        </div>
+
+        <h4 ng-show="vm.songs.isLoading">
+            <br />
+            <i class="fa fa-circle-o-notch fa-spin"></i>
+            <span>Loading your liked songs...</span>
+        </h4>
+
+        <h4 ng-show="vm.songs.isLoadedAndEmpty">
+            <br />
+            <i class="fa fa-info-circle"></i>
+            <span ng-hide="vm.search">You haven't liked any songs yet. Click the <i class="fa fa-thumbs-up"></i> button to like a song.</span>
+            <span ng-show="vm.search">No songs matching your search.</span>
+        </h4>
+
+        <h4 class="text-center" ng-show="vm.songs.isLoadedWithData">
+            <br />
+            Showing {{vm.songs.items.length}} of {{vm.songs.itemsTotalCount}} liked songs
+            <br />
+            <br />
+            <button class="btn btn-default" ng-show="vm.songs.hasMoreItems" ng-click="vm.loadMoreSongs()">Show more</button>
+        </h4>
+    </div>
+
+    <!-- albums -->
+    <div class="albums-container" ng-if="vm.activeCategory === 'Albums'">
+        <div class="song-item" ng-repeat="album in vm.albums.items" ng-click="vm.playAlbum(album)" ng-style="{ 'background-color': album.backgroundColor }" uib-tooltip="Click to play a song from this album" tooltip-append-to-body="true">
+            <img ng-src="{{album.albumArtUri}}" alt="{{album.name}} album art">
+            <div class="song-info"
+                 ng-attr-title="{{album.name}}"
+                 ng-style="{ 'background-color': album.backgroundColor, 'color': album.foregroundColor }">
+                <span class="text-muted">On</span>
+                {{album.name}}
+
+                <br />
+                <span class="text-muted">By</span>
+                {{album.artist}}
+
+                <h3 class="text-center">
+                    <span ng-show="album.netLikeCount > 0">+</span><span>{{album.netLikeCount}}</span>
+                </h3>
+                <p>
+                    {{album.likeCount}} song<span ng-show="album.likeCount != 1">s</span> <i class="fa fa-thumbs-up"></i>
+                </p>
+                <p>{{album.dislikeCount}} song<span ng-show="album.dislikeCount != 1">s</span> <i class="fa fa-thumbs-down"></i></p>
+            </div>
+        </div>
+
+        <h4 ng-show="vm.albums.isLoading">
+            <br />
+            <i class="fa fa-circle-o-notch fa-spin"></i>
+            <span>Loading your liked albums...</span>
+        </h4>
+
+        <h4 ng-show="vm.albums.isLoadedAndEmpty">
+            <br />
+            <i class="fa fa-info-circle"></i>
+            <span ng-hide="vm.search">You haven't liked any albums yet. Click the <i class="fa fa-thumbs-up"></i> button to like a song.</span>
+            <span ng-show="vm.search">No liked albums matching your search.</span>
+        </h4>
+
+        <h4 class="text-center" ng-show="vm.albums.isLoadedWithData">
+            <br />
+            Showing {{vm.albums.items.length}} of {{vm.albums.itemsTotalCount}} liked albums
+            <br />
+            <br />
+            <button class="btn btn-default" ng-show="vm.albums.hasMoreItems" ng-click="vm.loadMoreAlbums()">Show more</button>
+        </h4>
+    </div>
+
+    <!-- artists -->
+    <div class="artists-container" ng-if="vm.activeCategory === 'Artists'">
+        <div class="artist-item" ng-repeat="artist in vm.artists.items" ng-click="vm.playArtist(artist)" uib-tooltip="Click to play a song from this artist" tooltip-append-to-body="true">
+            <h2 class="artist-name text-center">{{artist.name}}</h2>
+
+            <div class="artist-image" ng-show="artist.images.length"  background-image="artist.images[0]">
+            </div>
+            <div class="artist-image-placeholder" ng-show="artist.images.length === 0">
+                <h2>
+                    <i class="fa fa-user-circle-o text-muted fa-4x" />
+                </h2>
+            </div>
+            
+            <h3 class="text-center">
+                <span ng-show="artist.netLikeCount > 0">+</span><span>{{artist.netLikeCount}}</span>
+            </h3>
+            <p>
+                {{artist.likeCount}} song<span ng-show="artist.likeCount != 1">s</span> <i class="fa fa-thumbs-up"></i>
+            </p>
+            <p>
+                {{artist.dislikeCount}} song<span ng-show="artist.dislikeCount != 1">s</span> <i class="fa fa-thumbs-down"></i>
+            </p>
+        </div>
+
+        <h4 ng-show="vm.artists.isLoading">
+            <br />
+            <i class="fa fa-circle-o-notch fa-spin"></i>
+            <span>Loading your liked artists...</span>
+        </h4>
+
+        <h4 ng-show="vm.artists.isLoadedAndEmpty">
+            <br />
+            <i class="fa fa-info-circle"></i>
+            <span ng-hide="vm.search">You haven't liked any artists yet. Click the <i class="fa fa-thumbs-up"></i> button to like a song.</span>
+            <span ng-show="vm.search">No liked artists matching your search.</span>
+        </h4>
+
+        <h4 class="text-center" ng-show="vm.artists.isLoadedWithData">
+            <br />
+            Showing {{vm.artists.items.length}} of {{vm.artists.itemsTotalCount}} liked artists
+            <br />
+            <br />
+            <button class="btn btn-default" ng-show="vm.artists.hasMoreItems" ng-click="vm.loadMoreArtists()">Show more</button>
+        </h4>
+    </div>
 </section>

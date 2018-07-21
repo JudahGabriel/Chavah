@@ -30,10 +30,10 @@ namespace BitShuva.Chavah.Models
         public DateTime UploadDate { get; set; }
         public List<string> Tags { get; set; }
         public List<string> Genres { get; set; }
-
         public string Lyrics { get; set; }
         public int TotalPlays { get; set; }
         public string AlbumId { get; set; }
+        public string ArtistId { get; set; }
         public int CommentCount { get; set; }
         // Add a property here? It should probably be added to .ToDto()
         
@@ -135,6 +135,7 @@ namespace BitShuva.Chavah.Models
                 TotalPlays = this.TotalPlays,
                 ReasonsPlayed = pickReasons,
                 AlbumId = this.AlbumId,
+                ArtistId = this.ArtistId,
                 CommentCount = this.CommentCount
             };
         }

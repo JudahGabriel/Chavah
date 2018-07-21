@@ -15,7 +15,7 @@
                     <div class="col-sm-12">
                         <div ng-show="vm.likes.length">
                             <h4 class="song-list-title">
-                                <a href="#/mylikes">Likes</a>
+                                <a href="#/mylikes"><i class="fa fa-thumbs-up"></i> My likes</a>
                             </h4>
                             <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.likes"></div>
                         </div>
@@ -147,7 +147,7 @@
                                 </div>
                                 <input type="url" id="currentSongShareLink" class="form-control" ng-model="vm.currentSongShareUrl" onclick="this.select()" readonly="readonly" />
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" uib-tooltip="Copy" uib-popover="Copied!" popover-placement="right" popover-popup-close-delay="1500" popover-trigger="'outsideClick'" ng-click="vm.copyShareUrl()">
+                                    <button class="btn btn-default" type="button" uib-tooltip="Copy" uib-popover="Copied!" popover-placement="top" popover-popup-close-delay="1500" popover-trigger="'outsideClick'" ng-click="vm.copyShareUrl()">
                                         <i class="fa fa-copy" title="Copy the link to this song"></i>
                                     </button>
                                 </span>
