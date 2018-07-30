@@ -45,7 +45,7 @@ namespace BitShuva.Chavah.Services
             var albumArtUri = Option.None<Uri>();
             try
             {
-                albumArtUri = Option.Some(await cdnManagerService.UploadMp3ToCdn(song.Address, album.Artist, album.Name, songNumber, song.FileName));
+                albumArtUri = Option.Some(await cdnManagerService.UploadMp3Async(song.Address, album.Artist, album.Name, songNumber, song.FileName));
             }
             catch (Exception error)
             {

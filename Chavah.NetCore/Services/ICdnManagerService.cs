@@ -1,5 +1,6 @@
 ﻿using BitShuva.Chavah.Models;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Services
@@ -14,10 +15,11 @@ namespace BitShuva.Chavah.Services
         Uri HttpHost { get; }
         Uri HttpMusic { get; }
 
-        Task<Uri> UploadAlbumArtToCdn(Uri tempHttpAddress, string artist, string album, string fileExtension);
-        Task<Uri> UploadArtistImage(Uri tempHttpPath, string fileName);
-        Task<Uri> UploadMp3ToCdn(Uri tempHttpAddress, string artist, string album, int songNumber, string songName);
+        Task<Uri> UploadAlbumArtAsync(Uri tempHttpAddress, string artist, string album, string fileExtension);
+        Task<Uri> UploadArtistImageAsync(Uri tempHttpPath, string fileName);
+        Task<Uri> UploadMp3Async(Uri tempHttpAddress, string artist, string album, int songNumber, string songName);
+        Task<Uri> UploadProfilePicAsync(Stream imageStream, string contentType);
 
-        Task DeleteFromCdnAsync(Song song);
+        Task DeleteAsync(Song song);
     }
 }

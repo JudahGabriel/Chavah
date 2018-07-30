@@ -31,6 +31,7 @@
     <Content Remove="wwwroot\js\Services\AdAnnouncerService.ts" />
     <Content Remove="wwwroot\js\Services\IOSMediaSessionService.ts" />
     <Content Remove="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
+    <Content Remove="wwwroot\js\Services\UserApiService.ts" />
     <Content Remove="wwwroot\js\Services\UwpNativeAudioService.ts" />
   </ItemGroup>
 
@@ -88,6 +89,7 @@
     <TypeScriptCompile Include="wwwroot\js\Services\AdAnnouncerService.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\IOSMediaSessionService.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Services\UserApiService.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\UwpNativeAudioService.ts" />
 
   </ItemGroup>

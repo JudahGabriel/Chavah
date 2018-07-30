@@ -94,7 +94,7 @@
             .when("/", createRoute("NowPlaying.html"))
             .when("/nowplaying", { redirectTo: "/" })
             .when("/trending", createRoute("Trending.html"))
-            .when("/profile", createRoute(views.profile))
+            .when("/profile", createRoute(views.profile, RouteAccess.Authenticated))
             .when("/popular", createRoute(views.popular))
             .when("/recent", createRoute(views.recent))
             .when("/mylikes", createRoute(views.myLikes))

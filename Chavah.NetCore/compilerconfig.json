@@ -110,5 +110,9 @@
   {
     "outputFile": "wwwroot/css/app/myLikes.css",
     "inputFile": "wwwroot/css/app/myLikes.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/profile.css",
+    "inputFile": "wwwroot/css/app/profile.less"
   }
 ]

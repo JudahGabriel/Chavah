@@ -21,10 +21,6 @@ namespace BitShuva.Chavah.Services
         private readonly ILogger logger;
         private readonly IHostingEnvironment hostingEnv;
 
-        private const string musicDirectoryName = "music";
-        private const string albumArtDirectoryName = "album-art";
-        private const string artistImagesDirectoryName = "artist-images";
-
         public CdnManagerService(IOptions<AppSettings> options, ILogger<CdnManagerService> logger, IHostingEnvironment hostingEnv)
         {
             this.cdnSettings = options.Value.Cdn;
@@ -32,15 +28,11 @@ namespace BitShuva.Chavah.Services
             this.hostingEnv = hostingEnv;
         }
 
-        //public Uri FtpAddress => new Uri(cdnSettings?.FtpHost);
-        //public Uri FtpWorkingDirectory => new Uri(cdnSettings?.FtpWorkingDirectory, UriKind.Relative);
-        //public Uri FtpMusic => this.FtpWorkingDirectory.Combine(cdnSettings?.MusicDirectory);
-        //public Uri FtpAlbumArt => this.FtpAddress.Combine("album-art");
-        //public Uri FtpArtistImages => this.FtpAddress.Combine("artist-images");
         public Uri HttpHost => new Uri(cdnSettings?.HttpPath);
-        public Uri HttpMusic => this.HttpHost.Combine(cdnSettings?.MusicDirectory);
-        public Uri HttpAlbumArt => this.HttpHost.Combine(cdnSettings?.AlbumArtDirectory);
-        public Uri HttpArtistImages => this.HttpHost.Combine(cdnSettings?.ArtistImagesDirectory);
+        public Uri HttpMusic => this.HttpHost.Combine(cdnSettings.MusicDirectory);
+        public Uri HttpAlbumArt => this.HttpHost.Combine(cdnSettings.AlbumArtDirectory);
+        public Uri HttpArtistImages => this.HttpHost.Combine(cdnSettings.ArtistImagesDirectory);
+        public Uri HttpProfilePics => this.HttpHost.Combine(cdnSettings.ProfilePicsDirectory);
         
         /// <summary>
         /// Uploads the song to the CDN.
@@ -48,7 +40,7 @@ namespace BitShuva.Chavah.Services
         /// <param name="song">The song whose MP3 to upload.</param>
         /// <param name="tempHttpAddress">The temporary HTTP address of the file. This is supplied by FilePickr. The file will be downloaded from here and moved to the CDN.</param>
         /// <returns>The HTTP URI to the MP3 file on the CDN.</returns>
-        public async Task<Uri> UploadMp3ToCdn(Uri tempHttpAddress, string artist, string album, int songNumber, string songName)
+        public async Task<Uri> UploadMp3Async(Uri tempHttpAddress, string artist, string album, int songNumber, string songName)
         {
             var tempDownloadedFile = default(string);
             try
@@ -101,13 +93,13 @@ namespace BitShuva.Chavah.Services
         /// <param name="tempHttpAddress">The temporary HTTP address where the album art can be downloaded.</param>
         /// <param name="fileExtension">The desired file extension for the file on the CDN.</param>
         /// <returns>A task that represents the async operation.</returns>
-        public async Task<Uri> UploadAlbumArtToCdn(Uri tempHttpAddress, string artist, string album, string fileExtension)
+        public async Task<Uri> UploadAlbumArtAsync(Uri tempHttpAddress, string artist, string album, string fileExtension)
         {
             var tempDownloadedFile = default(string);
             try
             {
                 tempDownloadedFile = await DownloadFileLocally(tempHttpAddress);
-                return await UploadAlbumArtToCdn(GetAlphaNumericEnglish(artist), GetAlphaNumericEnglish(album), tempDownloadedFile, fileExtension);
+                return await UploadAlbumArt(GetAlphaNumericEnglish(artist), GetAlphaNumericEnglish(album), tempDownloadedFile, fileExtension);
             }
             finally
             {
@@ -117,50 +109,13 @@ namespace BitShuva.Chavah.Services
                 }
             }
         }
-
-        /// <summary>
-        /// Uploads the song's local file representation to the CDN.
-        /// </summary>
-        /// <param name="song">The song to upload.</param>
-        /// <param name="filePath">The fully qualified path to a local file.</param>
-        /// <param name="fileExtension">The desired file extension for the file on the CDN.</param>
-        /// <returns>The HTTP URI to the file on the CDN.</returns>
-        private async Task<Uri> UploadAlbumArtToCdn(string artist, string album, string filePath, string fileExtension)
-        {
-            var fullFileName = string.Join(string.Empty, artist, " - ", album, fileExtension).ToLowerInvariant();
-            return await UploadAlbumArtToCdn(fullFileName, filePath);
-        }
-
-        /// <summary>
-        /// Uploads a local file to the album art directory on the CDN.
-        /// </summary>
-        /// <param name="destinationFileName">The file name, including extension, for the file. This will be the name of the file placed in the CDN.</param>
-        /// <param name="sourceFilePath">The path to the contents of the file.</param>
-        /// <returns></returns>
-        private async Task<Uri> UploadAlbumArtToCdn(string destinationFileName, string sourceFilePath)
-        {
-            using (var ftpConnection = await CreateFtpConnection())
-            {
-                var fileNameLower = destinationFileName.ToLowerInvariant();
-                
-                // Switch to the album art directory.
-                await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings?.AlbumArtDirectory);
-                using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(fileNameLower))
-                using (var sourceStream = File.OpenRead(sourceFilePath))
-                {
-                    await sourceStream.CopyToAsync(destinationStream);
-                }
-
-                return this.HttpAlbumArt.Combine(fileNameLower);
-            }
-        }
-
+        
         /// <summary>
         /// Uploads an image to the /[station]/artistimages folder on the CDN.
         /// </summary>
         /// <param name="tempHttpPath">The temporary HTTP path where the image currently resides. This file will be donwloaded and moved to the CDN.</param>
         /// <returns>The new HTTP URI to the image on the CDN.</returns>
-        public async Task<Uri> UploadArtistImage(Uri tempHttpPath, string fileName)
+        public async Task<Uri> UploadArtistImageAsync(Uri tempHttpPath, string fileName)
         {
             using (var ftpConnection = await CreateFtpConnection())
             {
@@ -177,6 +132,61 @@ namespace BitShuva.Chavah.Services
                 }
 
                 return this.HttpAlbumArt.Combine(fileName);
+            }
+        }
+
+        public async Task<Uri> UploadProfilePicAsync(Stream imageStream, string contentType)
+        {
+            using (var ftpConnection = await CreateFtpConnection())
+            {
+                var fileExtension = string.Equals("image/png", contentType, StringComparison.InvariantCultureIgnoreCase) ? ".png" : ".jpg";
+                var fileName = Guid.NewGuid().GetHashCode().ToString() + fileExtension;
+
+                // Switch to the album art directory.
+                await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings.ProfilePicsDirectory);
+                using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(fileName))
+                {
+                    await imageStream.CopyToAsync(destinationStream);
+                }
+
+                return this.HttpProfilePics.Combine(fileName);
+            }
+        }
+
+        /// <summary>
+        /// Uploads the song's local file representation to the CDN.
+        /// </summary>
+        /// <param name="song">The song to upload.</param>
+        /// <param name="filePath">The fully qualified path to a local file.</param>
+        /// <param name="fileExtension">The desired file extension for the file on the CDN.</param>
+        /// <returns>The HTTP URI to the file on the CDN.</returns>
+        private async Task<Uri> UploadAlbumArt(string artist, string album, string filePath, string fileExtension)
+        {
+            var fullFileName = string.Join(string.Empty, artist, " - ", album, fileExtension).ToLowerInvariant();
+            return await UploadAlbumArt(fullFileName, filePath);
+        }
+
+        /// <summary>
+        /// Uploads a local file to the album art directory on the CDN.
+        /// </summary>
+        /// <param name="destinationFileName">The file name, including extension, for the file. This will be the name of the file placed in the CDN.</param>
+        /// <param name="sourceFilePath">The path to the contents of the file.</param>
+        /// <returns></returns>
+        private async Task<Uri> UploadAlbumArt(string destinationFileName, string sourceFilePath)
+        {
+            using (var ftpConnection = await CreateFtpConnection())
+            {
+                var fileNameLower = destinationFileName.ToLowerInvariant();
+
+                // Switch to the album art directory.
+                await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings?.AlbumArtDirectory);
+                using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(fileNameLower))
+                using (var sourceStream = File.OpenRead(sourceFilePath))
+                {
+                    await sourceStream.CopyToAsync(destinationStream);
+                }
+
+                return this.HttpAlbumArt.Combine(fileNameLower);
             }
         }
 
@@ -206,7 +216,7 @@ namespace BitShuva.Chavah.Services
         /// Deletes the song's MP3 file on the CDN.
         /// </summary>
         /// <param name="song"></param>
-        public async Task DeleteFromCdnAsync(Song song)
+        public async Task DeleteAsync(Song song)
         {
             using (var connection = await CreateFtpConnection())
             {

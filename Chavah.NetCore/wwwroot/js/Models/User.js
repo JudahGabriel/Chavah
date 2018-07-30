@@ -13,6 +13,9 @@ var BitShuva;
                 enumerable: true,
                 configurable: true
             });
+            User.prototype.updateFrom = function (other) {
+                angular.merge(this, other);
+            };
             User.roles = {
                 admin: "admin"
             };
