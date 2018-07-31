@@ -59,6 +59,14 @@
                             <label for="nameInput">Registered</label>
                             <p class="form-control-static">{{vm.registrationDateAgo}}</p>
                         </div>
+                        <div class="form-group">
+                            <label for="nameInput">Songs played</label>
+                            <p class="form-control-static">{{vm.user.totalPlays}}</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="nameInput">Song requests</label>
+                            <p class="form-control-static">{{vm.user.totalSongRequests}}</p>
+                        </div>
                     </form>
 
                     <button class="btn btn-primary" ng-disabled="vm.isSavingOrUploading" ng-click="vm.save()">
