@@ -105,7 +105,7 @@ namespace BitShuva.Chavah.Controllers
                 throw new ArgumentException("Couldn't find album with ID " + albumId);
             }
 
-            var albumArtUri = await cdnManagerService.UploadAlbumArtToCdn(new Uri(artUri), album.Artist, album.Name, ".jpg");
+            var albumArtUri = await cdnManagerService.UploadAlbumArtAsync(new Uri(artUri), album.Artist, album.Name, ".jpg");
             album.AlbumArtUri = albumArtUri;
 
             // Update the songs on this album.
@@ -161,7 +161,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task<string> Upload([FromBody] AlbumUpload album)
         {
             // Put the album art on the CDN.
-            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtToCdn(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
+            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtAsync(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()

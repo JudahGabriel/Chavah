@@ -8,6 +8,9 @@
         recentSongIds: string[];
         notifications: Server.Notification[];
         volume: number;
+        profilePicUrl: string | null;
+        firstName: string;
+        lastName: string;
 
         accessFailedCount: number;
         claims: any[];
@@ -36,6 +39,10 @@
 
         get isAdmin(): boolean {
             return this.roles.includes(User.roles.admin);
+        }
+
+        updateFrom(other: Server.AppUser) {
+            angular.merge(this, other);
         }
     }
 }

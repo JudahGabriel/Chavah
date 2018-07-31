@@ -98,6 +98,30 @@ var BitShuva;
                 });
                 return deferred.promise;
             };
+            HttpApiService.prototype.postFormData = function (relativeUrl, formData, selector) {
+                var _this = this;
+                var deferred = this.loadingProgress.start();
+                var questionMarkOrAmpersand = relativeUrl.indexOf("?") !== -1 ? "&" : "?";
+                var absoluteUrl = "" + this.apiBaseUrl + relativeUrl + questionMarkOrAmpersand;
+                var request = {
+                    method: "POST",
+                    url: absoluteUrl,
+                    data: formData,
+                    headers: {
+                        "Content-Type": undefined
+                    }
+                };
+                var task = this.$http(request);
+                task.then(function (result) {
+                    var preppedResult = selector ? selector(result.data) : result.data;
+                    deferred.resolve(preppedResult);
+                });
+                task.catch(function (error) {
+                    _this.onAjaxError(error, "Error saving " + relativeUrl + ".");
+                    deferred.reject(error);
+                });
+                return deferred.promise;
+            };
             HttpApiService.prototype.createHeaders = function () {
                 // var jwtAuthHeader = this.createJwtAuthHeader();
                 // if (jwtAuthHeader) {

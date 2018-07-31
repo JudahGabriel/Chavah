@@ -1,33 +1,75 @@
-﻿<section class="page profile-page" ng-controller="ProfileController as vm">
+﻿<div ng-include="Partials.goBack"></div>
+<section class="page profile-page" ng-controller="ProfileController as vm">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-            <h3>Profile information<br /><small class="text-muted">{{vm.email}}</small></h3>
+            <h2 class="page-title">My profile</h2>
 
             <div class="row">
-                <div class="col-xs-12 col-sm-12">
+
+                <!--The profile pic column-->
+                <div class="col-xs-12 col-sm-4">
+
+                    <!--Show the profile pic if we've got one-->
+                    <div ng-if="vm.profilePicUrl" class="text-center">
+                        <img class="img-circle img-responsive profile-pic" ng-src="{{vm.profilePicUrl}}" />
+                        <br />
+                        <button class="btn btn-default btn-sm" ng-click="vm.launchImagePicker()">Change my profile photo</button>
+                    </div>
+
+                    <!--Otherwise, show the placeholder-->
+                    <div ng-if="!vm.profilePicUrl">
+
+                        <!--The placeholder tile-->
+                        <div class="panel panel-default profile-pic-placeholder">
+                            <div class="panel-body" ng-click="vm.launchImagePicker()" aria-hidden="true">
+                                <h4>
+                                    <i class="fa fa-user-circle-o fa-5x"></i>
+                                    <br />
+                                    <br />
+                                    <i class="fa fa-plus"></i>
+                                    Add a profile photo
+                                </h4>
+                            </div>
+                            <input type="file" class="form-control-file no-fastclick sr-only" accept="image/*" id="imagePicker" file-upload-changed="vm.profilePicChanged(e)" />
+                        </div>
+
+                        <!--The loading indicator-->
+                        <i class="fa fa-circle-o-notch fa-spin fa-2x" ng-show="vm.isUploadingPhoto"></i>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-8">
                     <form>
                         <div class="form-group">
-                            <label for="nameInput">Use Name:</label>
-                            <input type="text" class="form-control" id="nameInput" 
-                                   placeholder="User name" ng-model="vm.email" readonly>
+                            <label for="nameInput">First name</label>
+                            <input type="text" class="form-control" id="nameInput" placeholder="Yochanan" ng-model="vm.user.firstName">
                         </div>
                         <div class="form-group">
-                            <label for="nameInput">Last Seen:</label>
-                            <input type="text" class="form-control" id="nameInput" 
-                                   placeholder="Last Seen" ng-model="vm.lastSeen" readonly>
+                            <label for="nameInput">Last name</label>
+                            <input type="text" class="form-control" id="nameInput" placeholder="HaMatbil" ng-model="vm.user.lastName">
                         </div>
                         <div class="form-group">
-                            <label for="nameInput">Account Created:</label>
-                            <input type="text" class="form-control" id="artistInput" 
-                                   placeholder="Account Created" ng-model="vm.registrationDate" readonly>
+                            <label for="nameInput">Email</label>
+                            <p class="form-control-static">{{vm.user.email}}</p>
                         </div>
-                        <div class="form-group" ng-show="vm.phone">
-                            <label for="nameInput">Phone Number:</label>
-                            <input type="text" class="form-control" id="albumInput" placeholder="Album" ng-model="vm.phone" readonly>
+                        <div class="form-group">
+                            <label for="nameInput">Registered</label>
+                            <p class="form-control-static">{{vm.registrationDateAgo}}</p>
                         </div>
-
                     </form>
 
+                    <button class="btn btn-primary" ng-disabled="vm.isSavingOrUploading" ng-click="vm.save()">
+                        <span ng-hide="vm.isSavingOrUploading">
+                            <i class="fa fa-save"></i> Save
+                        </span>
+                        <span ng-show="vm.isSavingOrUploading">
+                            <i class="fa fa-circle-o-notch fa-spin"></i> Saving...
+                        </span>
+                    </button>
+                    
+                    <p class="text-success" ng-show="vm.hasSavedSuccessfully">
+                        <br />
+                        <i class="fa fa-check"></i> Profile saved
+                    </p>
                 </div>
             </div>
         </div>

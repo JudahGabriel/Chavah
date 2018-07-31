@@ -111,6 +111,32 @@
             return deferred.promise;
         }
 
+        postFormData<T>(relativeUrl: string, formData: FormData, selector?: (rawResult: any) => T): ng.IPromise<T> {
+            var deferred = this.loadingProgress.start<T>();
+            var questionMarkOrAmpersand = relativeUrl.indexOf("?") !== -1 ? "&" : "?";
+            var absoluteUrl = `${this.apiBaseUrl}${relativeUrl}${questionMarkOrAmpersand}`;
+            var request = {
+                method: "POST",
+                url: absoluteUrl,
+                data: formData,
+                headers: {
+                    "Content-Type": undefined
+                }
+            };
+
+            var task = this.$http(request);
+            task.then((result: any) => {
+                var preppedResult = selector ? selector(result.data) : result.data;
+                deferred.resolve(preppedResult);
+            });
+            task.catch(error => {
+                this.onAjaxError(error, `Error saving ${relativeUrl}.`);
+                deferred.reject(error);
+            });
+
+            return deferred.promise;
+        }
+
         private createHeaders(): {} {
             // var jwtAuthHeader = this.createJwtAuthHeader();
             // if (jwtAuthHeader) {
