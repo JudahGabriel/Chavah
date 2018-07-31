@@ -7,13 +7,17 @@
             <div class="row">
 
                 <!--The profile pic column-->
-                <div class="col-xs-12 col-sm-4">
+                <div class="col-xs-12 col-sm-5">
 
                     <!--Show the profile pic if we've got one-->
                     <div ng-if="vm.profilePicUrl" class="text-center">
-                        <img class="img-circle img-responsive profile-pic" ng-src="{{vm.profilePicUrl}}" />
+
+                        <div class="profile-pic" background-image="vm.profilePicUrl" ng-click="vm.launchImagePicker()"></div>
                         <br />
-                        <button class="btn btn-default btn-sm" ng-click="vm.launchImagePicker()">Change my profile photo</button>
+                        <label class="btn btn-default btn-file btn-sm">
+                            Change my profile photo 
+                            <input class="sr-only" accept="image/*" type="file" file-upload-changed="vm.profilePicChanged(e)">
+                        </label>
                     </div>
 
                     <!--Otherwise, show the placeholder-->
@@ -21,7 +25,7 @@
 
                         <!--The placeholder tile-->
                         <div class="panel panel-default profile-pic-placeholder">
-                            <div class="panel-body" ng-click="vm.launchImagePicker()" aria-hidden="true">
+                            <div class="panel-body needsclick" ng-click="vm.launchImagePicker()" aria-hidden="true">
                                 <h4>
                                     <i class="fa fa-user-circle-o fa-5x"></i>
                                     <br />
@@ -30,14 +34,14 @@
                                     Add a profile photo
                                 </h4>
                             </div>
-                            <input type="file" class="form-control-file no-fastclick sr-only" accept="image/*" id="imagePicker" file-upload-changed="vm.profilePicChanged(e)" />
+                            <input type="file" class="form-control-file needsclick sr-only" accept="image/*" id="imagePicker" file-upload-changed="vm.profilePicChanged(e)" />
                         </div>
 
                         <!--The loading indicator-->
                         <i class="fa fa-circle-o-notch fa-spin fa-2x" ng-show="vm.isUploadingPhoto"></i>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-8">
+                <div class="col-xs-12 col-sm-7">
                     <form>
                         <div class="form-group">
                             <label for="nameInput">First name</label>
@@ -54,6 +58,14 @@
                         <div class="form-group">
                             <label for="nameInput">Registered</label>
                             <p class="form-control-static">{{vm.registrationDateAgo}}</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="nameInput">Songs played</label>
+                            <p class="form-control-static">{{vm.user.totalPlays}}</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="nameInput">Song requests</label>
+                            <p class="form-control-static">{{vm.user.totalSongRequests}}</p>
                         </div>
                     </form>
 
