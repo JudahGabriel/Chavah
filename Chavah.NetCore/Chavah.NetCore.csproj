@@ -287,6 +287,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="ChavahDb.ravendbdump">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="ravencert.Development.pfx">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

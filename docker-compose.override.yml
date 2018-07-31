@@ -8,14 +8,14 @@ services:
       - ASPNETCORE_HTTPS_PORT=443
     ports:
       - "44363:443"
-      - "8080:80"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
   chavah.ravendb:
     environment:
-    - RAVEN_ARGS="--Setup.Mode=None"
+    - RAVEN_Setup_Mode=None
     - RAVEN_Security_UnsecuredAccessAllowed=PrivateNetwork
+    - RAVEN_License_Eula_Accepted=true
     - RAVEN_ARGS="--log-to-console"
     ports: 
       - "8181:8080"

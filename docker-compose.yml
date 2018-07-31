@@ -3,7 +3,6 @@ version: '3.4'
 services:
   chavah.web:
     image: chavah.web
-    container_name: chavah.web
     build:
       context: .
       dockerfile: Chavah.NetCore/Dockerfile
@@ -11,5 +10,4 @@ services:
       - chavah.ravendb
   chavah.ravendb:
     image: ravendb/ravendb
-    container_name: chavah.ravendb
     

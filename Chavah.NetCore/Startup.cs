@@ -58,8 +58,8 @@ namespace BitShuva.Chavah
                     c.Password.RequireNonAlphanumeric = false;
                     c.Password.RequireUppercase = false;
                     c.Password.RequiredLength = 6;
-                })
-                .AddLogging(logger => logger.AddRavenStructuredLogger());
+                });
+                //.AddLogging(logger => logger.AddRavenStructuredLogger());
 
             services.RunDatabasePatches();
             services.InstallIndexes();
