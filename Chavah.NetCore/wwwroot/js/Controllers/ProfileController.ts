@@ -44,7 +44,13 @@
                     this.isUploadingPhoto = true;
                     this.hasSavedSuccessfully = false;
                     try {
-                        this.profilePicUrl = await this.userApi.updateProfilePic(file);
+                        // Update the profile pic and the profile data.
+                        const updatedProfile = await this.userApi.updateProfile(this.user);
+                        const updatedProfilePic = await this.userApi.updateProfilePic(file);
+
+                        this.profilePicUrl = updatedProfilePic;
+                        this.profileSaved(updatedProfile);
+
                         this.hasSavedSuccessfully = true;
                     } finally {
                         this.isUploadingPhoto = false;
@@ -60,12 +66,16 @@
                 try {
                     const updatedUser = await this.userApi.updateProfile(this.user);
                     this.hasSavedSuccessfully = true;
-                    if (this.accountApi.currentUser) {
-                        this.accountApi.currentUser.updateFrom(updatedUser);
-                    }
+                    this.profileSaved(updatedUser);
                 } finally {
                     this.isSaving = false;
                 }
+            }
+        }
+
+        profileSaved(updatedUser: Server.AppUser) {
+            if (this.accountApi.currentUser) {
+                this.accountApi.currentUser.updateFrom(updatedUser);
             }
         }
     }
