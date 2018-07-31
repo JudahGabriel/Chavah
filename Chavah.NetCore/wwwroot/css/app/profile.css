@@ -1,4 +1,5 @@
-﻿.profile-page {
+﻿/* Colors */
+.profile-page {
   margin-top: 50px;
 }
 .profile-page .page-title {
@@ -14,4 +15,9 @@
   box-shadow: 1px 1px 5px black;
   margin-left: auto;
   margin-right: auto;
+  height: 300px;
+  width: 300px;
+  border-radius: 300px;
+  background-size: cover;
+  background-color: #ecf0f1;
 }

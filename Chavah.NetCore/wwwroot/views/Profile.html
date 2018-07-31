@@ -11,9 +11,9 @@
 
                     <!--Show the profile pic if we've got one-->
                     <div ng-if="vm.profilePicUrl" class="text-center">
-                        <img class="img-circle img-responsive profile-pic" ng-src="{{vm.profilePicUrl}}" />
+
+                        <div class="profile-pic" background-image="vm.profilePicUrl" ng-click="vm.launchImagePicker()"></div>
                         <br />
-                        <!--<button class="btn btn-default btn-sm needsclick" ng-click="vm.launchImagePicker()">Change my profile photo</button>-->
                         <label class="btn btn-default btn-file btn-sm">
                             Change my profile photo 
                             <input class="sr-only" accept="image/*" type="file" file-upload-changed="vm.profilePicChanged(e)">
