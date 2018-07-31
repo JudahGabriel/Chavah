@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.1.0-aspnetcore-runtime AS base
+FROM microsoft/dotnet:2.1.2-aspnetcore-runtime AS base
 WORKDIR /app
 
 FROM microsoft/dotnet:2.1-sdk AS build

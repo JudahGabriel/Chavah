@@ -1,15 +1,10 @@
-﻿using BitShuva.Chavah.Models;
+﻿using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Raven.Client.Documents;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Common
 {
