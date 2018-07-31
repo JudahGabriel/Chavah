@@ -2,37 +2,71 @@
     export class ProfileController {
 
         static $inject = [
-            "initConfig",
             "accountApi",
-            "$timeout",
+            "userApi"
         ];
 
-        email: string;
-        lastSeen: string;
-        registrationDate: string;
-        phone: string;
-
+        user: User;
+        profilePicUrl: string | null = null;
+        registrationDateAgo: string;
+        isSaving = false;
+        isUploadingPhoto = false;
+        hasSavedSuccessfully = false;
+        
         constructor(
-            private readonly initConfig: Server.HomeViewModel,
-            private readonly accountApi: AccountService) {
+            private readonly accountApi: AccountService,
+            private readonly userApi: UserApiService) {
+
+            // Make a copy of the user so that we can edit freely without committing.
+            this.user = new User(this.accountApi.currentUser!);
+            this.profilePicUrl = this.user.profilePicUrl;
+
+            const registrationDate = moment(this.user.registrationDate);
+            this.registrationDateAgo = `${registrationDate.fromNow()} (${registrationDate.format('dddd, MMMM Do YYYY, h:mm a')})`;
+        }
+
+        get isSavingOrUploading(): boolean {
+            return this.isSaving || this.isUploadingPhoto;
         }
 
         $onInit() {
-            if (this.initConfig.user) {
-                this.loadProfile(this.initConfig.user);
+        }
+
+        launchImagePicker() {
+            $("#imagePicker").click();
+        }
+
+        async profilePicChanged(e: JQueryEventObject) {
+            if (!this.isSaving) {
+                const files = e.target["files"] as FileList;
+                const file = files.item(0);
+                if (file) {
+                    this.isUploadingPhoto = true;
+                    this.hasSavedSuccessfully = false;
+                    try {
+                        this.profilePicUrl = await this.userApi.updateProfilePic(file);
+                        this.hasSavedSuccessfully = true;
+                    } finally {
+                        this.isUploadingPhoto = false;
+                    }
+                }
             }
         }
 
-        loadProfile(user: Server.AppUser) {
-            this.accountApi.getUserWithEmail(user.email)
-                .then(user => {
-                    if (user) {
-                        this.email = user.email;
-                        this.lastSeen = moment(user.lastSeen).format("LLL");
-                        this.registrationDate = moment(user.registrationDate).format("LLL");
-                        this.phone = user.phoneNumber;
+        async save() {
+            if (!this.isSaving) {
+                this.isSaving = true;
+                this.hasSavedSuccessfully = false;
+                try {
+                    const updatedUser = await this.userApi.updateProfile(this.user);
+                    this.hasSavedSuccessfully = true;
+                    if (this.accountApi.currentUser) {
+                        this.accountApi.currentUser.updateFrom(updatedUser);
                     }
-                });
+                } finally {
+                    this.isSaving = false;
+                }
+            }
         }
     }
 

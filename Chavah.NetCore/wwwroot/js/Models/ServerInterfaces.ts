@@ -37,6 +37,9 @@
         roles: string[];
         securityStamp: string;
         twoFactorAuthEnabled: boolean;
+        profilePicUrl: string | null;
+        firstName: string;
+        lastName: string;
     }
 
     export interface Song {

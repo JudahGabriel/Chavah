@@ -128,13 +128,6 @@
             };
             return this.httpApi.post(`${this.apiUri}/sendSupportMessage`, args);
         }
-
-        saveVolume(volume: number) {
-            const args = {
-                volume: volume
-            };
-            return this.httpApi.postUriEncoded(`/api/users/saveVolume`, args);
-        }
     }
 
     App.service("accountApi", AccountService);

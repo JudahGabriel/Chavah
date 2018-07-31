@@ -1,10 +1,14 @@
-﻿using BitShuva.Chavah.Models;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,12 +17,18 @@ namespace BitShuva.Chavah.Controllers
     [Route("api/[controller]/[action]")]
     public class UsersController : RavenController
     {
+        private ICdnManagerService cdnManager;
+
+        public const int maxProfilePictureSizeInBytes = 10_000_000;
         private static readonly DateTime startTime = DateTime.UtcNow;
 
-        public UsersController(IAsyncDocumentSession dbSession, ILogger<UsersController> logger)
+        public UsersController(
+            ICdnManagerService cdnManager,
+            IAsyncDocumentSession dbSession, 
+            ILogger<UsersController> logger)
             : base(dbSession, logger)
         {
-
+            this.cdnManager = cdnManager;
         }
 
         [HttpGet]
@@ -48,29 +58,42 @@ namespace BitShuva.Chavah.Controllers
             user.Volume = volume;
         }
 
-        //[HttpGet]
-        //public async Task<UserProfile> GetUserProfile()
-        //{
-        //    var user = await this.GetCurrentUser();
-        //    if (user != null)
-        //    {
-        //        // So that we don't inadvertently change the user in the DB.
-        //        DbSession.Advanced.Evict(user); 
+        [HttpPost]
+        public async Task<Uri> UploadProfilePicture(IFormFile file)
+        {
+            if (file.Length > maxProfilePictureSizeInBytes)
+            {
+                throw new ArgumentException($"File is too large. Please upload files smaller than {maxProfilePictureSizeInBytes}")
+                    .WithData("size", file.Length);
+            }
 
-        //        var likedSongIds = user
-        //            .Preferences
-        //            .Songs
-        //            .Where(s => s.LikeCount == 1)
-        //            .Shuffle()
-        //            .Take(5)
-        //            .Select(s => s.Name)
-        //            .ToList();
+            var user = await this.GetCurrentUserOrThrow();
+            using (var fileStream = file.OpenReadStream())
+            {
+                var profilePicUrl = await cdnManager.UploadProfilePicAsync(fileStream, file.ContentType ?? "image/jpg");
+                user.ProfilePicUrl = profilePicUrl;
+            }
 
-        //        var likedSongNames = await this.DbSession.LoadAsync<SongNameTransformer, SongNameTransformer.SongName>(likedSongIds);
-        //        return new UserProfile(user, likedSongNames.Where(s => s != null).Select(s => s.Name).ToList());
-        //    }
+            // TODO: We may want to delete the old profile pic.
 
-        //    return null;
-        //}
+            return user.ProfilePicUrl;
+        }
+
+        [HttpPost]
+        public async Task<AppUser> UpdateProfile([FromBody]AppUser updatedUser)
+        {
+            var user = await this.GetCurrentUserOrThrow();
+            var isUpdatingSelf = string.Equals(user.Email, updatedUser.Email, StringComparison.InvariantCultureIgnoreCase);
+            if (!isUpdatingSelf)
+            {
+                throw new UnauthorizedAccessException("You can't update other people's profile")
+                    .WithData("updatedUserEmail", updatedUser.Email)
+                    .WithData("currentUserEmail", user.Email);
+            }
+            user.FirstName = updatedUser.FirstName;
+            user.LastName = updatedUser.LastName;
+
+            return user;
+        }
     }
 }
