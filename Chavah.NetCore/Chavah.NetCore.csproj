@@ -22,10 +22,13 @@
 
   <ItemGroup>
     <Content Remove="bundleconfig.json" />
+    <Content Remove="wwwroot\js\common\ICropImageResult.ts" />
     <Content Remove="wwwroot\js\common\ToggleOption.ts" />
+    <Content Remove="wwwroot\js\Controllers\CropImageController.ts" />
     <Content Remove="wwwroot\js\Controllers\MyLikesController.ts" />
     <Content Remove="wwwroot\js\Controllers\SupportController.ts" />
     <Content Remove="wwwroot\js\Directives\BackgroundImage.ts" />
+    <Content Remove="wwwroot\js\Directives\ImageCropper.ts" />
     <Content Remove="wwwroot\js\Models\LogSort.ts" />
     <Content Remove="wwwroot\js\Models\StructuredLog.ts" />
     <Content Remove="wwwroot\js\Services\AdAnnouncerService.ts" />
@@ -80,10 +83,13 @@
     <TypeScriptCompile Include="Models\UserSongPreferences.cs.d.ts">
       <DependentUpon>UserSongPreferences.cs</DependentUpon>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="wwwroot\js\common\ICropImageResult.ts" />
     <TypeScriptCompile Include="wwwroot\js\common\ToggleOption.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Controllers\CropImageController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\MyLikesController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\SupportController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Directives\BackgroundImage.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Directives\ImageCropper.ts" />
     <TypeScriptCompile Include="wwwroot\js\Models\LogSort.ts" />
     <TypeScriptCompile Include="wwwroot\js\Models\StructuredLog.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\AdAnnouncerService.ts" />

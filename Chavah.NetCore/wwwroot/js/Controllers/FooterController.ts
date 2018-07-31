@@ -176,7 +176,7 @@
 
         requestSong() {
             if (this.requireSignIn()) {
-                this.appNav.showSongRequestDialog()
+                this.appNav.songRequestModal()
                     .result.then((song: Song | null) => this.songRequestDialogCompleted(song));
             }
         }

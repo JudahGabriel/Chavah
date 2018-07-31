@@ -168,7 +168,7 @@ var BitShuva;
             FooterController.prototype.requestSong = function () {
                 var _this = this;
                 if (this.requireSignIn()) {
-                    this.appNav.showSongRequestDialog()
+                    this.appNav.songRequestModal()
                         .result.then(function (song) { return _this.songRequestDialogCompleted(song); });
                 }
             };

@@ -1,0 +1,11 @@
+﻿<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" ng-click="vm.close()" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">Position and size your photo</h4>
+</div>
+<div class="modal-body">
+    <image-cropper src="vm.rawImage" ng-model="vm.croppedImage" base64="vm.croppedBase64" style="height: 400px; width: 400px;"></image-cropper>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="vm.close()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="vm.apply()">Apply</button>
+</div>

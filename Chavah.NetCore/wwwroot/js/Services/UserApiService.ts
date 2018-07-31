@@ -10,7 +10,7 @@
             return this.httpApi.post("/api/users/updateProfile", user);
         }
         
-        updateProfilePic(file: File): ng.IPromise<string> {
+        updateProfilePic(file: Blob | string): ng.IPromise<string> {
             const url = "/api/users/uploadProfilePicture";
             const formData = new FormData();
             formData.append("file", file);

@@ -51,11 +51,11 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li ng-show="vm.currentUserName">
-                                <a href="#/profile"><i class="fa fa-user fa-fw"></i> My profile</a>
+                                <a href="#/profile"><i class="fa fa-user-circle-o fa-fw"></i> My profile</a>
                             </li>
-                            <li class="divider" role="separator"></li>
+                            <li class="divider" role="separator" ng-show="vm.currentUserName"></li>
                             <li>
-                                <a href="#/nowplaying"><i class="fa fa-home fa-fw"></i>  Home</a>
+                                <a href="#/nowplaying"><i class="fa fa-home fa-fw"></i> Home</a>
                             </li>
                             <li ng-show="vm.currentUserName">
                                 <a href="#/mylikes">
@@ -72,7 +72,7 @@
                                 <a href="#/support"><i class="fa fa-envelope-o fa-fw"></i> Contact</a>
                             </li>
                             <li>
-                                <a href="#/about"><i class="fa fa-info-circle fa-fw"></i>  About</a>
+                                <a href="#/about"><i class="fa fa-info-circle fa-fw"></i> About</a>
                             </li>
                             <li role="separator" class="divider"></li>
                             <li ng-hide="vm.currentUserName">

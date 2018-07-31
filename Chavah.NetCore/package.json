@@ -25,7 +25,9 @@
     "url": "https://github.com/JudahGabriel/Chavah/issues"
   },
   "homepage": "https://github.com/JudahGabriel/Chavah#readme",
-  "dependencies": {},
+  "dependencies": {
+    "@types/croppie": "^2.5.3"
+  },
   "devDependencies": {
     "@types/angular": "^1.6.39",
     "@types/angular-animate": "^1.5.8",
