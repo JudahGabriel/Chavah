@@ -26,6 +26,7 @@ namespace BitShuva.Chavah.Common
         public static IServiceCollection AddRavenDocStore(this IServiceCollection services)
         {
             var provider = services.BuildServiceProvider();
+            var host = provider.GetRequiredService<IHostingEnvironment>();
 
             var settings = provider.GetRequiredService<IOptions<AppSettings>>().Value.DbConnection;
             var docStore = new DocumentStore
@@ -34,12 +35,9 @@ namespace BitShuva.Chavah.Common
                 Database = settings.DatabaseName
             };
 
-            var host = provider.GetRequiredService<IHostingEnvironment>();
-
             // Configure the certificate if we have one in app settings.
             if (!string.IsNullOrEmpty(settings.CertFileName))
             {
-                
                 var certFilePath = Path.Combine(host.ContentRootPath, settings.CertFileName);
                 docStore.Certificate = new X509Certificate2(certFilePath, settings.CertPassword);
             }
@@ -47,7 +45,8 @@ namespace BitShuva.Chavah.Common
             docStore.Initialize();
             services.AddSingleton<IDocumentStore>(docStore);
 
-            if (host.IsDevelopment())
+            // Docker instance seed with data.
+            if (host.IsDevelopment() && !string.IsNullOrEmpty(settings.FileName))
             {
                 var importFilePath = Path.Combine(host.ContentRootPath, settings.FileName);
 

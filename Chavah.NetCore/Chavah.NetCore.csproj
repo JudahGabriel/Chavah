@@ -44,7 +44,10 @@
 		<PackageReference Include="CoreFtp" Version="1.4.0" />
 		<PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
 		<PackageReference Include="LigerShark.WebOptimizer.Core" Version="1.0.215" />
+		
 		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.2" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
+
 		<PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
 		<PackageReference Include="Optional" Version="4.0.0" />
 		<PackageReference Include="Quartz" Version="3.0.6" />
@@ -287,9 +290,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="ChavahDb.ravendbdump">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 		<None Update="ravencert.Development.pfx">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

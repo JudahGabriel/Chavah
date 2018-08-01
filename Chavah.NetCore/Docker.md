@@ -5,3 +5,23 @@
 - [Hosting ASP.NET Core Images with Docker over HTTPS](https://github.com/dotnet/dotnet-docker/blob/master/samples/aspnetapp/aspnetcore-docker-https.md)
 - [Running .NET Core Unit Tests with Docker](https://github.com/dotnet/dotnet-docker/blob/master/samples/dotnetapp/dotnet-docker-unit-testing.md)
 
+```
+
+
+dotnet dev-certs https -ep C:\Users\{USER_NAME}\AppData\Roaming\ASP.NET\Https\Chavah.NetCore.pfx -p 180e7ef9-d46a-4bed-a940-8717061b2b6f
+
+
+%APPDATA%\Microsoft\UserSecrets
+%APPDATA%\ASP.NET
+
+Manage Secreate to update to
+    "Kestrel:Certificates:Development:Password": "180e7ef9-d46a-4bed-a940-8717061b2b6f",
+    "Kestrel": {
+        "Certificates": {
+            "Default": {
+                "Path": "/root/.aspnet/https/Chavah.NetCore.pfx",
+                "Password": "180e7ef9-d46a-4bed-a940-8717061b2b6f"
+            }
+        }
+    }
+```

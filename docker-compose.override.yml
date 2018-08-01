@@ -5,12 +5,18 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_HTTPS_PORT=443
+      - ASPNETCORE_HTTPS_PORT=44363
+      - DbConnection_Url=http://chavah.ravendb:8080
+      - DbConnection_DatabaseName=ChavahDb
+      - DbConnection_FileName=ChavahDb.ravendbdump
     ports:
+      - "5600:80"
       - "44363:443"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+  
+  # https://github.com/ravendb/ravendb/tree/v4.1/docker
   chavah.ravendb:
     environment:
     - RAVEN_Setup_Mode=None
