@@ -64,14 +64,23 @@
             return `/edit/${songId}`;
         }
 
-        showSongRequestDialog(): ng.ui.bootstrap.IModalServiceInstance {
-            const requestSongDialog = this.$uibModal.open({
+        songRequestModal(): ng.ui.bootstrap.IModalServiceInstance {
+            return this.$uibModal.open({
                 controller: "RequestSongController as vm",
                 templateUrl: this.templatePaths.songRequestModal,
                 windowClass: "request-song-modal",
             });
+        }
 
-            return requestSongDialog;
+        cropImageModal(imageFile: File): ng.ui.bootstrap.IModalServiceInstance {
+            return this.$uibModal.open({
+                controller: "CropImageController as vm",
+                templateUrl: this.templatePaths.cropImageModal,
+                windowClass: "crop-image-modal",
+                resolve: {
+                    imageFile: () => imageFile
+                }
+            });
         }
 
         createAlbum() {

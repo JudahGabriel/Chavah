@@ -2,6 +2,7 @@
     export class ProfileController {
 
         static $inject = [
+            "appNav",
             "accountApi",
             "userApi"
         ];
@@ -12,8 +13,9 @@
         isSaving = false;
         isUploadingPhoto = false;
         hasSavedSuccessfully = false;
-        
+                
         constructor(
+            private readonly appNav: AppNavService,
             private readonly accountApi: AccountService,
             private readonly userApi: UserApiService) {
 
@@ -41,19 +43,26 @@
                 const files = e.target["files"] as FileList;
                 const file = files.item(0);
                 if (file) {
-                    this.isUploadingPhoto = true;
-                    this.hasSavedSuccessfully = false;
-                    try {
-                        // Update the profile pic and the profile data.
-                        const updatedProfile = await this.userApi.updateProfile(this.user);
-                        const updatedProfilePic = await this.userApi.updateProfilePic(file);
+                    // If we've got a file, launch the Crop Image modal and let them zoom/pan/crop
+                    const cropResult: ICropImageResult | null | undefined = await this.appNav.cropImageModal(file).result;
+                    if (cropResult && cropResult.image) {
+                        // Immediately update the image on screen.
+                        if (cropResult.imageBase64) {
+                            this.profilePicUrl = cropResult.imageBase64;
+                        }
 
-                        this.profilePicUrl = updatedProfilePic;
-                        this.profileSaved(updatedProfile);
-
-                        this.hasSavedSuccessfully = true;
-                    } finally {
-                        this.isUploadingPhoto = false;
+                        // Now send it to the server.
+                        this.isUploadingPhoto = true;
+                        this.hasSavedSuccessfully = false;
+                        try {
+                            // Update the profile pic and the profile data.
+                            const updatedProfilePic = await this.userApi.updateProfilePic(cropResult.image);
+                            
+                            this.profilePicUrl = updatedProfilePic;
+                            this.hasSavedSuccessfully = true;
+                        } finally {
+                            this.isUploadingPhoto = false;
+                        }
                     }
                 }
             }

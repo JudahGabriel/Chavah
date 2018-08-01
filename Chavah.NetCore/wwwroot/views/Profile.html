@@ -1,22 +1,27 @@
-﻿<div ng-include="Partials.goBack"></div>
+﻿<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.css?v=1" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.js?v=1"></script>-->
+
+<div ng-include="Partials.goBack"></div>
 <section class="page profile-page" ng-controller="ProfileController as vm">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-offset-2">
             <h2 class="page-title">My profile</h2>
-
+            
             <div class="row">
 
                 <!--The profile pic column-->
-                <div class="col-xs-12 col-sm-5">
+                <div class="col-xs-12 col-sm-4">
 
                     <!--Show the profile pic if we've got one-->
                     <div ng-if="vm.profilePicUrl" class="text-center">
-
-                        <div class="profile-pic" background-image="vm.profilePicUrl" ng-click="vm.launchImagePicker()"></div>
+                        <div class="img-container">
+                            <img class="img-responsive profile-pic" ng-src="{{vm.profilePicUrl}}" />
+                        </div>
+                        <!--<div class="profile-pic" background-image="vm.profilePicUrl" ng-click="vm.launchImagePicker()"></div>-->
                         <br />
                         <label class="btn btn-default btn-file btn-sm">
-                            Change my profile photo 
-                            <input class="sr-only" accept="image/*" type="file" file-upload-changed="vm.profilePicChanged(e)">
+                            Change my profile photo
+                            <input class="sr-only" accept="image/jpeg,image/jpg,image/png" type="file" file-upload-changed="vm.profilePicChanged(e)">
                         </label>
                     </div>
 
@@ -41,7 +46,7 @@
                         <i class="fa fa-circle-o-notch fa-spin fa-2x" ng-show="vm.isUploadingPhoto"></i>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-7">
+                <div class="col-xs-12 col-sm-8">
                     <form>
                         <div class="form-group">
                             <label for="nameInput">First name</label>
@@ -61,11 +66,11 @@
                         </div>
                         <div class="form-group">
                             <label for="nameInput">Songs played</label>
-                            <p class="form-control-static">{{vm.user.totalPlays}}</p>
+                            <p class="form-control-static">{{vm.user.totalPlays}} songs played</p>
                         </div>
                         <div class="form-group">
                             <label for="nameInput">Song requests</label>
-                            <p class="form-control-static">{{vm.user.totalSongRequests}}</p>
+                            <p class="form-control-static">{{vm.user.totalSongRequests}} song requests</p>
                         </div>
                     </form>
 
@@ -77,12 +82,13 @@
                             <i class="fa fa-circle-o-notch fa-spin"></i> Saving...
                         </span>
                     </button>
-                    
+
                     <p class="text-success" ng-show="vm.hasSavedSuccessfully">
                         <br />
                         <i class="fa fa-check"></i> Profile saved
                     </p>
                 </div>
+
             </div>
         </div>
     </div>

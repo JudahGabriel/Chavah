@@ -48,13 +48,22 @@ var BitShuva;
             AppNavService.prototype.getEditSongUrl = function (songId) {
                 return "/edit/" + songId;
             };
-            AppNavService.prototype.showSongRequestDialog = function () {
-                var requestSongDialog = this.$uibModal.open({
+            AppNavService.prototype.songRequestModal = function () {
+                return this.$uibModal.open({
                     controller: "RequestSongController as vm",
                     templateUrl: this.templatePaths.songRequestModal,
                     windowClass: "request-song-modal",
                 });
-                return requestSongDialog;
+            };
+            AppNavService.prototype.cropImageModal = function (imageFile) {
+                return this.$uibModal.open({
+                    controller: "CropImageController as vm",
+                    templateUrl: this.templatePaths.cropImageModal,
+                    windowClass: "crop-image-modal",
+                    resolve: {
+                        imageFile: function () { return imageFile; }
+                    }
+                });
             };
             AppNavService.prototype.createAlbum = function () {
                 this.$location.url("/admin/album/create");

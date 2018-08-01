@@ -3,6 +3,7 @@
         artistList: string;
         songList: string;
         songRequestModal: string;
+        cropImageModal: string;
         songRequestResult: string;
         headerPartial: string;
         footerPartial: string;
