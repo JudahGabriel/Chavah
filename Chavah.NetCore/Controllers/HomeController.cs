@@ -54,7 +54,7 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="song"></param>
         /// <param name="embed"></param>
         /// <returns></returns>
-        [RequireHttps]
+        //[RequireHttps]
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> Index(

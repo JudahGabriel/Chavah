@@ -80,6 +80,26 @@
       "type": "coreclr",
       "request": "attach",
       "processId": "${command:pickProcess}"
-    }
+    },
+    {
+      "name": ".NET Docker Debug",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "publish",
+      "cwd": "/app",
+      "program": "/app/BitShuva.Chavah.dll",
+      "sourceFileMap": {
+          "/app": "${workspaceRoot}/bin/Debug/netcoreapp2.1/BitShuva.Chavah.dll"
+      },
+      "pipeTransport": {
+          "pipeCwd": "${workspaceFolder}",
+          "pipeProgram": "${env:windir}\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "pipeArgs": [
+              "-c",
+              "docker exec -i chavah.web"
+          ],
+          "debuggerPath": "/vsdbg/vsdbg"
+      }
+  }
   ]
 }

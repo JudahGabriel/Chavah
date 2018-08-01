@@ -19,5 +19,5 @@
 //    }
 //}
 //App.directive("fileUploadChanged", ["$parse", ($parse: ng.IParseService) => new FileUploadChangedBinder($parse)]);
-//} 
+//}
 //# sourceMappingURL=AudioStatusChanged.js.map
