@@ -49,6 +49,7 @@ var BitShuva;
                     .then(function (songs) {
                     var existingSongBatch = _this.songsBatch.getValue();
                     var freshSongs = songs
+                        // tslint:disable-next-line:no-shadowed-variable
                         .filter(function (s) { return existingSongBatch.map(function (s) { return s.id; }).indexOf(s.id) === -1; })
                         .filter(function (s) { return !_this.songRequestApi.isSongPendingRequest(s.id); });
                     _this.songsBatch.onNext(existingSongBatch.concat(freshSongs));

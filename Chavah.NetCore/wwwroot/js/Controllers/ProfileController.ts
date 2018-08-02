@@ -52,17 +52,17 @@
                         }
 
                         // Now send it to the server.
-                        //this.isUploadingPhoto = true;
-                        //this.hasSavedSuccessfully = false;
-                        //try {
-                        //    // Update the profile pic and the profile data.
-                        //    const updatedProfilePic = await this.userApi.updateProfilePic(cropResult.image);
+                        this.isUploadingPhoto = true;
+                        this.hasSavedSuccessfully = false;
+                        try {
+                            // Update the profile pic and the profile data.
+                            const updatedProfilePic = await this.userApi.updateProfilePic(cropResult.image);
                             
-                        //    this.profilePicUrl = updatedProfilePic;
-                        //    this.hasSavedSuccessfully = true;
-                        //} finally {
-                        //    this.isUploadingPhoto = false;
-                        //}
+                            this.profilePicUrl = updatedProfilePic;
+                            this.hasSavedSuccessfully = true;
+                        } finally {
+                            this.isUploadingPhoto = false;
+                        }
                     }
                 }
             }

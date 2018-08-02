@@ -19,6 +19,8 @@
         public string DatabaseName { get; set; }
         public string CertFileName { get; set; }
         public string CertPassword { get; set; }
+
+        public string FileName { get; set; }
     }
 
     public class Application

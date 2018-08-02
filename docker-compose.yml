@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  chavah.web:
+    image: ${DOCKER_REGISTRY}chavah.web
+    build:
+      context: .
+      dockerfile: Chavah.NetCore/Dockerfile
+    depends_on: 
+      - chavah.ravendb
+  chavah.ravendb:
+    image: ravendb/ravendb
+    

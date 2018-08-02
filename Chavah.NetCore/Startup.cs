@@ -8,6 +8,7 @@ using cloudscribe.Syndication.Models.Rss;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Raven.Identity;
@@ -63,7 +64,8 @@ namespace BitShuva.Chavah
             services.RunDatabasePatches();
             services.InstallIndexes();
             services.AddMemoryCache();
-            services.AddMvc();
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.UseBundles(); // Must be *after* .AddMvc()
             services.AddProgressiveWebApp();
         }
@@ -81,7 +83,6 @@ namespace BitShuva.Chavah
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
                 app.UseDatabaseErrorPage();
             }
             else
@@ -90,9 +91,12 @@ namespace BitShuva.Chavah
             }
 
             app.UseWebOptimizer(); // this line must come before .UseStaticFiles()
+
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
 
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
