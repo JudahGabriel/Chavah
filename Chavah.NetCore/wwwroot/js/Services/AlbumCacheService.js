@@ -54,10 +54,10 @@ var BitShuva;
             };
             AlbumCacheService.prototype.addToCache = function (albums) {
                 var _this = this;
-                var _a;
                 var albumsNotInCache = albums.filter(function (a) { return !_this.cache.some(function (cached) { return cached.id === a.id; }); });
                 (_a = this.cache).push.apply(_a, albumsNotInCache);
                 AlbumCacheService.tryStoreCacheInLocalStorage(this.cache);
+                var _a;
             };
             // tslint:disable-next-line:member-ordering
             AlbumCacheService.tryStoreCacheInLocalStorage = function (cache) {

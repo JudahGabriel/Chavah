@@ -28,7 +28,7 @@
         submit() {
             if (this.canSubmit) {
                 this.isSaving = true;
-                this.accountApi.sendSupportMessage(this.name, this.email, this.message)
+                this.accountApi.sendSupportMessage(this.name, this.email, this.message, window.navigator.userAgent)
                     .then(() => this.state = "success", () => this.state = "error")
                     .finally(() => this.isSaving = false);
             }
