@@ -9,6 +9,10 @@ services:
       - DbConnection_Url=http://chavah.ravendb:8080
       - DbConnection_DatabaseName=ChavahDb
       - DbConnection_FileName=ChavahDb.ravendbdump
+      # Fix for docker ssl issue please update password from
+      # Manage UserSecrets "Kestrel:Certificates:Development:Password": "4ce265ef-8194-409f-b691-39b3d107ffd1"
+      #- Kestrel__Certificates__Default__Password="4ce265ef-8194-409f-b691-39b3d107ffd1" 
+      #- Kestrel__Certificates__Default__Path=/root/.aspnet/https/Chavah.NetCore.pfx
     ports:
       - "5600:80"
       - "44363:443"
@@ -26,3 +30,10 @@ services:
     ports: 
       - "8181:8080"
       - "38888:38888"
+   
+   
+   chavah.mail:
+     image: mailhog/mailhog
+     ports:
+      - "8025:8025"
+      - "1125:1025"
