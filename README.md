@@ -16,4 +16,8 @@ Chavah is packaged as an app in the [iOS app store](https://itunes.apple.com/us/
 ## Setup project & Tools
 1. Node version 8.9.0 and npm > 5.0.0 (recommended to use nvm for windows)
 2. [RavenDb Getting Started](https://ravendb.net/docs/article-page/3.5/csharp/start/getting-started)
-4. Visual Studio.NET 2017
+3. Visual Studio.NET 2017 or VSCode with the following extensions:
+    - [TypeScript Definition Generator](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.TypeScriptDefinitionGenerator)-`note: this extension doesn't work with VSCode`
+    - [BundlerMinifier](https://github.com/madskristensen/BundlerMinifier)
+    - [WebCompiler](https://github.com/madskristensen/WebCompiler)
+4. [Docker for Windows](https://docs.docker.com/docker-for-windows/release-notes/) or  [Docker for Mac](https://docs.docker.com/docker-for-mac/install/)

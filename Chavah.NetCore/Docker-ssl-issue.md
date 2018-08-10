@@ -8,7 +8,7 @@
 ```
 
 
-dotnet dev-certs https -ep C:\Users\karpo\AppData\Roaming\ASP.NET\Https\Chavah.NetCore.pfx -p 4ce265ef-8194-409f-b691-39b3d107ffd1
+dotnet dev-certs https -ep C:\Users\{user}\AppData\Roaming\ASP.NET\Https\Chavah.NetCore.pfx -p 4ce265ef-8194-409f-b691-39b3d107ffd1
 
 
 %APPDATA%\Microsoft\UserSecrets

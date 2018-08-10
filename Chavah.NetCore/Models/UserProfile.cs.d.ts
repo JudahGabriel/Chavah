@@ -1,15 +1,13 @@
-﻿/// <reference path="LikeDislikeCount.cs.d.ts" />
-
 declare module server {
-	interface UserProfile {
-		RegistrationDate: Date;
-		TotalPlays: number;
-		DislikedSongCount: number;
-		LikedSongCount: number;
-		FavoriteArtists: server.LikeDislikeCount[];
-		FavoriteAlbums: server.LikeDislikeCount[];
-		FavoriteSongs: string[];
-		Rank: number;
-		EmailAddress: string;
+	interface userProfile {
+		registrationDate: Date;
+		totalPlays: number;
+		dislikedSongCount: number;
+		likedSongCount: number;
+		favoriteArtists: any[];
+		favoriteAlbums: any[];
+		favoriteSongs: string[];
+		rank: number;
+		emailAddress: string;
 	}
 }
