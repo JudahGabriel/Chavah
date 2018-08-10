@@ -87,15 +87,16 @@
     }
 
     @*CSS for development*@
-    <environment include="Development">
-        <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css' />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="~/css/bootswatch.css" />
-        <link rel="stylesheet" href="~/css/bootstrap-flatly.css" />
-        <link rel="stylesheet" href="~/css/bootstrap-flatly-tweaks.css" />
-        <link rel="stylesheet" href="~/css/nprogress.css" />
-        <link rel="stylesheet" asp-href-include="~/css/**/*.min.css" asp-append-version="true" />
-    </environment>
+        <environment include="Development">
+            <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css' />
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+            <link rel="stylesheet" href="~/css/bootswatch.css" />
+            <link rel="stylesheet" href="~/css/bootstrap-flatly.css" />
+            <link rel="stylesheet" href="~/css/bootstrap-flatly-tweaks.css" />
+            <link rel="stylesheet" href="~/css/nprogress.css" />
+            <link rel="stylesheet" asp-href-include="~/css/*.min.css" asp-append-version="true" />
+            <link rel="stylesheet" asp-href-include="~/css/app/*.min.css" asp-append-version="true" />
+        </environment>
 
     @*CSS for production*@
     <environment include="Test,Staging,Production">
