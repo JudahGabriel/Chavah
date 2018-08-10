@@ -33,12 +33,15 @@ namespace BitShuva.Chavah.Services
         public Uri HttpAlbumArt => this.HttpHost.Combine(cdnSettings.AlbumArtDirectory);
         public Uri HttpArtistImages => this.HttpHost.Combine(cdnSettings.ArtistImagesDirectory);
         public Uri HttpProfilePics => this.HttpHost.Combine(cdnSettings.ProfilePicsDirectory);
-        
+
         /// <summary>
         /// Uploads the song to the CDN.
         /// </summary>
-        /// <param name="song">The song whose MP3 to upload.</param>
         /// <param name="tempHttpAddress">The temporary HTTP address of the file. This is supplied by FilePickr. The file will be downloaded from here and moved to the CDN.</param>
+        /// <param name="artist"></param>
+        /// <param name="album"></param>
+        /// <param name="songNumber"></param>
+        /// <param name="songName"></param>
         /// <returns>The HTTP URI to the MP3 file on the CDN.</returns>
         public async Task<Uri> UploadMp3Async(Uri tempHttpAddress, string artist, string album, int songNumber, string songName)
         {
@@ -89,8 +92,9 @@ namespace BitShuva.Chavah.Services
         /// <summary>
         /// Uploads the song's album art to the CDN.
         /// </summary>
-        /// <param name="song">The song whose album art to upload.</param>
         /// <param name="tempHttpAddress">The temporary HTTP address where the album art can be downloaded.</param>
+        /// <param name="artist"></param>
+        /// <param name="album"></param>
         /// <param name="fileExtension">The desired file extension for the file on the CDN.</param>
         /// <returns>A task that represents the async operation.</returns>
         public async Task<Uri> UploadAlbumArtAsync(Uri tempHttpAddress, string artist, string album, string fileExtension)
@@ -109,11 +113,12 @@ namespace BitShuva.Chavah.Services
                 }
             }
         }
-        
+
         /// <summary>
         /// Uploads an image to the /[station]/artistimages folder on the CDN.
         /// </summary>
         /// <param name="tempHttpPath">The temporary HTTP path where the image currently resides. This file will be donwloaded and moved to the CDN.</param>
+        /// <param name="fileName"></param>
         /// <returns>The new HTTP URI to the image on the CDN.</returns>
         public async Task<Uri> UploadArtistImageAsync(Uri tempHttpPath, string fileName)
         {
@@ -156,7 +161,8 @@ namespace BitShuva.Chavah.Services
         /// <summary>
         /// Uploads the song's local file representation to the CDN.
         /// </summary>
-        /// <param name="song">The song to upload.</param>
+        /// <param name="artist"></param>
+        /// <param name="album"></param>
         /// <param name="filePath">The fully qualified path to a local file.</param>
         /// <param name="fileExtension">The desired file extension for the file on the CDN.</param>
         /// <returns>The HTTP URI to the file on the CDN.</returns>
