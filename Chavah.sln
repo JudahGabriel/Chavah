@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chavah.NetCore", "Chavah.Ne
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{03FE4951-BBA5-4DA8-AC3B-4F7CA0FA113C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chavah.NetCore.Tests", "Chavah.NetCore.Tests\Chavah.NetCore.Tests.csproj", "{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Android = Debug|Android
@@ -109,6 +111,42 @@ Global
 		{03FE4951-BBA5-4DA8-AC3B-4F7CA0FA113C}.Release|x64.Build.0 = Release|Any CPU
 		{03FE4951-BBA5-4DA8-AC3B-4F7CA0FA113C}.Release|x86.ActiveCfg = Release|Any CPU
 		{03FE4951-BBA5-4DA8-AC3B-4F7CA0FA113C}.Release|x86.Build.0 = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|Android.Build.0 = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|ARM.Build.0 = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|iOS.Build.0 = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|Windows-x64.Build.0 = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|Windows-x86.Build.0 = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|x64.Build.0 = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Debug|x86.Build.0 = Debug|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|Android.ActiveCfg = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|Android.Build.0 = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|ARM.ActiveCfg = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|ARM.Build.0 = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|iOS.ActiveCfg = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|iOS.Build.0 = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|Windows-ARM.Build.0 = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|Windows-x64.Build.0 = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|Windows-x86.ActiveCfg = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|x64.ActiveCfg = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|x64.Build.0 = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|x86.ActiveCfg = Release|Any CPU
+		{E764E07A-CA2E-4054-9F64-1584CB1B0FDC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,48 +14,11 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<NoWarn>1701;1702;1591;</NoWarn>
-		<!-- <DebugType>full</DebugType>
-		<DebugSymbols>true</DebugSymbols> -->
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<NoWarn>1701;1702;1591;</NoWarn>
-		<!-- <DefineConstants>TRACE</DefineConstants>
-		<DebugType>pdbonly</DebugType>
-		<DebugSymbols>true</DebugSymbols> -->
 	</PropertyGroup>
-	
-	<ItemGroup>
-		<Compile Remove="Providers\**" />
-		<Compile Remove="wwwroot\js\views\**" />
-		<Content Remove="Providers\**" />
-		<Content Remove="wwwroot\js\views\**" />
-		<EmbeddedResource Remove="Providers\**" />
-		<EmbeddedResource Remove="wwwroot\js\views\**" />
-		<None Remove="Providers\**" />
-		<None Remove="wwwroot\js\views\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Remove="bundleconfig.json" />
-		<Content Remove="wwwroot\js\common\ToggleOption.ts" />
-		<Content Remove="wwwroot\js\Controllers\MyLikesController.ts" />
-		<Content Remove="wwwroot\js\Controllers\SupportController.ts" />
-		<Content Remove="wwwroot\js\Models\LogSort.ts" />
-		<Content Remove="wwwroot\js\Models\StructuredLog.ts" />
-		<Content Remove="wwwroot\js\Services\AdAnnouncerService.ts" />
-		<Content Remove="wwwroot\js\Services\IOSMediaSessionService.ts" />
-		<Content Remove="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
-		<Content Remove="wwwroot\js\Services\UserApiService.ts" />
-		<Content Remove="wwwroot\js\Services\UwpNativeAudioService.ts" />
-    <Content Remove="wwwroot\js\common\ICropImageResult.ts" />
-    <Content Remove="wwwroot\js\common\ToggleOption.ts" />
-    <Content Remove="wwwroot\js\Controllers\CropImageController.ts" />
-    <Content Remove="wwwroot\js\Controllers\MyLikesController.ts" />
-    <Content Remove="wwwroot\js\Directives\BackgroundImage.ts" />
-    <Content Remove="wwwroot\js\Directives\ImageCropper.ts" />
-  </ItemGroup>
-
 
 	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="3.1.0" />
@@ -64,14 +27,10 @@
 		<PackageReference Include="cloudscribe.Syndication.Web" Version="2.1.0" />
 		<PackageReference Include="CoreFtp" Version="1.4.0" />
 		<PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
-		
 		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.2" />
-
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="2.2.0" />
-
 		<PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
-
 		<PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
 		<PackageReference Include="Optional" Version="4.0.0" />
 		<PackageReference Include="Quartz" Version="3.0.6" />
