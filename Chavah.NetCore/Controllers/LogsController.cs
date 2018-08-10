@@ -20,6 +20,7 @@ namespace BitShuva.Chavah.Controllers
         {
         }
 
+        [HttpGet]
         public async Task<PagedList<StructuredLog>> GetAll(int skip, int take, LogLevel? level, LogSort sort)
         {
             IQueryable<StructuredLog> query = this.DbSession.Query<StructuredLog>()

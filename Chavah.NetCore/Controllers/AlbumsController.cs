@@ -269,6 +269,7 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="artist">The artist name.</param>
         /// <param name="album">The album.</param>
         /// <returns>An Album-like object containing the ID of the song.</returns>
+        [HttpGet]
         [Route("art/{songId}/{artist}/{album}")]
         public async Task<dynamic> GetAlbumArt(string songId, string artist, string album)
         {

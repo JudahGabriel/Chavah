@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace BitShuva.Chavah
+﻿namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class Bundles
+    public static class WebOptimizerExtentions
     {
        public static void UseBundles(this IServiceCollection services)
         {

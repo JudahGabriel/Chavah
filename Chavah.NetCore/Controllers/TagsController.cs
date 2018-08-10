@@ -25,6 +25,7 @@ namespace BitShuva.Chavah.Controllers
         {
         }
 
+        [HttpGet]
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<List<string>> GetAll()
         {
