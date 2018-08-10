@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -35,6 +36,7 @@ namespace BitShuva.Chavah
         {
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
+          
 
             // Add application services.
             services.AddTransient<IEmailService, SendGridEmailService>();
@@ -68,18 +70,45 @@ namespace BitShuva.Chavah
             services.RunDatabasePatches();
             services.InstallIndexes();
             services.AddMemoryCache();
-            services.AddMvc()
+
+            services.AddMvcCore().AddVersionedApiExplorer(
+              options =>
+              {
+                  options.GroupNameFormat = "'v'VVV";
+
+                   // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
+                   // can also be used to control the format of the API version in route templates
+                   options.SubstituteApiVersionInUrl = true;
+              });
+
+
+            services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores()))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddApiVersioning(o =>
+            {
+                o.ReportApiVersions = true;
+                o.AssumeDefaultVersionWhenUnspecified = true;
+            });
+
+            
+            services.AddCustomAddSwagger();
+
             services.UseBundles(); // Must be *after* .AddMvc()
             services.AddProgressiveWebApp();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+            ILoggerFactory loggerFactory,
+            IApiVersionDescriptionProvider provider)
         {
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+
             AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
             {
-                _logger.LogError("Unhandled exception. Terminating = {0}. Exception details: {1}", e?.IsTerminating, e?.ExceptionObject?.ToString());
+                _logger.LogError($"Unhandled exception. Terminating = {e?.IsTerminating}. Exception details: {e?.ExceptionObject?.ToString()}");
             };
             
 
@@ -98,8 +127,8 @@ namespace BitShuva.Chavah
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
-
             
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -107,6 +136,19 @@ namespace BitShuva.Chavah
                     template: "{controller=Home}/{action=Index}/{id?}");
                 
             });
+
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    options.SwaggerEndpoint(
+                        $"/swagger/{description.GroupName}/swagger.json",
+                        description.GroupName.ToUpperInvariant());
+                }
+            });
+
         }
     }
 }

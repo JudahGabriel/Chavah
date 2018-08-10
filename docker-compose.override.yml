@@ -32,8 +32,8 @@ services:
       - "38888:38888"
    
    
-   chavah.mail:
-     image: mailhog/mailhog
-     ports:
-      - "8025:8025"
-      - "1125:1025"
+  chavah.mail:
+    image: mailhog/mailhog
+    ports:
+     - "8025:8025"
+     - "1125:1025"

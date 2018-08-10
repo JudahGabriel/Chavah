@@ -9,8 +9,22 @@
 		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
 		<RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json</RestoreSources>
 		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<NoWarn>1701;1702;1591;</NoWarn>
+		<!-- <DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols> -->
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<NoWarn>1701;1702;1591;</NoWarn>
+		<!-- <DefineConstants>TRACE</DefineConstants>
+		<DebugType>pdbonly</DebugType>
+		<DebugSymbols>true</DebugSymbols> -->
+	</PropertyGroup>
+	
 	<ItemGroup>
 		<Compile Remove="Providers\**" />
 		<Compile Remove="wwwroot\js\views\**" />
@@ -52,6 +66,10 @@
 		<PackageReference Include="LigerShark.WebOptimizer.Core" Version="1.0.215" />
 
 		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.2" />
+
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="2.2.0" />
+
+		<PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
 
 		<PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
@@ -61,6 +79,7 @@
 		<PackageReference Include="RavenDB.Identity" Version="4.3.0" />
 		<PackageReference Include="RavenDB.StructuredLogger" Version="4.0.5" />
 		<PackageReference Include="Sendgrid" Version="9.9.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
 		<PackageReference Include="System.Interactive" Version="3.2.0" />
 		<PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.42" />
 	</ItemGroup>

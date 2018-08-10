@@ -21,7 +21,7 @@ namespace BitShuva.Chavah
                     {
                         logger.AddDebug();
                         logger.AddConsole();
-                        logger.AddRavenStructuredLogger();
+                        //logger.AddRavenStructuredLogger();
                         logger.AddConfiguration(context.Configuration.GetSection("Logging"));
                     })
                     .UseStartup<Startup>();

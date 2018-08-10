@@ -88,6 +88,7 @@ namespace BitShuva.Chavah.Controllers
             }
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<AppUser> GetCurrentUserOrThrow()
         {
             var currentUser = await this.GetCurrentUser();
@@ -99,6 +100,7 @@ namespace BitShuva.Chavah.Controllers
             return currentUser;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<AppUser> GetCurrentUser()
         {
             if (this.currentUser != null)
