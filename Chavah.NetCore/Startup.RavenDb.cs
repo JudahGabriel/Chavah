@@ -4,19 +4,18 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Smuggler;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
 
-namespace BitShuva.Chavah.Common
+namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// Adds a Raven document store to the dependency injection services.
     /// </summary>
-    public static class RavenDocStoreProvider
+    public static class DocumentStoreExtensions
     {
         /// <summary>
         /// Adds a Raven <see cref="IDocumentStore"/> singleton to the dependency injection services.
