@@ -66,7 +66,6 @@ namespace BitShuva.Chavah
             services.AddMemoryCache();
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.UseBundles(); // Must be *after* .AddMvc()
             services.AddProgressiveWebApp();
         }
 
@@ -90,12 +89,9 @@ namespace BitShuva.Chavah
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseWebOptimizer(); // this line must come before .UseStaticFiles()
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
-
             
             app.UseMvc(routes =>
             {

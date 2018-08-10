@@ -23,7 +23,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Remove="bundleconfig.json" />
 		<Content Remove="wwwroot\js\common\ToggleOption.ts" />
 		<Content Remove="wwwroot\js\Controllers\MyLikesController.ts" />
 		<Content Remove="wwwroot\js\Controllers\SupportController.ts" />
@@ -34,7 +33,6 @@
 		<Content Remove="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
 		<Content Remove="wwwroot\js\Services\UserApiService.ts" />
 		<Content Remove="wwwroot\js\Services\UwpNativeAudioService.ts" />
-    <Content Remove="bundleconfig.json" />
     <Content Remove="wwwroot\js\common\ICropImageResult.ts" />
     <Content Remove="wwwroot\js\common\ToggleOption.ts" />
     <Content Remove="wwwroot\js\Controllers\CropImageController.ts" />
@@ -46,10 +44,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="3.1.0" />
+		<PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
+		<PackageReference Include="BuildWebCompiler" Version="1.11.375" />
 		<PackageReference Include="cloudscribe.Syndication.Web" Version="2.1.0" />
 		<PackageReference Include="CoreFtp" Version="1.4.0" />
 		<PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
-		<PackageReference Include="LigerShark.WebOptimizer.Core" Version="1.0.215" />
 		
 		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.2" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
@@ -57,12 +56,12 @@
 		<PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
 		<PackageReference Include="Optional" Version="4.0.0" />
 		<PackageReference Include="Quartz" Version="3.0.6" />
-		<PackageReference Include="RavenDB.Client" Version="4.0.5" />
+		<PackageReference Include="RavenDB.Client" Version="4.0.6" />
 		<PackageReference Include="RavenDB.Identity" Version="4.3.0" />
 		<PackageReference Include="RavenDB.StructuredLogger" Version="4.0.5" />
 		<PackageReference Include="Sendgrid" Version="9.9.0" />
 		<PackageReference Include="System.Interactive" Version="3.2.0" />
-		<PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.42" />
+		<PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.33" />
 	</ItemGroup>
 
 	<ItemGroup>

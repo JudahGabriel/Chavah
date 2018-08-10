@@ -42,7 +42,8 @@
                     <div class="btn-group profile-btn">
                         <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <h3 ng-show="vm.currentUserName">
-                                <i class="fa fa-user-circle fa-fw"></i>
+                                <i class="fa fa-user-circle fa-fw" ng-hide="vm.profilePicUrl"></i>
+                                <img class="profile-pic img-responsive img-circle" ng-src="{{vm.profilePicUrl}}" ng-show="vm.profilePicUrl" />
                                 <span class="caret"></span>
                             </h3>
                             <h3 ng-hide="vm.currentUserName">
