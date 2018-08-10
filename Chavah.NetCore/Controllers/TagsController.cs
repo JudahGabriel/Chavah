@@ -70,10 +70,8 @@ namespace BitShuva.Chavah.Controllers
                     var oldTagIndex = this.Tags.indexOf(oldTag);
                     if (oldTagIndex >= 0)
                     {
-                        // Remove the old tag.
                         this.Tags.splice(oldTagIndex, 1);
 
-                        // Add the new tag if it's not already added.
                         var newTagIndex = this.Tags.indexOf(newTag);
                         if (newTagIndex === -1) {
                             this.Tags.splice(oldTagIndex, 0, newTag);
