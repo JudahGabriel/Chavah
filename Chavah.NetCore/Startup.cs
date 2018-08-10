@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Raven.Identity;
 using Raven.StructuredLog;
 using System;
@@ -19,12 +20,15 @@ namespace BitShuva.Chavah
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+
+        private readonly ILogger<Startup> _logger;
+
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            _logger = logger;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -73,10 +77,9 @@ namespace BitShuva.Chavah
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            System.AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
             {
-                Console.WriteLine("Unhandled exception. Terminating = {0}. Exception details: {1}", e?.IsTerminating, e?.ExceptionObject?.ToString());
-                Console.Out.Flush();
+                _logger.LogError("Unhandled exception. Terminating = {0}. Exception details: {1}", e?.IsTerminating, e?.ExceptionObject?.ToString());
             };
             
 

@@ -34,14 +34,14 @@
 		<Content Remove="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
 		<Content Remove="wwwroot\js\Services\UserApiService.ts" />
 		<Content Remove="wwwroot\js\Services\UwpNativeAudioService.ts" />
-    <Content Remove="bundleconfig.json" />
-    <Content Remove="wwwroot\js\common\ICropImageResult.ts" />
-    <Content Remove="wwwroot\js\common\ToggleOption.ts" />
-    <Content Remove="wwwroot\js\Controllers\CropImageController.ts" />
-    <Content Remove="wwwroot\js\Controllers\MyLikesController.ts" />
-    <Content Remove="wwwroot\js\Directives\BackgroundImage.ts" />
-    <Content Remove="wwwroot\js\Directives\ImageCropper.ts" />
-  </ItemGroup>
+		<Content Remove="bundleconfig.json" />
+		<Content Remove="wwwroot\js\common\ICropImageResult.ts" />
+		<Content Remove="wwwroot\js\common\ToggleOption.ts" />
+		<Content Remove="wwwroot\js\Controllers\CropImageController.ts" />
+		<Content Remove="wwwroot\js\Controllers\MyLikesController.ts" />
+		<Content Remove="wwwroot\js\Directives\BackgroundImage.ts" />
+		<Content Remove="wwwroot\js\Directives\ImageCropper.ts" />
+	</ItemGroup>
 
 
 	<ItemGroup>
@@ -50,7 +50,7 @@
 		<PackageReference Include="CoreFtp" Version="1.4.0" />
 		<PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
 		<PackageReference Include="LigerShark.WebOptimizer.Core" Version="1.0.215" />
-		
+
 		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.2" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
 
@@ -94,14 +94,14 @@
 		<TypeScriptCompile Include="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
 		<TypeScriptCompile Include="wwwroot\js\Services\UserApiService.ts" />
 		<TypeScriptCompile Include="wwwroot\js\Services\UwpNativeAudioService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\common\ICropImageResult.ts" />
-    <TypeScriptCompile Include="wwwroot\js\common\ToggleOption.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\CropImageController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\MyLikesController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\SupportController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Directives\BackgroundImage.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Directives\ImageCropper.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\LogSort.ts" />
+		<TypeScriptCompile Include="wwwroot\js\common\ICropImageResult.ts" />
+		<TypeScriptCompile Include="wwwroot\js\common\ToggleOption.ts" />
+		<TypeScriptCompile Include="wwwroot\js\Controllers\CropImageController.ts" />
+		<TypeScriptCompile Include="wwwroot\js\Controllers\MyLikesController.ts" />
+		<TypeScriptCompile Include="wwwroot\js\Controllers\SupportController.ts" />
+		<TypeScriptCompile Include="wwwroot\js\Directives\BackgroundImage.ts" />
+		<TypeScriptCompile Include="wwwroot\js\Directives\ImageCropper.ts" />
+		<TypeScriptCompile Include="wwwroot\js\Models\LogSort.ts" />
 
 	</ItemGroup>
 
