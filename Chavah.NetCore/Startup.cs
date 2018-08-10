@@ -94,7 +94,6 @@ namespace BitShuva.Chavah
             
             services.AddCustomAddSwagger();
 
-            services.UseBundles(); // Must be *after* .AddMvc()
             services.AddProgressiveWebApp();
         }
 
@@ -121,8 +120,6 @@ namespace BitShuva.Chavah
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
-            app.UseWebOptimizer(); // this line must come before .UseStaticFiles()
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

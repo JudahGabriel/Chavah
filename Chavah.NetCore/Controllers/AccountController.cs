@@ -396,7 +396,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        public SupportMessage SendSupportMessage([FromBody]SupportMessage message)
+        public async Task<SupportMessage> SendSupportMessage([FromBody]SupportMessage message)
         {
             if (!string.IsNullOrEmpty(User.Identity.Name))
             {
@@ -406,6 +406,19 @@ namespace BitShuva.Chavah.Controllers
             using (logger.BeginKeyValueScope("message", message))
             {
                 logger.LogInformation("Support message submitted");
+            }
+
+            // If we have a userID, see if we can load that user and update his/her name.
+            if (!string.IsNullOrEmpty(message.Name) && !string.IsNullOrEmpty(message.UserId))
+            {
+                var user = await this.GetCurrentUser();
+                if (string.IsNullOrEmpty(user.FirstName) && string.IsNullOrEmpty(user.LastName))
+                {
+                    // Update their name.
+                    var nameParts = message.Name.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    user.FirstName = nameParts.FirstOrDefault();
+                    user.LastName = string.Join(' ', nameParts.Skip(1));
+                }
             }
 
             this.emailSender.QueueSupportEmail(message, options.Email.SenderEmail);

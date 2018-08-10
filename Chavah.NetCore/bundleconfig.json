@@ -1,0 +1,29 @@
+[  
+  {
+    "outputFileName": "wwwroot/dist/app.min.css",
+    "inputFiles": [
+      "wwwroot/css/bootswatch.min.css",
+      "wwwroot/css/bootstrap-flatly.min.css",
+      "wwwroot/css/bootstrap-flatly-tweaks.min.css",
+      "wwwroot/css/nprogress.min.css",
+      "wwwroot/css/app/*.min.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/dist/app.min.js",
+    "inputFiles": [
+      "wwwroot/js/polyfills/*.js",
+      "wwwroot/js/common/*.js",
+      "wwwroot/js/models/*.js",
+      "wwwroot/js/app.js",
+      "wwwroot/js/directives/*.js",
+      "wwwroot/js/services/*.js",
+      "wwwroot/js/controllers/*.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]

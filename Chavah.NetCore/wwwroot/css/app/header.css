@@ -90,8 +90,14 @@ header .profile-btn button {
   padding-left: 7px;
 }
 header .profile-btn button:hover,
-header .profile-btn button:active {
+header .profile-btn button:active,
+header .profile-btn button:focus {
   text-decoration: none;
+}
+header .profile-btn .profile-pic {
+  max-width: 30px;
+  max-height: 30px;
+  display: inline;
 }
 header .notifications-btn.open button {
   color: white;

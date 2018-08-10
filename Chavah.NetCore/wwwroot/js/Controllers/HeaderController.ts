@@ -2,6 +2,7 @@
     export class HeaderController {
         
         notifications: Server.Notification[];
+        profilePicUrl: string | null = null;
 
         static $inject = [
             "initConfig",
@@ -14,6 +15,8 @@
                     private appNav: AppNavService) {
 
             this.notifications = initConfig.user ? initConfig.user.notifications : [];
+            this.profilePicUrl = initConfig.user ? initConfig.user.profilePicUrl : null;
+
             this.accountApi.signedIn
                 .select(() => this.accountApi.currentUser)
                 .subscribe(user => this.signedInUserChanged(user));
@@ -50,6 +53,7 @@
         signedInUserChanged(user: User | null) {
             if (user) {
                 this.notifications = user.notifications;
+                this.profilePicUrl = user.profilePicUrl;
             }
         }
     }

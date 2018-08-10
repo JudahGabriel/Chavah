@@ -8,7 +8,9 @@ var BitShuva;
                 this.initConfig = initConfig;
                 this.accountApi = accountApi;
                 this.appNav = appNav;
+                this.profilePicUrl = null;
                 this.notifications = initConfig.user ? initConfig.user.notifications : [];
+                this.profilePicUrl = initConfig.user ? initConfig.user.profilePicUrl : null;
                 this.accountApi.signedIn
                     .select(function () { return _this.accountApi.currentUser; })
                     .subscribe(function (user) { return _this.signedInUserChanged(user); });
@@ -55,6 +57,7 @@ var BitShuva;
             HeaderController.prototype.signedInUserChanged = function (user) {
                 if (user) {
                     this.notifications = user.notifications;
+                    this.profilePicUrl = user.profilePicUrl;
                 }
             };
             HeaderController.$inject = [
