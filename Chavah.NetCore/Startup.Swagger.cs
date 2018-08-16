@@ -60,7 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-        static string XmlCommentsFilePath
+        private static string XmlCommentsFilePath
         {
             get
             {
@@ -70,7 +70,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
-        static Info CreateInfoForApiVersion(ApiVersionDescription description, AppSettings appSettings)
+        private static Info CreateInfoForApiVersion(ApiVersionDescription description, AppSettings appSettings)
         {
             var info = new Info()
             {
