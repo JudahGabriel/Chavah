@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Pwned.AspNetCore;
 using Raven.Identity;
 using Raven.StructuredLog;
 using System;
@@ -106,6 +107,8 @@ namespace BitShuva.Chavah
             });
                         
             services.AddCustomAddSwagger();
+
+            services.AddPwnedPassword(_=> new PwnedOptions());
 
             services.AddProgressiveWebApp();
         }

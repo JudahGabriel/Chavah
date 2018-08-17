@@ -151,13 +151,6 @@
         userId: string;
     }
 
-    export interface RegisterResults {
-        success: boolean;
-        errorMessage: string | null;
-        isAlreadyRegistered: boolean;
-        needsConfirmation: boolean;
-    }
-
     export interface ConfirmEmailResult {
         success: boolean;
         errorMessage: string;
@@ -214,4 +207,19 @@
         errorMessge: string | null;
         user: User | null;
     }
+
+
+    export interface IRegisterResults {
+        success: boolean;
+        errorMessage: string | null;
+        isAlreadyRegistered: boolean;
+        needsConfirmation: boolean;
+    }
+
+    export interface IRegisterModel {
+        email: string;
+        password: string;
+        confirmPassword: string;
+    }
+
 }

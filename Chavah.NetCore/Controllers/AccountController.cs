@@ -4,12 +4,15 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Account;
 using BitShuva.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Pwned.AspNetCore;
 using Raven.Client.Documents.Session;
 using Raven.StructuredLog;
 
@@ -26,6 +29,7 @@ namespace BitShuva.Chavah.Controllers
         private readonly IEmailService emailSender;
         private readonly AppSettings options;
         private readonly IMapper mapper;
+        private readonly IPwnedPasswordService pwnedPasswordService;
 
         public AccountController(
             UserManager<AppUser> userManager,
@@ -34,7 +38,8 @@ namespace BitShuva.Chavah.Controllers
             ILogger<AccountController> logger,
             IEmailService emailSender,
             IOptions<AppSettings> options,
-            IMapper mapper)
+            IMapper mapper,
+            IPwnedPasswordService pwnedPasswordService)
             : base(asyncDocumentSession, logger)
         {
             this.signInManager = signInManager;
@@ -43,6 +48,7 @@ namespace BitShuva.Chavah.Controllers
             this.emailSender = emailSender;
             this.options = options?.Value;
             this.mapper = mapper;
+            this.pwnedPasswordService = pwnedPasswordService;
         }
 
         /// <summary>
@@ -193,15 +199,24 @@ namespace BitShuva.Chavah.Controllers
         /// <summary>
         /// Register a new user.
         /// </summary>
-        /// <param name="email"></param>
-        /// <param name="password"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<RegisterResults> Register(string email, string password)
+        public async Task<RegisterResults> Register([BindRequired,FromBody, FromForm]RegisterModel model)
         {
+            var (pwned, count) = await pwnedPasswordService.IsPasswordPwned(model.Password).ConfigureAwait(false);
+
+            if (pwned)
+            {
+                return new RegisterResults
+                {
+                    ErrorMessage = $"Select a different password  your password has been compromised {count} times.",
+                };
+            }
+
             // See if we're already registered.
-            var emailLower = email.ToLowerInvariant();
+            var emailLower = model.Email.ToLowerInvariant();
             var existingUser = await userManager.FindByEmailAsync(emailLower).ConfigureAwait(false);
             if (existingUser != null)
             {
@@ -217,12 +232,12 @@ namespace BitShuva.Chavah.Controllers
             var user = new AppUser
             {
                 Id = "AppUsers/" + emailLower,
-                UserName = email,
-                Email = email,
+                UserName = model.Email,
+                Email = model.Email,
                 LastSeen = DateTime.UtcNow,
                 RegistrationDate = DateTime.UtcNow
             };
-            var createUserResult = await userManager.CreateAsync(user, password).ConfigureAwait(false);
+            var createUserResult = await userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
             if (createUserResult.Succeeded)
             {
                 // Send confirmation email.
@@ -235,9 +250,9 @@ namespace BitShuva.Chavah.Controllers
                 await DbSession.StoreAsync(confirmToken).ConfigureAwait(false);
                 DbSession.SetRavenExpiration(confirmToken, DateTime.UtcNow.AddDays(14));
 
-                emailSender.QueueConfirmEmail(email, confirmToken.Token, options?.Application);
+                emailSender.QueueConfirmEmail(model.Email, confirmToken.Token, options?.Application);
 
-                logger.LogInformation("Sending new user confirmation email to {email} with confirm token {token}", email, confirmToken.Token);
+                logger.LogInformation("Sending new user confirmation email to {email} with confirm token {token}", model.Email, confirmToken.Token);
                 return new RegisterResults
                 {
                     Success = true

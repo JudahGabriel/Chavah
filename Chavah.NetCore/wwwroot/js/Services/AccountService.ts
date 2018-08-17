@@ -43,12 +43,8 @@
             return this.httpApi.post(`${this.apiUri}/clearNotifications`, null);
         }
 
-        register(email: string, password: string): ng.IPromise<Server.RegisterResults> {
-            const args = {
-                email,
-                password,
-            };
-            return this.httpApi.postUriEncoded(`${this.apiUri}/register`, args);
+        register(registerModel: Server.IRegisterModel): ng.IPromise<Server.IRegisterResults> {
+           return this.httpApi.post(`${this.apiUri}/register`, registerModel);
         }
 
         getUserWithEmail(email: string | null): ng.IPromise<Server.UserViewModel | null> {
