@@ -211,7 +211,7 @@ namespace BitShuva.Chavah.Controllers
             {
                 return new RegisterResults
                 {
-                    ErrorMessage = $"Select a different password  your password has been compromised {count} times.",
+                    ErrorMessage = $"Select a different password because the password you chose has appeared in a data breach {count} times.",
                 };
             }
 
