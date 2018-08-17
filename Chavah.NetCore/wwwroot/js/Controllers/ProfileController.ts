@@ -82,7 +82,7 @@
             }
         }
 
-        profileSaved(updatedUser: Server.AppUser) {
+        profileSaved(updatedUser: Server.UserViewModel) {
             if (this.accountApi.currentUser) {
                 this.accountApi.currentUser.updateFrom(updatedUser);
             }

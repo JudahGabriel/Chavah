@@ -20,8 +20,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
 		<PackageReference Include="BCrypt.Net-Next" Version="3.1.0" />
-		<PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
 		<PackageReference Include="BuildWebCompiler" Version="1.11.375" />
 		<PackageReference Include="cloudscribe.Syndication.Web" Version="2.1.0" />
 		<PackageReference Include="CoreFtp" Version="1.4.0" />
@@ -43,6 +43,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.8.391" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<Content Remove="wwwroot\css\**\*.less" />
 		<None Include="wwwroot\css\**\*.less" />
 
@@ -51,12 +55,22 @@
 
 		<Content Remove="node_modules\**" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <Content Remove="wwwroot\js\Services\ConfigService..js" />
+	  <Content Remove="wwwroot\js\Services\ConfigService..js.map" />
+	  <Content Remove="wwwroot\js\Services\ConfigService..ts" />
+	  <Content Remove="wwwroot\js\Services\TemplateService.js" />
+	  <Content Remove="wwwroot\js\Services\TemplateService.js.map" />
+	  <Content Remove="wwwroot\js\Services\TemplateService.ts" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Models\Account\" />
 		<Folder Include="Views\Partials\" />
 	</ItemGroup>
 
@@ -67,6 +81,12 @@
 		<None Update="ravencert.*.pfx">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Models\ConfigViewModel.cs">
+	    <Generator></Generator>
+	  </Compile>
 	</ItemGroup>
 
 	<Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">

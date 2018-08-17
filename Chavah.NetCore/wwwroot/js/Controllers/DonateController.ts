@@ -16,7 +16,7 @@
         constructor(
             artistApi: ArtistApiService,
             $routeParams: ng.route.IRouteParamsService,
-            private initConfig: Server.HomeViewModel) {
+            private initConfig: Server.ConfigViewModel) {
 
             this.donationTargetOptions = [
                 this.initConfig.title,

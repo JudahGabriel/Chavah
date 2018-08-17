@@ -14,7 +14,7 @@
             private templatePaths: ITemplatePaths,
             private $location: ng.ILocationService,
             private $uibModal: ng.ui.bootstrap.IModalService,
-            private initConfig: Server.HomeViewModel) {
+            private initConfig: Server.ConfigViewModel) {
         }
 
         signIn() {

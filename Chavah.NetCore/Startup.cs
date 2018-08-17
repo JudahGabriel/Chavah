@@ -1,4 +1,5 @@
-﻿using BitShuva.Chavah.Common;
+﻿using AutoMapper;
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Models.Patches;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -85,13 +87,24 @@ namespace BitShuva.Chavah
             services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores()))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddAutoMapper();
+
             services.AddApiVersioning(o =>
             {
                 o.ReportApiVersions = true;
                 o.AssumeDefaultVersionWhenUnspecified = true;
-            });
 
-            
+                //https://github.com/Microsoft/aspnet-api-versioning/wiki/API-Version-Reader
+                o.ApiVersionReader = ApiVersionReader.Combine(
+                    //default api-version
+                    new QueryStringApiVersionReader("v"),
+                    //default Content-Type: application/json;v=2.0
+                    //Content-Type: application/json;version=2.0
+                    new MediaTypeApiVersionReader("version"),
+                    new HeaderApiVersionReader("api-version", "api-v")
+                    );
+            });
+                        
             services.AddCustomAddSwagger();
 
             services.AddProgressiveWebApp();

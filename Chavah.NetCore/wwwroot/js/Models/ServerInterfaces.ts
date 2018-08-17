@@ -1,9 +1,9 @@
 ﻿module BitShuva.Chavah.Server {
-    export interface HomeViewModel {
+    export interface ConfigViewModel {
         debug: boolean;
         songId: string | null;
         redirect: string | null;
-        user: AppUser | null;
+        user: UserViewModel | null;
         embed: boolean;
         cacheBustedAngularViews: string[];
         defaultUrl: string;
@@ -13,7 +13,7 @@
         description: string;
     };
 
-    export interface AppUser {
+    export interface UserViewModel {
         totalPlays: number;
         registrationDate: string;
         lastSeen: string;
@@ -31,12 +31,8 @@
         lockoutEnabled: boolean;
         lockoutEndDate: string | null;
         twoFactorEnabled: boolean;
-        logins: any[];
-        passwordHash: string;
         phoneNumber: string;
         roles: string[];
-        securityStamp: string;
-        twoFactorAuthEnabled: boolean;
         profilePicUrl: string | null;
         firstName: string;
         lastName: string;

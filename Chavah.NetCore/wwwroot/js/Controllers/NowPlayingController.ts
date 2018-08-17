@@ -28,7 +28,7 @@
             private songBatch: SongBatchService,
             private audioPlayer: AudioPlayerService,
             private albumCache: AlbumCacheService,
-            private initConfig: Server.HomeViewModel,
+            private initConfig: Server.ConfigViewModel,
             private appNav: AppNavService,
             private accountApi: AccountService,
             private $q: ng.IQService,

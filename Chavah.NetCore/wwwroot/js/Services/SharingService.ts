@@ -3,7 +3,7 @@
 
         static $inject = ["initConfig"];
 
-        constructor(private initConfig: Server.HomeViewModel) {
+        constructor(private initConfig: Server.ConfigViewModel) {
         }
 
         shareUrl(id: string): string {

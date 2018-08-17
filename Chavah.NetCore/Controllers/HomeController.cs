@@ -1,17 +1,12 @@
-using BitShuva.Chavah.Common;
-using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Models.Rss;
-using BitShuva.Chavah.Services;
-using Chavah.Common;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.SyndicationFeed;
-using Raven.Client;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml;
+using AutoMapper;
+using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Raven.Client.Documents.Session;
 
@@ -24,6 +19,7 @@ namespace BitShuva.Chavah.Controllers
         private readonly IUserService userService;
         private readonly AngularCacheBustedViews cacheBustedNgViews;
         private readonly IOptions<AppSettings> options;
+        private readonly IMapper mapper;
 
         public HomeController(
             ISongService songService,
@@ -32,7 +28,8 @@ namespace BitShuva.Chavah.Controllers
             AngularCacheBustedViews cacheBustedNgViews,
             IAsyncDocumentSession dbSession,
             ILogger<HomeController> logger,
-            IOptions<AppSettings> options)
+            IOptions<AppSettings> options,
+            IMapper mapper)
             : base(dbSession, logger)
         {
             this.songService = songService;
@@ -40,6 +37,7 @@ namespace BitShuva.Chavah.Controllers
             this.userService = userService;
             this.cacheBustedNgViews = cacheBustedNgViews;
             this.options = options;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -48,7 +46,6 @@ namespace BitShuva.Chavah.Controllers
         /// This is used for social media sites like Facebook and Twitter which show images, title, 
         /// and description from the loaded page.
         /// </summary>
-        /// <param name="user"></param>
         /// <param name="artist"></param>
         /// <param name="album"></param>
         /// <param name="song"></param>
@@ -57,14 +54,20 @@ namespace BitShuva.Chavah.Controllers
         //[RequireHttps]
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(
-            string user = null,
-            string artist = null,
-            string album = null,
-            string song = null,
-            bool embed = false)
+        public async Task<IActionResult> Index(string artist = null, string album = null, string song = null, bool embed = false)
         {
-            var viewModel = new HomeViewModel
+            var viewModel = await GetUserModel(artist, album, song, embed).ConfigureAwait(false);
+
+            var model = new HomeViewModel
+            {
+                DescriptiveImageUrl = viewModel.DescriptiveImageUrl
+            };
+            return View("Index", model);
+        }
+
+        private async Task<ConfigViewModel> GetUserModel(string artist, string album, string song, bool embed)
+        {
+            var viewModel = new ConfigViewModel
             {
                 Embed = embed,
                 CacheBustedAngularViews = this.cacheBustedNgViews.Views,
@@ -78,7 +81,8 @@ namespace BitShuva.Chavah.Controllers
             var userName = User.Identity.Name;
             if (!string.IsNullOrEmpty(userName))
             {
-                viewModel.User = await GetCurrentUser();
+                var model = await GetCurrentUser().ConfigureAwait(false);
+                viewModel.User = mapper.Map<UserViewModel>(model);
             }
 
             var firstValidQuery = new[] { artist, album, song }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
@@ -103,7 +107,14 @@ namespace BitShuva.Chavah.Controllers
                 }
             }
 
-            return View("Index", viewModel);
+            return viewModel;
+        }
+
+        [HttpGet]
+        [Route("config.json")]
+        public Task<ConfigViewModel> GetConfiguration()
+        {
+            return GetUserModel(null,null,null,false);
         }
 
         /// <summary>
@@ -111,31 +122,19 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public Task<IActionResult> Legacy(string user = null,
-                                               string artist = null,
-                                               string album = null,
-                                               string song = null)
+        public Task<IActionResult> Legacy(string artist = null, string album = null, string song = null)
         {
             //log the User Agent
             Request.Headers.TryGetValue("User-Agent", out var userAgent);
             logger.LogInformation("Loaded non-HTTPS Chavah via /home/legacy. {userAgent}", userAgent.ToString() ?? string.Empty);
-            return Index(user, artist, album, song);
+            return Index(artist, album, song);
         }
 
         [HttpGet]
         [Route("home/embed")]
-        public Task<IActionResult> Embed(string user = null,
-                              string artist = null,
-                              string album = null,
-                              string song = null)
+        public Task<IActionResult> Embed(string artist = null, string album = null, string song = null)
         {
-            return Index(user, artist, album, song, true);
-        }
-
-        [HttpGet]
-        public ActionResult About()
-        {
-            return View();
+            return Index(artist, album, song, true);
         }
 
         [HttpGet]

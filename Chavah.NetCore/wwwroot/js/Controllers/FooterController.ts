@@ -32,7 +32,7 @@
             private adAnnouncer: AdAnnouncerService,
             private appNav: AppNavService,
             private $scope: ng.IScope) {
-            
+
             // Notify the scope when the audio status changes.
             this.audioPlayer.status
                 .debounce(100)

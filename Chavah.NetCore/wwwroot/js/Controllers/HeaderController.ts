@@ -10,7 +10,7 @@
             "appNav"
         ];
 
-        constructor(private readonly initConfig: Server.HomeViewModel,
+        constructor(private readonly initConfig: Server.ConfigViewModel,
                     private readonly accountApi: AccountService,
                     private appNav: AppNavService) {
 

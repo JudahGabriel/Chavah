@@ -15,7 +15,7 @@
 
         constructor(
             private appNav: AppNavService,
-            private initConfig: Server.HomeViewModel,
+            private initConfig: Server.ConfigViewModel,
             private httpApi: HttpApiService,
             private localStorageService: ng.local.storage.ILocalStorageService) {
 
@@ -51,11 +51,11 @@
             return this.httpApi.postUriEncoded(`${this.apiUri}/register`, args);
         }
 
-        getUserWithEmail(email: string | null): ng.IPromise<Server.AppUser | null> {
+        getUserWithEmail(email: string | null): ng.IPromise<Server.UserViewModel | null> {
             const args = {
                 email,
             };
-            return this.httpApi.query<Server.AppUser | null>(`${this.apiUri}/getUserWithEmail`, args);
+            return this.httpApi.query<Server.UserViewModel | null>(`${this.apiUri}/getUserWithEmail`, args);
         }
 
         createPassword(email: string, password: string): ng.IPromise<any> {
