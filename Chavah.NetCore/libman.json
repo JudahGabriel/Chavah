@@ -5,32 +5,35 @@
         {
             "provider": "cdnjs",
             "library": "twitter-bootstrap@3.3.6",
-            "destination": "wwwroot/lib/bootstrap/"
+            "destination": "wwwroot/lib/bootstrap/",
+            "files": [
+                "js/bootstrap.js"
+            ]
         },
         {
             "provider": "cdnjs",
             "library": "jquery@2.2.4",
-            "destination": "wwwroot/lib/jquery/"
+            "destination": "wwwroot/lib/jquery/",
+            "files": [
+                "jquery.js" 
+            ]
         },
         {
             "provider": "cdnjs",
             "library": "moment.js@2.13.0",
-            "destination": "wwwroot/lib/moment/"
+            "destination": "wwwroot/lib/moment/",
+            "files": [
+                "moment.js"
+            ]
         },
         {
             "provider": "cdnjs",
             "library": "angular.js@1.5.7",
             "destination": "wwwroot/lib/angular/",
             "files": [
-                "angular.min.js",
                 "angular-animate.js",
-                "angular-animate.min.js",
-                "angular-animate.min.js.map",
                 "angular-route.js",
-                "angular-route.min.js",
-                "angular-route.min.js.map",
-                "angular.js",
-                "angular.min.js.map"
+                "angular.js"
             ]
         },
         {
@@ -38,7 +41,6 @@
             "library": "angular-local-storage@0.5.0",
             "destination": "wwwroot/lib/angular-local-storage/",
             "files": [
-                "angular-local-storage.min.js",
                 "angular-local-storage.js"
             ]
         },
@@ -47,7 +49,6 @@
             "library": "fastclick@1.0.6",
             "destination": "wwwroot/lib/fastclick/",
             "files": [
-                "fastclick.min.js",
                 "fastclick.js"
             ]
         },
@@ -56,10 +57,7 @@
             "library": "nprogress@0.1.6",
             "destination": "wwwroot/lib/nprogress/",
             "files": [
-                "nprogress.min.js",
-                "nprogress.css",
-                "nprogress.js",
-                "nprogress.min.css"
+                "nprogress.js"
             ]
         },
         {
@@ -67,9 +65,7 @@
             "library": "tinycolor@1.4.1",
             "destination": "wwwroot/lib/tinycolor/",
             "files": [
-                "tinycolor.min.js",
-                "tinycolor.js",
-                "tinycolor.min.js.map"
+                "tinycolor.js"
             ]
         },
         {
@@ -77,9 +73,7 @@
             "library": "modernizr@2.7.1",
             "destination": "wwwroot/lib/modernizr/",
             "files": [
-                "modernizr.min.js",
                 "modernizr.dev.js",
-                "modernizr.dev.min.js",
                 "modernizr.js"
             ]
         },
@@ -88,9 +82,7 @@
             "library": "lodash.js@4.17.4",
             "destination": "wwwroot/lib/lodash/",
             "files": [
-                "lodash.min.js",
-                "lodash.js",
-                "lodash.min.js.map"
+                "lodash.js"
             ]
         },
         {
@@ -114,10 +106,8 @@
             "library": "angular-ui-bootstrap@1.3.3",
             "destination": "wwwroot/lib/angular-bootstrap/",
             "files": [
-                "ui-bootstrap-tpls.min.js",
                 "ui-bootstrap-tpls.js",
-                "ui-bootstrap.js",
-                "ui-bootstrap.min.js"
+                "ui-bootstrap.js"
             ]
         },
         {
@@ -125,23 +115,15 @@
             "library": "tslib@1.6.0",
             "destination": "wwwroot/lib/tslib/",
             "files": [
-                "tslib.min.js",
-                "tslib.es6.js",
-                "tslib.es6.min.js",
-                "tslib.es6.min.js.map",
-                "tslib.js",
-                "tslib.min.js.map"
+                "tslib.js"
             ]
         },
         {
             "provider": "cdnjs",
-            "library": "rxjs@6.2.2",
+            "library": "rxjs@4.1.0",
             "destination": "wwwroot/lib/rxjs/",
             "files": [
-                "rxjs.umd.min.js",
-                "rxjs.umd.js",
-                "rxjs.umd.js.map",
-                "rxjs.umd.min.js.map"
+                "rx.all.js"
             ]
         }
     ]

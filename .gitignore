@@ -472,6 +472,8 @@ Web.Configz
 /Chavah.NetCore/wwwroot/js/*/*.js.map
 
 /Chavah.NetCore/wwwroot/dist/
+/Chavah.NetCore/wwwroot/css/*.css
+/Chavah.NetCore/wwwroot/css/*.min.css
 /Chavah.NetCore/wwwroot/css/*/*.css
 /Chavah.NetCore/wwwroot/css/*/*.min.css
 /Chavah.NetCore/wwwroot/lib/

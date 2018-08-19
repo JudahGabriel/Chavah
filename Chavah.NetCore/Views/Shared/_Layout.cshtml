@@ -89,7 +89,8 @@
     @*CSS for development*@
         <environment include="Development">
             <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css' />
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+            @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />*@
+            <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
             <link rel="stylesheet" href="~/css/bootswatch.css" />
             <link rel="stylesheet" href="~/css/bootstrap-flatly.css" />
             <link rel="stylesheet" href="~/css/bootstrap-flatly-tweaks.css" />
@@ -112,21 +113,21 @@
     @*JS for dev*@
     <environment names="Development">
         @*3rd party JS*@
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/jquery/jquery.js"></script>
+        <script src="~/lib/bootstrap/js//bootstrap.js"></script>
         <script src="~/lib/angular/angular.js"></script>
-        <script src="~/lib/angular-route/angular-route.js"></script>
-        <script src="~/lib/angular-animate/angular-animate.js"></script>
+        <script src="~/lib/angular/angular-route.js"></script>
+        <script src="~/lib/angular/angular-animate.js"></script>
         <script src="~/lib/angular-bootstrap/ui-bootstrap.js"></script>
         <script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-        <script src="~/lib/angular-local-storage/dist/angular-local-storage.js"></script>
-        <script src="~/lib//modernizr/modernizr.js"></script>
+        <script src="~/lib/angular-local-storage/angular-local-storage.js"></script>
+        <script src="~/lib//modernizr/modernizr.dev.js"></script>
         <script src="~/lib/nprogress/nprogress.js"></script>
         <script src="~/lib/moment/moment.js"></script>
-        <script src="~/lib/lodash/dist/lodash.js"></script>
-        <script src="~/lib/rxjs/dist/rx.all.js"></script>
+        <script src="~/lib/lodash/lodash.js"></script>
+        <script src="~/lib/rxjs/rx.all.js"></script>
         <script src="~/lib/tslib/tslib.js"></script>
-        <script src="~/lib/fastclick/lib/fastclick.js"></script>
+        <script src="~/lib/fastclick/fastclick.js"></script>
         <script src="~/lib/tinycolor/tinycolor.js"></script>
 
         @*Chavah JS*@
