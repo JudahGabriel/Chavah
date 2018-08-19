@@ -168,7 +168,7 @@
         <script src="~/dist/app.min.js" asp-append-version="true"></script>
     </environment>
 
-    @RenderSection("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false).ConfigureAwait(false)
 
     @*Hanukkah partial*@
     @*@Html.Partial("Hanukkah")*@

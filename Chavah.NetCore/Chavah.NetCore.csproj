@@ -31,6 +31,7 @@
 		<PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
+		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.113" />
 		<PackageReference Include="Optional" Version="4.0.0" />
 		<PackageReference Include="Pwned.AspNetCore" Version="1.0.3" />
 		<PackageReference Include="Quartz" Version="3.0.6" />
