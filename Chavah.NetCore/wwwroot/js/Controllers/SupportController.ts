@@ -13,6 +13,10 @@
         constructor(
             private readonly accountApi: AccountService) {
 
+            this.accountApi.signedIn
+                .select(() => this.accountApi.currentUser)
+                .subscribe(user => this.signedInUserChanged(user));
+
             if (accountApi.currentUser) {
                 this.email = accountApi.currentUser.email;
             }
@@ -31,6 +35,12 @@
                 this.accountApi.sendSupportMessage(this.name, this.email, this.message, window.navigator.userAgent)
                     .then(() => this.state = "success", () => this.state = "error")
                     .finally(() => this.isSaving = false);
+            }
+        }
+
+        signedInUserChanged(user: User | null) {
+            if (user) {
+                this.email = user.email;
             }
         }
     }

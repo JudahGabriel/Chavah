@@ -1,31 +1,38 @@
-﻿declare module server {
+declare module server {
 	/** An album for which album art has been uploaded. */
-	interface Album {
-		Artist: string;
-		Name: string;
-		AlbumArtUri: {
-			AbsolutePath: string;
-			AbsoluteUri: string;
-			Authority: string;
-			DnsSafeHost: string;
-			Fragment: string;
-			Host: string;
-			HostNameType: any;
-			IsAbsoluteUri: boolean;
-			IsDefaultPort: boolean;
-			IsFile: boolean;
-			IsLoopback: boolean;
-			IsUnc: boolean;
-			LocalPath: string;
-			OriginalString: string;
-			PathAndQuery: string;
-			Port: number;
-			Query: string;
-			Scheme: string;
-			Segments: string[];
-			UserEscaped: boolean;
-			UserInfo: string;
+	interface album {
+		artist: string;
+		name: string;
+		albumArtUri: {
+			absolutePath: string;
+			absoluteUri: string;
+			authority: string;
+			dnsSafeHost: string;
+			fragment: string;
+			host: string;
+			hostNameType: any;
+			idnHost: string;
+			isAbsoluteUri: boolean;
+			isDefaultPort: boolean;
+			isFile: boolean;
+			isLoopback: boolean;
+			isUnc: boolean;
+			localPath: string;
+			originalString: string;
+			pathAndQuery: string;
+			port: number;
+			query: string;
+			scheme: string;
+			segments: string[];
+			userEscaped: boolean;
+			userInfo: string;
 		};
-		Id: string;
+		id: string;
+		backgroundColor: string;
+		foregroundColor: string;
+		mutedColor: string;
+		textShadowColor: string;
+		isVariousArtists: boolean;
+		songCount: number;
 	}
 }

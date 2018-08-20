@@ -1,46 +1,5 @@
 ﻿module BitShuva.Chavah.Server {
-    export interface HomeViewModel {
-        debug: boolean;
-        songId: string | null;
-        redirect: string | null;
-        user: AppUser | null;
-        embed: boolean;
-        cacheBustedAngularViews: string[];
-        defaultUrl: string;
-        cdnUrl: string;
-        soundEffects: string;
-        title: string;
-        description: string;
-    };
 
-    export interface AppUser {
-        totalPlays: number;
-        registrationDate: string;
-        lastSeen: string;
-        totalSongRequests: number;
-        requiresPasswordReset: boolean;
-        recentSongIds: string[];
-        notifications: Server.Notification[];
-        accessFailedCount: number;
-        claims: any[];
-        email: string;
-        id: string;
-        userName: string;
-        emailConfirmed: boolean;
-        isPhoneNumberConfirmed: boolean;
-        lockoutEnabled: boolean;
-        lockoutEndDate: string | null;
-        twoFactorEnabled: boolean;
-        logins: any[];
-        passwordHash: string;
-        phoneNumber: string;
-        roles: string[];
-        securityStamp: string;
-        twoFactorAuthEnabled: boolean;
-        profilePicUrl: string | null;
-        firstName: string;
-        lastName: string;
-    }
 
     export interface Song {
         name: string;
@@ -155,13 +114,6 @@
         userId: string;
     }
 
-    export interface RegisterResults {
-        success: boolean;
-        errorMessage: string | null;
-        isAlreadyRegistered: boolean;
-        needsConfirmation: boolean;
-    }
-
     export interface ConfirmEmailResult {
         success: boolean;
         errorMessage: string;
@@ -218,4 +170,58 @@
         errorMessge: string | null;
         user: User | null;
     }
+
+
+    export interface IConfigViewModel {
+        debug: boolean;
+        songId: string | null;
+        redirect: string | null;
+        embed: boolean;
+        cacheBustedAngularViews: string[];
+        defaultUrl: string;
+        cdnUrl: string;
+        soundEffects: string;
+        title: string;
+        description: string;
+        song: any;
+    };
+
+    export interface IUserViewModel {
+        totalPlays: number;
+        registrationDate: string;
+        lastSeen: string;
+        totalSongRequests: number;
+        requiresPasswordReset: boolean;
+        recentSongIds: string[];
+        notifications: Server.Notification[];
+        accessFailedCount: number;
+        claims: any[];
+        email: string;
+        id: string;
+        userName: string;
+        emailConfirmed: boolean;
+        isPhoneNumberConfirmed: boolean;
+        lockoutEnabled: boolean;
+        lockoutEndDate: string | null;
+        twoFactorEnabled: boolean;
+        phoneNumber: string;
+        roles: string[];
+        profilePicUrl: string | null;
+        firstName: string;
+        lastName: string;
+    }
+
+    export interface IRegisterResults {
+        success: boolean;
+        errorMessage: string | null;
+        isAlreadyRegistered: boolean;
+        needsConfirmation: boolean;
+    }
+
+    export interface IRegisterModel {
+        email: string;
+        password: string;
+        confirmPassword: string;
+    }
+
 }

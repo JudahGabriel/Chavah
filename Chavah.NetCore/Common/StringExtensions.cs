@@ -119,7 +119,7 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Gets a deterministic hash code. Since string.GetHashCode is not deterministic, returning different results in different app contexts, this offers a deterministic alternative.
         /// </summary>
-        /// <param name="lines"></param>
+        /// <param name="text"></param>
         /// <returns></returns>
         /// <remarks>
         /// Based on https://stackoverflow.com/a/5155015/536 

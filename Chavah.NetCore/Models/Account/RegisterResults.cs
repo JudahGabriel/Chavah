@@ -1,9 +1,10 @@
 ﻿namespace BitShuva.Chavah.Models
 {
-    public class ResetPasswordResult
+    public class RegisterResults
     {
         public bool Success { get; set; }
         public string ErrorMessage { get; set; }
-        public bool InvalidEmail { get; set; }
+        public bool IsAlreadyRegistered { get; set; }
+        public bool NeedsConfirmation { get; set; }
     }
 }

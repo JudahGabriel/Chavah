@@ -1,5 +1,5 @@
 ﻿namespace BitShuva.Chavah {
-    export class User implements Server.AppUser {
+    export class User implements Server.IUserViewModel {
         totalPlays: number;
         registrationDate: string;
         lastSeen: string;
@@ -22,26 +22,25 @@
         lockoutEnabled: boolean;
         lockoutEndDate: string | null;
         twoFactorEnabled: boolean;
-        logins: any[];
-        passwordHash: string;
         phoneNumber: string;
         roles: string[];
-        securityStamp: string;
-        twoFactorAuthEnabled: boolean;
 
         static readonly roles = {
             admin: "admin"
         };
 
-        constructor(serverObj: Server.AppUser) {
+        constructor(serverObj: Server.IUserViewModel) {
             angular.merge(this, serverObj);
         }
 
         get isAdmin(): boolean {
-            return this.roles.includes(User.roles.admin);
+            if (this.roles === undefined) {
+                return false;
+            }
+            return this.roles.map(v=> v.toLowerCase()).includes(User.roles.admin.toLowerCase());
         }
 
-        updateFrom(other: Server.AppUser) {
+        updateFrom(other: Server.IUserViewModel) {
             angular.merge(this, other);
         }
     }

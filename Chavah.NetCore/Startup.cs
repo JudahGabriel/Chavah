@@ -1,21 +1,27 @@
-﻿using BitShuva.Chavah.Common;
+﻿using System;
+using System.Threading.Tasks;
+using AutoMapper;
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Models.Patches;
 using BitShuva.Chavah.Services;
 using BitShuva.Services;
 using cloudscribe.Syndication.Models.Rss;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Pwned.AspNetCore;
 using Raven.Identity;
 using Raven.StructuredLog;
-using System;
 
 namespace BitShuva.Chavah
 {
@@ -36,7 +42,6 @@ namespace BitShuva.Chavah
         {
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
-          
 
             // Add application services.
             services.AddTransient<IEmailService, SendGridEmailService>();
@@ -81,20 +86,60 @@ namespace BitShuva.Chavah
                    options.SubstituteApiVersionInUrl = true;
               });
 
-
             services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores()))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(options=>
+                {
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                });
+
+            services.AddAutoMapper();
 
             services.AddApiVersioning(o =>
             {
                 o.ReportApiVersions = true;
                 o.AssumeDefaultVersionWhenUnspecified = true;
+
+                //https://github.com/Microsoft/aspnet-api-versioning/wiki/API-Version-Reader
+                o.ApiVersionReader = ApiVersionReader.Combine(
+                    //default api-version
+                    new QueryStringApiVersionReader("v"),
+                    //default Content-Type: application/json;v=2.0
+                    //Content-Type: application/json;version=2.0
+                    new MediaTypeApiVersionReader("version"),
+                    new HeaderApiVersionReader("api-version", "api-v")
+                    );
             });
 
-            
             services.AddCustomAddSwagger();
 
+            services.AddPwnedPassword(_=> new PwnedOptions());
+
             services.AddProgressiveWebApp();
+
+            services.Configure<SecurityStampValidatorOptions>(options =>
+            {
+                // enables immediate logout, after updating the user's stat.
+                options.ValidationInterval = TimeSpan.Zero;
+            });
+
+            services.AddAuthentication(options=>
+            {
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
+            }).AddCookie(o =>
+            {
+                o.Events.OnRedirectToLogin = (context) =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+            });
+
+
+            services.AddAuthorization(options => options.AddPolicy(Policies.Administrator, policy => policy.RequireRole(AppUser.AdminRole)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

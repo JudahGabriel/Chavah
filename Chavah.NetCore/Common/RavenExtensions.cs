@@ -89,7 +89,7 @@ namespace BitShuva.Chavah.Common
         /// Lazily loads a document from the session. When the value is accessed, an exception will be thrown if the document is null.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="session"></param>
+        /// <param name="sessionOps"></param>
         /// <param name="id"></param>
         /// <returns></returns>
         public static Lazy<Task<T>> LoadRequiredAsync<T>(this IAsyncLazySessionOperations sessionOps, string id)
@@ -122,11 +122,13 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Loads a document from the session and throws the specified exception if null.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="session"></param>
         /// <param name="id"></param>
+        /// <param name="thrower"></param>
         /// <returns></returns>
-        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncDocumentSession session, string id, Func<TException> thrower)
+        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncDocumentSession session, 
+            string id, 
+            Func<TException> thrower)
             where TException : Exception
         {
             if (id == null)
@@ -169,11 +171,12 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Loads a document from the session and throws the specified exception if null.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="session"></param>
         /// <param name="id"></param>
+        /// <param name="thrower"></param>
         /// <returns></returns>
-        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncLoaderWithInclude<T> session, string id, Func<TException> thrower)
+        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncLoaderWithInclude<T> session, 
+            string id, Func<TException> thrower)
             where TException : Exception
         {
             if (id == null)

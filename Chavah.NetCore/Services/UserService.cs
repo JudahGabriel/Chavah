@@ -1,27 +1,24 @@
-﻿using BitShuva.Chavah.Models;
-using Raven.Client;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using BitShuva.Chavah.Models;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Services
 {
     public class UserService : IUserService
     {
-        private IAsyncDocumentSession _session;
+        private readonly IAsyncDocumentSession _session;
 
         public UserService(IAsyncDocumentSession session)
         {
             _session = session;
         }
 
-        public async Task<AppUser> GetUser(string userId)
+        public Task<AppUser> GetUser(string idenityName)
         {
-            return await _session.LoadAsync<AppUser>($"AppUsers/{userId}");
+            return _session.LoadAsync<AppUser>($"AppUsers/{idenityName}");
         }
 
         public Task<List<AppUser>> RegisteredUsers(int take)

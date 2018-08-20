@@ -43,10 +43,7 @@ namespace BitShuva.Chavah.Controllers
         /// <summary>
         /// Gets the album with the specified ID.
         /// </summary>
-        /// <param name="albumArtAddress">The HTTP address where the album art can be fetched. This is expected to be a temporary address created by FilePickr.</param>
-        /// <param name="fileName">The file name. Used for extracting the extension.</param>
-        /// <param name="artist">The artist this album art applies to.</param>
-        /// <param name="album">The name of the album this album art applies to.</param>
+        /// <param name="id"></param>
         [HttpGet]
         public Task<Album> Get(string id)
         {

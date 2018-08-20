@@ -1,4 +1,8 @@
-﻿using BitShuva.Chavah.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
 using Microsoft.AspNetCore.Http;
@@ -6,25 +10,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
+    [ApiVersion("1.0")]
     [Route("api/[controller]/[action]")]
+    [ApiController]
     public class UsersController : RavenController
     {
-        private ICdnManagerService cdnManager;
+        private readonly ICdnManagerService cdnManager;
+        private static readonly DateTime startTime = DateTime.UtcNow;
 
         public const int maxProfilePictureSizeInBytes = 10_000_000;
-        private static readonly DateTime startTime = DateTime.UtcNow;
 
         public UsersController(
             ICdnManagerService cdnManager,
-            IAsyncDocumentSession dbSession, 
+            IAsyncDocumentSession dbSession,
             ILogger<UsersController> logger)
             : base(dbSession, logger)
         {
@@ -38,8 +39,8 @@ namespace BitShuva.Chavah.Controllers
             var loggedInUsers = await DbSession.Query<AppUser>()
                 .Where(u => u.LastSeen >= recent)
                 .Select(u => u.Email)
-                .ToListAsync();
-            
+                .ToListAsync().ConfigureAwait(false);
+
             return new RecentUserSummary
             {
                 Summary = $"{loggedInUsers.Count} logged in",
@@ -51,13 +52,23 @@ namespace BitShuva.Chavah.Controllers
             };
         }
 
+        /// <summary>
+        /// Set volume for the logged in user.
+        /// </summary>
+        /// <param name="volume"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task SaveVolume(double volume)
         {
-            var user = await this.GetCurrentUserOrThrow();
+            var user = await GetCurrentUserOrThrow().ConfigureAwait(false);
             user.Volume = volume;
         }
 
+        /// <summary>
+        /// Upload User Profile picture.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<Uri> UploadProfilePicture(IFormFile file)
         {
@@ -67,22 +78,29 @@ namespace BitShuva.Chavah.Controllers
                     .WithData("size", file.Length);
             }
 
-            var user = await this.GetCurrentUserOrThrow();
+            var user = await GetCurrentUserOrThrow().ConfigureAwait(false);
+            var oldProfilePic = user.ProfilePicUrl;
+
             using (var fileStream = file.OpenReadStream())
             {
-                var profilePicUrl = await cdnManager.UploadProfilePicAsync(fileStream, file.ContentType ?? "image/jpg");
-                user.ProfilePicUrl = profilePicUrl;
+                user.ProfilePicUrl = await cdnManager.UploadProfilePicAsync(fileStream, file.ContentType ?? "image/jpg")
+                    .ConfigureAwait(false);
             }
-
-            // TODO: We may want to delete the old profile pic.
-
+            
+            //delete the old image
+            await cdnManager.DeleteProfilePicAsync(oldProfilePic.OriginalString).ConfigureAwait(false);
             return user.ProfilePicUrl;
         }
 
+        /// <summary>
+        /// Update User Profile.
+        /// </summary>
+        /// <param name="updatedUser"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<AppUser> UpdateProfile([FromBody]AppUser updatedUser)
         {
-            var user = await this.GetCurrentUserOrThrow();
+            var user = await GetCurrentUserOrThrow().ConfigureAwait(false);
             var isUpdatingSelf = string.Equals(user.Email, updatedUser.Email, StringComparison.InvariantCultureIgnoreCase);
             if (!isUpdatingSelf)
             {

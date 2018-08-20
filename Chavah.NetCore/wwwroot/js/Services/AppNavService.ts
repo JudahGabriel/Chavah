@@ -5,7 +5,6 @@
             "templatePaths",
             "$location",
             "$uibModal",
-            "initConfig",
         ];
 
         readonly promptSignInUrl = "#/promptsignin";
@@ -13,8 +12,7 @@
         constructor(
             private templatePaths: ITemplatePaths,
             private $location: ng.ILocationService,
-            private $uibModal: ng.ui.bootstrap.IModalService,
-            private initConfig: Server.HomeViewModel) {
+            private $uibModal: ng.ui.bootstrap.IModalService) {
         }
 
         signIn() {
@@ -23,7 +21,7 @@
 
         signOut() {
             this.$location.url("/nowplaying");
-            window.location.reload();
+            //window.location.reload();
         }
 
         nowPlaying() {
