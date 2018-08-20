@@ -6,7 +6,7 @@
         constructor(private httpApi: HttpApiService) {
         }
 
-        updateProfile(user: Server.UserViewModel): ng.IPromise<Server.UserViewModel> {
+        updateProfile(user: Server.IUserViewModel): ng.IPromise<Server.IUserViewModel> {
             return this.httpApi.post("/api/users/updateProfile", user);
         }
         

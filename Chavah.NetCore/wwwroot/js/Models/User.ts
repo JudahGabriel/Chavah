@@ -1,5 +1,5 @@
 ﻿namespace BitShuva.Chavah {
-    export class User implements Server.UserViewModel {
+    export class User implements Server.IUserViewModel {
         totalPlays: number;
         registrationDate: string;
         lastSeen: string;
@@ -29,15 +29,18 @@
             admin: "admin"
         };
 
-        constructor(serverObj: Server.UserViewModel) {
+        constructor(serverObj: Server.IUserViewModel) {
             angular.merge(this, serverObj);
         }
 
         get isAdmin(): boolean {
-            return this.roles.includes(User.roles.admin);
+            if (this.roles === undefined) {
+                return false;
+            }
+            return this.roles.map(v=> v.toLowerCase()).includes(User.roles.admin.toLowerCase());
         }
 
-        updateFrom(other: Server.UserViewModel) {
+        updateFrom(other: Server.IUserViewModel) {
             angular.merge(this, other);
         }
     }

@@ -11,10 +11,6 @@ namespace BitShuva.Chavah.Models
 #endif
         }
 
-        /// <summary>
-        /// The currently signed in user, or null if there is no user signed in.
-        /// </summary>
-        public UserViewModel User { get; set; }
         public bool Debug { get; set; }
         public string Redirect { get; set; }
         public bool Embed { get; set; }

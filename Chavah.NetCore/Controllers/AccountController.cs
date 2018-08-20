@@ -6,6 +6,8 @@ using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Account;
 using BitShuva.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +51,19 @@ namespace BitShuva.Chavah.Controllers
             this.options = options?.Value;
             this.mapper = mapper;
             this.pwnedPasswordService = pwnedPasswordService;
+        }
+
+        [HttpGet]
+        public async Task<UserViewModel> GetUser()
+        {
+            var userName = User.Identity.Name;
+            AppUser user = null;
+            if (!string.IsNullOrEmpty(userName))
+            {
+                user = await GetCurrentUser().ConfigureAwait(false);
+                return mapper.Map<UserViewModel>(user);
+            }
+            return null;
         }
 
         /// <summary>
@@ -101,6 +116,12 @@ namespace BitShuva.Chavah.Controllers
 
             var signInResult = await signInManager.PasswordSignInAsync(email, password, staySignedIn, lockoutOnFailure: false)
                 .ConfigureAwait(false);
+
+            //var principle = await signInManager.CreateUserPrincipalAsync(user).ConfigureAwait(false);
+
+            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+            //    principle).ConfigureAwait(false);
+
             var result = new Models.SignInResult
             {
                 Status = SignInStatusFromResult(signInResult),
@@ -121,9 +142,11 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public Task SignOut()
+        public async Task SignOut()
         {
-            return signInManager.SignOutAsync();
+            await signInManager.SignOutAsync().ConfigureAwait(false);
+
+            //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
         }
 
         /// <summary>

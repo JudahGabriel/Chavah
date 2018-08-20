@@ -5,6 +5,7 @@ using AutoMapper;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -51,21 +52,29 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="song"></param>
         /// <param name="embed"></param>
         /// <returns></returns>
-        //[RequireHttps]
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> Index(string artist = null, string album = null, string song = null, bool embed = false)
         {
-            var viewModel = await GetUserModel(artist, album, song, embed).ConfigureAwait(false);
+            var viewModel = await GetConfigurationModel(artist, album, song, embed).ConfigureAwait(false);
+
+            var userName = User.Identity.Name;
+            AppUser user = null;
+            if (!string.IsNullOrEmpty(userName))
+            {
+                user = await GetCurrentUser().ConfigureAwait(false);
+            }
 
             var model = new HomeViewModel
             {
-                DescriptiveImageUrl = viewModel.DescriptiveImageUrl
+                DescriptiveImageUrl = viewModel.DescriptiveImageUrl,
+                User = mapper.Map<UserViewModel>(user)
             };
+
             return View("Index", model);
         }
 
-        private async Task<ConfigViewModel> GetUserModel(string artist, string album, string song, bool embed)
+        private async Task<ConfigViewModel> GetConfigurationModel(string artist, string album, string song, bool embed)
         {
             var viewModel = new ConfigViewModel
             {
@@ -77,13 +86,6 @@ namespace BitShuva.Chavah.Controllers
                 CdnUrl = options.Value.Cdn.HttpPath,
                 SoundEffects = new Uri(options.Value.Cdn.HttpPath).Combine(options.Value.Cdn.SoundEffects).ToString()
             };
-
-            var userName = User.Identity.Name;
-            if (!string.IsNullOrEmpty(userName))
-            {
-                var model = await GetCurrentUser().ConfigureAwait(false);
-                viewModel.User = mapper.Map<UserViewModel>(model);
-            }
 
             var firstValidQuery = new[] { artist, album, song }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
             if (firstValidQuery != null)
@@ -114,7 +116,7 @@ namespace BitShuva.Chavah.Controllers
         [Route("config.json")]
         public Task<ConfigViewModel> GetConfiguration()
         {
-            return GetUserModel(null,null,null,false);
+            return GetConfigurationModel(null,null,null,false);
         }
 
         /// <summary>

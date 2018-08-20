@@ -468,6 +468,7 @@ Web.Configz
 /Chavah.NetCore/appsettings.Test.json
 
 /Chavah.NetCore/wwwroot/js/app.js
+/Chavah.NetCore/wwwroot/js/app.map.js
 /Chavah.NetCore/wwwroot/js/*/*.js
 /Chavah.NetCore/wwwroot/js/*/*.js.map
 

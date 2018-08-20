@@ -9,7 +9,7 @@
         lastAnnouncementTime = new Date();
 
         constructor(private audioPlayer: AudioPlayerService,
-                    private initConfig: Server.ConfigViewModel) {
+                    private initConfig: Server.IConfigViewModel) {
         }
 
         hasPendingAnnouncement() {

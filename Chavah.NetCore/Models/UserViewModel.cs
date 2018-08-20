@@ -121,7 +121,7 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         ///  The roles of the user.
         /// </summary>
-        public IReadOnlyList<string> Roles { get; }
+        public IList<string> Roles { get; set; }
 
     }
 }

@@ -28,11 +28,12 @@
             private songBatch: SongBatchService,
             private audioPlayer: AudioPlayerService,
             private albumCache: AlbumCacheService,
-            private initConfig: Server.ConfigViewModel,
+            private initConfig: Server.IConfigViewModel,
             private appNav: AppNavService,
             private accountApi: AccountService,
             private $q: ng.IQService,
             private sharing: SharingService) {
+
 
             this.audioPlayer.song
                 .takeUntil(this.disposed)
@@ -87,6 +88,7 @@
         }
 
         get currentSongTwitterShareUrl(): string {
+
             if (this.currentSong) {
                 return this.sharing.twitterShareUrl(this.currentSong);
             }

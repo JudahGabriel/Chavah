@@ -9,7 +9,7 @@
         public UserViewModel User { get; set; }
 
         public Song Song { get; set; }
-        public string SongNth { get; set; } 
+        public string SongNth { get; set; }
         #endregion
 
         /// <summary>

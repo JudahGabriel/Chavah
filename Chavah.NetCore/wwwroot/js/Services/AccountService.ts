@@ -2,10 +2,7 @@
     export class AccountService {
 
         static $inject = [
-            "appNav",
-            "initConfig",
             "httpApi",
-            "localStorageService",
         ];
 
         currentUser: User | null;
@@ -13,20 +10,34 @@
 
         private apiUri = "/api/account";
 
-        constructor(
-            private appNav: AppNavService,
-            private initConfig: Server.ConfigViewModel,
-            private httpApi: HttpApiService,
-            private localStorageService: ng.local.storage.ILocalStorageService) {
+        constructor(private httpApi: HttpApiService) {
 
-            if (this.initConfig.user) {
-                this.currentUser = new User(this.initConfig.user);
-                this.signedIn.onNext(true);
+            if (this.currentUser == null) {
+                this.getUser().then(result => {
+                    this.currentUser = new User(result); 
+                    if (this.currentUser) {
+                        this.signedIn.onNext(true);
+                    }
+                });
             }
+           
         }
 
         get isSignedIn(): boolean {
             return !!this.currentUser;
+        }
+
+        getUser(): ng.IPromise<Server.IUserViewModel> {
+
+            const getUsetTask = this.httpApi.query<Server.IUserViewModel>(`${this.apiUri}/GetUser`);
+
+            getUsetTask
+                .then(result => {
+                    this.currentUser = new User(result);
+                    this.signedIn.onNext(true);
+                })
+
+            return getUsetTask;
         }
 
         signOut(): ng.IPromise<any> {
@@ -47,11 +58,11 @@
            return this.httpApi.post(`${this.apiUri}/register`, registerModel);
         }
 
-        getUserWithEmail(email: string | null): ng.IPromise<Server.UserViewModel | null> {
+        getUserWithEmail(email: string | null): ng.IPromise<Server.IUserViewModel | null> {
             const args = {
                 email,
             };
-            return this.httpApi.query<Server.UserViewModel | null>(`${this.apiUri}/getUserWithEmail`, args);
+            return this.httpApi.query<Server.IUserViewModel | null>(`${this.apiUri}/getUserWithEmail`, args);
         }
 
         createPassword(email: string, password: string): ng.IPromise<any> {

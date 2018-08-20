@@ -111,6 +111,11 @@
         }
 
         set volume(val: number) {
+
+            if (val === undefined) {
+                val = 1;
+            }
+
             if (this.audio) {
                 this.audio.volume = val;
             }

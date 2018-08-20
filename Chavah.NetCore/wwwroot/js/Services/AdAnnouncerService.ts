@@ -10,7 +10,7 @@
 
         constructor(
             private readonly audioPlayer: AudioPlayerService,
-            private readonly initConfig: Server.ConfigViewModel) {
+            private readonly initConfig: Server.IConfigViewModel) {
         }
 
         hasPendingAnnouncement(): boolean {

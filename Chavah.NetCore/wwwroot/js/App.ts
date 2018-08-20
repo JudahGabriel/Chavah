@@ -10,7 +10,7 @@
 
     export const App = angular.module("ChavahApp", modules);
 
-    const homeVm: Server.ConfigViewModel = {} as Server.ConfigViewModel;
+    const homeVm: Server.IConfigViewModel = {} as Server.IConfigViewModel;
 
     // not sure if this will work with cordova on ios or android.
     App.value('jQuery', jQuery);
