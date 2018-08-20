@@ -111,11 +111,9 @@
         }
 
         set volume(val: number) {
-
-            if (val === undefined) {
-                val = 1;
+            if (isNaN(val)) {
+                val = 1.0;
             }
-
             if (this.audio) {
                 this.audio.volume = val;
             }

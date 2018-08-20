@@ -33,7 +33,7 @@
 		<PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
 		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.113" />
 		<PackageReference Include="Optional" Version="4.0.0" />
-		<PackageReference Include="Pwned.AspNetCore" Version="1.0.3" />
+		<PackageReference Include="Pwned.AspNetCore" Version="1.0.4" />
 		<PackageReference Include="Quartz" Version="3.0.6" />
 		<PackageReference Include="RavenDB.Client" Version="4.0.6" />
 		<PackageReference Include="RavenDB.Identity" Version="4.3.0" />
@@ -94,6 +94,9 @@
 	  <Compile Update="Models\Account\RegisterResults.cs">
 	    <Generator>DtsGenerator</Generator>
 	    <LastGenOutput>RegisterResults.cs.d.ts</LastGenOutput>
+	  </Compile>
+	  <Compile Update="Models\Account\SignInModel.cs">
+	    <Generator></Generator>
 	  </Compile>
 	  <Compile Update="Models\ConfigViewModel.cs">
 	    <Generator></Generator>

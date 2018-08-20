@@ -73,13 +73,9 @@
             return this.httpApi.postUriEncoded(`${this.apiUri}/createPassword`, args);
         }
 
-        signIn(email: string, password: string, staySignedIn: boolean): ng.IPromise<Server.SignInResult> {
-            const args = {
-                email,
-                password,
-                staySignedIn,
-            };
-            const signInTask = this.httpApi.postUriEncoded<Server.SignInResult>(`${this.apiUri}/signIn`, args);
+        signIn(signInModel: Server.ISignInModel): ng.IPromise<Server.ISignInResult> {
+          
+            const signInTask = this.httpApi.post<Server.ISignInResult>(`${this.apiUri}/signIn`, signInModel);
             signInTask.then(result => {
                 if (result.status === SignInStatus.Success && result.user) {
                     this.currentUser = new User(result.user);

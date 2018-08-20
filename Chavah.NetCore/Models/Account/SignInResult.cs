@@ -1,4 +1,4 @@
-﻿namespace BitShuva.Chavah.Models
+﻿namespace BitShuva.Chavah.Models.Account
 {
     public class SignInResult
     {
