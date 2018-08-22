@@ -84,27 +84,32 @@ namespace BitShuva.Chavah {
         }
 
         playSongById(songId: string) {
-            let task = this.songApi.getSongById(songId);
+            const task = this.songApi.getSongById(songId);
             this.playSongWhenFinishedLoading(task);
         }
 
         playSongFromArtistAndAlbum(artist: string, album: string) {
-            let task = this.songApi.getSongByArtistAndAlbum(artist, album);
+            const task = this.songApi.getSongByArtistAndAlbum(artist, album);
             this.playSongWhenFinishedLoading(task);
         }
 
         playSongFromArtist(artist: string) {
-            let task = this.songApi.getSongByArtist(artist);
+            const task = this.songApi.getSongByArtist(artist);
             this.playSongWhenFinishedLoading(task);
         }
 
         playSongFromAlbum(album: string) {
-            let task = this.songApi.getSongByAlbum(album);
+            const task = this.songApi.getSongByAlbum(album);
+            this.playSongWhenFinishedLoading(task);
+        }
+
+        playSongFromAlbumId(albumId: string) {
+            const task = this.songApi.getSongByAlbumId(albumId);
             this.playSongWhenFinishedLoading(task);
         }
 
         playSongWithTag(tag: string) {
-            let task = this.songApi.getSongWithTag(tag);
+            const task = this.songApi.getSongWithTag(tag);
             this.playSongWhenFinishedLoading(task);
         }
 

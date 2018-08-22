@@ -1,41 +1,63 @@
 {
-    "version": "0.1.0",
+    "version": "2.0.0",
     "command": "dotnet",
-    "isShellCommand": true,
-    "showOutput": "always",
+    "type": "shell",
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+    },
     "args": [],
     "tasks": [
         {
-            "taskName": "build",
+            "label": "build",
             "args": [
                 "${workspaceRoot}/Chavah.NetCore.csproj"
             ],
-            "isBuildCommand": true,
+            "group": "build",
             "problemMatcher": "$msCompile"
         },
         {
-            "taskName": "tsc",
+            "label": "tsc",
             "command": "tsc",
-            "showOutput": "always",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
             "windows": {
                 "command": "${workspaceRoot}\\node_modules\\.bin\\tsc"
             },
-            "isShellCommand": true,
+            "type": "shell",
             "problemMatcher":"$tsc"
         },
         {
-            "taskName": "bundle"
+            "label": "bundle"
         },
         {
-            "taskName": "clean",
-            "args": [ "bundle", "clean" ],
-            "suppressTaskName": true
+            "label": "clean",
+            "args": [ "bundle", "clean" ]
         },
         {
-            "taskName": "watch",
+            "label": "watch",
             "args": [ "bundle", "watch" ],
-            "suppressTaskName": true,
             "isBackground": true
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/Chavah.NetCore.csproj",
+                "-c",
+                "Debug",
+                "-o",
+                "./bin/Debug/netcoreapp2.1/"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }

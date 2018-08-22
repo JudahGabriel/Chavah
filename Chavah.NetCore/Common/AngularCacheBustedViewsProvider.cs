@@ -51,7 +51,14 @@ namespace BitShuva.Chavah.Common
             using (var file = File.OpenRead(htmlFilePath))
             using (var md5 = System.Security.Cryptography.MD5.Create())
             {
+                
+                // default windows path detaction
                 var viewsFolder = '\\' + viewsFolderRelativePath + '\\';
+                
+                if (OperatingSystem.IsLinux()) {
+                    viewsFolder = $"/{viewsFolderRelativePath}/";
+                }
+                
                 var viewFolderIndex = htmlFilePath.LastIndexOf(viewsFolder, StringComparison.InvariantCultureIgnoreCase);
                 if (viewFolderIndex == -1)
                 {

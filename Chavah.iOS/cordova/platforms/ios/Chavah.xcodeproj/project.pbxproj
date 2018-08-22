@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		0207DA581B56EA530066E2B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0207DA571B56EA530066E2B4 /* Images.xcassets */; };
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
@@ -17,12 +18,13 @@
 		3047A5141AB8059700498E2A /* build.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 3047A5111AB8059700498E2A /* build.xcconfig */; };
 		365E9A0F16CC49C0BB2347CA /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12F4B85A6E87426EA78DD5EE /* CoreTelephony.framework */; };
 		483B9F6FFF014A80A7EF0923 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4500805D57D4F9E965D76B2 /* SystemConfiguration.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		48CA892DE09F46E297E39F03 /* MRemoteCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884EAD7A1C411E8C11E03B /* MRemoteCommand.m */; };
 		5C18C724787A49159287BEB5 /* CDVReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5532C0BA7747B88933722A /* CDVReachability.m */; };
 		6B89A985DF344A13A1B659B8 /* BackgroundAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = FB13886BA14E45639039B664 /* BackgroundAudio.m */; };
 		7B388170EACC42FF828FAFF6 /* CDVHostedWebApp.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9F6215EEB44642A3AF6A50 /* CDVHostedWebApp.m */; };
-		8EAFA6BAB670491F8440A710 /* CDVConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = E0BB475B5B7448298F990799 /* CDVConnection.m */; };
 		81CCEA7324D544149D711304 /* MNowPlaying.m in Sources */ = {isa = PBXBuildFile; fileRef = A8F66B9771B44F07AC2287BC /* MNowPlaying.m */; };
-		48CA892DE09F46E297E39F03 /* MRemoteCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 11884EAD7A1C411E8C11E03B /* MRemoteCommand.m */; };
+		8EAFA6BAB670491F8440A710 /* CDVConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = E0BB475B5B7448298F990799 /* CDVConnection.m */; };
+		CF6A57CA206C3A0400F48521 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF6A57C9206C3A0400F48521 /* MediaPlayer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +47,7 @@
 /* Begin PBXFileReference section */
 		0207DA571B56EA530066E2B4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Chavah/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		092800FEB7EB4459AA92F1F5 /* CDVHostedWebApp.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDVHostedWebApp.h; path = "cordova-plugin-hostedwebapp/CDVHostedWebApp.h"; sourceTree = "<group>"; };
+		11884EAD7A1C411E8C11E03B /* MRemoteCommand.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = MRemoteCommand.m; path = "cordova-plugin-remotecommand/MRemoteCommand.m"; sourceTree = "<group>"; };
 		12F4B85A6E87426EA78DD5EE /* CoreTelephony.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -61,8 +64,12 @@
 		32CA4F630368D1EE00C91783 /* Chavah-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Chavah-Prefix.pch"; sourceTree = "<group>"; };
 		4CFDF5357DCA45DFA03DC9B8 /* CDVConnection.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDVConnection.h; path = "cordova-plugin-network-information/CDVConnection.h"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Chavah-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Chavah-Info.plist"; path = "Chavah/Chavah-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = SOURCE_ROOT; };
+		98FB8D95011E4C33BBA52207 /* MNowPlaying.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = MNowPlaying.h; path = "cordova-plugin-nowplaying/MNowPlaying.h"; sourceTree = "<group>"; };
 		9C5532C0BA7747B88933722A /* CDVReachability.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDVReachability.m; path = "cordova-plugin-network-information/CDVReachability.m"; sourceTree = "<group>"; };
+		A8F66B9771B44F07AC2287BC /* MNowPlaying.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = MNowPlaying.m; path = "cordova-plugin-nowplaying/MNowPlaying.m"; sourceTree = "<group>"; };
 		AA9F6215EEB44642A3AF6A50 /* CDVHostedWebApp.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDVHostedWebApp.m; path = "cordova-plugin-hostedwebapp/CDVHostedWebApp.m"; sourceTree = "<group>"; };
+		ACF711BBD03E4EC8AABE39F2 /* MRemoteCommand.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = MRemoteCommand.h; path = "cordova-plugin-remotecommand/MRemoteCommand.h"; sourceTree = "<group>"; };
+		CF6A57C9206C3A0400F48521 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		D4500805D57D4F9E965D76B2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E0BB475B5B7448298F990799 /* CDVConnection.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDVConnection.m; path = "cordova-plugin-network-information/CDVConnection.m"; sourceTree = "<group>"; };
 		EB87FDF31871DA8E0020F90C /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; name = www; path = ../../www; sourceTree = "<group>"; };
@@ -71,10 +78,6 @@
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = Chavah/config.xml; sourceTree = "<group>"; };
 		FB13886BA14E45639039B664 /* BackgroundAudio.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = BackgroundAudio.m; path = "nl.kingsquare.cordova.background-audio/BackgroundAudio.m"; sourceTree = "<group>"; };
 		FDC90D80A25C4F39AE8E4341 /* CDVReachability.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDVReachability.h; path = "cordova-plugin-network-information/CDVReachability.h"; sourceTree = "<group>"; };
-		A8F66B9771B44F07AC2287BC /* MNowPlaying.m */ = {isa = PBXFileReference; name = "MNowPlaying.m"; path = "cordova-plugin-nowplaying/MNowPlaying.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
-		98FB8D95011E4C33BBA52207 /* MNowPlaying.h */ = {isa = PBXFileReference; name = "MNowPlaying.h"; path = "cordova-plugin-nowplaying/MNowPlaying.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
-		11884EAD7A1C411E8C11E03B /* MRemoteCommand.m */ = {isa = PBXFileReference; name = "MRemoteCommand.m"; path = "cordova-plugin-remotecommand/MRemoteCommand.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
-		ACF711BBD03E4EC8AABE39F2 /* MRemoteCommand.h */ = {isa = PBXFileReference; name = "MRemoteCommand.h"; path = "cordova-plugin-remotecommand/MRemoteCommand.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +86,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				301BF552109A68D80062928A /* libCordova.a in Frameworks */,
+				CF6A57CA206C3A0400F48521 /* MediaPlayer.framework in Frameworks */,
 				483B9F6FFF014A80A7EF0923 /* SystemConfiguration.framework in Frameworks */,
 				365E9A0F16CC49C0BB2347CA /* CoreTelephony.framework in Frameworks */,
 			);
@@ -154,6 +158,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CF6A57C9206C3A0400F48521 /* MediaPlayer.framework */,
 				D4500805D57D4F9E965D76B2 /* SystemConfiguration.framework */,
 				12F4B85A6E87426EA78DD5EE /* CoreTelephony.framework */,
 			);

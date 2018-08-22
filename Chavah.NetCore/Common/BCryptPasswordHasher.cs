@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Text;
-using System.Threading.Tasks;
-using BCrypt.Net;
+using Microsoft.AspNetCore.Identity;
 
 namespace BitShuva.Chavah.Common
 {

@@ -27,14 +27,21 @@ var BitShuva;
                 var url = "/api/songs/getByArtistAndAlbum";
                 var args = {
                     artist: artist,
-                    album: album,
+                    album: album
                 };
                 return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
             };
             SongApiService.prototype.getSongByAlbum = function (album) {
                 var url = "/api/songs/getByAlbum/";
                 var args = {
-                    album: album,
+                    album: album
+                };
+                return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
+            };
+            SongApiService.prototype.getSongByAlbumId = function (albumId) {
+                var url = "/api/songs/getByAlbumId/";
+                var args = {
+                    albumId: albumId
                 };
                 return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
             };
@@ -84,7 +91,7 @@ var BitShuva;
                     take: take,
                     search: search
                 };
-                return this.httpApi.query("/api/songs/getLikes", args, SongApiService.songPagedListConverter);
+                return this.httpApi.query("/api/songs/getLikedSongs", args, SongApiService.songPagedListConverter);
             };
             SongApiService.prototype.getRecentPlays = function (count) {
                 var args = {

@@ -41,7 +41,8 @@
         headerPartial: findCacheBustedView("/partials/Header.html"),
         footerPartial: findCacheBustedView("/partials/Footer.html"),
         adminSidebar: findCacheBustedView("/partials/AdminSidebar.html"),
-        goBack: findCacheBustedView("/partials/GoBack.html")
+        goBack: findCacheBustedView("/partials/GoBack.html"),
+        cropImageModal: findCacheBustedView("/modals/CropImageModal.html")
     };
     App.constant("templatePaths", templatePaths);
 
@@ -95,11 +96,11 @@
             .when("/", createRoute("NowPlaying.html"))
             .when("/nowplaying", { redirectTo: "/" })
             .when("/trending", createRoute("Trending.html"))
-            .when("/profile", createRoute(views.profile))
+            .when("/profile", createRoute(views.profile, RouteAccess.Authenticated))
             .when("/popular", createRoute(views.popular))
             .when("/recent", createRoute(views.recent))
             .when("/mylikes", createRoute(views.myLikes))
-            .when("/edit/songs/:id", createRoute(views.editSong))
+            .when("/edit/songs/:id", createRoute(views.editSong, RouteAccess.Authenticated))
             .when("/sharethanks/:artist?", createRoute(views.shareThanks))
             .when("/about", createRoute(views.about))
             .when("/welcome", createRoute(views.welcome))

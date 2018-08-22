@@ -119,21 +119,15 @@
             return this.httpApi.postUriEncoded(`${this.apiUri}/resetPassword`, args);
         }
 
-        sendSupportMessage(name: string, email: string, message: string): ng.IPromise<any> {
+        sendSupportMessage(name: string, email: string, message: string, userAgent: string): ng.IPromise<any> {
             const args = {
                 name,
                 email,
                 message,
-                date: new Date().toISOString()
+                date: new Date().toISOString(),
+                userAgent: window.navigator.userAgent
             };
             return this.httpApi.post(`${this.apiUri}/sendSupportMessage`, args);
-        }
-
-        saveVolume(volume: number) {
-            const args = {
-                volume: volume
-            };
-            return this.httpApi.postUriEncoded(`/api/users/saveVolume`, args);
         }
     }
 

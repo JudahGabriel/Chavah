@@ -101,20 +101,15 @@ var BitShuva;
                 };
                 return this.httpApi.postUriEncoded(this.apiUri + "/resetPassword", args);
             };
-            AccountService.prototype.sendSupportMessage = function (name, email, message) {
+            AccountService.prototype.sendSupportMessage = function (name, email, message, userAgent) {
                 var args = {
                     name: name,
                     email: email,
                     message: message,
-                    date: new Date().toISOString()
+                    date: new Date().toISOString(),
+                    userAgent: window.navigator.userAgent
                 };
                 return this.httpApi.post(this.apiUri + "/sendSupportMessage", args);
-            };
-            AccountService.prototype.saveVolume = function (volume) {
-                var args = {
-                    volume: volume
-                };
-                return this.httpApi.postUriEncoded("/api/users/saveVolume", args);
             };
             AccountService.$inject = [
                 "appNav",

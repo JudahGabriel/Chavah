@@ -14,6 +14,7 @@
             "likeApi",
             "songRequestApi",
             "accountApi",
+            "userApi",
             "stationIdentifier",
             "adAnnouncer",
             "appNav",
@@ -26,6 +27,7 @@
             private likeApi: LikeApiService,
             private songRequestApi: SongRequestApiService,
             private accountApi: AccountService,
+            private userApi: UserApiService,
             private stationIdentifier: StationIdentifierService,
             private adAnnouncer: AdAnnouncerService,
             private appNav: AppNavService,
@@ -174,7 +176,7 @@
 
         requestSong() {
             if (this.requireSignIn()) {
-                this.appNav.showSongRequestDialog()
+                this.appNav.songRequestModal()
                     .result.then((song: Song | null) => this.songRequestDialogCompleted(song));
             }
         }
@@ -280,7 +282,7 @@
         saveVolumePreference(volume: number) {
             if (this.accountApi.currentUser && this.accountApi.currentUser.volume !== volume) {
                 this.accountApi.currentUser.volume = volume;
-                this.accountApi.saveVolume(volume);
+                this.userApi.saveVolume(volume);
             }
         }
     }

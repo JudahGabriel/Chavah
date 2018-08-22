@@ -71,6 +71,11 @@ namespace BitShuva.Chavah.Common
         /// <returns></returns>
         public static async Task<T> LoadRequiredAsync<T>(this IAsyncDocumentSession session, string id)
         {
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id), "Tried to load required entity but passed in a null ID");
+            }
+
             var result = await session.LoadAsync<T>(id);
             if (result == null)
             {
@@ -89,6 +94,11 @@ namespace BitShuva.Chavah.Common
         /// <returns></returns>
         public static Lazy<Task<T>> LoadRequiredAsync<T>(this IAsyncLazySessionOperations sessionOps, string id)
         {
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id), "Tried to load required entity but passed in a null ID");
+            }
+
             var loadTask = sessionOps.LoadAsync<T>(id);
             var wrappedLazy = new Lazy<Task<T>>(() =>
             {
@@ -119,6 +129,11 @@ namespace BitShuva.Chavah.Common
         public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncDocumentSession session, string id, Func<TException> thrower)
             where TException : Exception
         {
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id), "Tried to load required entity but passed in a null ID");
+            }
+
             var result = await session.LoadAsync<T>(id);
             if (result == null)
             {
@@ -137,6 +152,11 @@ namespace BitShuva.Chavah.Common
         /// <returns></returns>
         public static async Task<T> LoadRequiredAsync<T>(this IAsyncLoaderWithInclude<T> session, string id)
         {
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id), "Tried to load required entity but passed in a null ID");
+            }
+
             var result = await session.LoadAsync<T>(id);
             if (result == null)
             {
@@ -156,6 +176,11 @@ namespace BitShuva.Chavah.Common
         public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncLoaderWithInclude<T> session, string id, Func<TException> thrower)
             where TException : Exception
         {
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id), "Tried to load required entity but passed in a null ID");
+            }
+
             var result = await session.LoadAsync<T>(id);
             if (result == null)
             {
@@ -263,6 +288,8 @@ namespace BitShuva.Chavah.Common
         {
             // Patch is in RQL. Example: "from AppUsers update { this.Foo = 123; }"
             var rqlPatch = new StringBuilder();
+            rqlPatch.AppendLine($"from {collectionName}");
+            rqlPatch.AppendLine("update {");
 
             // For each variable in the dictionary, declare the variable in the RQL script.
             variables
@@ -277,8 +304,6 @@ namespace BitShuva.Chavah.Common
                 })
                 .ForEach(v => rqlPatch.AppendLine(v));
 
-            rqlPatch.AppendLine($"from {collectionName}");
-            rqlPatch.AppendLine("update {");
             rqlPatch.AppendLine(jsPatchScript);
             rqlPatch.Append('}');
 

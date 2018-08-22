@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Optional.Async;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Queries;
 using Raven.Client.Documents.Session;
 using System;
 using System.Collections.Generic;
@@ -104,7 +105,7 @@ namespace BitShuva.Chavah.Controllers
                 throw new ArgumentException("Couldn't find album with ID " + albumId);
             }
 
-            var albumArtUri = await cdnManagerService.UploadAlbumArtToCdn(new Uri(artUri), album.Artist, album.Name, ".jpg");
+            var albumArtUri = await cdnManagerService.UploadAlbumArtAsync(new Uri(artUri), album.Artist, album.Name, ".jpg");
             album.AlbumArtUri = albumArtUri;
 
             // Update the songs on this album.
@@ -160,7 +161,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task<string> Upload([FromBody] AlbumUpload album)
         {
             // Put the album art on the CDN.
-            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtToCdn(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
+            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtAsync(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()
@@ -168,6 +169,17 @@ namespace BitShuva.Chavah.Controllers
             if (existingAlbum == null)
             {
                 existingAlbum = new Album();
+            }
+
+            var existingArtist = await DbSession.Query<Artist>()
+                .FirstOrDefaultAsync(a => a.Name == album.Artist);
+            if (existingArtist == null)
+            {
+                existingArtist = new Artist
+                {
+                    Bio = "",
+                    Name = album.Artist
+                };
             }
 
             existingAlbum.AlbumArtUri = albumArtUriCdn;
@@ -186,7 +198,6 @@ namespace BitShuva.Chavah.Controllers
 
             // Store the songs in the DB.
             var songNumber = 1;
-            
             foreach (var albumSong in album.Songs)
             {
                 //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
@@ -204,7 +215,8 @@ namespace BitShuva.Chavah.Controllers
                     PurchaseUri = album.PurchaseUrl,
                     UploadDate = DateTime.UtcNow,
                     Uri = null,
-                    AlbumId = existingAlbum.Id
+                    AlbumId = existingAlbum.Id,
+                    ArtistId = existingArtist.Id
                 };
                 await this.DbSession.StoreAsync(song);
 
@@ -358,6 +370,36 @@ namespace BitShuva.Chavah.Controllers
                 .Where(s => s.AlbumId == albumId)
                 .ToListAsync();
             songsWithAlbum.ForEach(s => s.AlbumId = "");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<PagedList<AlbumWithNetLikeCount>> GetLikedAlbums(int skip, int take, string search)
+        {
+            var userId = this.GetUserIdOrThrow();
+            var query = DbSession.Query<Like, Likes_ByAlbum>()
+                .Where(u => u.UserId == userId)
+                .ProjectInto<AlbumWithNetLikeCount>()
+                .Where(a => a.NetLikeCount > 0)
+                .OrderByDescending(a => a.NetLikeCount);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Search(a => a.Name, search + "*");
+            }
+
+            var albums = await query
+                .Statistics(out var stats)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+            return new PagedList<AlbumWithNetLikeCount>
+            {
+                Items = albums,
+                Skip = skip,
+                Take = take,
+                Total = stats.TotalResults
+            };
         }
     }
 }

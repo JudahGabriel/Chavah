@@ -37,13 +37,18 @@
         roles: string[];
         securityStamp: string;
         twoFactorAuthEnabled: boolean;
+        profilePicUrl: string | null;
+        firstName: string;
+        lastName: string;
     }
 
     export interface Song {
         name: string;
         number: number;
         album: string;
+        albumId: string | null;
         artist: string;
+        artistId: string | null;
         communityRank: number;
         communityRankStanding: CommunityRankStanding;
         id: string;
@@ -59,6 +64,13 @@
         reasonsPlayed: Server.SongPickReasons | null;
     }
 
+    export interface SongWithAlbumColors extends Song {
+        albumSwatchBackground: string;
+        albumSwatchForeground: string;
+        albumSwatchMuted: string;
+        albumSwatchTextShadow: string;
+    }
+
     export interface UpDownVotes {
         upVotes: number;
         downVotes: number;
@@ -69,6 +81,13 @@
         name: string;
         images: string[];
         bio: string;
+    }
+
+    export interface ArtistWithNetLikeCount extends Artist {
+        netLikeCount: number;
+        likeCount: number;
+        dislikeCount: number;
+        userId: string;
     }
 
     export interface PagedList<T> {
@@ -127,6 +146,13 @@
         textShadowColor: string;
         isVariousArtists: boolean;
         songCount: number;
+    }
+
+    export interface AlbumWithNetLikeCount extends Album {
+        netLikeCount: number;
+        likeCount: number;
+        dislikeCount: number;
+        userId: string;
     }
 
     export interface RegisterResults {

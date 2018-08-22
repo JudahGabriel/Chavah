@@ -1,0 +1,28 @@
+﻿/* Colors */
+.profile-page {
+  margin-top: 50px;
+}
+.profile-page .page-title {
+  margin-bottom: 30px;
+  margin-top: 30px;
+  padding: 10px;
+  background-color: #2f3d58;
+  color: #e9dd9a;
+  border: 1px solid #b4bcc2;
+}
+.profile-page .profile-pic-placeholder {
+  border: 3px dashed silver;
+  margin-right: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+.profile-page .img-container {
+  padding-right: 20px;
+}
+.profile-page .profile-pic {
+  box-shadow: 1px 1px 5px black;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 300px;
+  background-color: #ecf0f1;
+}

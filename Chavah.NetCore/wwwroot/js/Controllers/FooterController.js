@@ -3,13 +3,14 @@ var BitShuva;
     var Chavah;
     (function (Chavah) {
         var FooterController = /** @class */ (function () {
-            function FooterController(audioPlayer, songBatch, likeApi, songRequestApi, accountApi, stationIdentifier, adAnnouncer, appNav, $scope) {
+            function FooterController(audioPlayer, songBatch, likeApi, songRequestApi, accountApi, userApi, stationIdentifier, adAnnouncer, appNav, $scope) {
                 var _this = this;
                 this.audioPlayer = audioPlayer;
                 this.songBatch = songBatch;
                 this.likeApi = likeApi;
                 this.songRequestApi = songRequestApi;
                 this.accountApi = accountApi;
+                this.userApi = userApi;
                 this.stationIdentifier = stationIdentifier;
                 this.adAnnouncer = adAnnouncer;
                 this.appNav = appNav;
@@ -167,7 +168,7 @@ var BitShuva;
             FooterController.prototype.requestSong = function () {
                 var _this = this;
                 if (this.requireSignIn()) {
-                    this.appNav.showSongRequestDialog()
+                    this.appNav.songRequestModal()
                         .result.then(function (song) { return _this.songRequestDialogCompleted(song); });
                 }
             };
@@ -267,7 +268,7 @@ var BitShuva;
             FooterController.prototype.saveVolumePreference = function (volume) {
                 if (this.accountApi.currentUser && this.accountApi.currentUser.volume !== volume) {
                     this.accountApi.currentUser.volume = volume;
-                    this.accountApi.saveVolume(volume);
+                    this.userApi.saveVolume(volume);
                 }
             };
             FooterController.$inject = [
@@ -276,6 +277,7 @@ var BitShuva;
                 "likeApi",
                 "songRequestApi",
                 "accountApi",
+                "userApi",
                 "stationIdentifier",
                 "adAnnouncer",
                 "appNav",
