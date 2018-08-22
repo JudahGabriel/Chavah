@@ -3,15 +3,23 @@
 
         static $inject = [
             "accountApi",
+            "$routeParams",
         ];
 
         email = "";
+        pwned = false;
         resetPasswordSuccessfully = false;
         couldNotFindEmail = false;
         resetErrorMessage = "";
         isBusy = false;
 
-        constructor(private accountApi: AccountService) {
+        constructor(private accountApi: AccountService,
+            private $routeParams: ng.route.IRouteParamsService) {
+            this.email = $routeParams["email"];
+
+            if ($routeParams["pwned"]) {
+                this.pwned =  Boolean($routeParams["pwned"]);
+            }
         }
 
         get registerUrl(): string {

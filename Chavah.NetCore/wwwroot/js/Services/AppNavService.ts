@@ -48,6 +48,10 @@
             this.$location.url(`/password/${encodeURIComponent(email)}`);
         }
 
+        resetPwnedPassword(email: string) {
+            this.$location.url(`/forgotpassword/${encodeURIComponent(email)}/true`);
+        }
+
         editAlbumById(albumId: string) {
             this.$location.url("/admin/album/" + albumId);
         }

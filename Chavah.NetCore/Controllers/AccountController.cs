@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using BitShuva.Chavah.Common;
@@ -33,6 +34,8 @@ namespace BitShuva.Chavah.Controllers
         private readonly IMapper mapper;
         private readonly IPwnedPasswordService pwnedPasswordService;
 
+        private readonly string PwnedPasswordMessage = "Select a different password because the password you chose has appeared in a data breach {0} times.";
+
         public AccountController(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
@@ -53,76 +56,89 @@ namespace BitShuva.Chavah.Controllers
             this.pwnedPasswordService = pwnedPasswordService;
         }
 
+        /// <summary>
+        /// Returns currently logged in user.
+        /// </summary>
+        /// <returns code="200">Returns logged in user.</returns>
         [HttpGet]
-        public async Task<UserViewModel> GetUser()
+        [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> GetUser()
         {
             var userName = User.Identity.Name;
             AppUser user = null;
             if (!string.IsNullOrEmpty(userName))
             {
                 user = await GetCurrentUser().ConfigureAwait(false);
-                return mapper.Map<UserViewModel>(user);
+                return Ok(mapper.Map<UserViewModel>(user));
             }
-            return null;
+            return Ok(null);
         }
 
         /// <summary>
         /// User SignIn.
         /// </summary>
-        /// <param name="email"></param>
-        /// <param name="password"></param>
-        /// <param name="staySignedIn"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<Models.SignInResult> SignIn(string email, string password, bool staySignedIn)
+        [ProducesResponseType(typeof(SignInModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> SignIn([BindRequired, FromBody, FromForm]SignInModel model)
         {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+
+            if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
             {
-                return new Models.SignInResult
+                return Ok(new Models.Account.SignInResult
                 {
                     ErrorMessage = "Bad user name or password",
                     Status = SignInStatus.Failure
-                };
+                });
+            }
+
+            var (pwned, count) = await pwnedPasswordService.IsPasswordPwnedAsync(model.Password).ConfigureAwait(false);
+
+            if (pwned)
+            {
+                return Ok(new Models.Account.SignInResult
+                {
+                    ErrorMessage = string.Format(PwnedPasswordMessage, count),
+                    Status = SignInStatus.Pwned
+                });
             }
 
             // Require the user to have a confirmed email before they can log on.
-            var user = await userManager.FindByEmailAsync(email).ConfigureAwait(false);
+            var user = await userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
             var isCorrectPassword = false;
             if (user != null)
             {
-                isCorrectPassword = await userManager.CheckPasswordAsync(user, password)
+                isCorrectPassword = await userManager.CheckPasswordAsync(user, model.Password)
                     .ConfigureAwait(false);
             }
 
             if (user == null || !isCorrectPassword)
             {
-                logger.LogInformation("Sign in failed; bad user name or password {email}", email);
-                return new Models.SignInResult
+                logger.LogInformation("Sign in failed; bad user name or password {email}", model.Email);
+                return Ok(new Models.Account.SignInResult
                 {
                     ErrorMessage = "Bad user name or password",
                     Status = SignInStatus.Failure
-                };
+                });
             }
 
             var isEmailConfirmed = await userManager.IsEmailConfirmedAsync(user)
                 .ConfigureAwait(false);
             if (!isEmailConfirmed)
             {
-                return new Models.SignInResult
+                return Ok(new Models.Account.SignInResult
                 {
                     Status = SignInStatus.RequiresVerification
-                };
+                });
             }
 
-            var signInResult = await signInManager.PasswordSignInAsync(email, password, staySignedIn, lockoutOnFailure: false)
+            var signInResult = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.StaySignedIn, lockoutOnFailure: false)
                 .ConfigureAwait(false);
 
-            //var principle = await signInManager.CreateUserPrincipalAsync(user).ConfigureAwait(false);
-
-            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-            //    principle).ConfigureAwait(false);
-
-            var result = new Models.SignInResult
+            var result = new Models.Account.SignInResult
             {
                 Status = SignInStatusFromResult(signInResult),
                 User = mapper.Map<UserViewModel>(user)
@@ -134,7 +150,7 @@ namespace BitShuva.Chavah.Controllers
                 logger.LogInformation("Sign in failed with {result}", result);
             }
 
-            return result;
+            return Ok(result);
         }
 
         /// <summary>
@@ -145,8 +161,6 @@ namespace BitShuva.Chavah.Controllers
         public async Task SignOut()
         {
             await signInManager.SignOutAsync().ConfigureAwait(false);
-
-            //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -192,7 +206,9 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<UserViewModel> GetUserWithEmail(string email)
+        [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent)]
+        public async Task<IActionResult> GetUserWithEmail(string email)
         {
             var user = await DbSession.LoadAsync<AppUser>("AppUsers/" + email).ConfigureAwait(false);
             if (user != null)
@@ -201,7 +217,7 @@ namespace BitShuva.Chavah.Controllers
                 DbSession.Advanced.Evict(user);
             }
 
-            return mapper.Map<UserViewModel>(user);
+            return Ok(mapper.Map<UserViewModel>(user));
         }
 
         /// <summary>
@@ -226,16 +242,17 @@ namespace BitShuva.Chavah.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<RegisterResults> Register([BindRequired,FromBody, FromForm]RegisterModel model)
+        [ProducesResponseType(typeof(RegisterResults), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Register([BindRequired,FromBody, FromForm]RegisterModel model)
         {
-            var (pwned, count) = await pwnedPasswordService.IsPasswordPwned(model.Password).ConfigureAwait(false);
+            var (pwned, count) = await pwnedPasswordService.IsPasswordPwnedAsync(model.Password).ConfigureAwait(false);
 
             if (pwned)
             {
-                return new RegisterResults
+                return Ok(new RegisterResults
                 {
-                    ErrorMessage = $"Select a different password because the password you chose has appeared in a data breach {count} times.",
-                };
+                    ErrorMessage = string.Format(PwnedPasswordMessage,count),
+                });
             }
 
             // See if we're already registered.
@@ -243,12 +260,12 @@ namespace BitShuva.Chavah.Controllers
             var existingUser = await userManager.FindByEmailAsync(emailLower).ConfigureAwait(false);
             if (existingUser != null)
             {
-                return new RegisterResults
+                return Ok(new RegisterResults
                 {
                     ErrorMessage = "You're already registered.",
                     IsAlreadyRegistered = true,
                     NeedsConfirmation = !existingUser.EmailConfirmed
-                };
+                });
             }
 
             // The user doesn't exist yet. Try and register him.
@@ -276,19 +293,19 @@ namespace BitShuva.Chavah.Controllers
                 emailSender.QueueConfirmEmail(model.Email, confirmToken.Token, options?.Application);
 
                 logger.LogInformation("Sending new user confirmation email to {email} with confirm token {token}", model.Email, confirmToken.Token);
-                return new RegisterResults
+                return Ok(new RegisterResults
                 {
                     Success = true
-                };
+                });
             }
             else
             {
                 // Registration failed.
                 logger.LogWarning("Register new user failed with {result}", createUserResult);
-                return new RegisterResults
+                return Ok(new RegisterResults
                 {
                     ErrorMessage = string.Join(", ", createUserResult.Errors.Select(s => s.Description))
-                };
+                });
             }
         }
 

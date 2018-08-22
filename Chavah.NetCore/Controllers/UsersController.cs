@@ -60,8 +60,12 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task SaveVolume(double volume)
         {
-            var user = await GetCurrentUserOrThrow().ConfigureAwait(false);
-            user.Volume = volume;
+            // TODO: trace down the logic for the authentication. it should never be triggred from ui.
+            var user = await GetCurrentUser().ConfigureAwait(false);
+            if (user != null)
+            {
+                user.Volume = volume;
+            }
         }
 
         /// <summary>

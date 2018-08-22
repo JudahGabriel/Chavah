@@ -41,13 +41,18 @@
 
             if (!this.isBusy) {
                 this.isBusy = true;
-                this.accountApi.signIn(this.email, this.password, this.staySignedIn)
+                var signInModel = new SignInModel();
+                signInModel.email = this.email;
+                signInModel.password = this.password;
+                signInModel.staySignedIn = this.staySignedIn;
+
+                this.accountApi.signIn(signInModel)
                     .then(result => this.signInCompleted(result))
                     .finally(() => this.isBusy = false);
             }
         }
 
-        signInCompleted(result: Server.SignInResult) {
+        signInCompleted(result: Server.ISignInResult) {
             if (result.status === SignInStatus.Success) {
                 this.signInSuccessful = true;
                 this.$timeout(() => this.appNav.nowPlaying(), 2000);
@@ -61,6 +66,10 @@
             } else if (result.status === SignInStatus.Failure) {
                 this.showPasswordError = true;
                 this.passwordError = "Incorrect password";
+            } else if (result.status === SignInStatus.Pwned) {
+                this.showPasswordError = true;
+                this.passwordError = result.errorMessage || "Select a different password because the password you chose has appeared in a data breach";
+                this.$timeout(() => this.appNav.resetPwnedPassword(this.email), 4000);
             }
         }
 
@@ -68,6 +77,12 @@
             this.showPasswordError = false;
             this.passwordError = "";
         }
+    }
+
+    export class SignInModel implements Server.ISignInModel {
+        email: string;
+        password: string;
+        staySignedIn: boolean;
     }
 
     App.controller("PasswordController", PasswordController);

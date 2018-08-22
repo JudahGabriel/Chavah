@@ -10,7 +10,7 @@
 
     export const App = angular.module("ChavahApp", modules);
 
-    const homeVm: Server.IConfigViewModel = {} as Server.IConfigViewModel;
+    const initConfig: Server.IConfigViewModel = {} as Server.IConfigViewModel;
 
     // not sure if this will work with cordova on ios or android.
     App.value('jQuery', jQuery);
@@ -18,22 +18,24 @@
         .done((data) => {
             var response = angular.fromJson(data)
             if (response) {
-                angular.extend(homeVm, response);
-                console.log(homeVm);
+                angular.extend(initConfig, response);
+                if (initConfig.debug) {
+                    console.log(initConfig);
+                }
             } else {
-                console.error('error');
+                console.error(response);
             }
         })
         .fail((e) => {
             console.error(e);
         });
 
-    App.constant("initConfig", homeVm);
+    App.constant("initConfig", initConfig);
 
     // Gets the relative path to a cache-busted angular view.
     // The view URL is appended a hash of the contents of the file. See AngularCacheBustedViewsProvider.cs
     function findCacheBustedView(viewName: string) {
-        let cacheBustedView = homeVm.cacheBustedAngularViews.find((v) => v.search(new RegExp(viewName, "i")) !== -1);
+        let cacheBustedView = initConfig.cacheBustedAngularViews.find((v) => v.search(new RegExp(viewName, "i")) !== -1);
         if (!cacheBustedView) {
             throw new Error("Unable to find cache-busted Angular view " + viewName);
         }
@@ -131,7 +133,7 @@
                 .when("/promptsignin", createRoute(views.promptSignIn))
                 .when("/signin", createRoute(views.signIn))
                 .when("/password/:email", createRoute(views.password))
-                .when("/forgotpassword", createRoute(views.forgotPassword))
+                .when("/forgotpassword/:email/:pwned", createRoute(views.forgotPassword))
                 .when("/createpassword/:email", createRoute(views.createPassword))
                 .when("/register/:email?", createRoute(views.register))
                 .when("/confirmemail/:email/:confirmCode", createRoute(views.confirmEmail))

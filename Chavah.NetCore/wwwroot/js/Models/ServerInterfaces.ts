@@ -165,13 +165,7 @@
         scope: string | null;
     }
 
-    export interface SignInResult {
-        status: SignInStatus;
-        errorMessge: string | null;
-        user: User | null;
-    }
-
-
+    // account
     export interface IConfigViewModel {
         debug: boolean;
         songId: string | null;
@@ -224,4 +218,15 @@
         confirmPassword: string;
     }
 
+    export interface ISignInModel {
+        email: string;
+        password: string;
+        staySignedIn: boolean;
+    }
+
+    export interface ISignInResult {
+        status: SignInStatus;
+        errorMessage: string | null;
+        user: User | null;
+    }
 }
