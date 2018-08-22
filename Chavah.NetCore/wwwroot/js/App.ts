@@ -85,6 +85,7 @@
         songEdits: "/ApproveSongEdits.html",
         tags: "/TagEditor.html",
         logs: "/LogEditor.html",
+        editSongs: "/EditSongs.html"
     };
 
     App.config(["$routeProvider", "$locationProvider",
@@ -132,6 +133,7 @@
             .when("/admin/songedits", createRoute(views.songEdits, RouteAccess.Admin))
             .when("/admin/tags", createRoute(views.tags, RouteAccess.Admin))
             .when("/admin/logs", createRoute(views.logs, RouteAccess.Admin))
+            .when("/admin/songs", createRoute(views.editSongs, RouteAccess.Admin))
 
             .otherwise({
                 redirectTo: "/nowplaying",
