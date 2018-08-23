@@ -16,18 +16,6 @@
     "inputFile": "wwwroot/css/variables.less"
   },
   {
-    "outputFile": "wwwroot/css/app/adminSidebar.css",
-    "inputFile": "wwwroot/css/app/adminSidebar.less"
-  },
-  {
-    "outputFile": "wwwroot/css/app/albums.css",
-    "inputFile": "wwwroot/css/app/albums.less"
-  },
-  {
-    "outputFile": "wwwroot/css/app/adminSidebar.css",
-    "inputFile": "wwwroot/css/app/adminSidebar.less"
-  },
-  {
     "outputFile": "wwwroot/css/app/albums.css",
     "inputFile": "wwwroot/css/app/albums.less"
   },

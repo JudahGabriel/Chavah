@@ -24,6 +24,7 @@
 
 	<ItemGroup>
 		<Content Remove="wwwroot\js\common\ToggleOption.ts" />
+		<Content Remove="wwwroot\js\Controllers\ConfirmDeleteSongController.ts" />
 		<Content Remove="wwwroot\js\Controllers\MyLikesController.ts" />
 		<Content Remove="wwwroot\js\Controllers\SupportController.ts" />
 		<Content Remove="wwwroot\js\Models\LogSort.ts" />
@@ -84,6 +85,7 @@
 			<DependentUpon>UserSongPreferences.cs</DependentUpon>
 		</TypeScriptCompile>
 		<TypeScriptCompile Include="wwwroot\js\common\ToggleOption.ts" />
+		<TypeScriptCompile Include="wwwroot\js\Controllers\ConfirmDeleteSongController.ts" />
 		<TypeScriptCompile Include="wwwroot\js\Controllers\MyLikesController.ts" />
 		<TypeScriptCompile Include="wwwroot\js\Controllers\SupportController.ts" />
 		<TypeScriptCompile Include="wwwroot\js\Directives\BackgroundImage.ts" />
@@ -105,7 +107,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="wwwroot\css\app\adminSidebar.less" />
 		<None Include="wwwroot\css\app\albums.less" />
 		<None Include="wwwroot\css\app\editArtist.less" />
 		<None Include="wwwroot\css\app\editSong.less" />
@@ -192,12 +193,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Update="wwwroot\css\app\adminSidebar.css">
-			<DependentUpon>adminSidebar.less</DependentUpon>
-		</Content>
-		<Content Update="wwwroot\css\app\adminSidebar.min.css">
-			<DependentUpon>adminSidebar.css</DependentUpon>
-		</Content>
 		<Content Update="wwwroot\css\app\albums.css">
 			<DependentUpon>albums.less</DependentUpon>
 		</Content>
