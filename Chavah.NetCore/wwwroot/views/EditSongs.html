@@ -1,12 +1,59 @@
-﻿<section class="songs-page" ng-controller="SongsListController as vm">
+﻿<section class="songs-page admin-page" ng-controller="EditSongsController as vm">
     <div class="row">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1">
             <div class="row">
                 <div class="col-xs-12 col-sm-3">
-                    <div ng-include="Partials.adminSidebar" ng-init="adminPage = 'albums'"></div>
+                    <div ng-include="Partials.adminSidebar" ng-init="adminPage = 'songs'"></div>
                 </div>
                 <div class="col-xs-12 col-sm-9">
-                    songs list goes here.
+
+                    <!--Toolbar-->
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Search for song" ng-model="vm.search" ng-change="vm.searchChanged()" ng-model-options="{ debounce: 250 }" type="text">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 35%;">Name</th>
+                                    <th style="width: 20%;">Artist</th>
+                                    <th style="width: 20%;">Album</th>
+                                    <th style="width: 10%;">Rank</th>
+                                    <th style="width: 15%;">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="song in vm.songs.items">
+                                    <td>{{::song.name}}</td>
+                                    <td>{{::song.artist}}</td>
+                                    <td>{{::song.album}}</td>
+                                    <td>{{::song.communityRank}}</td>
+                                    <td style="text-align: right;">
+                                        <div class="btn-group" role="group" aria-label="...">
+                                            <a class="btn btn-default" ng-href="{{'#/edit/' + song.id}}">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <button class="btn btn-danger" ng-click="vm.deleteSong(song)">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p class="text-muted text-center" ng-show="vm.songs.isLoadedWithData">
+                            Showing {{vm.songs.items.length}} of {{vm.songs.itemsTotalCount}} songs
+                            <button class="btn btn-default" ng-show="vm.songs.hasMoreItems" ng-click="vm.songs.fetchNextChunk()" ng-disabled="vm.songs.isLoading">
+                                Load more
+                            </button>
+                        </p>
+                    </div>
+
                 </div>
             </div>
         </div>

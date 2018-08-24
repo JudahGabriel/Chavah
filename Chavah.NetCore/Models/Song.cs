@@ -45,8 +45,6 @@ namespace BitShuva.Chavah.Models
             fileName = System.Uri.UnescapeDataString(fileName);
 
             var song = new Song();
-            song.Number = 0;
-
             var fileNameWithouExtension = System.IO.Path.GetFileNameWithoutExtension(fileName);
             var indexOfLastDash = fileNameWithouExtension.LastIndexOf(" - ");
             if (indexOfLastDash != -1)

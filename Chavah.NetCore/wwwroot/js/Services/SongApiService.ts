@@ -133,6 +133,19 @@
             return this.httpApi.post("/api/songs/audiofailed", error);
         }
 
+        getSongsAdmin(skip: number, take: number, search: string): ng.IPromise<Server.PagedList<Server.Song>> {
+            const args = {
+                skip,
+                take,
+                search
+            };
+            return this.httpApi.query("/api/songs/getSongsAdmin", args);
+        }
+
+        deleteSong(song: Song): ng.IPromise<any> {
+            return this.httpApi.post("/api/songs/deleteSong", song);
+        }
+
         // tslint:disable-next-line:member-ordering
         private static songPagedListConverter(dto: Server.PagedList<Server.Song>): Server.PagedList<Song> {
             return {

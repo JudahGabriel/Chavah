@@ -83,6 +83,17 @@
             });
         }
 
+        confirmDeleteSong(song: Server.Song): ng.ui.bootstrap.IModalServiceInstance {
+            return this.$uibModal.open({
+                controller: "ConfirmDeleteSongController as vm",
+                templateUrl: this.templatePaths.confirmDeleteSongModal,
+                windowClass: "confirm-delete-song-modal",
+                resolve: {
+                    song: () => song
+                }
+            });
+        }
+
         createAlbum() {
             this.$location.url("/admin/album/create");
         }
