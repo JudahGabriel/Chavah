@@ -80,6 +80,10 @@ namespace BitShuva.Chavah.Controllers
                     {
                         logger.LogError(ravenEx.Message);
                     }
+                    else if (executedContext.Exception is TaskCanceledException)
+                    {
+                        logger.LogInformation(executedContext.Exception, "Task cancelled");
+                    }
                     else
                     {
                         logger.LogError(executedContext.Exception, executedContext.Exception.Message);
