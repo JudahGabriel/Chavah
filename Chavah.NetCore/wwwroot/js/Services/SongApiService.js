@@ -108,6 +108,17 @@ var BitShuva;
             SongApiService.prototype.songFailed = function (error) {
                 return this.httpApi.post("/api/songs/audiofailed", error);
             };
+            SongApiService.prototype.getSongsAdmin = function (skip, take, search) {
+                var args = {
+                    skip: skip,
+                    take: take,
+                    search: search
+                };
+                return this.httpApi.query("/api/songs/getSongsAdmin", args);
+            };
+            SongApiService.prototype.deleteSong = function (song) {
+                return this.httpApi.post("/api/songs/deleteSong", song);
+            };
             // tslint:disable-next-line:member-ordering
             SongApiService.songPagedListConverter = function (dto) {
                 return {

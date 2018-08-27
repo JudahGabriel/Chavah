@@ -32,6 +32,9 @@ body {
   max-height: 300px;
   overflow-y: auto;
 }
+.admin-page {
+  margin-top: 20px;
+}
 .hebrew {
   font-family: 'EB Garamond', serif;
   direction: rtl;

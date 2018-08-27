@@ -1,6 +1,7 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
+using BitShuva.Chavah.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,10 +19,13 @@ namespace BitShuva.Chavah.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class SongsController : RavenController
-    {        
-        public SongsController(IAsyncDocumentSession dbSession, ILogger<SongsController> logger)
+    {
+        private readonly ICdnManagerService cdnManager;
+
+        public SongsController(IAsyncDocumentSession dbSession, ILogger<SongsController> logger, ICdnManagerService cdnManager)
             : base(dbSession, logger)
         {
+            this.cdnManager = cdnManager;
         }
 
         [HttpGet]
@@ -461,7 +465,98 @@ namespace BitShuva.Chavah.Controllers
                 .Take(70)
                 .ToListAsync();
         }
-                
+
+        /// <summary>
+        /// Gets a paged list of all songs for display in the admin UI.
+        /// </summary>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task<PagedList<Song>> GetSongsAdmin(int skip, int take, string search)
+        {
+            QueryStatistics stats;
+            List<Song> songs;
+            var hasSearch = !string.IsNullOrWhiteSpace(search);
+            if (hasSearch)
+            {
+                songs = await DbSession.Query<Song, Songs_Search>()
+                    .Statistics(out stats)
+                    .Search(x => x.Name, search)
+                    .Search(x => x.Artist, search)
+                    .Search(x => x.Album, search)
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
+            }
+            else
+            {
+                songs = await DbSession.Query<Song>()
+                    .Statistics(out stats)
+                    .OrderByDescending(s => s.UploadDate)
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
+            }
+
+            return new PagedList<Song>
+            {
+                Items = songs,
+                Skip = skip,
+                Take = take,
+                Total = stats.TotalResults
+            };
+        }
+
+        [HttpPost]
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task DeleteSong([FromBody]Song song)
+        {
+            var existingSong = await DbSession
+                .Include<Song>(s => s.AlbumId)
+                .LoadRequiredAsync<Song>(song.Id);
+            DbSession.Delete(existingSong);
+
+            // Delete all likes of this song.
+            var operation = await DbSession.Advanced.DocumentStore
+                .Operations
+                .SendAsync(new Raven.Client.Documents.Operations.PatchByQueryOperation(
+                    @"from Likes as like
+                      where like.SongId = '" + existingSong.Id + @"' 
+                      update
+                      {
+                          var likeId = id(this);
+                          del(likeId);
+                      }"));
+
+            // Update the album's song count.
+            if (!string.IsNullOrEmpty(existingSong.AlbumId))
+            {
+                var album = await DbSession.LoadAsync<Album>(existingSong.AlbumId);
+                if (album != null)
+                {
+                    album.SongCount = album.SongCount - 1;
+                    
+                    // No more songs on the album? Delete it.
+                    if (album.SongCount == 0)
+                    {
+                        DbSession.Delete(album);
+                    }
+                }
+            }
+
+            try
+            {
+                await cdnManager.DeleteAsync(existingSong);
+            }
+            catch (Exception deleteFromCdnError)
+            {
+                logger.LogWarning(deleteFromCdnError, "Deleted song {songId}, but was unable to remove from CDN.", song.Id);
+            }
+        }
+
         private async Task<Song> PickRandomSong()
         {
             return await this.DbSession.Query<Song, Songs_GeneralQuery>()

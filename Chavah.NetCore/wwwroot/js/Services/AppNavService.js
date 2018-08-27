@@ -65,6 +65,16 @@ var BitShuva;
                     }
                 });
             };
+            AppNavService.prototype.confirmDeleteSong = function (song) {
+                return this.$uibModal.open({
+                    controller: "ConfirmDeleteSongController as vm",
+                    templateUrl: this.templatePaths.confirmDeleteSongModal,
+                    windowClass: "confirm-delete-song-modal",
+                    resolve: {
+                        song: function () { return song; }
+                    }
+                });
+            };
             AppNavService.prototype.createAlbum = function () {
                 this.$location.url("/admin/album/create");
             };

@@ -87,21 +87,21 @@
     }
 
     @*CSS for development*@
-    <environment include="Development">
-        <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css' />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="~/css/bootswatch.css" />
-        <link rel="stylesheet" href="~/css/bootstrap-flatly.css" />
-        <link rel="stylesheet" href="~/css/bootstrap-flatly-tweaks.css" />
-        <link rel="stylesheet" href="~/css/nprogress.css" />
-        <link rel="stylesheet" asp-href-include="~/css/app/*.min.css" />
-    </environment>
+        <environment include="Development">
+            <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css' />
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+            <link rel="stylesheet" href="~/css/bootswatch.css" />
+            <link rel="stylesheet" href="~/css/bootstrap-flatly.css" />
+            <link rel="stylesheet" href="~/css/bootstrap-flatly-tweaks.css" />
+            <link rel="stylesheet" href="~/css/nprogress.css" />
+            <link rel="stylesheet" asp-href-include="~/css/app/*.min.css" asp-append-version="true" />
+        </environment>
 
     @*CSS for production*@
     <environment include="Test,Staging,Production">
         <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic&v=1' crossorigin="anonymous" rel='stylesheet' type='text/css' />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?v=1" crossorigin="anonymous" />
-        <link rel="stylesheet" href="/bundles/app.css" />
+        <link rel="stylesheet" href="~/dist/app.min.css" asp-append-version="true" />
     </environment>
 </head>
 
@@ -129,13 +129,13 @@
         <script src="~/lib/tinycolor/tinycolor.js"></script>
 
         @*Chavah JS*@
-        <script asp-src-include="~/js/polyfills/*.js"></script>
-        <script asp-src-include="~/js/common/*.js"></script>
-        <script asp-src-include="~/js/models/*.js"></script>
-        <script asp-src-include="~/js/*.js"></script>
-        <script asp-src-include="~/js/directives/*.js"></script>
-        <script asp-src-include="~/js/services/*.js"></script>
-        <script asp-src-include="~/js/controllers/*.js"></script>
+        <script asp-src-include="~/js/polyfills/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/common/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/models/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/directives/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/services/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/controllers/*.js" asp-append-version="true"></script>
     </environment>
 
     @*JS for production*@
@@ -164,7 +164,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js?v=1" crossorigin="anonymous" asp-fallback-src="~/lib/tinycolor/tinycolor.js" asp-fallback-test="window.tinycolor"></script>
 
         @*Chavah JS*@
-        <script src="~/bundles/app.js"></script>
+        <script src="~/dist/app.min.js" asp-append-version="true"></script>
     </environment>
 
     @RenderSection("Scripts", required: false)

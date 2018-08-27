@@ -10,7 +10,6 @@
         public Cdn Cdn { get; set; }
         public Filepickr FilePickr { get; set; }
         public Ifttt Ifttt { get; set; }
-        public Jwt Jwt { get; set; }
     }
 
     public class DbConnection
@@ -82,12 +81,5 @@
     public class Ifttt
     {
         public string Key { get; set; }
-    }
-
-    public class Jwt
-    {
-        public string audience { get; set; }
-        public string issuer { get; set; }
-        public string key { get; set; }
     }
 }

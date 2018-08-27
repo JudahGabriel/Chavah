@@ -16,18 +16,6 @@
     "inputFile": "wwwroot/css/variables.less"
   },
   {
-    "outputFile": "wwwroot/css/adminSidebar.css",
-    "inputFile": "wwwroot/css/adminSidebar.less"
-  },
-  {
-    "outputFile": "wwwroot/css/albums.css",
-    "inputFile": "wwwroot/css/albums.less"
-  },
-  {
-    "outputFile": "wwwroot/css/app/adminSidebar.css",
-    "inputFile": "wwwroot/css/app/adminSidebar.less"
-  },
-  {
     "outputFile": "wwwroot/css/app/albums.css",
     "inputFile": "wwwroot/css/app/albums.less"
   },
@@ -86,14 +74,6 @@
   {
     "outputFile": "wwwroot/css/bootstrap-flatly.css",
     "inputFile": "wwwroot/css/bootstrap-flatly.less"
-  },
-  {
-    "outputFile": "wwwroot/css/animations.css",
-    "inputFile": "wwwroot/css/animations.less"
-  },
-  {
-    "outputFile": "wwwroot/css/app/hanukkah.css",
-    "inputFile": "wwwroot/css/app/hanukkah.less"
   },
   {
     "outputFile": "wwwroot/css/app/logEditor.css",

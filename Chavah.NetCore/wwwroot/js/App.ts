@@ -37,6 +37,7 @@
         artistList: findCacheBustedView("/partials/ArtistList.html"),
         songList: findCacheBustedView("/partials/SongList.html"),
         songRequestModal: findCacheBustedView("/modals/RequestSongModal.html"),
+        confirmDeleteSongModal: findCacheBustedView("/modals/ConfirmDeleteSongModal.html"),
         songRequestResult: findCacheBustedView("/partials/SongRequestResult.html"),
         headerPartial: findCacheBustedView("/partials/Header.html"),
         footerPartial: findCacheBustedView("/partials/Footer.html"),
@@ -85,6 +86,7 @@
         songEdits: "/ApproveSongEdits.html",
         tags: "/TagEditor.html",
         logs: "/LogEditor.html",
+        editSongs: "/EditSongs.html"
     };
 
     App.config(["$routeProvider", "$locationProvider",
@@ -123,7 +125,7 @@
             .when("/donatecancelled", createRoute(views.donateCancelled))
 
             // Admin
-            .when("/admin", createRoute(views.albums, RouteAccess.Admin))
+            .when("/admin", createRoute(views.editSongs, RouteAccess.Admin))
             .when("/admin/albums", createRoute(views.albums, RouteAccess.Admin))
             .when("/admin/album/upload", createRoute(views.uploadAlbum, RouteAccess.Admin))
             .when("/admin/album/create", createRoute(views.createAlbum, RouteAccess.Admin))
@@ -132,6 +134,7 @@
             .when("/admin/songedits", createRoute(views.songEdits, RouteAccess.Admin))
             .when("/admin/tags", createRoute(views.tags, RouteAccess.Admin))
             .when("/admin/logs", createRoute(views.logs, RouteAccess.Admin))
+            .when("/admin/songs", createRoute(views.editSongs, RouteAccess.Admin)) 
 
             .otherwise({
                 redirectTo: "/nowplaying",

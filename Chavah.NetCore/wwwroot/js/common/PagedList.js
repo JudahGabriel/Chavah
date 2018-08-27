@@ -36,6 +36,7 @@ var BitShuva;
                     var skip_1 = this.skip;
                     this.fetcher(skip_1, this.take)
                         .then(function (results) {
+                        var _a;
                         if (_this.isLoading) {
                             // If skip is zero, we're fetching the first chunk.
                             // Empty array because we may have added items when rehydrating the cache.
@@ -51,7 +52,6 @@ var BitShuva;
                                 _this.afterFetch(_this.items);
                             }
                         }
-                        var _a;
                     })
                         .finally(function () { return _this.isLoading = false; });
                 }

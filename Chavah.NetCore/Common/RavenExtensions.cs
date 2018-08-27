@@ -288,6 +288,8 @@ namespace BitShuva.Chavah.Common
         {
             // Patch is in RQL. Example: "from AppUsers update { this.Foo = 123; }"
             var rqlPatch = new StringBuilder();
+            rqlPatch.AppendLine($"from {collectionName}");
+            rqlPatch.AppendLine("update {");
 
             // For each variable in the dictionary, declare the variable in the RQL script.
             variables
@@ -302,8 +304,6 @@ namespace BitShuva.Chavah.Common
                 })
                 .ForEach(v => rqlPatch.AppendLine(v));
 
-            rqlPatch.AppendLine($"from {collectionName}");
-            rqlPatch.AppendLine("update {");
             rqlPatch.AppendLine(jsPatchScript);
             rqlPatch.Append('}');
 

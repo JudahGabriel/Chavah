@@ -278,9 +278,9 @@ namespace BitShuva.Chavah.Controllers
             return new
             {
                 SongId = songId,
-                Artist = existingAlbum?.Artist,
+                existingAlbum?.Artist,
                 Name = existingAlbum?.Name,
-                AlbumArtUri = existingAlbum?.AlbumArtUri
+                existingAlbum?.AlbumArtUri
             };
         }
         
