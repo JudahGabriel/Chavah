@@ -72,25 +72,27 @@ namespace BitShuva.Chavah
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            System.AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-            {
-                Console.WriteLine("Unhandled exception. Terminating = {0}. Exception details: {1}", e?.IsTerminating, e?.ExceptionObject?.ToString());
-                Console.Out.Flush();
-            };
-            
-
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                // Static files without caching.
+                app.UseStaticFiles();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                // Static files with heavy caching.
+                // We set immutable (for new browsers) and a 60 day cache time.
+                // We use ?v= query string to cache bust out-of-date files, so this works quite nicely.
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    OnPrepareResponse = ctx =>
+                    {
+                        ctx.Context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.CacheControl] =
+                            "immutable,public,max-age=" + TimeSpan.FromDays(60).TotalSeconds;
+                    }
+                });
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
             app.UseAuthentication();
             
             app.UseMvc(routes =>
