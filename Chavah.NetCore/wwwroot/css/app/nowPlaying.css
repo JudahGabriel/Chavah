@@ -173,6 +173,7 @@
   font-family: 'EB Garamond', serif;
   font-size: 20px;
   white-space: pre-wrap;
+  word-break: break-word;
 }
 .now-playing-page .lyrics-expander .submit-lyrics {
   font-weight: bold;

@@ -20,8 +20,9 @@
 
 buildscript {
     repositories {
-        mavenCentral()
+        maven { url 'https://maven.google.com' }
         google()
+        jcenter()
     }
 
     dependencies {
@@ -40,7 +41,6 @@ ext {
 
 android {
     compileSdkVersion cdvCompileSdkVersion
-    buildToolsVersion cdvBuildToolsVersion
     publishNonDefault true
 
     compileOptions {
@@ -59,4 +59,5 @@ android {
             assets.srcDirs = ['assets']
         }
     }
+    buildToolsVersion '27.0.3'
 }
