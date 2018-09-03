@@ -425,6 +425,25 @@ namespace BitShuva.Chavah.Controllers
             return message;
         }
 
+        [HttpPost]
+        public async Task ResendConfirmationEmail([FromBody]AppUser user) // user is just the container for .Email, the rest of the properties aren't filled out
+        {
+            var userWithEmail = await DbSession.LoadAsync<AppUser>("AppUsers/" + user.Email);
+            if (userWithEmail != null && !userWithEmail.EmailConfirmed)
+            {
+                var confirmToken = new AccountToken
+                {
+                    Id = $"AccountTokens/Confirm/{userWithEmail.Email}",
+                    ApplicationUserId = userWithEmail.Id,
+                    Token = Guid.NewGuid().ToString()
+                };
+                await DbSession.StoreAsync(confirmToken);
+                DbSession.SetRavenExpiration(confirmToken, DateTime.UtcNow.AddDays(14));
+
+                emailSender.QueueConfirmEmail(userWithEmail.Email, confirmToken.Token, options?.Application);
+            }
+        }
+
         private SignInStatus SignInStatusFromResult(Microsoft.AspNetCore.Identity.SignInResult result)
         {
             if (result.Succeeded)

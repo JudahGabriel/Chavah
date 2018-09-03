@@ -129,6 +129,13 @@
             };
             return this.httpApi.post(`${this.apiUri}/sendSupportMessage`, args);
         }
+
+        resendConfirmationEmail(email: string): ng.IPromise<any> {
+            const args = {
+                email: email
+            };
+            return this.httpApi.post(`${this.apiUri}/resendConfirmationEmail`, args);
+        }
     }
 
     App.service("accountApi", AccountService);
