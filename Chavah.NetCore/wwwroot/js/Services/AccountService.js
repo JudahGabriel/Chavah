@@ -111,6 +111,12 @@ var BitShuva;
                 };
                 return this.httpApi.post(this.apiUri + "/sendSupportMessage", args);
             };
+            AccountService.prototype.resendConfirmationEmail = function (email) {
+                var args = {
+                    email: email
+                };
+                return this.httpApi.post(this.apiUri + "/resendConfirmationEmail", args);
+            };
             AccountService.$inject = [
                 "appNav",
                 "initConfig",
