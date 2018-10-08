@@ -22,26 +22,26 @@
 	<ItemGroup>
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
 		<PackageReference Include="BCrypt.Net-Next" Version="3.1.0" />
-		<PackageReference Include="BuildWebCompiler" Version="1.11.375" />
-		<PackageReference Include="cloudscribe.Syndication.Web" Version="2.1.0" />
+		<PackageReference Include="BuildWebCompiler" Version="1.12.394" />
+		<PackageReference Include="cloudscribe.Syndication.Web" Version="2.1.1" />
 		<PackageReference Include="CoreFtp" Version="1.4.0" />
 		<PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
 		<PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
-		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.113" />
+		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.163" />
 		<PackageReference Include="Optional" Version="4.0.0" />
 		<PackageReference Include="Pwned.AspNetCore" Version="1.0.4" />
-		<PackageReference Include="Quartz" Version="3.0.6" />
-		<PackageReference Include="RavenDB.Client" Version="4.1.0" />
-		<PackageReference Include="RavenDB.Identity" Version="4.3.0" />
+		<PackageReference Include="Quartz" Version="3.0.7" />
+		<PackageReference Include="RavenDB.Client" Version="4.1.1" />
+		<PackageReference Include="RavenDB.Identity" Version="4.4.1" />
 		<PackageReference Include="RavenDB.StructuredLogger" Version="4.0.7" />
-		<PackageReference Include="Sendgrid" Version="9.9.0" />
+		<PackageReference Include="Sendgrid" Version="9.10.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
 		<PackageReference Include="System.Interactive" Version="3.2.0" />
-		<PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.42" />
+		<PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.49" />
 	</ItemGroup>
 
 	<ItemGroup>
