@@ -8,6 +8,8 @@
 
         email = "";
         password = "";
+        confirmPassword = "";
+
         showEmailError = false;
         showPasswordError = false;
         showRegisterSuccess = false;
@@ -20,6 +22,7 @@
             private accountApi: AccountService,
             $routeParams: ng.route.IRouteParamsService) {
 
+            // TODO: do we need this code? What cases do we send email address??
             let routeEmail: string | null = $routeParams["email"];
             if (routeEmail) {
                 this.email = routeEmail;
@@ -32,6 +35,10 @@
 
         get isValidPassword(): boolean {
             return !!this.password && this.password.length >= 6;
+        }
+
+        get isMatchingPassword(): boolean {
+            return this.isValidPassword && this.password !== this.confirmPassword
         }
 
         get showRegisterForm(): boolean {
@@ -52,13 +59,18 @@
 
             if (!this.isBusy) {
                 this.isBusy = true;
-                this.accountApi.register(this.email, this.password)
+                let registerModel = new RegisterModel();
+                registerModel.email = this.email;
+                registerModel.password = this.password;
+                registerModel.confirmPassword = this.password;
+
+                this.accountApi.register(registerModel)
                     .then(results => this.registrationCompleted(results))
                     .finally(() => this.isBusy = false);
             }
         }
 
-        registrationCompleted(results: Server.RegisterResults) {
+        registrationCompleted(results: Server.IRegisterResults) {
             if (results.success) {
                 this.showRegisterSuccess = true;
             } else if(results.needsConfirmation) {
@@ -79,6 +91,12 @@
             this.showPasswordError = false;
             this.showRegisterSuccess = false;
         }
+    }
+
+    export class RegisterModel implements Server.IRegisterModel {
+        email: string;
+        password: string;
+        confirmPassword: string;
     }
 
     App.controller("RegisterController", RegisterController);

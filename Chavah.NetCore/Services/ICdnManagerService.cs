@@ -18,7 +18,9 @@ namespace BitShuva.Chavah.Services
         Task<Uri> UploadAlbumArtAsync(Uri tempHttpAddress, string artist, string album, string fileExtension);
         Task<Uri> UploadArtistImageAsync(Uri tempHttpPath, string fileName);
         Task<Uri> UploadMp3Async(Uri tempHttpAddress, string artist, string album, int songNumber, string songName);
+
         Task<Uri> UploadProfilePicAsync(Stream imageStream, string contentType);
+        Task DeleteProfilePicAsync(string picture);
 
         Task DeleteAsync(Song song);
     }

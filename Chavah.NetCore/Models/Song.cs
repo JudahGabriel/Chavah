@@ -100,6 +100,7 @@ namespace BitShuva.Chavah.Models
         /// Creates a new song object that's ready to be sent as a data transfer object over to the client.
         /// </summary>
         /// <param name="likeStatus">The like status for the song.</param>
+        /// <param name="playedReason"></param>
         /// <returns></returns>
         public Song ToDto(LikeStatus likeStatus, SongPick playedReason)
         {
@@ -110,6 +111,7 @@ namespace BitShuva.Chavah.Models
         /// Creates a new song object that's ready to be sent as a data transfer object over to the client.
         /// </summary>
         /// <param name="likeStatus">The like status for the song.</param>
+        /// <param name="pickReasons"></param>
         /// <returns></returns>
         public Song ToDto(LikeStatus likeStatus, SongPickReasons pickReasons)
         {
@@ -141,7 +143,6 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// Creates a new song object that's ready to be sent as a data transfer object over to the client.
         /// </summary>
-        /// <param name="likeStatus">The like status for the song.</param>
         /// <returns></returns>
         public Song ToDto()
         {

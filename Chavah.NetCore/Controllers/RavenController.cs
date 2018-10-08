@@ -1,14 +1,13 @@
-﻿using Raven.Client;
-using System;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Filters;
-using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Common;
-using Raven.StructuredLog;
+using BitShuva.Chavah.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 using Raven.Client.Documents.Session;
 using Raven.Client.Exceptions;
+using Raven.StructuredLog;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -35,7 +34,7 @@ namespace BitShuva.Chavah.Controllers
         /// Gets the RavenDB document session created for the current request. 
         /// Changes will be saved automatically when the action finishes executing without error.
         /// </summary>
-        public IAsyncDocumentSession DbSession { get; private set; }
+        public IAsyncDocumentSession DbSession { get; }
 
         /// <summary>
         /// Executes the action. If no error occurred, any changes made in the RavenDB document session will be saved.
@@ -51,19 +50,20 @@ namespace BitShuva.Chavah.Controllers
             {
                 try
                 {
-                    await DbSession.SaveChangesAsync();
+                    await DbSession.SaveChangesAsync()
+                        .ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)
                 {
-                    // If the browser cancelled the request, there's no need to do the full logging.
-                    logger.LogInformation("Task cancelled");
+                    // If the browser canceled the request, there's no need to do the full logging.
+                    logger.LogInformation("Task canceled");
                 }
-                catch (Exception saveError)
+                catch (Exception ex)
                 {
                     using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
                     using (logger.BeginKeyValueScope("action", context?.ActionDescriptor?.DisplayName))
                     {
-                        logger.LogError(saveError, $"Error saving changes for {next.Method?.Name}");
+                        logger.LogError(ex, $"Error saving changes for {next.Method?.Name}");
                     }
                 }
             }
@@ -76,7 +76,8 @@ namespace BitShuva.Chavah.Controllers
                     {
                         logger.LogWarning(executedContext.Exception, executedContext.Exception.Message);
                     }
-                    else if (executedContext.Exception is RavenException ravenEx && ravenEx.Message.Contains("The server returned an invalid or unrecognized response", StringComparison.InvariantCultureIgnoreCase))
+                    else if (executedContext.Exception is RavenException ravenEx
+                        && ravenEx.Message.Contains("The server returned an invalid or unrecognized response", StringComparison.InvariantCultureIgnoreCase))
                     {
                         logger.LogError(ravenEx.Message);
                     }
@@ -97,28 +98,31 @@ namespace BitShuva.Chavah.Controllers
             }
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<AppUser> GetCurrentUserOrThrow()
         {
-            var currentUser = await this.GetCurrentUser();
+            var currentUser = await GetCurrentUser().ConfigureAwait(false);
             if (currentUser == null)
             {
-                throw new UnauthorizedAccessException().WithData("userName", this.User.Identity.Name);
+                throw new UnauthorizedAccessException().WithData("userName", User.Identity.Name);
             }
 
             return currentUser;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<AppUser> GetCurrentUser()
         {
-            if (this.currentUser != null)
+            if (currentUser != null)
             {
-                return this.currentUser;
+                return currentUser;
             }
 
-            var email = this.User.Identity.Name;
+            var email = User.Identity.Name;
             if (!string.IsNullOrEmpty(email))
             {
-                this.currentUser = await DbSession.LoadAsync<AppUser>("AppUsers/" + email);
+                currentUser = await DbSession.LoadAsync<AppUser>("AppUsers/" + email)
+                    .ConfigureAwait(false);
             }
 
             return currentUser;
@@ -126,7 +130,7 @@ namespace BitShuva.Chavah.Controllers
 
         protected string GetUserIdOrThrow()
         {
-            var userId = this.GetUserId();
+            var userId = GetUserId();
             if (!string.IsNullOrEmpty(userId))
             {
                 return userId;
@@ -137,9 +141,9 @@ namespace BitShuva.Chavah.Controllers
 
         protected string GetUserId()
         {
-            if (this.User.Identity.IsAuthenticated && !string.IsNullOrEmpty(this.User.Identity.Name))
+            if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(User.Identity.Name))
             {
-                return AppUser.AppUserPrefix + this.User.Identity.Name;
+                return AppUser.AppUserPrefix + User.Identity.Name;
             }
 
             return null;

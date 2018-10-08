@@ -2,9 +2,9 @@
     export class ApproveSongEditsController {
 
         static $inject = [
-            "songApi",
             "songEditApi",
             "tagApi",
+            "accountApi",
         ];
 
         pendingEdits: Server.SongEdit[] = [];
@@ -13,10 +13,16 @@
         hasLoaded = false;
         tagsInput: string = "";
 
+        user: Server.IUserViewModel | null = null;
+
         constructor(
-            private songApi: SongApiService,
             private songEditApi: SongEditService,
+            private accountApi: AccountService,
             private tagApi: TagService) {
+
+            this.accountApi.signedIn
+                .select(() => this.accountApi.currentUser)
+                .subscribe(user => this.signedInUserChanged(user));
 
             this.songEditApi.getPendingEdits(20)
                 .then(results => this.pendingEditsLoaded(results));
@@ -33,26 +39,31 @@
         }
 
         approve() {
-            let edit = this.currentEdit;
-            if (!this.isSaving && edit) {
-                this.isSaving = true;
-                this.songEditApi.approve(edit)
-                    .then(results => this.removeSongEdit(results.id))
-                    .finally(() => this.isSaving = false);
+            if (this.user) {
+                let edit = this.currentEdit;
+                if (!this.isSaving && edit) {
+                    this.isSaving = true;
+                    this.songEditApi.approve(edit)
+                        .then(results => this.removeSongEdit(results.id))
+                        .finally(() => this.isSaving = false);
+                }
+         
             }
         }
 
         reject() {
+            if (this.user) {
             let edit = this.currentEdit;
-            if (!this.isSaving && edit) {
-                this.isSaving = true;
-                this.songEditApi.reject(edit.id)
-                    .then(result => {
-                        if (result) {
-                            this.removeSongEdit(result.id);
-                        }
-                    })
-                    .finally(() => this.isSaving = false);
+                        if (!this.isSaving && edit) {
+                            this.isSaving = true;
+                            this.songEditApi.reject(edit.id)
+                                .then(result => {
+                                    if (result) {
+                                        this.removeSongEdit(result.id);
+                                    }
+                                })
+                                .finally(() => this.isSaving = false);
+                }
             }
         }
 
@@ -105,6 +116,10 @@
 
         searchTags(search: string): ng.IPromise<string[]> {
             return this.tagApi.searchTags(search);
+        }
+
+        signedInUserChanged(user: User | null) {
+            this.user = user;
         }
     }
 

@@ -5,7 +5,6 @@
 
         static $inject = [
             "accountApi",
-            "appNav",
             "$routeParams",
         ];
 
@@ -18,7 +17,6 @@
 
         constructor(
             private accountApi: AccountService,
-            private appNav: AppNavService,
             $routeParams: ng.route.IRouteParamsService) {
 
             this.email = $routeParams["email"];

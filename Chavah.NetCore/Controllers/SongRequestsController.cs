@@ -25,7 +25,8 @@ namespace BitShuva.Chavah.Controllers
         {
             this.options = options;
         }
-        
+
+        [HttpGet]
         public async Task<string> GetPending()
         {
             var user = await this.GetCurrentUser();

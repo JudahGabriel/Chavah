@@ -1,0 +1,130 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+    "libraries": [
+        {
+            "provider": "cdnjs",
+            "library": "twitter-bootstrap@3.3.6",
+            "destination": "wwwroot/lib/bootstrap/",
+            "files": [
+                "js/bootstrap.js"
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "jquery@2.2.4",
+            "destination": "wwwroot/lib/jquery/",
+            "files": [
+                "jquery.js" 
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "moment.js@2.13.0",
+            "destination": "wwwroot/lib/moment/",
+            "files": [
+                "moment.js"
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "angular.js@1.6.6",
+            "destination": "wwwroot/lib/angular/",
+            "files": [
+                "angular-animate.js",
+                "angular-route.js",
+                "angular.js"
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "angular-local-storage@0.7.1",
+            "destination": "wwwroot/lib/angular-local-storage/",
+            "files": [
+                "angular-local-storage.js"
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "fastclick@1.0.6",
+            "destination": "wwwroot/lib/fastclick/",
+            "files": [
+                "fastclick.js"
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "nprogress@0.2.0",
+            "destination": "wwwroot/lib/nprogress/",
+            "files": [
+                "nprogress.js"
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "tinycolor@1.4.1",
+            "destination": "wwwroot/lib/tinycolor/",
+            "files": [
+                "tinycolor.js"
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "modernizr@2.7.1",
+            "destination": "wwwroot/lib/modernizr/",
+            "files": [
+                "modernizr.dev.js",
+                "modernizr.js"
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "lodash.js@4.17.11",
+            "destination": "wwwroot/lib/lodash/",
+            "files": [
+                "lodash.js"
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "font-awesome@4.7.0",
+            "destination": "wwwroot/lib/font-awesome/",
+            "files": [
+                "css/font-awesome.min.css",
+                "css/font-awesome.css",
+                "css/font-awesome.css.map",
+                "fonts/fontawesome-webfont.eot",
+                "fonts/fontawesome-webfont.svg",
+                "fonts/fontawesome-webfont.ttf",
+                "fonts/fontawesome-webfont.woff",
+                "fonts/fontawesome-webfont.woff2",
+                "fonts/FontAwesome.otf"
+            ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "angular-ui-bootstrap@2.5.0",
+            "destination": "wwwroot/lib/angular-bootstrap/",
+            "files": [
+                "ui-bootstrap-tpls.js",
+                "ui-bootstrap.js"
+            ]
+        },
+        {
+          "provider": "cdnjs",
+          "library": "tslib@1.9.3",
+          "destination": "wwwroot/lib/tslib/",
+          "files": [
+            "tslib.min.js"
+          ]
+        },
+        {
+            "provider": "cdnjs",
+            "library": "rxjs@4.1.0",
+            "destination": "wwwroot/lib/rxjs/",
+            "files": [
+                "rx.all.js"
+            ]
+        }
+    ]
+}

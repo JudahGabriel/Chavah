@@ -28,6 +28,7 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         /// <param name="songId"></param>
         /// <returns></returns>
+        [HttpGet]
         public async Task<SongEdit> Get(string songId)
         {
             var user = await this.GetCurrentUserOrThrow();

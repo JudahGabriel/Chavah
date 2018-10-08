@@ -23,8 +23,3 @@
     <div id="currentPageContainer" data-ng-view></div>
     <footer ng-include="Partials.footerPartial"></footer>
 </div>
-
-@*Load our HomeViewModel into JavaScript. Used inside app.ts to initialize our Angular app.*@
-<script type="text/javascript">
-    window["BitShuva.Chavah.HomeViewModel"] = @Html.Raw(Model.ToJson());
-</script>
