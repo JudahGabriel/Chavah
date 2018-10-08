@@ -104,14 +104,6 @@
             return "#";
         }
 
-        get currentSongGooglePlusShareUrl(): string {
-            if (this.currentSong) {
-                return this.sharing.googlePlusShareUrl(this.currentSong.id);
-            }
-
-            return "#";
-        }
-
         getEditSongUrl(): string {
             if (this.currentSong) {
                 if (this.accountApi.isSignedIn) {

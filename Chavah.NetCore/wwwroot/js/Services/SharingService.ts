@@ -45,12 +45,6 @@
                 "&via=" + encodeURIComponent(via);
         }
 
-        googlePlusShareUrl(id: string): string {
-            let result: string;
-                result = "https://plus.google.com/share?url=" + encodeURI(`${this.initConfig.defaultUrl}/?song=${id}`);
-            return result;
-        }
-
         /**
          * Attempts to invoke the native share functionality using the
          * upcoming navigator.share web standard.
