@@ -28,7 +28,7 @@
         },
         {
             "provider": "cdnjs",
-            "library": "angular.js@1.5.7",
+            "library": "angular.js@1.6.6",
             "destination": "wwwroot/lib/angular/",
             "files": [
                 "angular-animate.js",
@@ -38,7 +38,7 @@
         },
         {
             "provider": "cdnjs",
-            "library": "angular-local-storage@0.5.0",
+            "library": "angular-local-storage@0.7.1",
             "destination": "wwwroot/lib/angular-local-storage/",
             "files": [
                 "angular-local-storage.js"
@@ -54,7 +54,7 @@
         },
         {
             "provider": "cdnjs",
-            "library": "nprogress@0.1.6",
+            "library": "nprogress@0.2.0",
             "destination": "wwwroot/lib/nprogress/",
             "files": [
                 "nprogress.js"
@@ -79,7 +79,7 @@
         },
         {
             "provider": "cdnjs",
-            "library": "lodash.js@4.17.4",
+            "library": "lodash.js@4.17.11",
             "destination": "wwwroot/lib/lodash/",
             "files": [
                 "lodash.js"
@@ -103,7 +103,7 @@
         },
         {
             "provider": "cdnjs",
-            "library": "angular-ui-bootstrap@1.3.3",
+            "library": "angular-ui-bootstrap@2.5.0",
             "destination": "wwwroot/lib/angular-bootstrap/",
             "files": [
                 "ui-bootstrap-tpls.js",
@@ -111,12 +111,12 @@
             ]
         },
         {
-            "provider": "cdnjs",
-            "library": "tslib@1.6.0",
-            "destination": "wwwroot/lib/tslib/",
-            "files": [
-                "tslib.js"
-            ]
+          "provider": "cdnjs",
+          "library": "tslib@1.9.3",
+          "destination": "wwwroot/lib/tslib/",
+          "files": [
+            "tslib.min.js"
+          ]
         },
         {
             "provider": "cdnjs",
