@@ -47,7 +47,7 @@
 
         googlePlusShareUrl(id: string): string {
             let result: string;
-                result = "https://plus.google.com/share?url=" + encodeURI(`${this.initConfig.debug}/?song=${id}`);
+                result = "https://plus.google.com/share?url=" + encodeURI(`${this.initConfig.defaultUrl}/?song=${id}`);
             return result;
         }
 

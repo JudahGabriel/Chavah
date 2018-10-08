@@ -84,6 +84,11 @@ namespace BitShuva.Chavah.Controllers
                     {
                         logger.LogInformation(executedContext.Exception, "Task cancelled");
                     }
+                    else if (executedContext.Exception is RavenException && executedContext.Exception.Message.StartsWith("An exception occurred while contacting", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        // This occurs when the database is down.
+                        logger.LogError(executedContext.Exception, "Unable to reach database");
+                    }
                     else
                     {
                         logger.LogError(executedContext.Exception, executedContext.Exception.Message);
