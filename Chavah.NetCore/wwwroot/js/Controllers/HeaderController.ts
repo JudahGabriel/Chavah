@@ -7,19 +7,25 @@
         static $inject = [
             "initConfig",
             "accountApi",
-            "appNav"
+            "appNav",
         ];
 
-        constructor(private readonly initConfig: Server.HomeViewModel,
-                    private readonly accountApi: AccountService,
+        constructor(private initConfig: Server.IConfigViewModel,
+                    private accountApi: AccountService,
                     private appNav: AppNavService) {
 
-            this.notifications = initConfig.user ? initConfig.user.notifications : [];
-            this.profilePicUrl = initConfig.user ? initConfig.user.profilePicUrl : null;
 
             this.accountApi.signedIn
                 .select(() => this.accountApi.currentUser)
                 .subscribe(user => this.signedInUserChanged(user));
+        }
+
+        get isAdmin(): boolean {
+            if (this.accountApi.currentUser === undefined || this.accountApi.currentUser === null) {
+                return false;
+            } else {
+                return this.accountApi.currentUser.isAdmin;
+            }
         }
 
         get currentUserName(): string {
@@ -27,15 +33,26 @@
         }
 
         get unreadNotificationCount(): number {
-            return this.notifications.filter(n => n.isUnread).length;
+            if (this.notifications) {
+                return this.notifications.filter(n => n.isUnread).length;
+            }
+
+            return 0;
         }
 
         get title(): string {
-            return this.initConfig.title;
+            if (this.initConfig) {
+                return this.initConfig.title;
+            }
+
+            return "";
         }
 
         get desc(): string {
-            return this.initConfig.description;
+            if (this.initConfig) {
+                return this.initConfig.description;
+            }
+            return "";
         }
 
         markNotificationsAsRead() {

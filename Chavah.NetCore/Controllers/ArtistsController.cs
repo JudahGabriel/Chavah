@@ -27,6 +27,7 @@ namespace BitShuva.Chavah.Controllers
             this.cdnManagerService = cdnManagerService;
         }
 
+        [HttpGet]
         public async Task<Artist> GetByName(string artistName)
         {
             var artist = await this.DbSession
@@ -35,6 +36,7 @@ namespace BitShuva.Chavah.Controllers
             return artist;
         }
 
+        [HttpGet]
         public async Task<PagedList<Artist>> GetAll(string search, int skip, int take)
         {
             IQueryable<Artist> query = this.DbSession.Query<Artist>()

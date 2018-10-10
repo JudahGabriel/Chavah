@@ -3,7 +3,7 @@ WORKDIR /app
 EXPOSE 5600
 EXPOSE 44363
 
-FROM microsoft/dotnet:2.1-sdk AS build
+FROM microsoft/dotnet:2.1.302-sdk AS build
 WORKDIR /src
 COPY Chavah.NetCore/Chavah.NetCore.csproj Chavah.NetCore/
 RUN dotnet restore Chavah.NetCore/Chavah.NetCore.csproj

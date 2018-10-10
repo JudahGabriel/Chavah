@@ -5,7 +5,7 @@
             <div ng-show="vm.showRegisterForm">
                 <h1 class="text-center"><i class="fa fa-user-plus"></i> Register a new account</h1>
                 <p class="text-center text-muted">To register, enter your email address and a new password.</p>
-                <p class="text-center text-muted">Alredy registered? Go to <a href="#/signin">sign in</a>.</p>
+                <p class="text-center text-muted">Already registered? Go to <a href="#/signin">sign in</a>.</p>
 
                 <form>
                     <div class="form-group" ng-class="{ 'has-error': vm.showEmailError && !vm.isValidEmail }">
@@ -20,6 +20,14 @@
                         <span ng-show="vm.showPasswordError && !vm.isValidPassword" class="help-block">
                             <i class="fa fa-exclamation-circle"></i>
                             Please enter a password. The password must be at least 6 characters long and contain letters and numbers.
+                        </span>
+                    </div>
+
+                    <div class="form-group" ng-class="{ 'has-error': vm.isMatchingPassword}">
+                        <input type="password" class="form-control" id="passwordConfirmInput" placeholder="Confirm password" ng-model="vm.confirmPassword">
+                        <span ng-show="vm.isMatchingPassword" class="help-block">
+                            <i class="fa fa-exclamation-circle"></i>
+                           The password doesn't match.
                         </span>
                     </div>
 
