@@ -24,7 +24,7 @@
         }
 
         get isSignedIn(): boolean {
-            return !!this.currentUser;
+            return !!this.currentUser && !!this.currentUser.email;
         }
 
         getUser(): ng.IPromise<Server.IUserViewModel> {
