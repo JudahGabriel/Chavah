@@ -61,7 +61,8 @@ namespace BitShuva.Chavah {
 
             // If we were sent a SongWithAlbumColors, mark our "has set album art colors" to true.
             if ('albumSwatchBackground' in song) {
-                this.hasSetAlbumArtColors = true;    
+                this.hasSetAlbumArtColors = true;
+                this.updateAlbumSwatchLighterDarker();
             }
             
             this.clientId = `${song.id}_${new Date().getTime() + Math.random()}`;
@@ -117,6 +118,10 @@ namespace BitShuva.Chavah {
             this.albumSwatchMuted = album.mutedColor || this.albumSwatchMuted;
             this.albumSwatchTextShadow = album.textShadowColor || this.albumSwatchTextShadow;
 
+            this.updateAlbumSwatchLighterDarker();
+        }
+
+        private updateAlbumSwatchLighterDarker() {
             // Determine whether the foreground or background is lighter.
             // Used in the now playing page to pick a color that looks readable on near-white background.
             let bgBrightness = tinycolor(this.albumSwatchBackground).getBrightness();
