@@ -2,7 +2,6 @@
 {
     public class HomeViewModel
     {
-        #region _Layout.cshtml
         /// <summary>
         /// The currently signed in user, or null if there is no user signed in.
         /// </summary>
@@ -10,7 +9,6 @@
 
         public Song Song { get; set; }
         public string SongNth { get; set; }
-        #endregion
 
         /// <summary>
         /// Used for image descriptions on Index.cshtml

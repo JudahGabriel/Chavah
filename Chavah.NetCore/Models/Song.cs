@@ -113,7 +113,7 @@ namespace BitShuva.Chavah.Models
         /// <param name="likeStatus">The like status for the song.</param>
         /// <param name="pickReasons"></param>
         /// <returns></returns>
-        public Song ToDto(LikeStatus likeStatus, SongPickReasons pickReasons)
+        public virtual Song ToDto(LikeStatus likeStatus, SongPickReasons pickReasons)
         {
             return new Song
             {

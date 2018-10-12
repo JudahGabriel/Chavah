@@ -7,17 +7,17 @@
                         <h4 class="song-list-title">
                             <a href="#/trending"><i class="fa fa-line-chart"></i> Trending</a>
                         </h4>
-                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.trending"></div>
+                        <song-list songs="vm.trending"></song-list>
                     </div>
                 </div>
                 <br />
                 <div class="row">
                     <div class="col-sm-12">
-                        <div ng-show="vm.likes.length">
+                        <div ng-show="vm.likes.items.length">
                             <h4 class="song-list-title">
                                 <a href="#/mylikes"><i class="fa fa-thumbs-up"></i> My likes</a>
                             </h4>
-                            <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.likes"></div>
+                            <song-list songs="vm.likes"></song-list>
                         </div>
                     </div>
                 </div>
@@ -203,11 +203,11 @@
             <div class="right-pane">
                 <div class="row">
                     <div class="col-sm-12">
-                        <div ng-show="vm.recent.length > 0">
+                        <div ng-show="vm.recent.items.length > 0">
                             <h4 class="song-list-title">
                                 <a href="#/recentsongs">Recent</a>
                             </h4>
-                            <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.recent"></div>
+                            <song-list songs="vm.recent"></song-list>
                         </div>
                     </div>
                 </div>
@@ -217,7 +217,7 @@
                         <h4 class="song-list-title">
                             <a href="#/popular">Popular</a>
                         </h4>
-                        <div ng-include="Partials.songList" ng-if="true" onload="songs = vm.popular"></div>
+                        <song-list songs="vm.popular"></song-list>
                     </div>
                 </div>
             </div>

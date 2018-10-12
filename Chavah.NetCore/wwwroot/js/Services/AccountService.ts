@@ -11,37 +11,21 @@
         private apiUri = "/api/account";
 
         constructor(private httpApi: HttpApiService) {
-
-            if (this.currentUser == null) {
-                this.getUser().then(result => {
-                    this.currentUser = new User(result); 
-                    if (this.currentUser) {
-                        this.signedIn.onNext(true);
-                    }
-                });
-            }
-           
         }
 
         get isSignedIn(): boolean {
             return !!this.currentUser && !!this.currentUser.email;
         }
 
-        getUser(): ng.IPromise<Server.IUserViewModel> {
-
-            const getUsetTask = this.httpApi.query<Server.IUserViewModel>(`${this.apiUri}/GetUser`);
-
-            getUsetTask
-                .then(result => {
-                    this.currentUser = new User(result);
-                    this.signedIn.onNext(true);
-                })
-
-            return getUsetTask;
+        initializeUser(user: User) {
+            this.currentUser = new User(user);
+            if (this.currentUser) {
+                this.signedIn.onNext(!!this.currentUser.email);
+            }
         }
-
+        
         signOut(): ng.IPromise<any> {
-            const signOutTask = this.httpApi.post(`${this.apiUri}/SignOut`, null);
+            const signOutTask = this.httpApi.post(`${this.apiUri}/signOut`, null);
             signOutTask
                 .then(() => {
                     this.currentUser = null;
@@ -101,7 +85,7 @@
                 confirmCode,
             };
 
-            return this.httpApi.postUriEncoded(`${this.apiUri}/ConfirmEmail`, args);
+            return this.httpApi.postUriEncoded(`${this.apiUri}/confirmEmail`, args);
         }
 
         sendPasswordResetEmail(email: string): ng.IPromise<Server.ResetPasswordResult> {

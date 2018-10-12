@@ -1,5 +1,5 @@
-﻿<div class="song-list" ng-controller="SongListController as vm">
-    <div class="song-item" ng-repeat="song in songs track by song.clientId" ng-click="vm.playSong(song)">
+﻿<div class="song-list">
+    <div class="song-item" ng-repeat="song in vm.songs.items track by song.id" ng-click="vm.playSong(song)">
         <img ng-src="{{song.albumArtUri}}" alt="{{song.album}} album art">
         <div class="song-info" 
              ng-attr-title="{{song.name}} by {{song.artist}} on {{song.album}}" 

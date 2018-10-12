@@ -54,7 +54,6 @@
 
     const templatePaths: ITemplatePaths = {
         artistList: findCacheBustedView("/partials/ArtistList.html"),
-        songList: findCacheBustedView("/partials/SongList.html"),
         songRequestModal: findCacheBustedView("/modals/RequestSongModal.html"),
         confirmDeleteSongModal: findCacheBustedView("/modals/ConfirmDeleteSongModal.html"),
         songRequestResult: findCacheBustedView("/partials/SongRequestResult.html"),
@@ -110,9 +109,7 @@
 
     App.config(["$routeProvider", "$locationProvider",
         ($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {
-
             $routeProvider.caseInsensitiveMatch = true;
-
             $locationProvider.hashPrefix("");
 
             $routeProvider
@@ -146,17 +143,17 @@
                 .when("/donatesuccess", createRoute(views.donateSuccess))
                 .when("/donatecancelled", createRoute(views.donateCancelled))
 
-            // Admin
-            .when("/admin", createRoute(views.editSongs, RouteAccess.Admin))
-            .when("/admin/albums", createRoute(views.albums, RouteAccess.Admin))
-            .when("/admin/album/upload", createRoute(views.uploadAlbum, RouteAccess.Admin))
-            .when("/admin/album/create", createRoute(views.createAlbum, RouteAccess.Admin))
-            .when("/admin/album/:artist/:album", createRoute(views.editAlbum, RouteAccess.Admin))
-            .when("/admin/artists/:artistName?", createRoute(views.editArtist, RouteAccess.Admin))
-            .when("/admin/songedits", createRoute(views.songEdits, RouteAccess.Admin))
-            .when("/admin/tags", createRoute(views.tags, RouteAccess.Admin))
-            .when("/admin/logs", createRoute(views.logs, RouteAccess.Admin))
-            .when("/admin/songs", createRoute(views.editSongs, RouteAccess.Admin)) 
+                // Admin
+                .when("/admin", createRoute(views.editSongs, RouteAccess.Admin))
+                .when("/admin/albums", createRoute(views.albums, RouteAccess.Admin))
+                .when("/admin/album/upload", createRoute(views.uploadAlbum, RouteAccess.Admin))
+                .when("/admin/album/create", createRoute(views.createAlbum, RouteAccess.Admin))
+                .when("/admin/album/:artist/:album", createRoute(views.editAlbum, RouteAccess.Admin))
+                .when("/admin/artists/:artistName?", createRoute(views.editArtist, RouteAccess.Admin))
+                .when("/admin/songedits", createRoute(views.songEdits, RouteAccess.Admin))
+                .when("/admin/tags", createRoute(views.tags, RouteAccess.Admin))
+                .when("/admin/logs", createRoute(views.logs, RouteAccess.Admin))
+                .when("/admin/songs", createRoute(views.editSongs, RouteAccess.Admin)) 
 
                 .otherwise({
                     redirectTo: "/nowplaying",
@@ -210,6 +207,15 @@
                     ga("send", "pageview", $location.path());
                 }
             });
+
+            // Before our app runs, we need to store our signed-in state.
+            // Components in the UI (e.g. song batch) use this to fetch their data;
+            // signed-in users will receive different song batches than anonymous users.
+            // So, we can't do this asynchronously. We must do it at initialization time.
+            const user: Server.IUserViewModel | undefined = BitShuva.Chavah["InitialUser"];
+            if (user) {
+                accountApi.initializeUser(new User(user));
+            }
 
             // tslint:disable-next-line:variable-name
             $rootScope.$on("$routeChangeStart", (_e: ng.IAngularEvent, next: any) => {

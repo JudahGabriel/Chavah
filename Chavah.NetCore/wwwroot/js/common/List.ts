@@ -21,6 +21,7 @@
             private readonly cacheKey?: string,
             readonly cacheSelector?: (rawJsonObj: any) => T,
             private afterLoadProcessor?: (results: T[]) => void) {
+
             if (cacheKey) {
                 this.rehydrateCachedItems(cacheKey, cacheSelector);
             }
@@ -44,7 +45,8 @@
                 task
                     .then(results => {
                         if (this.isLoading) {
-                            this.items = results;
+                            this.items.length = 0;
+                            this.items.push(...results);
 
                             if (this.afterLoadProcessor) {
                                 this.afterLoadProcessor(results);
