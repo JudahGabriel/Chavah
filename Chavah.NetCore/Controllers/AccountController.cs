@@ -95,16 +95,16 @@ namespace BitShuva.Chavah.Controllers
                 });
             }
 
-            var (pwned, count) = await pwnedPasswordService.IsPasswordPwnedAsync(model.Password).ConfigureAwait(false);
-
-            if (pwned)
-            {
-                return Ok(new Models.Account.SignInResult
-                {
-                    ErrorMessage = string.Format(PwnedPasswordMessage, count),
-                    Status = SignInStatus.Pwned
-                });
-            }
+            // Commenting out: we're only going to do this for new users.
+            //var (pwned, count) = await pwnedPasswordService.IsPasswordPwnedAsync(model.Password).ConfigureAwait(false);
+            //if (pwned)
+            //{
+            //    return Ok(new Models.Account.SignInResult
+            //    {
+            //        ErrorMessage = string.Format(PwnedPasswordMessage, count),
+            //        Status = SignInStatus.Pwned
+            //    });
+            //}
 
             // Require the user to have a confirmed email before they can log on.
             var user = await userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
@@ -251,6 +251,7 @@ namespace BitShuva.Chavah.Controllers
             {
                 return Ok(new RegisterResults
                 {
+                    IsPwned = true,
                     ErrorMessage = string.Format(PwnedPasswordMessage,count),
                 });
             }

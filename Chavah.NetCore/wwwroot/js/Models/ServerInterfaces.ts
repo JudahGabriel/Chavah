@@ -210,6 +210,7 @@
         errorMessage: string | null;
         isAlreadyRegistered: boolean;
         needsConfirmation: boolean;
+        isPwned: boolean;
     }
 
     export interface IRegisterModel {

@@ -1,29 +1,31 @@
 ﻿namespace BitShuva.Chavah {
     export class RegisterController {
-
-        static $inject = [
-            "accountApi",
-            "$routeParams",
-        ];
-
+        
         email = "";
         password = "";
         confirmPassword = "";
-
         showEmailError = false;
         showPasswordError = false;
         showRegisterSuccess = false;
         showAlreadyRegistered = false;
         showNeedsConfirmation = false;
+        showPasswordIsPwned = false;
         registrationError = "";
         isBusy = false;
 
+        static $inject = [
+            "accountApi",
+            "appNav",
+            "$routeParams"
+        ];
+
         constructor(
-            private accountApi: AccountService,
+            private readonly accountApi: AccountService,
+            private readonly appNav: AppNavService,
             $routeParams: ng.route.IRouteParamsService) {
 
-            // TODO: do we need this code? What cases do we send email address??
-            let routeEmail: string | null = $routeParams["email"];
+            // TODO: do we need this code? What cases do we send email address?
+            const routeEmail: string | null = $routeParams["email"];
             if (routeEmail) {
                 this.email = routeEmail;
             }
@@ -77,7 +79,10 @@
                 this.showNeedsConfirmation = true;
             } else if (results.isAlreadyRegistered) {
                 this.showAlreadyRegistered = true;
-            } else {
+            } else if (results.isPwned) {
+                this.showPasswordIsPwned = true;
+            }
+            else {
                 // tslint:disable-next-line:max-line-length
                 this.registrationError = results.errorMessage || "Unable to register your user. Please contact judahgabriel@gmail.com";
             }
