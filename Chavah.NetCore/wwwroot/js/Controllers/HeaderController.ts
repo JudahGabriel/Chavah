@@ -14,7 +14,6 @@
                     private accountApi: AccountService,
                     private appNav: AppNavService) {
 
-
             this.accountApi.signedIn
                 .select(() => this.accountApi.currentUser)
                 .subscribe(user => this.signedInUserChanged(user));

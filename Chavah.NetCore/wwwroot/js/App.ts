@@ -44,6 +44,13 @@
     }
     export const FindAppView = findCacheBustedView;
 
+    // Before our app runs, we need to store our signed-in state.
+    // Components in the UI (e.g. song batch) use this to fetch their data;
+    // signed-in users will receive different song batches than anonymous users.
+    // So, we can't do this asynchronously. We must do it at initialization time.
+    const user: Server.IUserViewModel | undefined = window["BitShuva.Chavah.InitialUser"];
+    App.constant("initialUser", user || null);
+
     function createRoute(templateUrl: string, access = RouteAccess.Anonymous): AppRoute {
         let cacheBustedView = findCacheBustedView(templateUrl);
         return {
@@ -207,16 +214,7 @@
                     ga("send", "pageview", $location.path());
                 }
             });
-
-            // Before our app runs, we need to store our signed-in state.
-            // Components in the UI (e.g. song batch) use this to fetch their data;
-            // signed-in users will receive different song batches than anonymous users.
-            // So, we can't do this asynchronously. We must do it at initialization time.
-            const user: Server.IUserViewModel | undefined = BitShuva.Chavah["InitialUser"];
-            if (user) {
-                accountApi.initializeUser(new User(user));
-            }
-
+            
             // tslint:disable-next-line:variable-name
             $rootScope.$on("$routeChangeStart", (_e: ng.IAngularEvent, next: any) => {
                 const route: AppRoute = next.$$route;

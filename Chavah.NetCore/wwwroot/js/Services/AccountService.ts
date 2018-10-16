@@ -1,27 +1,25 @@
 ﻿namespace BitShuva.Chavah {
     export class AccountService {
+        
+        currentUser: User | null;
+        signedIn: Rx.BehaviorSubject<boolean>;
+        private apiUri = "/api/account";
 
         static $inject = [
             "httpApi",
+            "initialUser"
         ];
 
-        currentUser: User | null;
-        signedIn = new Rx.BehaviorSubject<boolean>(false);
-
-        private apiUri = "/api/account";
-
-        constructor(private httpApi: HttpApiService) {
+        constructor(
+            private readonly httpApi: HttpApiService,
+            initialUser: Server.IUserViewModel | null) {
+            
+            this.signedIn = new Rx.BehaviorSubject<boolean>(!!initialUser);
+            this.currentUser = initialUser ? new User(initialUser) : null;
         }
 
         get isSignedIn(): boolean {
             return !!this.currentUser && !!this.currentUser.email;
-        }
-
-        initializeUser(user: User) {
-            this.currentUser = new User(user);
-            if (this.currentUser) {
-                this.signedIn.onNext(!!this.currentUser.email);
-            }
         }
         
         signOut(): ng.IPromise<any> {

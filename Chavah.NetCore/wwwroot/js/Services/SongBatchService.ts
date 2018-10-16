@@ -26,6 +26,7 @@
             // Listen for when we sign in. When that happens, we want to refresh our song batch.
             // Refreshing the batch is needed to update the song like statuses, etc. of the songs in the batch.
             accountApi.signedIn
+                .skip(1) // skip the current value
                 .distinctUntilChanged()
                 .subscribe(signedIn => this.signedInChanged(signedIn));
         }
@@ -68,6 +69,7 @@
             if (isSignedIn && hasBatchSongs) {
                 // Discard the current batch and fetch a fresh batch.
                 this.updateSongBatch([]);
+                this.songsList.fetch();
             }
         }
 

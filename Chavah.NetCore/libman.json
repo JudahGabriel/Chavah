@@ -123,7 +123,7 @@
             "library": "rxjs@4.1.0",
             "destination": "wwwroot/lib/rxjs/",
             "files": [
-                "rx.all.js"
+                "rx.lite.js"
             ]
         }
     ]
