@@ -338,13 +338,25 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<Song> GetById(string songId)
         {
-            var song = await this.DbSession.LoadAsync<Song>(songId);
+            var song = await this.DbSession
+                .Include<Song>(s => s.AlbumId)
+                .LoadAsync(songId);
             if (song == null)
             {
                 return null;
             }
 
-            return await this.GetSongDto(song, SongPick.YouRequestedSong);
+            var songDto = await this.GetSongDto(song, SongPick.YouRequestedSong);
+            if (song.AlbumId != null)
+            {
+                var album = await this.DbSession.LoadAsync<Album>(song.AlbumId);
+                if (album != null)
+                {
+                    return SongWithAlbumColors.FromSong(songDto, Option.Some(album));
+                }
+            }
+
+            return songDto;
         }
 
         [HttpPost]

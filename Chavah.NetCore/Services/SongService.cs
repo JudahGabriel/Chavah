@@ -1,5 +1,6 @@
 ﻿using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
+using Optional;
 using Raven.Client;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
@@ -36,7 +37,19 @@ namespace BitShuva.Chavah.Services
                 songQuery :
                 "songs/" + songQuery;
 
-            return await _session.LoadAsync<Song>(properlyFormattedSongId);
+            var song = await _session
+                .Include<Song>(s => s.AlbumId)
+                .LoadAsync<Song>(properlyFormattedSongId);
+            if (song != null && !string.IsNullOrEmpty(song.AlbumId))
+            {
+                var album = await _session.LoadAsync<Album>(song.AlbumId);
+                if (album != null)
+                {
+                    return SongWithAlbumColors.FromSong(song, Option.Some(album));
+                }
+            }
+
+            return song;
         }
 
         public async Task<Song> GetMatchingSongAsync(System.Linq.Expressions.Expression<Func<Song, bool>> predicate)
