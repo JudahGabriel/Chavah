@@ -26,25 +26,16 @@ namespace BitShuva.Chavah.Models.Indexes
                                Name = song.Name,
                                Artist = song.Artist,
                                Album = song.Album,
-                               HebrewName = song.HebrewName,
-                               AlbumSwatchBackground = album.BackgroundColor,
-                               AlbumSwatchForeground = album.ForegroundColor,
-                               AlbumSwatchMuted = album.MutedColor,
-                               AlbumSwatchTextShadow = album.TextShadowColor
+                               HebrewName = song.HebrewName
                            };
 
             Index(r => r.Name, FieldIndexing.Search);
             Index(r => r.Artist, FieldIndexing.Search);
             Index(r => r.Album, FieldIndexing.Search);
             Index(r => r.HebrewName, FieldIndexing.Search);
-
-            Store(r => r.AlbumSwatchBackground, FieldStorage.Yes);
-            Store(r => r.AlbumSwatchForeground, FieldStorage.Yes);
-            Store(r => r.AlbumSwatchMuted, FieldStorage.Yes);
-            Store(r => r.AlbumSwatchTextShadow, FieldStorage.Yes);
         }
 
-        public class Result : IHasAlbumSwatches
+        public class Result
         {
             public DateTime Date { get; set; }
             public string UserId { get; set; }
@@ -53,10 +44,6 @@ namespace BitShuva.Chavah.Models.Indexes
             public string Artist { get; set; }
             public string Album { get; set; }
             public string HebrewName { get; set; }
-            public string AlbumSwatchBackground { get; set; }
-            public string AlbumSwatchForeground { get; set; }
-            public string AlbumSwatchMuted { get; set; }
-            public string AlbumSwatchTextShadow { get; set; }
         }
     }
 }

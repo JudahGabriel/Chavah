@@ -39,6 +39,7 @@
 		<PackageReference Include="RavenDB.Client" Version="4.1.2" />
 		<PackageReference Include="RavenDB.Identity" Version="4.4.1" />
 		<PackageReference Include="RavenDB.StructuredLogger" Version="4.0.7" />
+		<PackageReference Include="RavenMigrations" Version="4.1.0" />
 		<PackageReference Include="Sendgrid" Version="9.10.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
 		<PackageReference Include="System.Interactive" Version="3.2.0" />

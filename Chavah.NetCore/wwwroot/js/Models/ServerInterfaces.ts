@@ -21,13 +21,14 @@
         artistImages: string[];
         purchaseUri: string;
         reasonsPlayed: Server.SongPickReasons | null;
+        albumColors: AlbumColors;
     }
 
-    export interface SongWithAlbumColors extends Song {
-        albumSwatchBackground: string;
-        albumSwatchForeground: string;
-        albumSwatchMuted: string;
-        albumSwatchTextShadow: string;
+    export interface AlbumColors {
+        background: string;
+        foreground: string;
+        muted: string;
+        textShadow: string;
     }
 
     export interface UpDownVotes {

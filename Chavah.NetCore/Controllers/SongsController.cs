@@ -31,27 +31,18 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        public async Task<List<SongWithAlbumColors>> GetRecentPlays(int count)
+        public async Task<List<Song>> GetRecentPlays(int count)
         {
             var user = await this.GetCurrentUser();
             if (user == null)
             {
-                return new List<SongWithAlbumColors>(0);
+                return new List<Song>(0);
             }
 
             var recentSongIds = user.RecentSongIds
                 .Distinct()
                 .Take(count);
-            var songs = await DbSession
-                .Include<Song>(s => s.AlbumId) // Load the album so that we can return album art
-                .LoadWithoutNulls(recentSongIds);
-            var albumIds = songs
-                .Select(s => s.AlbumId)
-                .Where(id => !string.IsNullOrEmpty(id));
-            var albums = await DbSession.LoadWithoutNulls<Album>(albumIds); // Not a remote call; already loaded via .Include above.
-            return songs
-                .Select(s => SongWithAlbumColors.FromSong(s, albums.FirstOrNone(a => s.AlbumId == a.Id)))
-                .ToList();
+            return await DbSession.LoadWithoutNulls<Song>(recentSongIds);
         }
 
         [HttpGet]
@@ -79,7 +70,7 @@ namespace BitShuva.Chavah.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<PagedList<SongWithAlbumColors>> GetLikedSongs(int skip, int take, string search = null)
+        public async Task<PagedList<Song>> GetLikedSongs(int skip, int take, string search = null)
         {
             var userId = this.GetUserId();
             var query = this.DbSession.Query<Like, Likes_SongSearch>()
@@ -106,18 +97,9 @@ namespace BitShuva.Chavah.Controllers
 
             // The songs were already loaded into the session via the previous .Include call.
             var songs = await this.DbSession.LoadWithoutNulls<Song>(likes.Select(l => l.SongId));
-
-            // Add the album swatches to these songs.
-            var songsWithAlbumColors = songs
-                .Select(s => SongWithAlbumColors.FromSong(s, likes
-                    .FirstOrNone(l => l.SongId == s.Id) // Find the like for this song
-                    .Map(l => l as IHasAlbumSwatches) // Map it as IHasAlbumSwatches
-                    .NotNull())) 
-                .ToList();
-
-            return new PagedList<SongWithAlbumColors>
+            return new PagedList<Song>
             {
-                Items = songsWithAlbumColors,
+                Items = songs,
                 Skip = skip,
                 Take = take,
                 Total = stats.TotalResults
@@ -207,7 +189,7 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<SongWithAlbumColors> ChooseSong()
+        public async Task<Song> ChooseSong()
         {
             // HOT PATH: This method greatly impacts the UI. The user waits for this method before ever hearing a song.
             // We want to send back the next song ASAP.
@@ -246,24 +228,17 @@ namespace BitShuva.Chavah.Controllers
                 return await this.PickRandomSong();
             }
 
-            var song = await DbSession
-                .Include<Song>(s => s.AlbumId) // So that we can load the album colors
-                .LoadRequiredAsync(songPick.SongId);
-            var album = await song.AlbumId
-                .SomeNotNull()
-                .ToAsyncOption()
-                .FlatMap(albumId => DbSession.LoadOptionAsync<Album>(albumId));
+            var song = await DbSession.LoadRequiredAsync<Song>(songPick.SongId);
             var songLikeDislike = userPreferences.Songs.FirstOrDefault(s => s.SongId == song.Id);
             var songLikeStatus = songLikeDislike != null && songLikeDislike.LikeCount > 0 ?
                 LikeStatus.Like : songLikeDislike != null && songLikeDislike.DislikeCount > 0 ?
                 LikeStatus.Dislike : LikeStatus.None;
 
-            var songWithAlbumColors = SongWithAlbumColors.FromSong(song, album);
-            return songWithAlbumColors.ToDto(songLikeStatus, songPick) as SongWithAlbumColors;
+            return song.ToDto(songLikeStatus, songPick);
         }
         
         [HttpGet]
-        public async Task<List<SongWithAlbumColors>> ChooseSongBatch()
+        public async Task<List<Song>> ChooseSongBatch()
         {
             const int songsInBatch = 5;
             var userPreferences = default(UserSongPreferences);
@@ -308,9 +283,8 @@ namespace BitShuva.Chavah.Controllers
                 .Select(s => s.SongId)
                 .ToList();
             var songs = await DbSession
-                .Include<Song>(s => s.AlbumId)
                 .LoadWithoutNulls<Song>(pickedSongIds);
-            var songDtos = new List<SongWithAlbumColors>(songs.Count);
+            var songDtos = new List<Song>(songs.Count);
             for (var i = 0; i < songs.Count; i++)
             {
                 var song = songs[i];
@@ -321,13 +295,7 @@ namespace BitShuva.Chavah.Controllers
                     var songLikeStatus = songLikeDislike != null && songLikeDislike.LikeCount > 0 ?
                         LikeStatus.Like : songLikeDislike != null && songLikeDislike.DislikeCount > 0 ?
                         LikeStatus.Dislike : LikeStatus.None;
-                    var album = await song.AlbumId
-                        .SomeNotNull()
-                        .ToAsyncOption()
-                        .FlatMap(id => DbSession.LoadOptionAsync<Album>(id));
-                    var dto = SongWithAlbumColors
-                        .FromSong(song, album)
-                        .ToDto(songLikeStatus, pickReasons) as SongWithAlbumColors;
+                    var dto = song.ToDto(songLikeStatus, pickReasons);
                     songDtos.Add(dto);
                 }
             }
@@ -338,24 +306,13 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<Song> GetById(string songId)
         {
-            var song = await this.DbSession
-                .Include<Song>(s => s.AlbumId)
-                .LoadAsync(songId);
+            var song = await this.DbSession.LoadAsync<Song>(songId);
             if (song == null)
             {
                 return null;
             }
 
             var songDto = await this.GetSongDto(song, SongPick.YouRequestedSong);
-            if (song.AlbumId != null)
-            {
-                var album = await this.DbSession.LoadAsync<Album>(song.AlbumId);
-                if (album != null)
-                {
-                    return SongWithAlbumColors.FromSong(songDto, Option.Some(album));
-                }
-            }
-
             return songDto;
         }
 
@@ -453,7 +410,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        public async Task<PagedList<SongWithAlbumColors>> GetTrending(int skip, int take)
+        public async Task<PagedList<Song>> GetTrending(int skip, int take)
         {
             var trendingLikes = await this.DbSession.Query<Like, Likes_SongSearch>()
                 .Statistics(out var stats)
@@ -468,17 +425,11 @@ namespace BitShuva.Chavah.Controllers
                 .Select(l => l.SongId)
                 .Distinct()
                 .Take(take);
-            var songs = await DbSession.LoadWithoutNulls<Song>(distinctSongIds);
-            var songsWithAlbumColors = songs
-                .Select(s => SongWithAlbumColors.FromSong(s, trendingLikes
-                    .FirstOrNone(l => l.SongId == s.Id) // Find the like for this song
-                    .Map(l => l as IHasAlbumSwatches))) // Map it as IHasAlbumSwatches
-                .ToList();
-            
-            return new PagedList<SongWithAlbumColors>
+            var songs = await DbSession.LoadWithoutNulls<Song>(distinctSongIds);            
+            return new PagedList<Song>
             {
-                Items = songsWithAlbumColors
-                    .Select(s => s.ToDto() as SongWithAlbumColors)
+                Items = songs
+                    .Select(s => s.ToDto())
                     .ToList(),
                 Skip = skip,
                 Take = take,
@@ -487,20 +438,17 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpGet]
-        public async Task<List<SongWithAlbumColors>> GetPopular(int count)
+        public async Task<List<Song>> GetPopular(int count)
         {
             var randomSpotInTop70 = new Random().Next(0, 70);
             var songs = await this.DbSession.Query<Song, Songs_GeneralQuery>()
                 .Customize(x => x.RandomOrdering())
-                .Include(s => s.AlbumId)
                 .OrderByDescending(s => s.CommunityRank)
                 .Skip(randomSpotInTop70)
                 .Take(count)
                 .ToListAsync();
-            var albums = await DbSession.LoadWithoutNulls<Album>(songs.Select(s => s.AlbumId));
             return songs
-                .Select(s => SongWithAlbumColors.FromSong(s, albums.FirstOrNone(a => a.Id == s.AlbumId)))
-                .Select(s => s.ToDto() as SongWithAlbumColors)
+                .Select(s => s.ToDto())
                 .ToList();
         }
 
@@ -604,14 +552,12 @@ namespace BitShuva.Chavah.Controllers
             }
         }
 
-        private async Task<SongWithAlbumColors> PickRandomSong()
+        private async Task<Song> PickRandomSong()
         {
             var song = await this.DbSession.Query<Song, Songs_GeneralQuery>()
-                .Include(s => s.AlbumId)
                 .Customize(c => c.RandomOrdering())
                 .FirstAsync();
-            var album = await this.DbSession.LoadOptionAsync<Album>(song.AlbumId); // Not a remote call, .Include'd from the previous query.
-            return SongWithAlbumColors.FromSong(song, album);
+            return song;
         }
 
         private async Task<Song> GetSongDto(Song song, SongPick pickReason)

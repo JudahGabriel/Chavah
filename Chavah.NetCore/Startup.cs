@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Models.Patches;
 using BitShuva.Chavah.Services;
 using BitShuva.Services;
 using cloudscribe.Syndication.Models.Rss;
@@ -22,6 +21,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Pwned.AspNetCore;
 using Raven.Identity;
+using Raven.Migrations;
 using Raven.StructuredLog;
 
 namespace BitShuva.Chavah
@@ -71,9 +71,9 @@ namespace BitShuva.Chavah
                     c.Password.RequireUppercase = false;
                     c.Password.RequiredLength = 6;
                 })
-                .AddLogging(logger => logger.AddRavenStructuredLogger());
+                .AddLogging(logger => logger.AddRavenStructuredLogger())
+                .AddRavenDbMigrations(); // Add the migrations
 
-            services.RunDatabasePatches();
             services.InstallIndexes();
             services.AddMemoryCache();
 
@@ -97,7 +97,6 @@ namespace BitShuva.Chavah
                 });
 
             services.AddAutoMapper();
-
             services.AddApiVersioning(o =>
             {
                 o.ReportApiVersions = true;
@@ -113,19 +112,14 @@ namespace BitShuva.Chavah
                     new HeaderApiVersionReader("api-version", "api-v")
                     );
             });
-
             services.AddCustomAddSwagger();
-
             services.AddPwnedPassword(_=> new PwnedOptions());
-
             services.AddProgressiveWebApp();
-
             services.Configure<SecurityStampValidatorOptions>(options =>
             {
                 // enables immediate logout, after updating the user's stat.
                 options.ValidationInterval = TimeSpan.Zero;
             });
-
             services.AddAuthentication(options=>
             {
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -138,14 +132,14 @@ namespace BitShuva.Chavah
                     return Task.CompletedTask;
                 };
             });
-
             services.AddHttpsRedirection(options => options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect );
-
             services.AddAuthorization(options => options.AddPolicy(Policies.Administrator, policy => policy.RequireRole(AppUser.AdminRole)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+        public void Configure(
+            IApplicationBuilder app, 
+            IHostingEnvironment env,
             ILoggerFactory loggerFactory,
             IApiVersionDescriptionProvider provider)
         {
@@ -172,7 +166,6 @@ namespace BitShuva.Chavah
             app.UseHttpsRedirection();
             app.UseAuthentication();
             
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -180,8 +173,7 @@ namespace BitShuva.Chavah
                     template: "{controller=Home}/{action=Index}/{id?}");
                 
             });
-
-
+            
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
@@ -193,6 +185,9 @@ namespace BitShuva.Chavah
                 }
             });
 
+            // Run pending Raven migrations.
+            var migrationService = app.ApplicationServices.GetService<MigrationRunner>();
+            migrationService.Run();
         }
     }
 }

@@ -35,6 +35,7 @@ namespace BitShuva.Chavah.Models
         public string AlbumId { get; set; }
         public string ArtistId { get; set; }
         public int CommentCount { get; set; }
+        public AlbumColors AlbumColors { get; set; }
         // Add a property here? It should probably be added to .ToDto()
         
         public SongPickReasons ReasonsPlayed { get; set; }
@@ -136,7 +137,8 @@ namespace BitShuva.Chavah.Models
                 ReasonsPlayed = pickReasons,
                 AlbumId = this.AlbumId,
                 ArtistId = this.ArtistId,
-                CommentCount = this.CommentCount
+                CommentCount = this.CommentCount,
+                AlbumColors = this.AlbumColors
             };
         }
 
@@ -162,6 +164,20 @@ namespace BitShuva.Chavah.Models
             }
 
             return this.CommunityRank.ToString();
+        }
+
+        /// <summary>
+        /// Updates the denormalized album data from the specified album.
+        /// </summary>
+        /// <param name="album"></param>
+        public void UpdateAlbumInfo(Album album)
+        {
+            this.Album = album.Name;
+            this.AlbumArtUri = album.AlbumArtUri;
+            this.AlbumColors.Background = album.BackgroundColor;
+            this.AlbumColors.Foreground = album.ForegroundColor;
+            this.AlbumColors.Muted = album.MutedColor;
+            this.AlbumColors.TextShadow = album.TextShadowColor;
         }
     }
 }

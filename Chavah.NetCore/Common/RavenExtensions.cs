@@ -54,7 +54,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public static async Task<IList<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
+        public static async Task<List<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
         {
             var result = await session.LoadAsync<T>(ids);
             return result.Values

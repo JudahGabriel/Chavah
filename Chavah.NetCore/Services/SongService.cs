@@ -37,19 +37,7 @@ namespace BitShuva.Chavah.Services
                 songQuery :
                 "songs/" + songQuery;
 
-            var song = await _session
-                .Include<Song>(s => s.AlbumId)
-                .LoadAsync<Song>(properlyFormattedSongId);
-            if (song != null && !string.IsNullOrEmpty(song.AlbumId))
-            {
-                var album = await _session.LoadAsync<Album>(song.AlbumId);
-                if (album != null)
-                {
-                    return SongWithAlbumColors.FromSong(song, Option.Some(album));
-                }
-            }
-
-            return song;
+            return await _session.LoadAsync<Song>(properlyFormattedSongId);
         }
 
         public async Task<Song> GetMatchingSongAsync(System.Linq.Expressions.Expression<Func<Song, bool>> predicate)
