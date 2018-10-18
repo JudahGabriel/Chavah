@@ -44,6 +44,7 @@
                 .subscribe(result => $(".footer .track-time").text(result));
             this.audioPlayer.duration
                 .distinctUntilChanged()
+                .where(trackPosition => !isNaN(trackPosition))
                 .subscribe(result => $(".footer .track-duration").text(this.getFormattedTime(result)));
             this.audioPlayer.status
                 .distinctUntilChanged()
