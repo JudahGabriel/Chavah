@@ -5,7 +5,6 @@
 
         static $inject = [
             "songApi",
-            "albumCache",
             "audioPlayer",
         ];
 
@@ -15,7 +14,6 @@
 
         constructor(
             private readonly songApi: SongApiService,
-            private readonly albumCache: AlbumCacheService,
             private readonly audioPlayer: AudioPlayerService) {
 
             this.songsList.fetchNextChunk();

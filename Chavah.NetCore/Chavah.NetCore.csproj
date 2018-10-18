@@ -68,9 +68,11 @@
 	
 	<ItemGroup>
 	  <Content Remove="wwwroot\js\common\AngularBindings.ts" />
+	  <Content Remove="wwwroot\js\Polyfills\BeforeInstallPromptEvent.ts" />
 	  <Content Remove="wwwroot\js\Services\ConfigService..js" />
 	  <Content Remove="wwwroot\js\Services\ConfigService..js.map" />
 	  <Content Remove="wwwroot\js\Services\ConfigService..ts" />
+	  <Content Remove="wwwroot\js\Services\PwaInstallService.ts" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.js" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.js.map" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.ts" />
@@ -82,6 +84,8 @@
 
 	<ItemGroup>
 	  <TypeScriptCompile Include="wwwroot\js\common\AngularBindings.ts" />
+	  <TypeScriptCompile Include="wwwroot\js\Polyfills\BeforeInstallPromptEvent.ts" />
+	  <TypeScriptCompile Include="wwwroot\js\Services\PwaInstallService.ts" />
 	</ItemGroup>
 
 	<ItemGroup>
