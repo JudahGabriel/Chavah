@@ -225,7 +225,7 @@ namespace BitShuva.Chavah {
 
                 // Update our duration and current time.
                 const duration = this.audio.duration;
-                this.duration.onNext(duration);
+                this.duration.onNext(isNaN(duration) ? 0 : duration);
                 this.playedTime.onNext(currentTimeFloored);
 
                 const currentPositionDate = new Date().setMinutes(0, currentTimeFloored);

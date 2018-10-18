@@ -44,7 +44,6 @@
                 .subscribe(result => $(".footer .track-time").text(result));
             this.audioPlayer.duration
                 .distinctUntilChanged()
-                .where(trackPosition => !isNaN(trackPosition))
                 .subscribe(result => $(".footer .track-duration").text(this.getFormattedTime(result)));
             this.audioPlayer.status
                 .distinctUntilChanged()
@@ -253,8 +252,8 @@
         }
 
         getFormattedTime(totalSeconds: number): string {
-            if (isNaN(totalSeconds)) {
-                return "00";
+            if (isNaN(totalSeconds) || totalSeconds === 0) {
+                return "0:00";
             }
 
             let minutes = Math.floor(totalSeconds / 60);
