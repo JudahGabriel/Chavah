@@ -95,6 +95,7 @@
             this.showNeedsConfirmation = false;
             this.showPasswordError = false;
             this.showRegisterSuccess = false;
+            this.showPasswordIsPwned = false;
         }
     }
 
