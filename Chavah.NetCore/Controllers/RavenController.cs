@@ -140,6 +140,11 @@ namespace BitShuva.Chavah.Controllers
                     // This occurs when the database is down.
                     logger.LogError("Unable to reach database");
                 }
+                else if (error is System.Net.WebException && 
+                    string.Equals(error.Message, "An error occurred while sending the request. The buffers supplied to a function was too small", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    logger.LogError("The buffers supplied to a function was too small");
+                }
                 else
                 {
                     logger.LogError(error, error.Message);
