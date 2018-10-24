@@ -69,10 +69,20 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<PagedList<Song>> GetLikedSongs(int skip, int take, string search = null)
         {
             var userId = this.GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new PagedList<Song>
+                {
+                    Items = new List<Song>(0),
+                    Skip = skip,
+                    Take = take,
+                    Total = 0
+                };
+            }
+
             var query = this.DbSession.Query<Like, Likes_SongSearch>()
                 .Where(l => l.UserId == userId)
                 .ProjectInto<Likes_SongSearch.Result>();

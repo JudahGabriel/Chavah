@@ -139,7 +139,7 @@
                 .when("/promptsignin", createRoute(views.promptSignIn))
                 .when("/signin", createRoute(views.signIn))
                 .when("/password/:email", createRoute(views.password))
-                .when("/forgotpassword/:email/:pwned", createRoute(views.forgotPassword))
+                .when("/forgotpassword/:email?/:pwned?", createRoute(views.forgotPassword))
                 .when("/createpassword/:email", createRoute(views.createPassword))
                 .when("/register/:email?", createRoute(views.register))
                 .when("/confirmemail/:email/:confirmCode", createRoute(views.confirmEmail))
