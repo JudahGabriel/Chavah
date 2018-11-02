@@ -8,12 +8,16 @@
             "initConfig",
             "accountApi",
             "appNav",
+            "pwaInstall",
+            "audioPlayer"
         ];
 
-        constructor(private initConfig: Server.IConfigViewModel,
-                    private accountApi: AccountService,
-                    private appNav: AppNavService) {
-
+        constructor(
+            private readonly initConfig: Server.IConfigViewModel,
+            private readonly accountApi: AccountService,
+            private readonly appNav: AppNavService,
+            private readonly pwaInstall: PwaInstallService,
+            private readonly audioPlayer: AudioPlayerService) {
 
             this.accountApi.signedIn
                 .select(() => this.accountApi.currentUser)
@@ -55,6 +59,10 @@
             return "";
         }
 
+        get canInstallPwa(): boolean {
+            return this.pwaInstall.canInstall;
+        }
+
         markNotificationsAsRead() {
             if (this.notifications.some(n => n.isUnread)) {
                 this.notifications.forEach(n => n.isUnread = false);
@@ -71,6 +79,19 @@
             if (user) {
                 this.notifications = user.notifications;
                 this.profilePicUrl = user.profilePicUrl;
+            }
+        }
+
+        installPwa() {
+            var installTask = this.pwaInstall.install();
+            if (installTask) {
+                installTask.then(userChoice => {
+                    if (userChoice.outcome === "accepted") {
+                        // Upon successful install, pause the music. 
+                        // Otherwise we may have 2 Chavah instances playing audio.
+                        this.audioPlayer.pause();
+                    }
+                })
             }
         }
     }

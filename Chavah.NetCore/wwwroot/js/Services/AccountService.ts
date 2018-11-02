@@ -1,47 +1,29 @@
 ﻿namespace BitShuva.Chavah {
     export class AccountService {
+        
+        currentUser: User | null;
+        signedIn: Rx.BehaviorSubject<boolean>;
+        private apiUri = "/api/account";
 
         static $inject = [
             "httpApi",
+            "initialUser"
         ];
 
-        currentUser: User | null;
-        signedIn = new Rx.BehaviorSubject<boolean>(false);
-
-        private apiUri = "/api/account";
-
-        constructor(private httpApi: HttpApiService) {
-
-            if (this.currentUser == null) {
-                this.getUser().then(result => {
-                    this.currentUser = new User(result); 
-                    if (this.currentUser) {
-                        this.signedIn.onNext(true);
-                    }
-                });
-            }
-           
+        constructor(
+            private readonly httpApi: HttpApiService,
+            initialUser: Server.IUserViewModel | null) {
+            
+            this.signedIn = new Rx.BehaviorSubject<boolean>(!!initialUser);
+            this.currentUser = initialUser ? new User(initialUser) : null;
         }
 
         get isSignedIn(): boolean {
-            return !!this.currentUser;
+            return !!this.currentUser && !!this.currentUser.email;
         }
-
-        getUser(): ng.IPromise<Server.IUserViewModel> {
-
-            const getUsetTask = this.httpApi.query<Server.IUserViewModel>(`${this.apiUri}/GetUser`);
-
-            getUsetTask
-                .then(result => {
-                    this.currentUser = new User(result);
-                    this.signedIn.onNext(true);
-                })
-
-            return getUsetTask;
-        }
-
+        
         signOut(): ng.IPromise<any> {
-            const signOutTask = this.httpApi.post(`${this.apiUri}/SignOut`, null);
+            const signOutTask = this.httpApi.post(`${this.apiUri}/signOut`, null);
             signOutTask
                 .then(() => {
                     this.currentUser = null;
@@ -101,7 +83,7 @@
                 confirmCode,
             };
 
-            return this.httpApi.postUriEncoded(`${this.apiUri}/ConfirmEmail`, args);
+            return this.httpApi.postUriEncoded(`${this.apiUri}/confirmEmail`, args);
         }
 
         sendPasswordResetEmail(email: string): ng.IPromise<Server.ResetPasswordResult> {

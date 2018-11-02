@@ -218,24 +218,24 @@ namespace BitShuva.Chavah {
 
         private playbackPositionChanged(args: any) {
             const currentTime = this.audio.currentTime;
-            const currentTimeFloored = Math.floor(currentTime);
-            const currentTimeHasChanged = currentTimeFloored !== this.lastPlayedTime;
+            const currentTimeRounded = isNaN(currentTime) || !isFinite(currentTime) ? 0 : Math.round(currentTime);
+            const currentTimeHasChanged = currentTimeRounded !== this.lastPlayedTime;
             if (currentTimeHasChanged) {
-                this.lastPlayedTime = currentTimeFloored;
+                this.lastPlayedTime = currentTimeRounded;
 
                 // Update our duration and current time.
                 const duration = this.audio.duration;
-                this.duration.onNext(duration);
-                this.playedTime.onNext(currentTimeFloored);
+                this.duration.onNext(isNaN(duration) || !isFinite(duration) ? 0 : duration);
+                this.playedTime.onNext(currentTimeRounded);
 
-                const currentPositionDate = new Date().setMinutes(0, currentTimeFloored);
+                const currentPositionDate = new Date().setMinutes(0, currentTimeRounded);
                 const currentPosition = moment(currentPositionDate);
-                const remainingTimeDate = new Date().setMinutes(0, duration - currentTimeFloored);
+                const remainingTimeDate = new Date().setMinutes(0, duration - currentTimeRounded);
                 const remainingTime = moment(remainingTimeDate);
 
                 this.playedTimeText.onNext(currentPosition.format("m:ss"));
                 this.remainingTimeText.onNext(remainingTime.format("m:ss"));
-                this.playedTimePercentage.onNext((100 / duration) * currentTimeFloored);
+                this.playedTimePercentage.onNext((100 / duration) * currentTimeRounded);
             }
         }
 

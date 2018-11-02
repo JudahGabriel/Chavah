@@ -29,7 +29,7 @@
         }
 
         promptSignIn() {
-            this.$location.url(this.promptSignInUrl.replace("#", ""));
+            this.$location.url("/signin");
         }
 
         register(attemptedEmail?: string) {

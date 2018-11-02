@@ -5,18 +5,15 @@
 
         static $inject = [
             "songApi",
-            "albumCache",
             "audioPlayer",
         ];
 
-        songsList = new PagedList((skip, take) => this.songApi
-            .getTrendingSongs(skip, take), undefined, items => this.calcVisibleSongs(items));
+        songsList = new PagedList((skip, take) => this.songApi.getTrendingSongs(skip, take));
         visibleSongs: Song[] = [];
         visibleStart = 0;
 
         constructor(
             private readonly songApi: SongApiService,
-            private readonly albumCache: AlbumCacheService,
             private readonly audioPlayer: AudioPlayerService) {
 
             this.songsList.fetchNextChunk();
@@ -30,33 +27,15 @@
             return this.songsList.itemsTotalCount !== null && this.visibleStart < (this.songsList.itemsTotalCount - 1);
         }
 
-        async calcVisibleSongs(items: Song[]) {
-            this.visibleSongs = items.slice(this.visibleStart, this.visibleStart + TrendingController.maxVisibleSongs);
-            if (this.visibleSongs.length < TrendingController.maxVisibleSongs) {
-                this.songsList.fetchNextChunk();
-            }
-
-            // Fetch the album colors for these songs.
-            let albums = await this.albumCache.getAlbumsForSongs(this.visibleSongs);
-            this.visibleSongs.forEach(s => {
-                let albumForSong = albums.find(a => a.artist === s.artist && a.name === s.album);
-                if (albumForSong) {
-                    s.updateAlbumArtColors(albumForSong);
-                }
-            });
-        }
-
         next() {
             if (this.canGoNext) {
                 this.visibleStart++;
-                this.calcVisibleSongs(this.songsList.items);
             }
         }
 
         previous() {
             if (this.canGoPrevious) {
                 this.visibleStart--;
-                this.calcVisibleSongs(this.songsList.items);
             }
         }
 

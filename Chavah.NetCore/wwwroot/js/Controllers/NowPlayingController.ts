@@ -1,37 +1,32 @@
 ﻿namespace BitShuva.Chavah {
     export class NowPlayingController {
-
-        static $inject = [
-            "songApi",
-            "songBatch",
-            "audioPlayer",
-            "albumCache",
-            "initConfig",
-            "appNav",
-            "accountApi",
-            "$q",
-            "sharing"
-        ];
-
+        trending = new List<Song>(() => this.songApi.getTrendingSongs(0, 3).then(results => results.items), "trending", SongApiService.songConverter);
+        likes = new List<Song>(() => this.songApi.getLikes(0, 3).then(results => results.items), "mylikes", SongApiService.songConverter);
+        recent = new List<Song>(() => this.songApi.getRecentPlays(3), "recent", SongApiService.songConverter);
+        popular = new List<Song>(() => this.songApi.getPopularSongs(3), "popular", SongApiService.songConverter);
         songs: Song[] = [];
-        trending: Song[] = [];
-        recent: Song[] = [];
-        popular: Song[] = [];
-        likes: Song[] = [];
         isFetchingAlbums = false;
         currentSong: Song | null;
         recurringFetchHandle: number | null;
         disposed = new Rx.Subject<boolean>();
 
+        static $inject = [
+            "songApi",
+            "songBatch",
+            "audioPlayer",
+            "initConfig",
+            "appNav",
+            "accountApi",
+            "sharing"
+        ];
+
         constructor(
             private songApi: SongApiService,
             private songBatch: SongBatchService,
             private audioPlayer: AudioPlayerService,
-            private albumCache: AlbumCacheService,
             private initConfig: Server.IConfigViewModel,
             private appNav: AppNavService,
             private accountApi: AccountService,
-            private $q: ng.IQService,
             private sharing: SharingService) {
 
 
@@ -46,11 +41,7 @@
             this.songBatch.songsBatch
                 .takeUntil(this.disposed)
                 .subscribeOnNext(() => this.songs = this.getSongs());
-
-            // Recent plays we fetch once, at init. Afterwards, we update it ourselves.
-            this.fetchRecentPlays();
-            this.setupRecurringFetches();
-
+            
             if (initConfig.embed) {
                 // If we're embedded on another page, queue up the song we're told to play.
                 // Don't play it automatically, though, because there may be multiple embeds on the same page.
@@ -132,7 +123,6 @@
                 this.songBatch.songsBatch.getValue()[2],
                 this.songBatch.songsBatch.getValue()[3]
             ].filter(s => !!s && s.name);
-            this.fetchAlbumColors(songs);
 
             return songs;
         }
@@ -141,67 +131,20 @@
             return song || Song.empty();
         }
 
-        fetchAlbumColors(songs: Song[]) {
-            let songsNeedingAlbumSwatch = songs
-                .filter(s => !s.hasSetAlbumArtColors && s.id !== "songs/0");
-            if (songsNeedingAlbumSwatch.length > 0) {
-                this.isFetchingAlbums = true;
-                this.albumCache.getAlbumsForSongs(songsNeedingAlbumSwatch)
-                    .then(albums => this.populateSongsWithAlbumColors(albums));
-            }
-        }
-
-        populateSongsWithAlbumColors(albums: Album[]) {
-            albums.forEach(a => {
-                let songsForAlbum = this.getAllSongsOnScreen()
-                    .filter(s => s.albumId && s.albumId.toLowerCase() === a.id.toLowerCase());
-                songsForAlbum.forEach(s => s.updateAlbumArtColors(a));
-            });
-        }
-
-        setupRecurringFetches() {
-            let songFetchesTask = this.songApi.getTrendingSongs(0, 3)
-                .then(results => this.updateSongList(this.trending, results.items))
-                .then(() => this.songApi.getPopularSongs(3))
-                .then(results => this.updateSongList(this.popular, results))
-                .then(() => this.songApi.getRandomLikedSongs(3))
-                .then(results => this.updateSongList(this.likes, results))
-                .finally(() => {
-                    this.fetchAlbumColors(this.getAllSongsOnScreen());
-
-                    // Call ourselves every 30s.
-                    this.recurringFetchHandle = setTimeout(() => this.setupRecurringFetches(), 60000);
-                });
-        }
-
-        fetchRecentPlays() {
-            this.songApi.getRecentPlays(3)
-                .then(results => {
-                    results.forEach(s => this.recent.push(s));
-                    if (this.recent.length > 3) {
-                        this.recent.length = 3;
-                    }
-                });
-        }
-
-        updateSongList(target: Song[], source: Song[]) {
-            target.splice(0, target.length, ...source);
-            this.fetchAlbumColors(this.getAllSongsOnScreen());
-        }
-
-        getAllSongsOnScreen(): Song[] {
-            return this.songs.concat(this.recent, this.trending, this.likes, this.popular);
-        }
-
         nextSongBeginning(song: Song | null) {
             this.songs = this.getSongs();
 
+            // Push the current song to the beginning of the recent songs list.
             if (song) {
                 if (this.currentSong) {
-                    this.recent.splice(0, 0, this.currentSong);
-                    if (this.recent.length > 3) {
-                        this.recent.length = 3;
+                    this.recent.items.splice(0, 0, this.currentSong);
+
+                    // Make sure the songs are distinct; otherwise we can get Angular repeater errors in the UI.
+                    this.recent.items = _.uniqBy(this.recent.items, i => i.id);
+                    if (this.recent.items.length > 3) {
+                        this.recent.items.length = 3;
                     }
+                    this.recent.cache(); // update the local cache.
                 }
 
                 this.currentSong = song;

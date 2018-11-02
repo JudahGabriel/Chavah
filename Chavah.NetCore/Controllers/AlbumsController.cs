@@ -149,6 +149,14 @@ namespace BitShuva.Chavah.Controllers
                     .ToListAsync();
                 songsForAlbum.ForEach(s => s.AlbumId = album.Id);
             }
+            else
+            {
+                // Update the album information of all the songs on this album.
+                var songsForAlbum = await DbSession.Query<Song>()
+                    .Where(s => s.AlbumId == album.Id)
+                    .ToListAsync();
+                songsForAlbum.ForEach(s => s.UpdateAlbumInfo(album));
+            }
 
             return album;
         }
@@ -213,7 +221,14 @@ namespace BitShuva.Chavah.Controllers
                     UploadDate = DateTime.UtcNow,
                     Uri = null,
                     AlbumId = existingAlbum.Id,
-                    ArtistId = existingArtist.Id
+                    ArtistId = existingArtist.Id,
+                    AlbumColors = new AlbumColors
+                    {
+                        Background = existingAlbum.BackgroundColor,
+                        Foreground = existingAlbum.ForegroundColor,
+                        Muted = existingAlbum.MutedColor,
+                        TextShadow = existingAlbum.TextShadowColor
+                    }
                 };
                 await this.DbSession.StoreAsync(song);
 
@@ -227,7 +242,7 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpGet]
-        public Task<IList<Album>> GetAlbums(string albumIdsCsv)
+        public Task<List<Album>> GetAlbums(string albumIdsCsv)
         {
             var max = 20;
             var validIds = albumIdsCsv.Split(new[] { "," }, max, StringSplitOptions.RemoveEmptyEntries)

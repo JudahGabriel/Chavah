@@ -27,14 +27,14 @@ namespace BitShuva.Chavah {
         // reasonPlayed: SongPick;
         reasonsPlayed: Server.SongPickReasons | null;
         albumId: string | null;
+        albumColors: Server.AlbumColors;
 
-        albumSwatchBackground = "white";
-        albumSwatchForeground = "black";
-        albumSwatchMuted = "silver";
-        albumSwatchTextShadow = "white";
+        //albumSwatchBackground = "white";
+        //albumSwatchForeground = "black";
+        //albumSwatchMuted = "silver";
+        //albumSwatchTextShadow = "white";
         albumSwatchDarker = "black"; // The darker of two: either foreground or background
         albumSwatchLighter = "white"; // The lighter of the two: either foreground or background
-        hasSetAlbumArtColors = false;
         clientId: string;
         isLyricsExpanded = false;
         isSongStatusExpanded = false;
@@ -56,12 +56,13 @@ namespace BitShuva.Chavah {
             rgb: [255, 255, 255],
         };
 
-        constructor(song: Server.Song | Server.SongWithAlbumColors) {
+        constructor(song: Server.Song) {
             angular.merge(this, song);
 
-            // If we were sent a SongWithAlbumColors, mark our "has set album art colors" to true.
-            if ('albumSwatchBackground' in song) {
-                this.hasSetAlbumArtColors = true;    
+            // Store which album color, background or foreground, is lighter.
+            // TODO: this should probably be stored on the Album and Song.
+            if (song.albumColors) {
+                this.updateAlbumSwatchLighterDarker();
             }
             
             this.clientId = `${song.id}_${new Date().getTime() + Math.random()}`;
@@ -110,21 +111,18 @@ namespace BitShuva.Chavah {
             angular.merge(this, other);
         }
 
-        updateAlbumArtColors(album: Album) {
-            this.hasSetAlbumArtColors = true;
-            this.albumSwatchBackground = album.backgroundColor || this.albumSwatchBackground;
-            this.albumSwatchForeground = album.foregroundColor || this.albumSwatchForeground;
-            this.albumSwatchMuted = album.mutedColor || this.albumSwatchMuted;
-            this.albumSwatchTextShadow = album.textShadowColor || this.albumSwatchTextShadow;
+        private updateAlbumSwatchLighterDarker() {
+            const bgOrDefault = this.albumColors.background || "black";
+            const fgOrDefault = this.albumColors.foreground || "white";
 
             // Determine whether the foreground or background is lighter.
             // Used in the now playing page to pick a color that looks readable on near-white background.
-            let bgBrightness = tinycolor(this.albumSwatchBackground).getBrightness();
-            let fgBrightness = tinycolor(this.albumSwatchForeground).getBrightness();
-            let isFgLighter = fgBrightness >= bgBrightness;
+            const bgBrightness = tinycolor(bgOrDefault).getBrightness();
+            const fgBrightness = tinycolor(fgOrDefault).getBrightness();
+            const isFgLighter = fgBrightness >= bgBrightness;
 
-            this.albumSwatchLighter = isFgLighter ? this.albumSwatchForeground : this.albumSwatchBackground;
-            this.albumSwatchDarker = isFgLighter ? this.albumSwatchBackground : this.albumSwatchForeground;
+            this.albumSwatchLighter = isFgLighter ? fgOrDefault : bgOrDefault;
+            this.albumSwatchDarker = isFgLighter ? bgOrDefault : fgOrDefault;
         }
 
         // tslint:disable-next-line:member-ordering
@@ -149,6 +147,12 @@ namespace BitShuva.Chavah {
                 totalPlays: 0,
                 uri: "",
                 reasonsPlayed: this.createEmptySongPickReasons("songs/0"),
+                albumColors: {
+                    background: "",
+                    foreground: "",
+                    muted: "",
+                    textShadow: ""
+                }
             });
         }
 

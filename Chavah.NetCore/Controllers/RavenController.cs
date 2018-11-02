@@ -53,48 +53,14 @@ namespace BitShuva.Chavah.Controllers
                     await DbSession.SaveChangesAsync()
                         .ConfigureAwait(false);
                 }
-                catch (TaskCanceledException)
-                {
-                    // If the browser canceled the request, there's no need to do the full logging.
-                    logger.LogInformation("Task canceled");
-                }
                 catch (Exception ex)
                 {
-                    using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
-                    using (logger.BeginKeyValueScope("action", context?.ActionDescriptor?.DisplayName))
-                    {
-                        logger.LogError(ex, $"Error saving changes for {next.Method?.Name}");
-                    }
+                    HandleKnownExceptions(ex, context, "Exception while saving changes");
                 }
             }
             else if (executedContext.Exception != null) // An exception occurred while executing the method.
             {
-                using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
-                using (logger.BeginKeyValueScope("action", executedContext.ActionDescriptor?.DisplayName))
-                {
-                    if (executedContext.Exception is UnauthorizedAccessException)
-                    {
-                        logger.LogWarning(executedContext.Exception, executedContext.Exception.Message);
-                    }
-                    else if (executedContext.Exception is RavenException ravenEx
-                        && ravenEx.Message.Contains("The server returned an invalid or unrecognized response", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        logger.LogError(ravenEx.Message);
-                    }
-                    else if (executedContext.Exception is TaskCanceledException)
-                    {
-                        logger.LogInformation("Task cancelled");
-                    }
-                    else if (executedContext.Exception is RavenException && executedContext.Exception.Message.StartsWith("An exception occurred while contacting", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // This occurs when the database is down.
-                        logger.LogError("Unable to reach database");
-                    }
-                    else
-                    {
-                        logger.LogError(executedContext.Exception, executedContext.Exception.Message);
-                    }
-                }
+                HandleKnownExceptions(executedContext.Exception, context, "Exception while executing action");
             }
         }
 
@@ -147,6 +113,43 @@ namespace BitShuva.Chavah.Controllers
             }
 
             return null;
+        }
+
+        private void HandleKnownExceptions(Exception error, ActionExecutingContext actionContext, string errorContext)
+        {
+            using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
+            using (logger.BeginKeyValueScope("action", actionContext?.ActionDescriptor?.DisplayName))
+            using (logger.BeginKeyValueScope("errorContext", errorContext))
+            {
+                if (error is UnauthorizedAccessException)
+                {
+                    logger.LogWarning(error.Message);
+                }
+                else if (error is RavenException ravenEx &&
+                    ravenEx.Message.Contains("The server returned an invalid or unrecognized response", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    logger.LogError(ravenEx.Message);
+                }
+                else if (error is TaskCanceledException)
+                {
+                    logger.LogInformation("Task cancelled");
+                }
+                else if (error is RavenException && 
+                    error.Message.StartsWith("An exception occurred while contacting", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // This occurs when the database is down.
+                    logger.LogError("Unable to reach database");
+                }
+                else if (error is System.Net.WebException && 
+                    string.Equals(error.Message, "An error occurred while sending the request. The buffers supplied to a function was too small", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    logger.LogError("The buffers supplied to a function was too small");
+                }
+                else
+                {
+                    logger.LogError(error, error.Message);
+                }
+            }
         }
     }
 }

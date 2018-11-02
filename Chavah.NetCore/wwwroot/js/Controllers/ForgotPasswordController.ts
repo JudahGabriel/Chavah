@@ -15,10 +15,15 @@
 
         constructor(private accountApi: AccountService,
             private $routeParams: ng.route.IRouteParamsService) {
-            this.email = $routeParams["email"];
 
-            if ($routeParams["pwned"]) {
-                this.pwned =  Boolean($routeParams["pwned"]);
+            const email = $routeParams["email"];
+            if (email) {
+                this.email = email;
+            }
+
+            const pwned = $routeParams["pwned"];
+            if (pwned) {
+                this.pwned = Boolean(pwned);
             }
         }
 

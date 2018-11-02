@@ -6,5 +6,6 @@
         public string ErrorMessage { get; set; }
         public bool IsAlreadyRegistered { get; set; }
         public bool NeedsConfirmation { get; set; }
+        public bool IsPwned { get; set; }
     }
 }

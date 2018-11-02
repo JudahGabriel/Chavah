@@ -1,6 +1,6 @@
-# Chavah
+# Chavah Messianic Radio
 
-Chavah Messianic Radio a progressive web app that plays Messianic Jewish music. It's built in the vein of Pandora, which allows users to thumb-up and -down songs, which influences what gets played for each listener.
+Chavah Messianic Radio is a progressive web app that plays Messianic Jewish music. It's built in the vein of Pandora, which allows users to thumb-up and -down songs, which influences what gets played for each listener.
 [messianicradio.com](https://messianicradio.com)
 
 ![Screenshot of Chavah](https://bitshuvafiles01.com/chavah/chavah-github.jpg "Logo Title Text 1")

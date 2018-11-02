@@ -27,7 +27,7 @@ namespace BitShuva.Chavah.Common
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                return default(T).SomeNotNull();
+                return Option.None<T>();
             }
 
             var result = await session.LoadAsync<T>(id);
@@ -54,7 +54,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public static async Task<IList<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
+        public static async Task<List<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
         {
             var result = await session.LoadAsync<T>(ids);
             return result.Values
@@ -143,6 +143,26 @@ namespace BitShuva.Chavah.Common
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Loads a document from the session and throws if it's null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="session"></param>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public static async Task<List<T>> LoadWithoutNulls<T>(this IAsyncLoaderWithInclude<T> session, IEnumerable<string> ids)
+        {
+            if (ids == null)
+            {
+                throw new ArgumentNullException(nameof(ids), "Tried to load required entity but passed in a null ID");
+            }
+
+            var results = await session.LoadAsync<T>(ids);
+            return results.Values
+                .Where(item => item != null)
+                .ToList();
         }
 
         /// <summary>

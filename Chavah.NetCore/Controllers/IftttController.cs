@@ -3,6 +3,7 @@ using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Rss;
 using BitShuva.Chavah.Services;
 using Chavah.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -34,6 +35,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task<ActionResult> GetRegisteredUsers()
         {
             var lastRegisteredUsers = await DbSession
@@ -70,6 +72,12 @@ namespace BitShuva.Chavah.Controllers
             if (!isValidSecretToken)
             {
                 throw new UnauthorizedAccessException();
+            }
+
+            // Use only HTTPS images.
+            if (imgUrl != null && imgUrl.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase))
+            {
+                imgUrl = imgUrl.Replace("http://", "https://", StringComparison.InvariantCultureIgnoreCase);
             }
 
             logger.LogInformation("IFTTT CreateNotification called with {token}, {title}, {imgUrl}, {srcName}, {url}", secretToken, title, imgUrl, sourceName, url);

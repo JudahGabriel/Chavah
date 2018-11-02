@@ -3,8 +3,8 @@
 
         static $inject = [
             "songEditApi",
-            "tagApi",
             "accountApi",
+            "tagApi"
         ];
 
         pendingEdits: Server.SongEdit[] = [];

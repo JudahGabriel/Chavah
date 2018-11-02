@@ -1,9 +1,14 @@
 ﻿namespace BitShuva.Chavah {
     export class SongApiService {
 
-        static $inject = ["httpApi"];
+        static $inject = [
+            "httpApi",
+            "$q"
+        ];
 
-        constructor(private httpApi: HttpApiService) {
+        constructor(
+            private readonly httpApi: HttpApiService,
+            private readonly $q: ng.IQService) {
         }
 
         chooseSong(): ng.IPromise<Song> {
@@ -88,7 +93,7 @@
             };
             return this.httpApi.query("/api/songs/getTrending", args, SongApiService.songPagedListConverter);
         }
-
+        
         getPopularSongs(count: number): ng.IPromise<Song[]> {
             const args = {
                 count,
@@ -147,7 +152,7 @@
         }
 
         // tslint:disable-next-line:member-ordering
-        private static songPagedListConverter(dto: Server.PagedList<Server.Song>): Server.PagedList<Song> {
+        public static songPagedListConverter(dto: Server.PagedList<Server.Song>): Server.PagedList<Song> {
             return {
                 items: dto.items.map(s => new Song(s)),
                 skip: dto.skip,
@@ -157,12 +162,12 @@
         }
 
         // tslint:disable-next-line:member-ordering
-        private static songListConverter(songs: Server.Song[]): Song[] {
+        public static songListConverter(songs: Server.Song[]): Song[] {
             return songs.map(r => SongApiService.songConverter(r));
         }
 
         // tslint:disable-next-line:member-ordering
-        private static songOrNullConverter(raw: Server.Song | null): Song | null {
+        public static songOrNullConverter(raw: Server.Song | null): Song | null {
             if (raw) {
                 return SongApiService.songConverter(raw);
             }
@@ -171,7 +176,7 @@
         }
 
         // tslint:disable-next-line:member-ordering
-        private static songConverter(raw: Server.Song): Song {
+        public static songConverter(raw: Server.Song): Song {
             return new Song(raw);
         }
     }

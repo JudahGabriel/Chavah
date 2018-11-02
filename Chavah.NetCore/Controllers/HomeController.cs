@@ -13,6 +13,7 @@ using Raven.Client.Documents.Session;
 
 namespace BitShuva.Chavah.Controllers
 {
+    [RequireHttps]
     public class HomeController : RavenController
     {
         private readonly ISongService songService;
@@ -47,11 +48,6 @@ namespace BitShuva.Chavah.Controllers
         /// This is used for social media sites like Facebook and Twitter which show images, title, 
         /// and description from the loaded page.
         /// </summary>
-        /// <param name="artist"></param>
-        /// <param name="album"></param>
-        /// <param name="song"></param>
-        /// <param name="embed"></param>
-        /// <returns></returns>
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> Index(string artist = null, string album = null, string song = null, bool embed = false)

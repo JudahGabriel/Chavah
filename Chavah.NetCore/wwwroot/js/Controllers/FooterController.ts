@@ -155,7 +155,7 @@
         }
 
         dislikeSong() {
-            if (this.requireSignIn()) {
+            if (this.ensureSignedIn()) {
                 let currentSong = this.audioPlayer.song.getValue();
                 if (currentSong && currentSong.songLike !== SongLike.Disliked) {
                     currentSong.songLike = SongLike.Disliked;
@@ -167,7 +167,7 @@
         }
 
         likeSong() {
-            if (this.requireSignIn()) {
+            if (this.ensureSignedIn()) {
                 let currentSong = this.audioPlayer.song.getValue();
                 if (currentSong && currentSong.songLike !== SongLike.Liked) {
                     currentSong.songLike = SongLike.Liked;
@@ -178,13 +178,13 @@
         }
 
         requestSong() {
-            if (this.requireSignIn()) {
+            if (this.ensureSignedIn()) {
                 this.appNav.songRequestModal()
                     .result.then((song: Song | null) => this.songRequestDialogCompleted(song));
             }
         }
 
-        requireSignIn(): boolean {
+        ensureSignedIn(): boolean {
             if (this.accountApi.isSignedIn) {
                 return true;
             } else {
@@ -252,8 +252,8 @@
         }
 
         getFormattedTime(totalSeconds: number): string {
-            if (isNaN(totalSeconds)) {
-                return "00";
+            if (isNaN(totalSeconds) || totalSeconds === 0) {
+                return "0:00";
             }
 
             let minutes = Math.floor(totalSeconds / 60);

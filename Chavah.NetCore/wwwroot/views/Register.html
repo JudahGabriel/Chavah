@@ -27,10 +27,10 @@
                         <input type="password" class="form-control" id="passwordConfirmInput" placeholder="Confirm password" ng-model="vm.confirmPassword">
                         <span ng-show="vm.isMatchingPassword" class="help-block">
                             <i class="fa fa-exclamation-circle"></i>
-                           The password doesn't match.
+                            The password doesn't match.
                         </span>
                     </div>
-
+                    
                     <div class="form-group has-error" ng-show="vm.registrationError">
                         <!--<label class="col-xs-12 control-label">Unable to register</label>-->
                         <div class="col-xs-12">
@@ -71,6 +71,19 @@
                     <i class="fa fa-info-circle text-info"></i>
                     Woops, you're alredy registered. Go to <a href="#/signin">sign in</a>.
                 </h3>
+            </div>
+
+            <div ng-show="vm.showPasswordIsPwned">
+                <h3>
+                    <i class="fa fa-exclamation-circle text-danger"></i>
+                    Please use a different password.
+                </h3>
+                <p>
+                    The password you entered has been used elsewhere on the web. (<a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener noreferrer">How do you know?</a>)
+                </p>
+                <p>
+                    <small class="text-muted">Tired of remembering passwords? Use a password manager like <a href="https://www.lastpass.com/" rel="noopener noreferrer">LastPass</a>.</small>
+                </p>
             </div>
         </div>
     </div>
