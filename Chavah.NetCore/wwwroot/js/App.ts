@@ -126,7 +126,7 @@
                 .when("/profile", createRoute(views.profile, RouteAccess.Authenticated))
                 .when("/popular", createRoute(views.popular))
                 .when("/recent", createRoute(views.recent))
-                .when("/mylikes", createRoute(views.myLikes))
+                .when("/mylikes", createRoute(views.myLikes, RouteAccess.Authenticated))
                 .when("/edit/songs/:id", createRoute(views.editSong, RouteAccess.Authenticated))
                 .when("/sharethanks/:artist?", createRoute(views.shareThanks))
                 .when("/about", createRoute(views.about))

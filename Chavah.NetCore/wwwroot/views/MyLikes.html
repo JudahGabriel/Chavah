@@ -20,18 +20,32 @@
 
     <!-- songs -->
     <div class="songs-container" ng-if="vm.activeCategory === 'Songs'">
-        <div class="song-item" ng-repeat="song in vm.songs.items" ng-click="vm.playSong(song)" ng-style="{ 'background-color': song.albumColors.background }" uib-tooltip="Click to play this song" tooltip-append-to-body="true">
-            <img ng-src="{{song.albumArtUri}}" alt="{{song.album}} album art">
+        <div class="song-item" ng-repeat="song in vm.songs.items" ng-click="vm.playSong(song)" ng-style="{ 'background-color': song.albumColors.background }">
+            <img ng-src="{{::song.albumArtUri}}" alt="{{::song.album}} album art" uib-tooltip="Click to play this song" tooltip-append-to-body="true">
             <div class="song-info"
-                 ng-attr-title="{{song.name}} by {{song.artist}} on {{song.album}}"
                  ng-style="{ 'background-color': song.albumColors.background, 'color': song.albumColors.foreground }">
-                {{song.name}}
+                {{::song.name}}
                 <br />
                 <span class="text-muted">By</span>
-                {{song.artist}}
+                {{::song.artist}}
                 <br />
                 <span class="text-muted">On</span>
-                {{song.album}}
+                {{::song.album}}
+                <br />
+                <span class="share-links">
+                    <button class="btn-link" ng-click="vm.playSong(song)" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Play this song">
+                        <i class="fa fa-play"></i>
+                    </button>
+                    <a ng-href="{{::vm.getFacebookShareUrl(song)}}" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Share this song on Facebook">
+                        <i class="fa fa-facebook-official"></i>
+                    </a>
+                    <a ng-href="{{::vm.getTwitterShareUrl(song)}}" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Share this song on Twitter">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                    <a ng-href="{{::song.url}}" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Get the link to this song">
+                        <i class="fa fa-link"></i>
+                    </a>
+                </span>
             </div>
         </div>
 

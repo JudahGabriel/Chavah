@@ -107,6 +107,10 @@ namespace BitShuva.Chavah {
             return this._reasonPlayedText;
         }
 
+        get url(): string {
+            return `/?song=${this.id.toLowerCase()}`;
+        }
+
         updateFrom(other: Song) {
             angular.merge(this, other);
         }
