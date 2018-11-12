@@ -1,4 +1,5 @@
-﻿using BitShuva.Chavah.Models;
+﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
 using BitShuva.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;

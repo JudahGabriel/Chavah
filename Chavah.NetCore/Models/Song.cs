@@ -35,6 +35,7 @@ namespace BitShuva.Chavah.Models
         public string AlbumId { get; set; }
         public string ArtistId { get; set; }
         public int CommentCount { get; set; }
+        public AlbumColors AlbumColors { get; set; }
         // Add a property here? It should probably be added to .ToDto()
         
         public SongPickReasons ReasonsPlayed { get; set; }
@@ -100,6 +101,7 @@ namespace BitShuva.Chavah.Models
         /// Creates a new song object that's ready to be sent as a data transfer object over to the client.
         /// </summary>
         /// <param name="likeStatus">The like status for the song.</param>
+        /// <param name="playedReason"></param>
         /// <returns></returns>
         public Song ToDto(LikeStatus likeStatus, SongPick playedReason)
         {
@@ -110,8 +112,9 @@ namespace BitShuva.Chavah.Models
         /// Creates a new song object that's ready to be sent as a data transfer object over to the client.
         /// </summary>
         /// <param name="likeStatus">The like status for the song.</param>
+        /// <param name="pickReasons"></param>
         /// <returns></returns>
-        public Song ToDto(LikeStatus likeStatus, SongPickReasons pickReasons)
+        public virtual Song ToDto(LikeStatus likeStatus, SongPickReasons pickReasons)
         {
             return new Song
             {
@@ -134,14 +137,14 @@ namespace BitShuva.Chavah.Models
                 ReasonsPlayed = pickReasons,
                 AlbumId = this.AlbumId,
                 ArtistId = this.ArtistId,
-                CommentCount = this.CommentCount
+                CommentCount = this.CommentCount,
+                AlbumColors = this.AlbumColors
             };
         }
 
         /// <summary>
         /// Creates a new song object that's ready to be sent as a data transfer object over to the client.
         /// </summary>
-        /// <param name="likeStatus">The like status for the song.</param>
         /// <returns></returns>
         public Song ToDto()
         {
@@ -161,6 +164,20 @@ namespace BitShuva.Chavah.Models
             }
 
             return this.CommunityRank.ToString();
+        }
+
+        /// <summary>
+        /// Updates the denormalized album data from the specified album.
+        /// </summary>
+        /// <param name="album"></param>
+        public void UpdateAlbumInfo(Album album)
+        {
+            this.Album = album.Name;
+            this.AlbumArtUri = album.AlbumArtUri;
+            this.AlbumColors.Background = album.BackgroundColor;
+            this.AlbumColors.Foreground = album.ForegroundColor;
+            this.AlbumColors.Muted = album.MutedColor;
+            this.AlbumColors.TextShadow = album.TextShadowColor;
         }
     }
 }

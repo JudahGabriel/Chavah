@@ -7,19 +7,29 @@
         static $inject = [
             "initConfig",
             "accountApi",
-            "appNav"
+            "appNav",
+            "pwaInstall",
+            "audioPlayer"
         ];
 
-        constructor(private readonly initConfig: Server.HomeViewModel,
-                    private readonly accountApi: AccountService,
-                    private appNav: AppNavService) {
-
-            this.notifications = initConfig.user ? initConfig.user.notifications : [];
-            this.profilePicUrl = initConfig.user ? initConfig.user.profilePicUrl : null;
+        constructor(
+            private readonly initConfig: Server.IConfigViewModel,
+            private readonly accountApi: AccountService,
+            private readonly appNav: AppNavService,
+            private readonly pwaInstall: PwaInstallService,
+            private readonly audioPlayer: AudioPlayerService) {
 
             this.accountApi.signedIn
                 .select(() => this.accountApi.currentUser)
                 .subscribe(user => this.signedInUserChanged(user));
+        }
+
+        get isAdmin(): boolean {
+            if (this.accountApi.currentUser === undefined || this.accountApi.currentUser === null) {
+                return false;
+            } else {
+                return this.accountApi.currentUser.isAdmin;
+            }
         }
 
         get currentUserName(): string {
@@ -27,15 +37,30 @@
         }
 
         get unreadNotificationCount(): number {
-            return this.notifications.filter(n => n.isUnread).length;
+            if (this.notifications) {
+                return this.notifications.filter(n => n.isUnread).length;
+            }
+
+            return 0;
         }
 
         get title(): string {
-            return this.initConfig.title;
+            if (this.initConfig) {
+                return this.initConfig.title;
+            }
+
+            return "";
         }
 
         get desc(): string {
-            return this.initConfig.description;
+            if (this.initConfig) {
+                return this.initConfig.description;
+            }
+            return "";
+        }
+
+        get canInstallPwa(): boolean {
+            return this.pwaInstall.canInstall;
         }
 
         markNotificationsAsRead() {
@@ -54,6 +79,19 @@
             if (user) {
                 this.notifications = user.notifications;
                 this.profilePicUrl = user.profilePicUrl;
+            }
+        }
+
+        installPwa() {
+            var installTask = this.pwaInstall.install();
+            if (installTask) {
+                installTask.then(userChoice => {
+                    if (userChoice.outcome === "accepted") {
+                        // Upon successful install, pause the music. 
+                        // Otherwise we may have 2 Chavah instances playing audio.
+                        this.audioPlayer.pause();
+                    }
+                })
             }
         }
     }

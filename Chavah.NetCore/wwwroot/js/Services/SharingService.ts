@@ -3,7 +3,7 @@
 
         static $inject = ["initConfig"];
 
-        constructor(private initConfig: Server.HomeViewModel) {
+        constructor(private initConfig: Server.IConfigViewModel) {
         }
 
         shareUrl(id: string): string {
@@ -43,12 +43,6 @@
                 "?text=" + encodeURIComponent(tweetText) +
                 "&url=" + encodeURIComponent(url) +
                 "&via=" + encodeURIComponent(via);
-        }
-
-        googlePlusShareUrl(id: string): string {
-            let result: string;
-                result = "https://plus.google.com/share?url=" + encodeURI(`${this.initConfig.debug}/?song=${id}`);
-            return result;
         }
 
         /**

@@ -28,6 +28,7 @@ namespace BitShuva.Chavah.Controllers
             app = options?.Value?.Application;
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetTodaysTrendingSong()
         {
             var dayAgo = DateTimeOffset.UtcNow.Subtract(TimeSpan.FromDays(1));
@@ -69,6 +70,7 @@ namespace BitShuva.Chavah.Controllers
         /// This creates a smaller subset of activity feed, suitable for tweeting. (Otherwise, we were tweeting hundreds of likes per day; not sustainable.)
         /// </summary>
         /// <param name="take"></param>
+        [HttpGet]
         public async Task<IActionResult> GetActivityFeedForHour(int take)
         {
             var hourAgo = DateTimeOffset.UtcNow.Subtract(TimeSpan.FromHours(1));
@@ -91,6 +93,7 @@ namespace BitShuva.Chavah.Controllers
             return new RssActionResult(feed);
         }
 
+        [HttpGet]
         public async Task<IActionResult> ActivityFeed(int take = 5)
         {
             var recentActivities = await DbSession.Query<Activity>()
@@ -108,6 +111,7 @@ namespace BitShuva.Chavah.Controllers
             return new RssActionResult(feed);
         }
 
+        [HttpGet]
         private static SyndicationLinkItem ActivityToRssItem(Activity activity)
         {
             return new SyndicationLinkItem(activity.Id, activity.Title, activity.Description, activity.MoreInfoUri);

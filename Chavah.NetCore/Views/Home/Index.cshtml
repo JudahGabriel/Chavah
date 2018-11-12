@@ -1,5 +1,4 @@
 ﻿@model BitShuva.Chavah.Models.HomeViewModel
-
 @* Attach an image that Facebook will use if someone links to a song. *@
 @if (!string.IsNullOrEmpty(Model.DescriptiveImageUrl))
 {
@@ -24,7 +23,12 @@
     <footer ng-include="Partials.footerPartial"></footer>
 </div>
 
-@*Load our HomeViewModel into JavaScript. Used inside app.ts to initialize our Angular app.*@
-<script type="text/javascript">
-    window["BitShuva.Chavah.HomeViewModel"] = @Html.Raw(Model.ToJson());
-</script>
+@if (Model.User != null)
+{
+    <script type="text/javascript">
+        // Access to the signed is user is needed immediately because components rely on whether we're signed in.
+        // Fetching this state asynchronously isn't sufficient, because it causes sign in state to change, triggering other components to refresh their data.
+
+        window["BitShuva.Chavah.InitialUser"] = @Html.Raw(Model.User.ToJson());
+    </script>
+}

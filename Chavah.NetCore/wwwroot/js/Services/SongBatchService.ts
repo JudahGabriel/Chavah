@@ -4,7 +4,12 @@
      * This makes the UI more responsive, quickly playing the next song without having to make extra remote calls.
      */
     export class SongBatchService {
+        // event used for notifying components that songs are available
+        songsBatch = new Rx.BehaviorSubject<Song[]>([]);
 
+        // songs list used for caching.
+        private songsList = new List<Song>(() => this.fetchSongBatch(), "songsbatch", SongApiService.songConverter, loadedSongs => this.songsBatch.onNext(loadedSongs));
+        
         static $inject = [
             "audioPlayer",
             "songApi",
@@ -12,53 +17,50 @@
             "accountApi",
         ];
 
-        songsBatch = new Rx.BehaviorSubject<Song[]>([]);
-
         constructor(
             private audioPlayer: AudioPlayerService,
             private songApi: SongApiService,
             private songRequestApi: SongRequestApiService,
-            private accountApi: AccountService) {
+            accountApi: AccountService) {
 
             // Listen for when we sign in. When that happens, we want to refresh our song batch.
             // Refreshing the batch is needed to update the song like statuses, etc. of the songs in the batch.
             accountApi.signedIn
+                .skip(1) // skip the current value
                 .distinctUntilChanged()
                 .subscribe(signedIn => this.signedInChanged(signedIn));
         }
 
         playNext() {
             // Play any song remaining from the batch.
-            if (this.songsBatch.getValue().length > 0) {
-                let song = this.songsBatch.getValue().splice(0, 1)[0]; // Remove the top item.
-                this.songsBatch.onNext(this.songsBatch.getValue());
-                this.audioPlayer.playNewSong(song);
+            const firstSongInList: Song | undefined = this.songsList.items[0];
+            if (firstSongInList) {
+                const songsAfterFirst = this.songsList.items.slice(1);
+                this.updateSongBatch(songsAfterFirst);
+                this.audioPlayer.playNewSong(firstSongInList);
             } else {
                 // Woops, we don't have any songs at all. Request just one (fast), then ask for a batch.
                 this.songApi
                     .chooseSong()
-                    .then(song => {
-                        this.audioPlayer.playNewSong(song);
-                        this.fetchSongBatch();
-                    });
+                    .then(song => this.audioPlayer.playNewSong(song));
             }
 
-            let needMoreSongs = this.songsBatch.getValue().length < 5;
+            const needMoreSongs = this.songsList.items.length < 3;
             if (needMoreSongs) {
-                this.fetchSongBatch();
+                this.songsList.fetch();
             }
         }
 
-        private fetchSongBatch() {
-            this.songApi
+        private fetchSongBatch(): ng.IPromise<Song[]> {
+            return this.songApi
                 .chooseSongBatch()
-                .then(songs => {
-                    let existingSongBatch = this.songsBatch.getValue();
-                    let freshSongs = songs
-                            // tslint:disable-next-line:no-shadowed-variable
-                            .filter(s => existingSongBatch.map(s => s.id).indexOf(s.id) === -1)
-                            .filter(s => !this.songRequestApi.isSongPendingRequest(s.id));
-                    this.songsBatch.onNext(existingSongBatch.concat(freshSongs));
+                .then(results => {
+                    // return the current song batch plus the new songs
+                    const combinedBatch = this.songsList.items
+                        .concat(results)
+                        .filter(s => !this.songRequestApi.isSongPendingRequest(s.id)) // exclude the song if it's already in the song request queue
+                    this.songsBatch.onNext(combinedBatch);
+                    return combinedBatch;
                 });
         }
 
@@ -66,9 +68,16 @@
             let hasBatchSongs = this.songsBatch.getValue().length > 0;
             if (isSignedIn && hasBatchSongs) {
                 // Discard the current batch and fetch a fresh batch.
-                this.songsBatch.onNext([]);
-                this.fetchSongBatch();
+                this.updateSongBatch([]);
+                this.songsList.fetch();
             }
+        }
+
+        private updateSongBatch(songs: Song[]) {
+            this.songsList.items.length = 0;
+            this.songsList.items.push(...songs);
+            this.songsList.cache();
+            this.songsBatch.onNext(songs);
         }
     }
 

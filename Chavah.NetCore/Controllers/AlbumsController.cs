@@ -43,10 +43,7 @@ namespace BitShuva.Chavah.Controllers
         /// <summary>
         /// Gets the album with the specified ID.
         /// </summary>
-        /// <param name="albumArtAddress">The HTTP address where the album art can be fetched. This is expected to be a temporary address created by FilePickr.</param>
-        /// <param name="fileName">The file name. Used for extracting the extension.</param>
-        /// <param name="artist">The artist this album art applies to.</param>
-        /// <param name="album">The name of the album this album art applies to.</param>
+        /// <param name="id"></param>
         [HttpGet]
         public Task<Album> Get(string id)
         {
@@ -152,6 +149,14 @@ namespace BitShuva.Chavah.Controllers
                     .ToListAsync();
                 songsForAlbum.ForEach(s => s.AlbumId = album.Id);
             }
+            else
+            {
+                // Update the album information of all the songs on this album.
+                var songsForAlbum = await DbSession.Query<Song>()
+                    .Where(s => s.AlbumId == album.Id)
+                    .ToListAsync();
+                songsForAlbum.ForEach(s => s.UpdateAlbumInfo(album));
+            }
 
             return album;
         }
@@ -216,7 +221,14 @@ namespace BitShuva.Chavah.Controllers
                     UploadDate = DateTime.UtcNow,
                     Uri = null,
                     AlbumId = existingAlbum.Id,
-                    ArtistId = existingArtist.Id
+                    ArtistId = existingArtist.Id,
+                    AlbumColors = new AlbumColors
+                    {
+                        Background = existingAlbum.BackgroundColor,
+                        Foreground = existingAlbum.ForegroundColor,
+                        Muted = existingAlbum.MutedColor,
+                        TextShadow = existingAlbum.TextShadowColor
+                    }
                 };
                 await this.DbSession.StoreAsync(song);
 
@@ -230,7 +242,7 @@ namespace BitShuva.Chavah.Controllers
         }
         
         [HttpGet]
-        public Task<IList<Album>> GetAlbums(string albumIdsCsv)
+        public Task<List<Album>> GetAlbums(string albumIdsCsv)
         {
             var max = 20;
             var validIds = albumIdsCsv.Split(new[] { "," }, max, StringSplitOptions.RemoveEmptyEntries)
@@ -269,6 +281,7 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="artist">The artist name.</param>
         /// <param name="album">The album.</param>
         /// <returns>An Album-like object containing the ID of the song.</returns>
+        [HttpGet]
         [Route("art/{songId}/{artist}/{album}")]
         public async Task<dynamic> GetAlbumArt(string songId, string artist, string album)
         {

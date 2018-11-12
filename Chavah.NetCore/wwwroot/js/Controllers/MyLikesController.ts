@@ -17,6 +17,7 @@
             "albumApi",
             "artistApi",
             "audioPlayer",
+            "sharing",
             "appNav"
         ];
 
@@ -25,6 +26,7 @@
             private readonly albumApi: AlbumApiService,
             private readonly artistApi: ArtistApiService,
             private readonly audioPlayer: AudioPlayerService,
+            private readonly sharing: SharingService,
             private readonly appNav: AppNavService) {
 
             this.songs.take = 20;
@@ -47,17 +49,17 @@
 
         playSong(song: Song) {
             this.audioPlayer.playSongById(song.id);
-            this.appNav.nowPlaying();
+            //this.appNav.nowPlaying();
         }
 
         playAlbum(album: Server.AlbumWithNetLikeCount) {
             this.audioPlayer.playSongFromAlbumId(album.id);
-            this.appNav.nowPlaying();
+            //this.appNav.nowPlaying();
         }
 
         playArtist(artist: Server.ArtistWithNetLikeCount) {
             this.audioPlayer.playSongFromArtist(artist.name);
-            this.appNav.nowPlaying();
+            //this.appNav.nowPlaying();
         }
 
         loadMoreSongs() {
@@ -91,6 +93,14 @@
                     this.artists.resetAndFetch();
                     break;
             }
+        }
+
+        getFacebookShareUrl(song: Song): string {
+            return this.sharing.facebookShareUrl(song);
+        }
+
+        getTwitterShareUrl(song: Song): string {
+            return this.sharing.twitterShareUrl(song);
         }
     }
 

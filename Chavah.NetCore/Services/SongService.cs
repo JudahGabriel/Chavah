@@ -1,5 +1,6 @@
 ﻿using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
+using Optional;
 using Raven.Client;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;

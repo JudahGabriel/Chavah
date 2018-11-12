@@ -1,8 +1,8 @@
-﻿declare module server {
-	interface PagedList {
-		Total: number;
-		Items: any[];
-		Skip: number;
-		Take: number;
+declare module server {
+	interface pagedList {
+		total: number;
+		items: any[];
+		skip: number;
+		take: number;
 	}
 }

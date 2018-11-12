@@ -27,7 +27,7 @@ namespace BitShuva.Chavah.Common
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                return default(T).SomeNotNull();
+                return Option.None<T>();
             }
 
             var result = await session.LoadAsync<T>(id);
@@ -54,7 +54,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public static async Task<IList<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
+        public static async Task<List<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
         {
             var result = await session.LoadAsync<T>(ids);
             return result.Values
@@ -89,7 +89,7 @@ namespace BitShuva.Chavah.Common
         /// Lazily loads a document from the session. When the value is accessed, an exception will be thrown if the document is null.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="session"></param>
+        /// <param name="sessionOps"></param>
         /// <param name="id"></param>
         /// <returns></returns>
         public static Lazy<Task<T>> LoadRequiredAsync<T>(this IAsyncLazySessionOperations sessionOps, string id)
@@ -122,11 +122,13 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Loads a document from the session and throws the specified exception if null.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="session"></param>
         /// <param name="id"></param>
+        /// <param name="thrower"></param>
         /// <returns></returns>
-        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncDocumentSession session, string id, Func<TException> thrower)
+        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncDocumentSession session, 
+            string id, 
+            Func<TException> thrower)
             where TException : Exception
         {
             if (id == null)
@@ -141,6 +143,26 @@ namespace BitShuva.Chavah.Common
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Loads a document from the session and throws if it's null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="session"></param>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public static async Task<List<T>> LoadWithoutNulls<T>(this IAsyncLoaderWithInclude<T> session, IEnumerable<string> ids)
+        {
+            if (ids == null)
+            {
+                throw new ArgumentNullException(nameof(ids), "Tried to load required entity but passed in a null ID");
+            }
+
+            var results = await session.LoadAsync<T>(ids);
+            return results.Values
+                .Where(item => item != null)
+                .ToList();
         }
 
         /// <summary>
@@ -169,11 +191,12 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Loads a document from the session and throws the specified exception if null.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="session"></param>
         /// <param name="id"></param>
+        /// <param name="thrower"></param>
         /// <returns></returns>
-        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncLoaderWithInclude<T> session, string id, Func<TException> thrower)
+        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncLoaderWithInclude<T> session, 
+            string id, Func<TException> thrower)
             where TException : Exception
         {
             if (id == null)

@@ -69,11 +69,30 @@
                                     Trending songs
                                 </a>
                             </li>
+                            <li ng-show="vm.canInstallPwa">
+                                <a href="javascript:void(0)" ng-click="vm.installPwa()">
+                                    <i class="fa fa-download fa-fw"></i>
+                                    Install App
+                                </a>
+                            </li>
+                            <li class="divider" role="separator"></li>
                             <li>
-                                <a href="#/support"><i class="fa fa-envelope-o fa-fw"></i> Contact</a>
+                                <a href="#/support">
+                                    <i class="fa fa-envelope-o fa-fw"></i>
+                                    Contact
+                                </a>
                             </li>
                             <li>
-                                <a href="#/about"><i class="fa fa-info-circle fa-fw"></i> About</a>
+                                <a href="https://www.patreon.com/chavah" target="_blank">
+                                    <i class="fa fa-money fa-fw"></i>
+                                    Donate
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#/about">
+                                    <i class="fa fa-info-circle fa-fw"></i>
+                                    About
+                                </a>
                             </li>
                             <li role="separator" class="divider"></li>
                             <li ng-hide="vm.currentUserName">
@@ -86,6 +105,12 @@
                                 <a href="#/register">
                                     <i class="fa fa-user-plus fa-fw"></i>
                                     Register
+                                </a>
+                            </li>
+                            <li ng-hide="!vm.isAdmin">
+                                <a href="#/admin">
+                                    <i class="fa fa-user-plus fa-fw"></i>
+                                    Administration
                                 </a>
                             </li>
                             <li ng-show="vm.currentUserName">

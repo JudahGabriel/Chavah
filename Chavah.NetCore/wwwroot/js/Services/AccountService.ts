@@ -1,36 +1,29 @@
 ﻿namespace BitShuva.Chavah {
     export class AccountService {
-
-        static $inject = [
-            "appNav",
-            "initConfig",
-            "httpApi",
-            "localStorageService",
-        ];
-
+        
         currentUser: User | null;
-        signedIn = new Rx.BehaviorSubject<boolean>(false);
-
+        signedIn: Rx.BehaviorSubject<boolean>;
         private apiUri = "/api/account";
 
-        constructor(
-            private appNav: AppNavService,
-            private initConfig: Server.HomeViewModel,
-            private httpApi: HttpApiService,
-            private localStorageService: ng.local.storage.ILocalStorageService) {
+        static $inject = [
+            "httpApi",
+            "initialUser"
+        ];
 
-            if (this.initConfig.user) {
-                this.currentUser = new User(this.initConfig.user);
-                this.signedIn.onNext(true);
-            }
+        constructor(
+            private readonly httpApi: HttpApiService,
+            initialUser: Server.IUserViewModel | null) {
+            
+            this.signedIn = new Rx.BehaviorSubject<boolean>(!!initialUser);
+            this.currentUser = initialUser ? new User(initialUser) : null;
         }
 
         get isSignedIn(): boolean {
-            return !!this.currentUser;
+            return !!this.currentUser && !!this.currentUser.email;
         }
-
+        
         signOut(): ng.IPromise<any> {
-            const signOutTask = this.httpApi.post(`${this.apiUri}/SignOut`, null);
+            const signOutTask = this.httpApi.post(`${this.apiUri}/signOut`, null);
             signOutTask
                 .then(() => {
                     this.currentUser = null;
@@ -43,19 +36,15 @@
             return this.httpApi.post(`${this.apiUri}/clearNotifications`, null);
         }
 
-        register(email: string, password: string): ng.IPromise<Server.RegisterResults> {
-            const args = {
-                email,
-                password,
-            };
-            return this.httpApi.postUriEncoded(`${this.apiUri}/register`, args);
+        register(registerModel: Server.IRegisterModel): ng.IPromise<Server.IRegisterResults> {
+           return this.httpApi.post(`${this.apiUri}/register`, registerModel);
         }
 
-        getUserWithEmail(email: string | null): ng.IPromise<Server.AppUser | null> {
+        getUserWithEmail(email: string | null): ng.IPromise<Server.IUserViewModel | null> {
             const args = {
                 email,
             };
-            return this.httpApi.query<Server.AppUser | null>(`${this.apiUri}/getUserWithEmail`, args);
+            return this.httpApi.query<Server.IUserViewModel | null>(`${this.apiUri}/getUserWithEmail`, args);
         }
 
         createPassword(email: string, password: string): ng.IPromise<any> {
@@ -66,13 +55,9 @@
             return this.httpApi.postUriEncoded(`${this.apiUri}/createPassword`, args);
         }
 
-        signIn(email: string, password: string, staySignedIn: boolean): ng.IPromise<Server.SignInResult> {
-            const args = {
-                email,
-                password,
-                staySignedIn,
-            };
-            const signInTask = this.httpApi.postUriEncoded<Server.SignInResult>(`${this.apiUri}/signIn`, args);
+        signIn(signInModel: Server.ISignInModel): ng.IPromise<Server.ISignInResult> {
+          
+            const signInTask = this.httpApi.post<Server.ISignInResult>(`${this.apiUri}/signIn`, signInModel);
             signInTask.then(result => {
                 if (result.status === SignInStatus.Success && result.user) {
                     this.currentUser = new User(result.user);
@@ -98,7 +83,7 @@
                 confirmCode,
             };
 
-            return this.httpApi.postUriEncoded(`${this.apiUri}/ConfirmEmail`, args);
+            return this.httpApi.postUriEncoded(`${this.apiUri}/confirmEmail`, args);
         }
 
         sendPasswordResetEmail(email: string): ng.IPromise<Server.ResetPasswordResult> {
@@ -128,6 +113,13 @@
                 userAgent: window.navigator.userAgent
             };
             return this.httpApi.post(`${this.apiUri}/sendSupportMessage`, args);
+        }
+
+        resendConfirmationEmail(email: string): ng.IPromise<any> {
+            const args = {
+                email: email
+            };
+            return this.httpApi.post(`${this.apiUri}/resendConfirmationEmail`, args);
         }
     }
 

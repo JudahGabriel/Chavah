@@ -10,13 +10,32 @@
 
     export const App = angular.module("ChavahApp", modules);
 
-    const homeVm: Server.HomeViewModel = window["BitShuva.Chavah.HomeViewModel"];
-    App.constant("initConfig", homeVm);
+    const initConfig: Server.IConfigViewModel = {} as Server.IConfigViewModel;
+
+    // not sure if this will work with cordova on ios or android.
+    App.value('jQuery', jQuery);
+    jQuery.ajax("/config.json", { async: false, cache: false })
+        .done((data) => {
+            var response = angular.fromJson(data)
+            if (response) {
+                angular.extend(initConfig, response);
+                if (initConfig.debug) {
+                    console.log(initConfig);
+                }
+            } else {
+                console.error(response);
+            }
+        })
+        .fail((e) => {
+            console.error(e);
+        });
+
+    App.constant("initConfig", initConfig);
 
     // Gets the relative path to a cache-busted angular view.
     // The view URL is appended a hash of the contents of the file. See AngularCacheBustedViewsProvider.cs
     function findCacheBustedView(viewName: string) {
-        let cacheBustedView = homeVm.cacheBustedAngularViews.find((v) => v.search(new RegExp(viewName, "i")) !== -1);
+        let cacheBustedView = initConfig.cacheBustedAngularViews.find((v) => v.search(new RegExp(viewName, "i")) !== -1);
         if (!cacheBustedView) {
             throw new Error("Unable to find cache-busted Angular view " + viewName);
         }
@@ -24,6 +43,13 @@
         return cacheBustedView;
     }
     export const FindAppView = findCacheBustedView;
+
+    // Before our app runs, we need to store our signed-in state.
+    // Components in the UI (e.g. song batch) use this to fetch their data;
+    // signed-in users will receive different song batches than anonymous users.
+    // So, we can't do this asynchronously. We must do it at initialization time.
+    const user: Server.IUserViewModel | undefined = window["BitShuva.Chavah.InitialUser"];
+    App.constant("initialUser", user || null);
 
     function createRoute(templateUrl: string, access = RouteAccess.Anonymous): AppRoute {
         let cacheBustedView = findCacheBustedView(templateUrl);
@@ -35,7 +61,6 @@
 
     const templatePaths: ITemplatePaths = {
         artistList: findCacheBustedView("/partials/ArtistList.html"),
-        songList: findCacheBustedView("/partials/SongList.html"),
         songRequestModal: findCacheBustedView("/modals/RequestSongModal.html"),
         confirmDeleteSongModal: findCacheBustedView("/modals/ConfirmDeleteSongModal.html"),
         songRequestResult: findCacheBustedView("/partials/SongRequestResult.html"),
@@ -91,55 +116,56 @@
 
     App.config(["$routeProvider", "$locationProvider",
         ($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {
-        $routeProvider.caseInsensitiveMatch = true;
-        $locationProvider.hashPrefix("");
-        $routeProvider
-            .when("/", createRoute("NowPlaying.html"))
-            .when("/nowplaying", { redirectTo: "/" })
-            .when("/trending", createRoute("Trending.html"))
-            .when("/profile", createRoute(views.profile, RouteAccess.Authenticated))
-            .when("/popular", createRoute(views.popular))
-            .when("/recent", createRoute(views.recent))
-            .when("/mylikes", createRoute(views.myLikes))
-            .when("/edit/songs/:id", createRoute(views.editSong, RouteAccess.Authenticated))
-            .when("/sharethanks/:artist?", createRoute(views.shareThanks))
-            .when("/about", createRoute(views.about))
-            .when("/welcome", createRoute(views.welcome))
-            .when("/songeditapproved/:artist/:songName", createRoute(views.songEditApproved))
-            .when("/privacy", createRoute(views.privacyPolicy))
-            .when("/support", createRoute(views.support))
+            $routeProvider.caseInsensitiveMatch = true;
+            $locationProvider.hashPrefix("");
 
-            // Sign in
-            .when("/promptsignin", createRoute(views.promptSignIn))
-            .when("/signin", createRoute(views.signIn))
-            .when("/password/:email", createRoute(views.password))
-            .when("/forgotpassword", createRoute(views.forgotPassword))
-            .when("/createpassword/:email", createRoute(views.createPassword))
-            .when("/register/:email?", createRoute(views.register))
-            .when("/confirmemail/:email/:confirmCode", createRoute(views.confirmEmail))
-            .when("/resetpassword/:email/:confirmCode", createRoute(views.resetPassword))
+            $routeProvider
+                .when("/", createRoute("NowPlaying.html"))
+                .when("/nowplaying", { redirectTo: "/" })
+                .when("/trending", createRoute("Trending.html"))
+                .when("/profile", createRoute(views.profile, RouteAccess.Authenticated))
+                .when("/popular", createRoute(views.popular))
+                .when("/recent", createRoute(views.recent))
+                .when("/mylikes", createRoute(views.myLikes, RouteAccess.Authenticated))
+                .when("/edit/songs/:id", createRoute(views.editSong, RouteAccess.Authenticated))
+                .when("/sharethanks/:artist?", createRoute(views.shareThanks))
+                .when("/about", createRoute(views.about))
+                .when("/welcome", createRoute(views.welcome))
+                .when("/songeditapproved/:artist/:songName", createRoute(views.songEditApproved))
+                .when("/privacy", createRoute(views.privacyPolicy))
+                .when("/support", createRoute(views.support))
 
-            // Donate
-            .when("/donate/:artist?", createRoute(views.donate))
-            .when("/donatesuccess", createRoute(views.donateSuccess))
-            .when("/donatecancelled", createRoute(views.donateCancelled))
+                // Sign in
+                .when("/promptsignin", createRoute(views.promptSignIn))
+                .when("/signin", createRoute(views.signIn))
+                .when("/password/:email", createRoute(views.password))
+                .when("/forgotpassword/:email?/:pwned?", createRoute(views.forgotPassword))
+                .when("/createpassword/:email", createRoute(views.createPassword))
+                .when("/register/:email?", createRoute(views.register))
+                .when("/confirmemail/:email/:confirmCode", createRoute(views.confirmEmail))
+                .when("/resetpassword/:email/:confirmCode", createRoute(views.resetPassword))
 
-            // Admin
-            .when("/admin", createRoute(views.editSongs, RouteAccess.Admin))
-            .when("/admin/albums", createRoute(views.albums, RouteAccess.Admin))
-            .when("/admin/album/upload", createRoute(views.uploadAlbum, RouteAccess.Admin))
-            .when("/admin/album/create", createRoute(views.createAlbum, RouteAccess.Admin))
-            .when("/admin/album/:artist/:album", createRoute(views.editAlbum, RouteAccess.Admin))
-            .when("/admin/artists/:artistName?", createRoute(views.editArtist, RouteAccess.Admin))
-            .when("/admin/songedits", createRoute(views.songEdits, RouteAccess.Admin))
-            .when("/admin/tags", createRoute(views.tags, RouteAccess.Admin))
-            .when("/admin/logs", createRoute(views.logs, RouteAccess.Admin))
-            .when("/admin/songs", createRoute(views.editSongs, RouteAccess.Admin)) 
+                // Donate
+                .when("/donate/:artist?", createRoute(views.donate))
+                .when("/donatesuccess", createRoute(views.donateSuccess))
+                .when("/donatecancelled", createRoute(views.donateCancelled))
 
-            .otherwise({
-                redirectTo: "/nowplaying",
-            });
-    }]);
+                // Admin
+                .when("/admin", createRoute(views.editSongs, RouteAccess.Admin))
+                .when("/admin/albums", createRoute(views.albums, RouteAccess.Admin))
+                .when("/admin/album/upload", createRoute(views.uploadAlbum, RouteAccess.Admin))
+                .when("/admin/album/create", createRoute(views.createAlbum, RouteAccess.Admin))
+                .when("/admin/album/:artist/:album", createRoute(views.editAlbum, RouteAccess.Admin))
+                .when("/admin/artists/:artistName?", createRoute(views.editArtist, RouteAccess.Admin))
+                .when("/admin/songedits", createRoute(views.songEdits, RouteAccess.Admin))
+                .when("/admin/tags", createRoute(views.tags, RouteAccess.Admin))
+                .when("/admin/logs", createRoute(views.logs, RouteAccess.Admin))
+                .when("/admin/songs", createRoute(views.editSongs, RouteAccess.Admin)) 
+
+                .otherwise({
+                    redirectTo: "/nowplaying",
+                });
+        }]);
 
     App.run([
         "templatePaths",
@@ -155,16 +181,16 @@
         "$q",
         // tslint:disable-next-line:no-shadowed-variable
         (templatePaths: ITemplatePaths,
-         accountApi: AccountService,
-         appNav: AppNavService,
-         adminScripts: AdminScriptsService,
-         navigatorMediaSession: NavigatorMediaSessionService,
-         uwpNativeAudio: UwpNativeAudioService,
-         iOSMediaSession: IOSMediaSessionService,
-         $rootScope: ng.IRootScopeService,
-         $location: ng.ILocationService,
-         $window: ng.IWindowService,
-         $q: ng.IQService) => {
+            accountApi: AccountService,
+            appNav: AppNavService,
+            adminScripts: AdminScriptsService,
+            navigatorMediaSession: NavigatorMediaSessionService,
+            uwpNativeAudio: UwpNativeAudioService,
+            iOSMediaSession: IOSMediaSessionService,
+            $rootScope: ng.IRootScopeService,
+            $location: ng.ILocationService,
+            $window: ng.IWindowService,
+            $q: ng.IQService) => {
 
             // Use Angular's Q object as Promise. This is needed to make async/await work properly with the UI.
             // See http://stackoverflow.com/a/41825004/536
@@ -174,7 +200,7 @@
             iOSMediaSession.install(); // iOS
             navigatorMediaSession.install(); // Android, emerging web standard
             uwpNativeAudio.install(); // Windows
-            
+
             // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.
             ($rootScope as any).Partials = templatePaths;
 
@@ -188,7 +214,7 @@
                     ga("send", "pageview", $location.path());
                 }
             });
-
+            
             // tslint:disable-next-line:variable-name
             $rootScope.$on("$routeChangeStart", (_e: ng.IAngularEvent, next: any) => {
                 const route: AppRoute = next.$$route;
