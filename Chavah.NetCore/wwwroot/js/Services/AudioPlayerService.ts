@@ -73,7 +73,13 @@ namespace BitShuva.Chavah {
                     this.audio.load();
 
                     try {
-                        this.audio.play();
+                        // On modern browsers, play will return a promise.
+                        const playTask = this.audio.play();
+                        if (playTask && playTask.catch) {
+                            playTask.catch(taskError => {
+                                console.log("Unable to play audio due to task error", taskError);
+                            });
+                        }
                     } catch (error) {
                         // This can happen on mobile when we try to play before user interaction.
                         // Don't worry about it; it will remain paused until the user clicks play.

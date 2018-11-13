@@ -1,7 +1,7 @@
 ﻿namespace BitShuva.Chavah {
     export class NowPlayingController {
         trending = new List<Song>(() => this.songApi.getTrendingSongs(0, 3).then(results => results.items), "trending", SongApiService.songConverter);
-        likes = new List<Song>(() => this.songApi.getLikes(0, 3).then(results => results.items), "mylikes", SongApiService.songConverter);
+        likes = new List<Song>(() => this.songApi.getRandomLikedSongs(3), "mylikes", SongApiService.songConverter);
         recent = new List<Song>(() => this.songApi.getRecentPlays(3), "recent", SongApiService.songConverter);
         popular = new List<Song>(() => this.songApi.getPopularSongs(3), "popular", SongApiService.songConverter);
         songs: Song[] = [];
