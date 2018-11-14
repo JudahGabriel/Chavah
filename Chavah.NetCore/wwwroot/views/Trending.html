@@ -1,7 +1,7 @@
 ﻿<div ng-include="Partials.goBack"></div>
 <section class="page trending-page" ng-controller="TrendingController as vm">
     <div class="songs-container">
-        <div class="song-item" ng-repeat="song in vm.songsList.items" ng-click="vm.playSong(song)" ng-style="{ 'background-color': song.albumColors.background }" uib-tooltip="Click to play this song" tooltip-append-to-body="true">
+        <div class="song-item" ng-repeat="song in vm.visibleSongs" ng-click="vm.playSong(song)" ng-style="{ 'background-color': song.albumColors.background }" uib-tooltip="Click to play this song" tooltip-append-to-body="true">
             <img ng-src="{{song.albumArtUri}}" alt="{{song.album}} album art">
             <div class="song-info"
                  ng-attr-title="{{song.name}} by {{song.artist}} on {{song.album}}"
