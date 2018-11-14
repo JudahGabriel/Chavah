@@ -161,13 +161,7 @@
         songClicked(song: Song) {
             if (song !== this.currentSong) {
                 song.setSolePickReason(SongPick.YouRequestedSong);
-                let songBatch = this.songBatch.songsBatch.getValue();
-                let songIndex = songBatch.indexOf(song);
-                if (songIndex >= 0) {
-                    songBatch.splice(songIndex, 1);
-                    songBatch.splice(0, 0, song);
-                    this.songBatch.playNext();
-                }
+                this.songBatch.playQueuedSong(song);
             }
         }
 

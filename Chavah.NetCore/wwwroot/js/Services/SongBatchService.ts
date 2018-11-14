@@ -51,6 +51,25 @@
             }
         }
 
+        /**
+         * Plays a song that's in the song batch queue, but may not be the next item.
+         * If the song is in the queued songs, it's moved to the next position in the queue and played immediately.
+         * @param song
+         */
+        playQueuedSong(song: Song) {
+            const songBatch = this.songsBatch.getValue();
+            const songIndex = songBatch.indexOf(song);
+            if (songIndex >= 0) {
+                // Pull it from the queue.
+                songBatch.splice(songIndex, 1);
+            }
+
+            // Put it as the next song and then play it.
+            songBatch.splice(0, 0, song);
+            this.updateSongBatch(songBatch);
+            this.playNext();
+        }
+
         private fetchSongBatch(): ng.IPromise<Song[]> {
             return this.songApi
                 .chooseSongBatch()
