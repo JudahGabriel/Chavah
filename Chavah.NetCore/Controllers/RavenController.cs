@@ -5,6 +5,7 @@ using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using Optional;
 using Raven.Client.Documents.Session;
 using Raven.Client.Exceptions;
 using Raven.StructuredLog;
@@ -50,8 +51,7 @@ namespace BitShuva.Chavah.Controllers
             {
                 try
                 {
-                    await DbSession.SaveChangesAsync()
-                        .ConfigureAwait(false);
+                    await DbSession.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
@@ -65,9 +65,9 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<AppUser> GetCurrentUserOrThrow()
+        protected async Task<AppUser> GetCurrentUserOrThrow()
         {
-            var currentUser = await GetCurrentUser().ConfigureAwait(false);
+            var currentUser = await GetCurrentUser();
             if (currentUser == null)
             {
                 throw new UnauthorizedAccessException().WithData("userName", User.Identity.Name);
@@ -77,7 +77,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<AppUser> GetCurrentUser()
+        protected async Task<AppUser> GetCurrentUser()
         {
             if (currentUser != null)
             {
@@ -87,8 +87,7 @@ namespace BitShuva.Chavah.Controllers
             var email = User.Identity.Name;
             if (!string.IsNullOrEmpty(email))
             {
-                currentUser = await DbSession.LoadAsync<AppUser>("AppUsers/" + email)
-                    .ConfigureAwait(false);
+                currentUser = await DbSession.LoadAsync<AppUser>("AppUsers/" + email);
             }
 
             return currentUser;

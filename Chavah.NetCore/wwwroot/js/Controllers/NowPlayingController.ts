@@ -14,7 +14,7 @@
             "songApi",
             "songBatch",
             "audioPlayer",
-            "initConfig",
+            "homeViewModel",
             "appNav",
             "accountApi",
             "sharing"
@@ -24,7 +24,7 @@
             private songApi: SongApiService,
             private songBatch: SongBatchService,
             private audioPlayer: AudioPlayerService,
-            private initConfig: Server.IConfigViewModel,
+            private homeViewModel: Server.HomeViewModel,
             private appNav: AppNavService,
             private accountApi: AccountService,
             private sharing: SharingService) {
@@ -42,12 +42,13 @@
                 .takeUntil(this.disposed)
                 .subscribeOnNext(() => this.songs = this.getSongs());
             
-            if (initConfig.embed) {
+            if (homeViewModel.embed) {
                 // If we're embedded on another page, queue up the song we're told to play.
                 // Don't play it automatically, though, because there may be multiple embeds on the same page.
-                //temp fix??? at least this will display the image for the emebed song
-                this.audioPlayer.playNewSong((this.initConfig as any).song as any);
-                this.audioPlayer.pause();
+                if (this.homeViewModel.song) {
+                    this.audioPlayer.playNewSong(new Song(this.homeViewModel.song));
+                    this.audioPlayer.pause();
+                }
             } else {
                 // Play the next song if we don't already have one playing.
                 // We don't have one playing when first loading the UI.

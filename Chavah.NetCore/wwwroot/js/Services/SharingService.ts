@@ -1,29 +1,31 @@
 ﻿namespace BitShuva.Chavah {
     export class SharingService {
 
-        static $inject = ["initConfig"];
+        static $inject = [
+            "homeViewModel"
+        ];
 
-        constructor(private initConfig: Server.IConfigViewModel) {
+        constructor(private homeViewModel: Server.HomeViewModel) {
         }
 
         shareUrl(id: string): string {
-            return `${this.initConfig.defaultUrl}/?song=${id}`;
+            return `${this.homeViewModel.defaultUrl}/?song=${id}`;
         }
 
         getEmbedCode(id: string): string {
             // tslint:disable-next-line:max-line-length
-            return `<iframe style="border-top: medium none; height: 558px; border-right: medium none; width: 350px; border-bottom: medium none; border-left: medium none" src="${this.initConfig.defaultUrl}/home/embed?song=${id}" scrolling="none"></iframe>`;
+            return `<iframe style="border-top: medium none; height: 558px; border-right: medium none; width: 350px; border-bottom: medium none; border-left: medium none" src="${this.homeViewModel.defaultUrl}/home/embed?song=${id}" scrolling="none"></iframe>`;
         }
 
         facebookShareUrl(song: Song): string {
             const songName = this.getSongName(song);
             // Yes, replace ampersand. Even though we escape it via encodeURIComponent, Facebook barfs on it.
             const name = `${songName} by ${song.artist}`.replace(new RegExp("&", "g"), "and");
-            const url = `${this.initConfig.defaultUrl}/?song=${song.id}`;
+            const url = `${this.homeViewModel.defaultUrl}/?song=${song.id}`;
 
             // We can't link to the song.albumArt, because it comes from a different domain (our CDN), which Facebook doesn't like.
             // Instead, link to a URL on our domain that redirects to the album art on the CDN.
-            const albumArtUrl = `${this.initConfig.defaultUrl}/api/albums/getAlbumArtBySongId?songId=${song.id}`;
+            const albumArtUrl = `${this.homeViewModel.defaultUrl}/api/albums/getAlbumArtBySongId?songId=${song.id}`;
             return "https://www.facebook.com/dialog/feed?app_id=256833604430846" +
                 `&link=${url}` +
                 `&picture=${encodeURIComponent(albumArtUrl)}` +
@@ -31,13 +33,13 @@
                 `&description=${encodeURIComponent("On " + song.album)}` +
                 // tslint:disable-next-line:max-line-length
                 `&caption=${encodeURIComponent("Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music")}` +
-                `&redirect_uri=${encodeURIComponent(`${this.initConfig.defaultUrl}/#/sharethanks`)}`;
+                `&redirect_uri=${encodeURIComponent(`${this.homeViewModel.defaultUrl}/#/sharethanks`)}`;
         }
 
         twitterShareUrl(song: Song): string {
             const songName = this.getSongName(song);
             const tweetText = `Listening to ${songName} by ${song.artist}`;
-            const url = `${this.initConfig.defaultUrl}/?song=${song.id}`;
+            const url = `${this.homeViewModel.defaultUrl}/?song=${song.id}`;
             const via = "messianicradio";
             return "https://twitter.com/share" +
                 "?text=" + encodeURIComponent(tweetText) +
@@ -68,7 +70,7 @@
                     navigatorDotShare({
                         title: `${songName} by ${song.artist}`,
                         text: "via Chavah Messianic Radio",
-                        url: `${this.initConfig.defaultUrl}/?song=${song.id}`
+                        url: `${this.homeViewModel.defaultUrl}/?song=${song.id}`
                     });
                 } catch (error) {
                     console.log("Unable to trigger navigator.share", error);

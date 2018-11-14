@@ -10,32 +10,14 @@
 
     export const App = angular.module("ChavahApp", modules);
 
-    const initConfig: Server.IConfigViewModel = {} as Server.IConfigViewModel;
-
-    // not sure if this will work with cordova on ios or android.
-    App.value('jQuery', jQuery);
-    jQuery.ajax("/config.json", { async: false, cache: false })
-        .done((data) => {
-            var response = angular.fromJson(data)
-            if (response) {
-                angular.extend(initConfig, response);
-                if (initConfig.debug) {
-                    console.log(initConfig);
-                }
-            } else {
-                console.error(response);
-            }
-        })
-        .fail((e) => {
-            console.error(e);
-        });
-
-    App.constant("initConfig", initConfig);
+    const homeVm: Server.HomeViewModel = window["BitShuva.Chavah.HomeViewModel"];
+    App.constant("homeViewModel", homeVm);
+    App.constant("initialUser", homeVm.user);
 
     // Gets the relative path to a cache-busted angular view.
     // The view URL is appended a hash of the contents of the file. See AngularCacheBustedViewsProvider.cs
     function findCacheBustedView(viewName: string) {
-        let cacheBustedView = initConfig.cacheBustedAngularViews.find((v) => v.search(new RegExp(viewName, "i")) !== -1);
+        let cacheBustedView = homeVm.cacheBustedAngularViews.find((v) => v.search(new RegExp(viewName, "i")) !== -1);
         if (!cacheBustedView) {
             throw new Error("Unable to find cache-busted Angular view " + viewName);
         }
@@ -43,13 +25,6 @@
         return cacheBustedView;
     }
     export const FindAppView = findCacheBustedView;
-
-    // Before our app runs, we need to store our signed-in state.
-    // Components in the UI (e.g. song batch) use this to fetch their data;
-    // signed-in users will receive different song batches than anonymous users.
-    // So, we can't do this asynchronously. We must do it at initialization time.
-    const user: Server.IUserViewModel | undefined = window["BitShuva.Chavah.InitialUser"];
-    App.constant("initialUser", user || null);
 
     function createRoute(templateUrl: string, access = RouteAccess.Anonymous): AppRoute {
         let cacheBustedView = findCacheBustedView(templateUrl);

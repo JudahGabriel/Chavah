@@ -3,8 +3,8 @@
 
         static $inject = [
             "artistApi",
-            "$routeParams",
-            "initConfig",
+            "homeViewModel",
+            "$routeParams"
         ];
 
         desiredArtistName: string | null = null;
@@ -15,12 +15,12 @@
 
         constructor(
             artistApi: ArtistApiService,
-            $routeParams: ng.route.IRouteParamsService,
-            private initConfig: Server.IConfigViewModel) {
+            private homeViewModel: Server.HomeViewModel,
+            $routeParams: ng.route.IRouteParamsService) {
 
             this.donationTargetOptions = [
-                this.initConfig.title,
-                `All artists on ${this.initConfig.title}`,
+                this.homeViewModel.pageTitle,
+                `All artists on ${this.homeViewModel.pageTitle}`,
             ];
             this.donationTarget = this.donationTargetOptions[0];
 

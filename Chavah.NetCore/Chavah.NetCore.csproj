@@ -85,35 +85,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <TypeScriptCompile Include="wwwroot\js\Common\AngularBindings.ts" />
-	  <TypeScriptCompile Include="wwwroot\js\Polyfills\BeforeInstallPromptEvent.ts" />
-	  <TypeScriptCompile Include="wwwroot\js\Services\PwaInstallService.ts" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Update="Models\**\*.cs">
 			<DependentUpon>%(Filename).d.ts</DependentUpon>
 		</None>
 		<None Update="ravencert.*.pfx">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="Models\Account\RegisterModel.cs">
-	    <Generator>DtsGenerator</Generator>
-	    <LastGenOutput>RegisterModel.cs.d.ts</LastGenOutput>
-	  </Compile>
-	  <Compile Update="Models\Account\RegisterResults.cs">
-	    <Generator>DtsGenerator</Generator>
-	    <LastGenOutput>RegisterResults.cs.d.ts</LastGenOutput>
-	  </Compile>
-	  <Compile Update="Models\Account\SignInModel.cs">
-	    <Generator></Generator>
-	  </Compile>
-	  <Compile Update="Models\ConfigViewModel.cs">
-	    <Generator></Generator>
-	  </Compile>
 	</ItemGroup>
 
 	<Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
