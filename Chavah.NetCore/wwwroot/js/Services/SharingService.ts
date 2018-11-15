@@ -55,6 +55,22 @@
          * @param song The song to share.
          */
         nativeShareUrl(song: Song) {
+            var nativeShareActions = [
+                () => this.tryShareWeb(song),
+                () => this.tryShareOnWindows(song)
+            ];
+
+            // Invoke each native share action until one succeeds.
+            for (let i = 0; i < nativeShareActions.length; i++) {
+                var action = nativeShareActions[i];
+                var success = action();
+                if (success) {
+                    break;
+                }
+            }
+        }
+
+        private tryShareWeb(song: Song) {
             // Type definitions for the upcoming web standard.
             type ShareOptions = { title: string; text: string; url: string };
             type NavigatorShare = (options: ShareOptions) => Promise<{}>;
@@ -72,9 +88,49 @@
                         text: "via Chavah Messianic Radio",
                         url: `${this.homeViewModel.defaultUrl}/?song=${song.id}`
                     });
+                    return true;
                 } catch (error) {
                     console.log("Unable to trigger navigator.share", error);
                 }
+            }
+
+            return false;
+        }
+
+        private tryShareOnWindows(song: Song): boolean {
+            // TODO: this should probably be in a platform-specific file or module.
+            if (window["Windows"]) {
+                try {
+                    const DataTransferManager = Windows.ApplicationModel.DataTransfer.DataTransferManager;
+                    const RandomAccessStreamReference = Windows.Storage.Streams.RandomAccessStreamReference;
+                    const ShareProvider = Windows.ApplicationModel.DataTransfer["ShareProvider"];
+                    const Uri = Windows.Foundation.Uri;
+
+                    const dataTransferManager = DataTransferManager.getForCurrentView();
+                    dataTransferManager.addEventListener("datarequested", (ev) => {
+                        const data = ev.request.data;
+                        var shareData = this.getShareData(song);
+                        data.properties.title = shareData.title;
+                        data.properties["url"] = shareData.url;
+                        data.setText(shareData.text);
+                    });
+
+                    dataTransferManager["showShareUI"]();
+                    return true;
+                }
+                catch (error) {
+                    console.log("Unable to invoke Windows share functionality.", error);
+                }
+            }
+
+            return false;
+        }
+
+        private getShareData(song: Song): { title: string; text: string; url: string; } {
+            return {
+                title: `${this.getSongName(song)} by ${song.artist}`,
+                text: `via ${this.homeViewModel.pageTitle}`,
+                url: `${this.homeViewModel.defaultUrl}/?song=${song.id}`
             }
         }
 
