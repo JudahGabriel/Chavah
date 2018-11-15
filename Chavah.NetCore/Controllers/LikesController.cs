@@ -55,7 +55,7 @@ namespace BitShuva.Chavah.Controllers
 
         private async Task<int> UpdateLikeStatus(string songId, LikeStatus likeStatus)
         {
-            var user = await this.GetCurrentUserOrThrow();
+            var user = await this.GetUserOrThrow();
             var song = await this.DbSession.LoadAsync<Song>(songId);
             if (song == null)
             {
@@ -82,7 +82,7 @@ namespace BitShuva.Chavah.Controllers
                     Status = likeStatus,
                     SongId = songId,
                     UserId = user.Id,
-                    Date = DateTime.Now
+                    Date = DateTime.UtcNow
                 };
                 await this.DbSession.StoreAsync(newLikeStatus, likeId);
                 
@@ -96,7 +96,7 @@ namespace BitShuva.Chavah.Controllers
                     var songArtist = song.Artist;
                     var activity = new Activity
                     {
-                        DateTime = DateTime.Now,
+                        DateTime = DateTime.UtcNow,
                         Title = $"{song.Artist} - {song.Name} was thumbed up ({songRankString}) on {options?.Value?.Application?.Title}",
                         Description = $"\"{song.Name}\" by {songArtist} was thumbed up ({songRankString}) on {options?.Value?.Application?.Title}.",
                         MoreInfoUri = song.GetSongShareLink(options?.Value?.Application?.DefaultUrl),

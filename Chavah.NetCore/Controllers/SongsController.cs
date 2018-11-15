@@ -33,7 +33,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<List<Song>> GetRecentPlays(int count)
         {
-            var user = await this.GetCurrentUser();
+            var user = await this.GetUser();
             if (user == null)
             {
                 return new List<Song>(0);
@@ -48,7 +48,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<IEnumerable<Song>> GetRandomLikedSongs(int count)
         {
-            var user = await this.GetCurrentUser();
+            var user = await this.GetUser();
             if (user == null)
             {
                 return new Song[0];
@@ -210,7 +210,7 @@ namespace BitShuva.Chavah.Controllers
             // Aggressive caching for the UserSongPreferences and SongsWithRanking. These don't change often.
             using (DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
             {
-                var user = await this.GetCurrentUser();
+                var user = await this.GetUser();
 
                 // This is NOT an unbounded result set:
                 // This queries the Songs_RankStandings index, which will reduce the results. Max number of results will be the number of CommunityRankStanding enum constants.
@@ -257,7 +257,7 @@ namespace BitShuva.Chavah.Controllers
             // Aggressive caching for the UserSongPreferences and SongsWithRanking. These don't change often.
             using (var cache = DbSession.Advanced.DocumentStore.AggressivelyCacheFor(TimeSpan.FromDays(1)))
             {
-                var user = await this.GetCurrentUser();
+                var user = await this.GetUser();
 
                 // This is NOT an unbounded result set:
                 // This queries the Songs_RankStandings index, which will reduce the results. Max number of results will be the number of CommunityRankStanding enum constants.
@@ -329,7 +329,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task SongCompleted(string songId)
         {
-            var user = await this.GetCurrentUser();
+            var user = await this.GetUser();
             if (user != null)
             {
                 user.TotalPlays++;
@@ -572,7 +572,7 @@ namespace BitShuva.Chavah.Controllers
 
         private async Task<Song> GetSongDto(Song song, SongPick pickReason)
         {
-            var user = await this.GetCurrentUser();
+            var user = await this.GetUser();
             if (user != null)
             {
                 var songLikeId = Like.GetLikeId(user.Id, song.Id);

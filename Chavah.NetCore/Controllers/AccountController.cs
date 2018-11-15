@@ -56,24 +56,24 @@ namespace BitShuva.Chavah.Controllers
             this.pwnedPasswordService = pwnedPasswordService;
         }
 
-        /// <summary>
-        /// Returns currently logged in user.
-        /// </summary>
-        /// <returns code="200">Returns logged in user.</returns>
-        [HttpGet]
-        [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent)]
-        public async Task<IActionResult> GetUser()
-        {
-            var userName = User.Identity.Name;
-            AppUser user = null;
-            if (!string.IsNullOrEmpty(userName))
-            {
-                user = await GetCurrentUser().ConfigureAwait(false);
-                return Ok(mapper.Map<UserViewModel>(user));
-            }
-            return Ok(null);
-        }
+        ///// <summary>
+        ///// Returns currently logged in user.
+        ///// </summary>
+        ///// <returns code="200">Returns logged in user.</returns>
+        //[HttpGet]
+        //[ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
+        //[ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent)]
+        //public async Task<IActionResult> GetUser()
+        //{
+        //    var userName = User.Identity.Name;
+        //    AppUser user = null;
+        //    if (!string.IsNullOrEmpty(userName))
+        //    {
+        //        user = await base.GetUser().ConfigureAwait(false);
+        //        return Ok(mapper.Map<UserViewModel>(user));
+        //    }
+        //    return Ok(null);
+        //}
 
         /// <summary>
         /// User SignIn.
@@ -227,7 +227,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task<int> ClearNotifications()
         {
-            var user = await GetCurrentUserOrThrow().ConfigureAwait(false);
+            var user = await GetUserOrThrow().ConfigureAwait(false);
             var count = user.Notifications.Count;
             user.Notifications
                 .ForEach(n => n.IsUnread = false);
@@ -508,7 +508,7 @@ namespace BitShuva.Chavah.Controllers
             // If we have a userID, see if we can load that user and update his/her name.
             if (!string.IsNullOrEmpty(message.Name) && !string.IsNullOrEmpty(message.UserId))
             {
-                var user = await this.GetCurrentUser();
+                var user = await this.GetUser();
                 if (string.IsNullOrEmpty(user.FirstName) && string.IsNullOrEmpty(user.LastName))
                 {
                     // Update their name.

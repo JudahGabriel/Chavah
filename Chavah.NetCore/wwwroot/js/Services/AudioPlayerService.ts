@@ -67,7 +67,11 @@ namespace BitShuva.Chavah {
 
         playNewUri(uri: string) {
             if (this.audio) {
-                this.audio.src = "";
+                //this.audio.src = "";
+                if (this.audio.src === uri) {
+                    this.audio.currentTime = 0;
+                }
+
                 if (uri) {
                     this.audio.src = uri;
                     this.audio.load();
@@ -76,9 +80,7 @@ namespace BitShuva.Chavah {
                         // On modern browsers, play will return a promise.
                         const playTask = this.audio.play();
                         if (playTask && playTask.catch) {
-                            playTask.catch(taskError => {
-                                console.log("Unable to play audio due to task error", taskError);
-                            });
+                            playTask.catch(taskError => console.log("Unable to play audio due to task error", taskError));
                         }
                     } catch (error) {
                         // This can happen on mobile when we try to play before user interaction.

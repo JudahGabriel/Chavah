@@ -61,7 +61,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task SaveVolume(double volume)
         {
             // TODO: trace down the logic for the authentication. it should never be triggred from ui.
-            var user = await GetCurrentUser().ConfigureAwait(false);
+            var user = await GetUser().ConfigureAwait(false);
             if (user != null)
             {
                 user.Volume = volume;
@@ -82,7 +82,7 @@ namespace BitShuva.Chavah.Controllers
                     .WithData("size", file.Length);
             }
 
-            var user = await GetCurrentUserOrThrow().ConfigureAwait(false);
+            var user = await GetUserOrThrow().ConfigureAwait(false);
             var oldProfilePic = user.ProfilePicUrl;
 
             using (var fileStream = file.OpenReadStream())
@@ -104,7 +104,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task<AppUser> UpdateProfile([FromBody]AppUser updatedUser)
         {
-            var user = await GetCurrentUserOrThrow().ConfigureAwait(false);
+            var user = await GetUserOrThrow().ConfigureAwait(false);
             var isUpdatingSelf = string.Equals(user.Email, updatedUser.Email, StringComparison.InvariantCultureIgnoreCase);
             if (!isUpdatingSelf)
             {

@@ -65,9 +65,9 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected async Task<AppUser> GetCurrentUserOrThrow()
+        protected async Task<AppUser> GetUserOrThrow()
         {
-            var currentUser = await GetCurrentUser();
+            var currentUser = await GetUser();
             if (currentUser == null)
             {
                 throw new UnauthorizedAccessException().WithData("userName", User.Identity.Name);
@@ -77,7 +77,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected async Task<AppUser> GetCurrentUser()
+        protected async Task<AppUser> GetUser()
         {
             if (currentUser != null)
             {

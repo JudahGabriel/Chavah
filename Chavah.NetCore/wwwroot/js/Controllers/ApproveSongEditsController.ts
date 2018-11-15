@@ -20,7 +20,7 @@
             private accountApi: AccountService,
             private tagApi: TagService) {
 
-            this.accountApi.signedIn
+            this.accountApi.signedInState
                 .select(() => this.accountApi.currentUser)
                 .subscribe(user => this.signedInUserChanged(user));
 

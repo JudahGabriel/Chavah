@@ -2,7 +2,7 @@
     export class AccountService {
         
         currentUser: User | null;
-        signedIn: Rx.BehaviorSubject<boolean>;
+        signedInState: Rx.BehaviorSubject<boolean>;
         private apiUri = "/api/account";
 
         static $inject = [
@@ -14,7 +14,7 @@
             private readonly httpApi: HttpApiService,
             initialUser: Server.IUserViewModel | null) {
             
-            this.signedIn = new Rx.BehaviorSubject<boolean>(!!initialUser);
+            this.signedInState = new Rx.BehaviorSubject<boolean>(!!initialUser);
             this.currentUser = initialUser ? new User(initialUser) : null;
         }
 
@@ -27,7 +27,7 @@
             signOutTask
                 .then(() => {
                     this.currentUser = null;
-                    this.signedIn.onNext(false);
+                    this.signedInState.onNext(false);
                 });
             return signOutTask;
         }
@@ -61,7 +61,7 @@
             signInTask.then(result => {
                 if (result.status === SignInStatus.Success && result.user) {
                     this.currentUser = new User(result.user);
-                    this.signedIn.onNext(true);
+                    this.signedInState.onNext(true);
 
                     // If we have Google Analytics, notify about the signed in user.
                     const ga = window["ga"];
@@ -70,7 +70,7 @@
                     }
                 } else {
                     this.currentUser = null;
-                    this.signedIn.onNext(false);
+                    this.signedInState.onNext(false);
                 }
             });
 

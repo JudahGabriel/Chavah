@@ -53,7 +53,7 @@
                 .subscribe(percent => $(".footer .trackbar").width(percent + "%"));
 
             // If we sign in, restore the volume preference for the user.
-            this.accountApi.signedIn
+            this.accountApi.signedInState
                 .distinctUntilChanged()
                 .where(isSignedIn => isSignedIn)
                 .subscribe(_ => this.restoreVolumeFromSignedInUser())

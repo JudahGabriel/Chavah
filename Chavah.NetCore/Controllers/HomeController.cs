@@ -54,7 +54,7 @@ namespace BitShuva.Chavah.Controllers
         [Route("")]
         public async Task<IActionResult> Index(string artist = null, string album = null, string song = null, bool embed = false)
         {
-            var user = await this.GetCurrentUser();
+            var user = await this.GetUser();
             var userVm = user != null ? mapper.Map<UserViewModel>(user) : null;
             var loadedSong = await this.GetSongFromQuery(artist, album, song);
             var homeViewModel = HomeViewModel.From(userVm, loadedSong, options.Value.Application, options.Value.Cdn);
