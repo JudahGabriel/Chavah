@@ -48,11 +48,9 @@
         }
 
         /**
-         * Attempts to invoke the native share functionality using the
-         * upcoming navigator.share web standard.
-         * @see https://developers.google.com/web/updates/2016/09/navigator-share
-         * @description As of May 2018, this is only supported in Chrome on Android.
-         * @param song The song to share.
+         * Invokes the native share functionality for whichever platform we're on.
+         * Currently implements the emerging Web Share API and the Windows Share API.
+         * @param song
          */
         nativeShareUrl(song: Song) {
             var nativeShareActions = [
@@ -70,6 +68,13 @@
             }
         }
 
+        /**
+         * Attempts to invoke the native share functionality using the
+         * upcoming navigator.share web standard.
+         * @see https://developers.google.com/web/updates/2016/09/navigator-share
+         * @description As of May 2018, this is only supported in Chrome on Android.
+         * @param song The song to share.
+         */
         private tryShareWeb(song: Song) {
             // Type definitions for the upcoming web standard.
             type ShareOptions = { title: string; text: string; url: string };
