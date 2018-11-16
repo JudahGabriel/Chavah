@@ -23,6 +23,14 @@
             };
             return this.httpApi.postUriEncoded("/api/users/saveVolume", args);
         }
+
+        getProfilePicForEmailAddress(email: string): ng.IPromise<string | null> {
+            const args = {
+                email,
+                v: "1.0"
+            };
+            return this.httpApi.query("/api/users/getProfilePicForEmailAddress", args);
+        }
     }
 
     App.service("userApi", UserApiService);

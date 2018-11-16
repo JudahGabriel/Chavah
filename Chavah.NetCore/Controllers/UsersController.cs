@@ -74,7 +74,7 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<Uri> UploadProfilePicture(IFormFile file)
+        public async Task<Uri> UploadProfilePicture([FromForm]IFormFile file)
         {
             if (file.Length > maxProfilePictureSizeInBytes)
             {
@@ -82,7 +82,7 @@ namespace BitShuva.Chavah.Controllers
                     .WithData("size", file.Length);
             }
 
-            var user = await GetUserOrThrow().ConfigureAwait(false);
+            var user = await GetUserOrThrow();
             var oldProfilePic = user.ProfilePicUrl;
 
             using (var fileStream = file.OpenReadStream())
@@ -94,6 +94,18 @@ namespace BitShuva.Chavah.Controllers
             //delete the old image
             await cdnManager.DeleteProfilePicAsync(oldProfilePic.OriginalString).ConfigureAwait(false);
             return user.ProfilePicUrl;
+        }
+        
+        [HttpGet]
+        public async Task<Uri> GetProfilePicForEmailAddress(string email)
+        {
+            var user = await DbSession.LoadAsync<AppUser>(AppUser.AppUserPrefix + email);
+            if (user != null)
+            {
+                return user.ProfilePicUrl;
+            }
+
+            return null;
         }
 
         /// <summary>

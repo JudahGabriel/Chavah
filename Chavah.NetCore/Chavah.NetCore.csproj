@@ -79,6 +79,14 @@
 	  <Content Remove="wwwroot\js\Services\TemplateService.js.map" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.ts" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="wwwroot\css\app\password.less" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Content Include="wwwroot\css\app\password.less" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />

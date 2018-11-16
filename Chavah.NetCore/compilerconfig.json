@@ -94,5 +94,9 @@
   {
     "outputFile": "wwwroot/css/app/profile.css",
     "inputFile": "wwwroot/css/app/profile.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/password.css",
+    "inputFile": "wwwroot/css/app/password.less"
   }
 ]
