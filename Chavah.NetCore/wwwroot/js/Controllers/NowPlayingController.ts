@@ -2,7 +2,7 @@
     export class NowPlayingController {
         trending = new List<Song>(() => this.songApi.getTrendingSongs(0, 3).then(results => results.items), "trending", SongApiService.songConverter);
         likes = new List<Song>(() => this.songApi.getRandomLikedSongs(3), "mylikes", SongApiService.songConverter);
-        recent = new List<Song>(() => this.songApi.getRecentPlays(3), "recent", SongApiService.songConverter);
+        recent = new List<Song>(() => this.getRecentPlays(), "recent", SongApiService.songConverter);
         popular = new List<Song>(() => this.songApi.getPopularSongs(3), "popular", SongApiService.songConverter);
         songs: Song[] = [];
         isFetchingAlbums = false;
@@ -17,7 +17,8 @@
             "homeViewModel",
             "appNav",
             "accountApi",
-            "sharing"
+            "sharing",
+            "$q"
         ];
 
         constructor(
@@ -27,7 +28,8 @@
             private homeViewModel: Server.HomeViewModel,
             private appNav: AppNavService,
             private accountApi: AccountService,
-            private sharing: SharingService) {
+            private sharing: SharingService,
+            private $q: ng.IQService) {
 
 
             this.audioPlayer.song
@@ -130,6 +132,15 @@
 
         getSongOrPlaceholder(song: Song | null): Song {
             return song || Song.empty();
+        }
+
+        getRecentPlays(): ng.IPromise<Song[]> {
+            if (this.accountApi.isSignedIn) {
+                return this.songApi.getRecentPlays(3);
+            }
+
+            // Not signed in? Use whatever we have locally for recent.
+            return this.$q.resolve(this.recent.items);
         }
 
         nextSongBeginning(song: Song | null) {

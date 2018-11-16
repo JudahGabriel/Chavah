@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Optional;
 using Raven.Client.Documents.Session;
+using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -60,7 +55,7 @@ namespace BitShuva.Chavah.Controllers
             var homeViewModel = HomeViewModel.From(userVm, loadedSong, options.Value.Application, options.Value.Cdn);
             homeViewModel.Embed = embed;
             homeViewModel.CacheBustedAngularViews = this.ngViews.Views;
-            
+
             // TODO
             //homeViewModel.Redirect = 
             
