@@ -61,6 +61,7 @@
         songEditApproved: "/SongEditApproved.html",
         privacyPolicy: "/PrivacyPolicy.html",
         support: "/Support.html",
+        maintenance: "/Maintenance.html",
 
         // Sign in
         promptSignIn: "/PromptSignIn.html",
@@ -109,6 +110,7 @@
                 .when("/songeditapproved/:artist/:songName", createRoute(views.songEditApproved))
                 .when("/privacy", createRoute(views.privacyPolicy))
                 .when("/support", createRoute(views.support))
+                .when("/maintenance", createRoute(views.maintenance))
 
                 // Sign in
                 .when("/promptsignin", createRoute(views.promptSignIn))
@@ -140,6 +142,10 @@
                 .otherwise({
                     redirectTo: "/nowplaying",
                 });
+
+            if (homeVm.isDownForMaintenance) {
+                $routeProvider.when("/", { redirectTo: "/maintenance" });
+            }
         }]);
 
     App.run([

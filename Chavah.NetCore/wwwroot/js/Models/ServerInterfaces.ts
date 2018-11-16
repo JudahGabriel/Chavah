@@ -180,6 +180,7 @@
         descriptiveImageUrl: string;
         song: Song | null;
         user: IUserViewModel | null;
+        isDownForMaintenance: boolean;
     };
 
     export interface IUserViewModel {

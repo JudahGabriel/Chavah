@@ -83,6 +83,11 @@ namespace BitShuva.Chavah.Models
         public string SoundEffects { get; set; }
 
         /// <summary>
+        /// Gets whether Chavah is down for maintenance.
+        /// </summary>
+        public bool IsDownForMaintenance { get; set; }
+
+        /// <summary>
         /// Converts the view model to a JSON object.
         /// </summary>
         /// <returns></returns>
@@ -104,7 +109,8 @@ namespace BitShuva.Chavah.Models
                 CdnUrl = cdnSettings.HttpPath,
                 SoundEffects = new System.Uri(cdnSettings.HttpPath).Combine(cdnSettings.SoundEffects).ToString(),
                 User = user,
-                Song = song
+                Song = song,
+                IsDownForMaintenance = appSettings.IsDownForMaintenance
             };
             
             if (song != null)

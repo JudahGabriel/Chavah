@@ -52,7 +52,7 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(string artist = null, string album = null, string song = null, bool embed = false)
+        public async Task<IActionResult>  Index(string artist = null, string album = null, string song = null, bool embed = false)
         {
             var user = await this.GetUser();
             var userVm = user != null ? mapper.Map<UserViewModel>(user) : null;
