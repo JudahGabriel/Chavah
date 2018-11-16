@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SyndicationFeed;
 using Newtonsoft.Json;
+using Optional;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using System;
@@ -35,9 +36,10 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = AppUser.AdminRole)]
-        public async Task<ActionResult> GetRegisteredUsers()
+        public async Task<ActionResult> GetRegisteredUsers(string key)
         {
+            AuthorizeKey(key);
+
             var lastRegisteredUsers = await DbSession
                 .Query<AppUser>()
                 .OrderByDescending(a => a.RegistrationDate)
@@ -64,15 +66,10 @@ namespace BitShuva.Chavah.Controllers
             return new RssActionResult(feed);
         }
 
-
         [HttpPost]
         public IActionResult CreateNotification(string secretToken, string title, string imgUrl, string sourceName, string url)
         {
-            var isValidSecretToken = appSettings.Ifttt.Key == secretToken;
-            if (!isValidSecretToken)
-            {
-                throw new UnauthorizedAccessException();
-            }
+            this.AuthorizeKey(secretToken);
 
             // Use only HTTPS images.
             if (imgUrl != null && imgUrl.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase))
@@ -101,6 +98,14 @@ namespace BitShuva.Chavah.Controllers
 ";
             this.DbSession.Advanced.DocumentStore.PatchAll<AppUser>(patchScript);
             return Json(notification);
+        }
+
+        private void AuthorizeKey(string key)
+        {
+            if (this.appSettings.Ifttt.Key != key)
+            {
+                throw new UnauthorizedAccessException();
+            }
         }
     }
 }
