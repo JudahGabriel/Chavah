@@ -27,8 +27,9 @@
             if (!this.refreshInterval) {
                 this.refreshInterval = 60000;
             }
-
-            this.refreshHandle = setInterval(() => this.songs.fetch(), this.refreshInterval);
+            if (this.refreshInterval !== -1) {
+                this.refreshHandle = setInterval(() => this.songs.fetch(), this.refreshInterval);
+            }
         }
 
         $onDestroy() {
