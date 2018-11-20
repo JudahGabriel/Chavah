@@ -78,6 +78,12 @@ namespace BitShuva.Chavah.Controllers
                 imgUrl = imgUrl.Replace("http://", "https://", StringComparison.InvariantCultureIgnoreCase);
             }
 
+            // If the image is the default "no image available" from IFTTT, use Chavah logo.
+            if (string.Equals(imgUrl, "https://ifttt.com/images/no_image_card.png", StringComparison.InvariantCultureIgnoreCase))
+            {
+                imgUrl = Notification.ChavahSystemNotificationImage;
+            }
+
             logger.LogInformation("IFTTT CreateNotification called with {token}, {title}, {imgUrl}, {srcName}, {url}", secretToken, title, imgUrl, sourceName, url);
 
             var notification = new Notification
