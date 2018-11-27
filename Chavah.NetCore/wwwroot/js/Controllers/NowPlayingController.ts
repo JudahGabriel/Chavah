@@ -82,12 +82,19 @@
         }
 
         get currentSongTwitterShareUrl(): string {
-
             if (this.currentSong) {
                 return this.sharing.twitterShareUrl(this.currentSong);
             }
 
             return "#";
+        }
+
+        get currentSongSmsShareUrl(): string {
+            return this.currentSong ? this.sharing.smsShareUrl(this.currentSong) : "#";
+        }
+
+        get currentSongWhatsAppShareUrl(): string {
+            return this.currentSong ? this.sharing.whatsAppShareUrl(this.currentSong) : "#";
         }
 
         get currentSongFacebookShareUrl(): string {
