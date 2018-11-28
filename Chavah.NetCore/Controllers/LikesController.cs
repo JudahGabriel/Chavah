@@ -122,9 +122,9 @@ namespace BitShuva.Chavah.Controllers
             var newStanding = Match.Value(song.CommunityRank)
                 .With(v => v <= -5, CommunityRankStanding.VeryPoor)
                 .With(v => v <= -3, CommunityRankStanding.Poor)
-                .With(v => v <= (averageSongRank * 1.5), CommunityRankStanding.Normal)
-                .With(v => v <= (averageSongRank * 2.0), CommunityRankStanding.Good)
-                .With(v => v <= (averageSongRank * 4.0), CommunityRankStanding.Great)
+                .With(v => v <= (averageSongRank * 1.2), CommunityRankStanding.Normal)
+                .With(v => v <= (averageSongRank * 1.5), CommunityRankStanding.Good)
+                .With(v => v <= (averageSongRank * 3.0), CommunityRankStanding.Great)
                 .DefaultTo(CommunityRankStanding.Best)
                 .Evaluate();
             song.CommunityRankStanding = newStanding;

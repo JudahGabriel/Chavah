@@ -71,23 +71,27 @@ namespace BitShuva.Chavah.Controllers
         /// <summary>
         /// Upload User Profile picture.
         /// </summary>
-        /// <param name="file"></param>
+        /// <param name="upload"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<Uri> UploadProfilePicture([FromForm]IFormFile file)
+        public async Task<Uri> UploadProfilePicture([FromForm]ProfilePictureUpload upload)
         {
-            if (file.Length > maxProfilePictureSizeInBytes)
+            if (upload.Photo == null)
+            {
+                throw new ArgumentNullException("file");
+            }
+            if (upload.Photo.Length > maxProfilePictureSizeInBytes)
             {
                 throw new ArgumentException($"File is too large. Please upload files smaller than {maxProfilePictureSizeInBytes}")
-                    .WithData("size", file.Length);
+                    .WithData("size", upload.Photo.Length);
             }
 
             var user = await GetUserOrThrow();
             var oldProfilePic = user.ProfilePicUrl;
 
-            using (var fileStream = file.OpenReadStream())
+            using (var fileStream = upload.Photo.OpenReadStream())
             {
-                user.ProfilePicUrl = await cdnManager.UploadProfilePicAsync(fileStream, file.ContentType ?? "image/jpg")
+                user.ProfilePicUrl = await cdnManager.UploadProfilePicAsync(fileStream, upload.Photo.ContentType ?? "image/jpg")
                     .ConfigureAwait(false);
             }
             

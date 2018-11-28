@@ -11,6 +11,7 @@
       "access": "cordova"
     }
   ],
+  "prefer_related_applications": true,
   "related_applications": [
     {
       "platform": "windows",

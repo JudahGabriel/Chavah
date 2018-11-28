@@ -101,6 +101,10 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\js\Components\" />
+	</ItemGroup>
+
 	<Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
 		<!-- Include the newly-built files in the publish output -->
 		<ItemGroup>

@@ -175,7 +175,25 @@
                 </div>
             </div>
 
-            <!--Donate to artist-->
+            <!-- Comments -->
+            <!--<div class="panel-group expander comments-expander" role="tablist">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" ng-style="{ 'background-color': vm.currentSong.albumColors.background, 'color': vm.currentSong.albumColors.foreground }">
+                        <h3 class="panel-title text-center" ng-click="vm.currentSong.areCommentsExpanded = !vm.currentSong.areCommentsExpanded">
+                            <i class="fa fa-comment fa-flip-horizontal" style="font-size: 22px;"></i>
+                            {{vm.currentSong.commentCount}} {{vm.currentSong.commentCount === 1 ? 'comment' : 'comments'}}
+                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.areCommentsExpanded, 'fa-angle-up': vm.currentSong.areCommentsExpanded }"></i>
+                        </h3>
+                    </div>
+                </div>
+                <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.areCommentsExpanded }" role="tabpanel">
+                    <div class="panel-body text-center" ng-style="{ 'color': vm.currentSong.albumColors.foreground, 'border-color': vm.currentSong.albumColors.background }">
+                        <img class="img-responsive" src="../images/commentsLoading.gif" />
+                    </div>
+                </div>
+            </div>-->
+
+            <!--Support artist-->
             <div class="panel-group expander support-expander" role="tablist">
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab" ng-style="{ 'background-color': vm.currentSong.albumColors.background, 'color': vm.currentSong.albumColors.foreground }">
