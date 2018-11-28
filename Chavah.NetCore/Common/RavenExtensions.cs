@@ -79,7 +79,7 @@ namespace BitShuva.Chavah.Common
             var result = await session.LoadAsync<T>(id);
             if (result == null)
             {
-                throw new ArgumentException($"Tried to load {id}, but it wasn't found in the database.");
+                throw new ArgumentException($"Tried to load a entity, but it wasn't found in the database.").WithData("id", id);
             }
 
             return result;

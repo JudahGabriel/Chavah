@@ -133,8 +133,7 @@ namespace BitShuva.Chavah.Controllers
                 {
                     logger.LogInformation("Task cancelled");
                 }
-                else if (error is RavenException && 
-                    error.Message.StartsWith("An exception occurred while contacting", StringComparison.InvariantCultureIgnoreCase))
+                else if (error.Message.StartsWith("An exception occurred while contacting", StringComparison.InvariantCultureIgnoreCase))
                 {
                     // This occurs when the database is down.
                     logger.LogError("Unable to reach database");
