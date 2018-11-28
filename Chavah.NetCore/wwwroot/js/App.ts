@@ -90,10 +90,13 @@
         editSongs: "/EditSongs.html"
     };
 
-    App.config(["$routeProvider", "$locationProvider",
-        ($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {
+    App.config(["$routeProvider", "$locationProvider", "$compileProvider",
+        (
+            $routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider, $compileProvider: ng.ICompileProvider) => {
             $routeProvider.caseInsensitiveMatch = true;
             $locationProvider.hashPrefix("");
+            $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|sms|javascript):/);
+            $compileProvider.debugInfoEnabled(homeVm.debug);
 
             $routeProvider
                 .when("/", createRoute("NowPlaying.html"))
