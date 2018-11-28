@@ -47,6 +47,27 @@
                 "&via=" + encodeURIComponent(via);
         }
 
+        smsShareUrl(song: Song): string {
+            const songName = this.getSongName(song);
+            const url = `${this.homeViewModel.defaultUrl}/?song=${song.id}`;
+            const smsMessage = encodeURIComponent(`${songName} by ${song.artist} ${url}`);
+
+            // The actual SMS URL is shaped differently on iOS.
+            // https://weblog.west-wind.com/posts/2013/Oct/09/Prefilling-an-SMS-on-Mobile-Devices-with-the-sms-Uri-Scheme
+            if (this.isOnIOS()) {
+                return `sms:&body=${smsMessage}`;
+            }
+
+            return `sms:?body=${smsMessage}`;
+        }
+
+        whatsAppShareUrl(song: Song): string {
+            const songName = this.getSongName(song);
+            const url = `${this.homeViewModel.defaultUrl}/?song=${song.id}`;
+            const smsMessage = encodeURIComponent(`${songName} by ${song.artist} ${url}`);
+            return `https://wa.me/?text=${smsMessage}`;
+        }
+
         /**
          * Invokes the native share functionality for whichever platform we're on.
          * Currently implements the emerging Web Share API and the Windows Share API.
@@ -143,6 +164,11 @@
             return [song.hebrewName, song.name]
                 .filter(s => !!s)
                 .join(" ");
+        }
+
+        private isOnIOS(): boolean {
+            var ua = navigator.userAgent.toLowerCase();
+            return ua.indexOf("iphone") > -1 || ua.indexOf("ipad") > -1;
         }
     }
 
