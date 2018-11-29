@@ -2,7 +2,7 @@
     export class NowPlayingController {
         trending = new List<Song>(() => this.songApi.getTrendingSongs(0, 3).then(results => results.items), "trending", SongApiService.songConverter);
         likes = new List<Song>(() => this.songApi.getRandomLikedSongs(3), "mylikes", SongApiService.songConverter);
-        recent = new List<Song>(() => this.songApi.getRecentPlays(3), "recent", SongApiService.songConverter);
+        recent = new List<Song>(() => this.getRecentPlays(), "recent", SongApiService.songConverter);
         popular = new List<Song>(() => this.songApi.getPopularSongs(3), "popular", SongApiService.songConverter);
         songs: Song[] = [];
         isFetchingAlbums = false;
@@ -14,20 +14,22 @@
             "songApi",
             "songBatch",
             "audioPlayer",
-            "initConfig",
+            "homeViewModel",
             "appNav",
             "accountApi",
-            "sharing"
+            "sharing",
+            "$q"
         ];
 
         constructor(
             private songApi: SongApiService,
             private songBatch: SongBatchService,
             private audioPlayer: AudioPlayerService,
-            private initConfig: Server.IConfigViewModel,
+            private homeViewModel: Server.HomeViewModel,
             private appNav: AppNavService,
             private accountApi: AccountService,
-            private sharing: SharingService) {
+            private sharing: SharingService,
+            private $q: ng.IQService) {
 
 
             this.audioPlayer.song
@@ -42,12 +44,13 @@
                 .takeUntil(this.disposed)
                 .subscribeOnNext(() => this.songs = this.getSongs());
             
-            if (initConfig.embed) {
+            if (homeViewModel.embed) {
                 // If we're embedded on another page, queue up the song we're told to play.
                 // Don't play it automatically, though, because there may be multiple embeds on the same page.
-                //temp fix??? at least this will display the image for the emebed song
-                this.audioPlayer.playNewSong((this.initConfig as any).song as any);
-                this.audioPlayer.pause();
+                if (this.homeViewModel.song) {
+                    this.audioPlayer.playNewSong(new Song(this.homeViewModel.song));
+                    this.audioPlayer.pause();
+                }
             } else {
                 // Play the next song if we don't already have one playing.
                 // We don't have one playing when first loading the UI.
@@ -79,12 +82,19 @@
         }
 
         get currentSongTwitterShareUrl(): string {
-
             if (this.currentSong) {
                 return this.sharing.twitterShareUrl(this.currentSong);
             }
 
             return "#";
+        }
+
+        get currentSongSmsShareUrl(): string {
+            return this.currentSong ? this.sharing.smsShareUrl(this.currentSong) : "#";
+        }
+
+        get currentSongWhatsAppShareUrl(): string {
+            return this.currentSong ? this.sharing.whatsAppShareUrl(this.currentSong) : "#";
         }
 
         get currentSongFacebookShareUrl(): string {
@@ -131,6 +141,15 @@
             return song || Song.empty();
         }
 
+        getRecentPlays(): ng.IPromise<Song[]> {
+            if (this.accountApi.isSignedIn) {
+                return this.songApi.getRecentPlays(3);
+            }
+
+            // Not signed in? Use whatever we have locally for recent.
+            return this.$q.resolve(this.recent.items);
+        }
+
         nextSongBeginning(song: Song | null) {
             this.songs = this.getSongs();
 
@@ -160,13 +179,7 @@
         songClicked(song: Song) {
             if (song !== this.currentSong) {
                 song.setSolePickReason(SongPick.YouRequestedSong);
-                let songBatch = this.songBatch.songsBatch.getValue();
-                let songIndex = songBatch.indexOf(song);
-                if (songIndex >= 0) {
-                    songBatch.splice(songIndex, 1);
-                    songBatch.splice(0, 0, song);
-                    this.songBatch.playNext();
-                }
+                this.songBatch.playQueuedSong(song);
             }
         }
 

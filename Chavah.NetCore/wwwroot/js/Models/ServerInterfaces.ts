@@ -167,18 +167,20 @@
     }
 
     // account
-    export interface IConfigViewModel {
+    export interface HomeViewModel {
         debug: boolean;
-        songId: string | null;
         redirect: string | null;
         embed: boolean;
         cacheBustedAngularViews: string[];
         defaultUrl: string;
         cdnUrl: string;
         soundEffects: string;
-        title: string;
-        description: string;
-        song: any;
+        pageTitle: string;
+        pageDescription: string;
+        descriptiveImageUrl: string;
+        song: Song | null;
+        user: IUserViewModel | null;
+        isDownForMaintenance: boolean;
     };
 
     export interface IUserViewModel {

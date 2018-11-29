@@ -37,7 +37,7 @@ namespace BitShuva.Chavah.Models
         public int CommentCount { get; set; }
         public AlbumColors AlbumColors { get; set; }
         // Add a property here? It should probably be added to .ToDto()
-        
+
         public SongPickReasons ReasonsPlayed { get; set; }
 
         public static Song FromFileName(string fileName)

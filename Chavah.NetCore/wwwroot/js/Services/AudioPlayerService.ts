@@ -4,7 +4,7 @@ namespace BitShuva.Chavah {
 
         static $inject = [
             "songApi",
-            "initConfig"
+            "homeViewModel"
         ];
 
         readonly status = new Rx.BehaviorSubject(AudioStatus.Paused);
@@ -23,7 +23,7 @@ namespace BitShuva.Chavah {
 
         constructor(
             private songApi: SongApiService,
-            private initConfig: Server.IConfigViewModel) {
+            private homeViewModel: Server.HomeViewModel) {
 
             // Listen for when the song changes and update the document title.
             this.song
@@ -67,7 +67,11 @@ namespace BitShuva.Chavah {
 
         playNewUri(uri: string) {
             if (this.audio) {
-                this.audio.src = "";
+                //this.audio.src = "";
+                if (this.audio.src === uri) {
+                    this.audio.currentTime = 0;
+                }
+
                 if (uri) {
                     this.audio.src = uri;
                     this.audio.load();
@@ -76,9 +80,7 @@ namespace BitShuva.Chavah {
                         // On modern browsers, play will return a promise.
                         const playTask = this.audio.play();
                         if (playTask && playTask.catch) {
-                            playTask.catch(taskError => {
-                                console.log("Unable to play audio due to task error", taskError);
-                            });
+                            playTask.catch(taskError => console.log("Unable to play audio due to task error", taskError));
                         }
                     } catch (error) {
                         // This can happen on mobile when we try to play before user interaction.
@@ -252,9 +254,9 @@ namespace BitShuva.Chavah {
         private updateDocumentTitle(song: Song | null) {
             // Update the document title so that the browser tab updates.
             if (song) {
-                document.title = `${song.name} by ${song.artist} on ${this.initConfig.title}`;
+                document.title = `${song.name} by ${song.artist} on ${this.homeViewModel.pageTitle}`;
             } else {
-                document.title = this.initConfig.title;
+                document.title = this.homeViewModel.pageTitle;
             }
         }
     }

@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Raven.Identity;
+using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Raven.Identity;
 
 namespace BitShuva.Chavah.Models
 {
@@ -124,14 +122,5 @@ namespace BitShuva.Chavah.Models
         ///  The roles of the user.
         /// </summary>
         public IList<string> Roles { get; set; }
-
-
-        public string ToJson()
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
-        }
     }
 }

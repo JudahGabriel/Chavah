@@ -3,13 +3,14 @@
 
         static $inject = [
             "audioPlayer",
-            "initConfig",
+            "homeViewModel",
         ];
 
         lastAnnouncementTime = new Date();
 
-        constructor(private audioPlayer: AudioPlayerService,
-                    private initConfig: Server.IConfigViewModel) {
+        constructor(
+            private audioPlayer: AudioPlayerService,
+            private homeViewModel: Server.HomeViewModel) {
         }
 
         hasPendingAnnouncement() {
@@ -34,7 +35,7 @@
             let announcementNumbers = [1, 2, 3, 4, 5, 6, 7];
             // tslint:disable-next-line:max-line-length
             let songRequestName = "StationId" + announcementNumbers[Math.floor(Math.random() * announcementNumbers.length)] + ".mp3";
-            let songUrl = `${this.initConfig.soundEffects}/${songRequestName}`;
+            let songUrl = `${this.homeViewModel.soundEffects}/${songRequestName}`;
             this.audioPlayer.playNewUri(songUrl);
         }
     }

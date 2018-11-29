@@ -14,14 +14,14 @@ namespace BitShuva.Chavah.Models
         public string ImageUrl { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;
 
-        private const string chavahAuthorImageUrl = "https://bitshuvafiles01.com/chavah/judah.jpg?v=1";
-        private const string chavahSystemNotificationImage = "https://bitshuvafiles01.com/chavah/chavah-blog.jpg?v=2";
+        public const string ChavahAuthorImageUrl = "https://bitshuvafiles01.com/chavah/judah.jpg?v=1";
+        public const string ChavahSystemNotificationImage = "https://bitshuvafiles01.com/chavah/chavah-blog.jpg?v=2";
 
         public static Notification Welcome()
         {
             return new Notification
             {
-                ImageUrl = chavahAuthorImageUrl,
+                ImageUrl = ChavahAuthorImageUrl,
                 Title = "Welcome to Chavah!",
                 Url = "/#/welcome",
                 IsUnread = true,
@@ -45,7 +45,7 @@ namespace BitShuva.Chavah.Models
         {
             return new Notification
             {
-                ImageUrl = chavahSystemNotificationImage,
+                ImageUrl = ChavahSystemNotificationImage,
                 Title = $"New song edits awaiting your approval",
                 Url = $"/#/admin/songedits",
                 IsUnread = true,

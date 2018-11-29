@@ -31,7 +31,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<SongEdit> Get(string songId)
         {
-            var user = await this.GetCurrentUserOrThrow();
+            var user = await this.GetUserOrThrow();
             var song = await DbSession.LoadRequiredAsync<Song>(songId);
             var songEditId = GetSongEditId(songId, user.Id);
             var existingEdit = await DbSession.LoadOptionAsync<SongEdit>(songEditId);
@@ -46,7 +46,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task<SongEdit> EditSong([FromBody] Song song)
         {
-            var user = await this.GetCurrentUserOrThrow();
+            var user = await this.GetUserOrThrow();
             var existingSong = await this.DbSession.LoadRequiredAsync<Song>(song.Id);
 
             var songEditId = GetSongEditId(existingSong.Id, user.Id);

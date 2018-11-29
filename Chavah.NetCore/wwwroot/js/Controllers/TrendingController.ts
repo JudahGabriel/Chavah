@@ -8,7 +8,10 @@
             "audioPlayer",
         ];
 
-        songsList = new PagedList((skip, take) => this.songApi.getTrendingSongs(skip, take));
+        songsList = new PagedList(
+            (skip, take) => this.songApi.getTrendingSongs(skip, take),
+            undefined,
+            items => this.calcVisibleSongs(items));
         visibleSongs: Song[] = [];
         visibleStart = 0;
 
@@ -30,17 +33,26 @@
         next() {
             if (this.canGoNext) {
                 this.visibleStart++;
+                this.calcVisibleSongs(this.songsList.items);
             }
         }
 
         previous() {
             if (this.canGoPrevious) {
                 this.visibleStart--;
+                this.calcVisibleSongs(this.songsList.items);
             }
         }
 
         playSong(song: Song) {
             this.audioPlayer.playSongById(song.id);
+        }
+
+        async calcVisibleSongs(items: Song[]) {
+            this.visibleSongs = items.slice(this.visibleStart, this.visibleStart + TrendingController.maxVisibleSongs);
+            if (this.visibleSongs.length < TrendingController.maxVisibleSongs) {
+                this.songsList.fetchNextChunk();
+            }
         }
     }
 

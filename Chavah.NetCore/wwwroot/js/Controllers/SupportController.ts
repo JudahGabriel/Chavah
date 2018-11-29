@@ -13,7 +13,7 @@
         constructor(
             private readonly accountApi: AccountService) {
 
-            this.accountApi.signedIn
+            this.accountApi.signedInState
                 .select(() => this.accountApi.currentUser)
                 .subscribe(user => this.signedInUserChanged(user));
 

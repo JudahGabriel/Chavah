@@ -5,7 +5,7 @@
         profilePicUrl: string | null = null;
 
         static $inject = [
-            "initConfig",
+            "homeViewModel",
             "accountApi",
             "appNav",
             "pwaInstall",
@@ -13,13 +13,13 @@
         ];
 
         constructor(
-            private readonly initConfig: Server.IConfigViewModel,
+            private readonly homeViewModel: Server.HomeViewModel,
             private readonly accountApi: AccountService,
             private readonly appNav: AppNavService,
             private readonly pwaInstall: PwaInstallService,
             private readonly audioPlayer: AudioPlayerService) {
 
-            this.accountApi.signedIn
+            this.accountApi.signedInState
                 .select(() => this.accountApi.currentUser)
                 .subscribe(user => this.signedInUserChanged(user));
         }
@@ -45,18 +45,11 @@
         }
 
         get title(): string {
-            if (this.initConfig) {
-                return this.initConfig.title;
-            }
-
-            return "";
+            return this.homeViewModel.pageTitle;
         }
 
         get desc(): string {
-            if (this.initConfig) {
-                return this.initConfig.description;
-            }
-            return "";
+            return this.homeViewModel.pageDescription;
         }
 
         get canInstallPwa(): boolean {

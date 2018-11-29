@@ -28,11 +28,8 @@ namespace BitShuva.Chavah {
         reasonsPlayed: Server.SongPickReasons | null;
         albumId: string | null;
         albumColors: Server.AlbumColors;
+        commentCount: number;
 
-        //albumSwatchBackground = "white";
-        //albumSwatchForeground = "black";
-        //albumSwatchMuted = "silver";
-        //albumSwatchTextShadow = "white";
         albumSwatchDarker = "black"; // The darker of two: either foreground or background
         albumSwatchLighter = "white"; // The lighter of the two: either foreground or background
         clientId: string;
@@ -42,6 +39,7 @@ namespace BitShuva.Chavah {
         isShareExpanded = false;
         isEditingLyrics = false;
         isShowingEmbedCode = false;
+        areCommentsExpanded = false;
 
         private _reasonPlayedText: string | null;
 

@@ -1,15 +1,8 @@
 ﻿namespace BitShuva.Chavah {
     export class PasswordController {
-
-        static $inject = [
-            "accountApi",
-            "appNav",
-            "$routeParams",
-            "$timeout",
-            "$scope",
-        ];
-
+        
         readonly email = "";
+        profilePic: string | null = null;
         showPasswordError = false;
         passwordError = "";
         isBusy = false;
@@ -19,9 +12,19 @@
         showResendConfirmEmail = false;
         sendConfirmationEmailState: "none" | "sending" | "sent" = "none";
 
+        static $inject = [
+            "accountApi",
+            "appNav",
+            "userApi",
+            "$routeParams",
+            "$timeout",
+            "$scope",
+        ];
+
         constructor(
             private accountApi: AccountService,
             private appNav: AppNavService,
+            private userApi: UserApiService,
             $routeParams: ng.route.IRouteParamsService,
             private $timeout: ng.ITimeoutService,
             $scope: ng.IScope) {
@@ -32,6 +35,12 @@
 
         get isPasswordValid(): boolean {
             return this.password.length >= 6;
+        }
+
+        $onInit() {
+            // Fetch the profile picture for this user.
+            this.userApi.getProfilePicForEmailAddress(this.email)
+                .then(results => this.profilePic = results);
         }
 
         signIn() {

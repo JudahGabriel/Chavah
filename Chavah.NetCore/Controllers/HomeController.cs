@@ -1,15 +1,12 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Raven.Client.Documents.Session;
+using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -19,7 +16,7 @@ namespace BitShuva.Chavah.Controllers
         private readonly ISongService songService;
         private readonly IAlbumService albumService;
         private readonly IUserService userService;
-        private readonly AngularCacheBustedViews cacheBustedNgViews;
+        private readonly AngularCacheBustedViews ngViews;
         private readonly IOptions<AppSettings> options;
         private readonly IMapper mapper;
 
@@ -27,7 +24,7 @@ namespace BitShuva.Chavah.Controllers
             ISongService songService,
             IAlbumService albumService,
             IUserService userService,
-            AngularCacheBustedViews cacheBustedNgViews,
+            AngularCacheBustedViews ngViews,
             IAsyncDocumentSession dbSession,
             ILogger<HomeController> logger,
             IOptions<AppSettings> options,
@@ -37,7 +34,7 @@ namespace BitShuva.Chavah.Controllers
             this.songService = songService;
             this.albumService = albumService;
             this.userService = userService;
-            this.cacheBustedNgViews = cacheBustedNgViews;
+            this.ngViews = ngViews;
             this.options = options;
             this.mapper = mapper;
         }
@@ -50,82 +47,45 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(string artist = null, string album = null, string song = null, bool embed = false)
+        public async Task<IActionResult>  Index(string artist = null, string album = null, string song = null, bool embed = false)
         {
-            var viewModel = await GetConfigurationModel(artist, album, song, embed).ConfigureAwait(false);
+            var user = await this.GetUser();
+            var userVm = user != null ? mapper.Map<UserViewModel>(user) : null;
+            var loadedSong = await this.GetSongFromQuery(artist, album, song);
+            var homeViewModel = HomeViewModel.From(userVm, loadedSong, options.Value.Application, options.Value.Cdn);
+            homeViewModel.Embed = embed;
+            homeViewModel.CacheBustedAngularViews = this.ngViews.Views;
 
-            var userName = User.Identity.Name;
-            AppUser user = null;
-            if (!string.IsNullOrEmpty(userName))
+            // TODO
+            //homeViewModel.Redirect = 
+            
+            return View("Index", homeViewModel);
+        }
+
+        private Task<Song> GetSongFromQuery(string artist, string album, string songId)
+        {
+            if (!string.IsNullOrEmpty(songId))
             {
-                user = await GetCurrentUser().ConfigureAwait(false);
+                return songService.GetSongByIdQueryAsync(songId);
             }
 
-            var model = new HomeViewModel
+            // Both artist and album specified? Load one of those.
+            if (!string.IsNullOrEmpty(artist) && !string.IsNullOrEmpty(album))
             {
-                DescriptiveImageUrl = viewModel.DescriptiveImageUrl,
-                User = mapper.Map<UserViewModel>(user)
-            };
-
-            return View("Index", model);
-        }
-
-        private async Task<ConfigViewModel> GetConfigurationModel(string artist, string album, string song, bool embed)
-        {
-            var viewModel = new ConfigViewModel
-            {
-                Embed = embed,
-                CacheBustedAngularViews = this.cacheBustedNgViews.Views,
-                Title = options.Value.Application.Title,
-                Description = options.Value.Application?.Description,
-                DefaultUrl = options.Value.Application?.DefaultUrl,
-                CdnUrl = options.Value.Cdn.HttpPath,
-                SoundEffects = new Uri(options.Value.Cdn.HttpPath).Combine(options.Value.Cdn.SoundEffects).ToString()
-            };
-
-            var firstValidQuery = new[] { artist, album, song }.FirstOrDefault(s => !string.IsNullOrEmpty(s));
-            if (firstValidQuery != null)
-            {
-                var taskOrNull = firstValidQuery == song ? songService.GetSongByIdQueryAsync(firstValidQuery) :
-                    firstValidQuery == artist ? songService.GetSongByArtistAsync(firstValidQuery) :
-                    firstValidQuery == album ? songService.GetSongByAlbumAsync(firstValidQuery) :
-                    null;
-
-                if (taskOrNull != null)
-                {
-                    var songForQuery = await taskOrNull;
-                    if (songForQuery != null)
-                    {
-                        var albumData = await albumService.GetMatchingAlbumAsync(a => a.Name == songForQuery.Album && a.Artist == songForQuery.Artist);
-                        viewModel.PageTitle = $"{songForQuery.Name} by {songForQuery.Artist} on {options?.Value?.Application?.Title}";
-                        viewModel.DescriptiveImageUrl = albumData?.AlbumArtUri?.ToString();
-                        viewModel.Song = songForQuery;
-                        viewModel.SongNth = songForQuery.Number.ToNumberWord();
-                    }
-                }
+                return songService.GetMatchingSongAsync(s => s.Artist == artist && s.Album == album);
             }
 
-            return viewModel;
-        }
+            if (!string.IsNullOrEmpty(artist))
+            {
+                return songService.GetSongByArtistAsync(artist);
+            }
 
-        [HttpGet]
-        [Route("config.json")]
-        public Task<ConfigViewModel> GetConfiguration()
-        {
-            return GetConfigurationModel(null,null,null,false);
-        }
+            if (!string.IsNullOrEmpty(album))
+            {
+                return songService.GetSongByAlbumAsync(album);
+            }
 
-        /// <summary>
-        /// UI that doesn't require HTTPS. Used for Windows XP and old Android that doesn't support LetsEncrypt certs.
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public Task<IActionResult> Legacy(string artist = null, string album = null, string song = null)
-        {
-            //log the User Agent
-            Request.Headers.TryGetValue("User-Agent", out var userAgent);
-            logger.LogInformation("Loaded non-HTTPS Chavah via /home/legacy. {userAgent}", userAgent.ToString() ?? string.Empty);
-            return Index(artist, album, song);
+            return Task.FromResult<Song>(null);
         }
 
         [HttpGet]

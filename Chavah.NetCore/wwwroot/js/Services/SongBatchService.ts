@@ -25,7 +25,7 @@
 
             // Listen for when we sign in. When that happens, we want to refresh our song batch.
             // Refreshing the batch is needed to update the song like statuses, etc. of the songs in the batch.
-            accountApi.signedIn
+            accountApi.signedInState
                 .skip(1) // skip the current value
                 .distinctUntilChanged()
                 .subscribe(signedIn => this.signedInChanged(signedIn));
@@ -49,6 +49,25 @@
             if (needMoreSongs) {
                 this.songsList.fetch();
             }
+        }
+
+        /**
+         * Plays a song that's in the song batch queue, but may not be the next item.
+         * If the song is in the queued songs, it's moved to the next position in the queue and played immediately.
+         * @param song
+         */
+        playQueuedSong(song: Song) {
+            const songBatch = this.songsBatch.getValue();
+            const songIndex = songBatch.indexOf(song);
+            if (songIndex >= 0) {
+                // Pull it from the queue.
+                songBatch.splice(songIndex, 1);
+            }
+
+            // Put it as the next song and then play it.
+            songBatch.splice(0, 0, song);
+            this.updateSongBatch(songBatch);
+            this.playNext();
         }
 
         private fetchSongBatch(): ng.IPromise<Song[]> {

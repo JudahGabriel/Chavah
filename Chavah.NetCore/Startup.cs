@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -134,6 +135,14 @@ namespace BitShuva.Chavah
             });
             services.AddHttpsRedirection(options => options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect );
             services.AddAuthorization(options => options.AddPolicy(Policies.Administrator, policy => policy.RequireRole(AppUser.AdminRole)));
+
+            // Enable GZip and Brotli compression.
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Optimal);
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add(new BrotliCompressionProvider());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -165,6 +174,7 @@ namespace BitShuva.Chavah
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseResponseCompression();
             
             app.UseMvc(routes =>
             {

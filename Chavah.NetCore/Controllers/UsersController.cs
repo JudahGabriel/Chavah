@@ -61,7 +61,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task SaveVolume(double volume)
         {
             // TODO: trace down the logic for the authentication. it should never be triggred from ui.
-            var user = await GetCurrentUser().ConfigureAwait(false);
+            var user = await GetUser().ConfigureAwait(false);
             if (user != null)
             {
                 user.Volume = volume;
@@ -71,29 +71,45 @@ namespace BitShuva.Chavah.Controllers
         /// <summary>
         /// Upload User Profile picture.
         /// </summary>
-        /// <param name="file"></param>
+        /// <param name="upload"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<Uri> UploadProfilePicture(IFormFile file)
+        public async Task<Uri> UploadProfilePicture([FromForm]ProfilePictureUpload upload)
         {
-            if (file.Length > maxProfilePictureSizeInBytes)
+            if (upload.Photo == null)
+            {
+                throw new ArgumentNullException("file");
+            }
+            if (upload.Photo.Length > maxProfilePictureSizeInBytes)
             {
                 throw new ArgumentException($"File is too large. Please upload files smaller than {maxProfilePictureSizeInBytes}")
-                    .WithData("size", file.Length);
+                    .WithData("size", upload.Photo.Length);
             }
 
-            var user = await GetCurrentUserOrThrow().ConfigureAwait(false);
+            var user = await GetUserOrThrow();
             var oldProfilePic = user.ProfilePicUrl;
 
-            using (var fileStream = file.OpenReadStream())
+            using (var fileStream = upload.Photo.OpenReadStream())
             {
-                user.ProfilePicUrl = await cdnManager.UploadProfilePicAsync(fileStream, file.ContentType ?? "image/jpg")
+                user.ProfilePicUrl = await cdnManager.UploadProfilePicAsync(fileStream, upload.Photo.ContentType ?? "image/jpg")
                     .ConfigureAwait(false);
             }
             
             //delete the old image
             await cdnManager.DeleteProfilePicAsync(oldProfilePic.OriginalString).ConfigureAwait(false);
             return user.ProfilePicUrl;
+        }
+        
+        [HttpGet]
+        public async Task<Uri> GetProfilePicForEmailAddress(string email)
+        {
+            var user = await DbSession.LoadAsync<AppUser>(AppUser.AppUserPrefix + email);
+            if (user != null)
+            {
+                return user.ProfilePicUrl;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -104,7 +120,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task<AppUser> UpdateProfile([FromBody]AppUser updatedUser)
         {
-            var user = await GetCurrentUserOrThrow().ConfigureAwait(false);
+            var user = await GetUserOrThrow().ConfigureAwait(false);
             var isUpdatingSelf = string.Equals(user.Email, updatedUser.Email, StringComparison.InvariantCultureIgnoreCase);
             if (!isUpdatingSelf)
             {

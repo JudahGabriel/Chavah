@@ -36,6 +36,7 @@
         public string TrackJsToken { get; set; }
         public string Language { get; set; }
         public string FacebookId { get; set; }
+        public bool IsDownForMaintenance { get; set; }
     }
 
     public class Logging

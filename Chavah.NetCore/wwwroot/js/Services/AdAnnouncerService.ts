@@ -2,15 +2,13 @@
     export class AdAnnouncerService {
 
         static $inject = [
-            "audioPlayer",
-            "initConfig",
+            "audioPlayer"
         ];
 
         lastAnnouncementTime = new Date();
 
         constructor(
-            private readonly audioPlayer: AudioPlayerService,
-            private readonly initConfig: Server.IConfigViewModel) {
+            private readonly audioPlayer: AudioPlayerService) {
         }
 
         hasPendingAnnouncement(): boolean {

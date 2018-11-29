@@ -23,12 +23,6 @@
     <footer ng-include="Partials.footerPartial"></footer>
 </div>
 
-@if (Model.User != null)
-{
-    <script type="text/javascript">
-        // Access to the signed is user is needed immediately because components rely on whether we're signed in.
-        // Fetching this state asynchronously isn't sufficient, because it causes sign in state to change, triggering other components to refresh their data.
-
-        window["BitShuva.Chavah.InitialUser"] = @Html.Raw(Model.User.ToJson());
-    </script>
-}
+<script type="text/javascript">
+    window["BitShuva.Chavah.HomeViewModel"] = @Html.Raw(Model.ToJson());
+</script>
