@@ -269,6 +269,17 @@ namespace BitShuva.Chavah.Controllers
                 });
             }
 
+            // Reject throwaway emails. We need to do this because this helps prevent upvote/downvote fraud. 
+            var throwawayDomainsDoc = await DbSession.LoadOptionAsync<ThrowawayEmailDomains>("ThrowawayEmailDomains/1");
+            var isThrowawayEmail = throwawayDomainsDoc.Exists(doc => doc.Domains.Any(domain => emailLower.Contains(domain, StringComparison.InvariantCultureIgnoreCase)));
+            if (isThrowawayEmail)
+            {
+                return Ok(new RegisterResults
+                {
+                    ErrorMessage = "Throwaway email accounts are unable to register with Chavah. Please use a valid email address. We'll never send spam nor share your email with anyone."
+                });
+            }
+
             // The user doesn't exist yet. Try and register him.
             var user = new AppUser
             {
