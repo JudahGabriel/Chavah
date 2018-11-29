@@ -274,6 +274,7 @@ namespace BitShuva.Chavah.Controllers
             var isThrowawayEmail = throwawayDomainsDoc.Exists(doc => doc.Domains.Any(domain => emailLower.Contains(domain, StringComparison.InvariantCultureIgnoreCase)));
             if (isThrowawayEmail)
             {
+                logger.LogInformation("Rejected attempt to register with a throwaway email address {email}", emailLower);
                 return Ok(new RegisterResults
                 {
                     ErrorMessage = "Throwaway email accounts are unable to register with Chavah. Please use a valid email address. We'll never send spam nor share your email with anyone."
