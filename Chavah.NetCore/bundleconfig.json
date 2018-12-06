@@ -1,6 +1,6 @@
 [  
   {
-    "outputFileName": "wwwroot/dist/app.min.css",
+    "outputFileName": "wwwroot/css/dist/app.min.css",
     "inputFiles": [
       "wwwroot/css/bootswatch.min.css",
       "wwwroot/css/bootstrap-flatly.min.css",
@@ -10,7 +10,7 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/dist/app.min.js",
+    "outputFileName": "wwwroot/js/dist/app.min.js",
     "inputFiles": [
       "wwwroot/js/polyfills/*.js",
       "wwwroot/js/common/*.js",
