@@ -37,6 +37,7 @@
         public string Language { get; set; }
         public string FacebookId { get; set; }
         public bool IsDownForMaintenance { get; set; }
+        public string ServiceWorker { get; set; }
     }
 
     public class Logging
