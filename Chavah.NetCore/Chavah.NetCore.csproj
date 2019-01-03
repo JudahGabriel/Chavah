@@ -45,7 +45,6 @@
 		<PackageReference Include="SimpleSitemap" Version="3.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
 		<PackageReference Include="System.Interactive" Version="3.2.0" />
-		<PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.49" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -56,16 +55,23 @@
 		<Content Remove="Views\Partials\**" />
 		<Content Remove="wwwroot\css\**\*.less" />
 		<None Include="wwwroot\css\**\*.less" />
+    <Content Remove="wwwroot\js\dist\**" />
+    <Content Remove="wwwroot\css\dist\**" />
 
 		<Content Remove="wwwroot\js\**\*.ts" />
 		<Content Include="wwwroot\js\**\*.ts" />
 		<Compile Remove="Views\Partials\**" />
+    <Compile Remove="wwwroot\js\dist\**" />
+    <Compile Remove="wwwroot\css\dist\**" />
 
 		<Content Remove="node_modules\**" />
 
 		<EmbeddedResource Remove="Views\Partials\**" />
 
 		<None Remove="Views\Partials\**" />
+
+		<None Remove="wwwroot\js\dist\**" />
+    <None Remove="wwwroot\css\dist\**" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -78,6 +84,8 @@
 	  <Content Remove="wwwroot\js\Services\TemplateService.js" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.js.map" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.ts" />
+	  <Content Remove="wwwroot\js\ServiceWorkers\CacheFingerprinted.ts" />
+	  <Content Remove="wwwroot\js\ServiceWorkers\Minimal.ts" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -105,10 +113,22 @@
 	  <Folder Include="wwwroot\js\Components\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\CacheFingerprinted.ts" />
+	  <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\Minimal.ts" />
+	</ItemGroup>
+
 	<Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
 		<!-- Include the newly-built files in the publish output -->
 		<ItemGroup>
-			<DistFiles Include="wwwroot\dist\**" />
+			<DistFiles Include="wwwroot\css\dist\**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>%(DistFiles.Identity)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+  <ItemGroup>
+			<DistFiles Include="wwwroot\js\dist\**" />
 			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
 				<RelativePath>%(DistFiles.Identity)</RelativePath>
 				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

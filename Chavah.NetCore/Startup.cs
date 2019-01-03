@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BitShuva.Chavah.Common;
@@ -115,7 +116,6 @@ namespace BitShuva.Chavah
             });
             services.AddCustomAddSwagger();
             services.AddPwnedPassword(_=> new PwnedOptions());
-            services.AddProgressiveWebApp();
             services.Configure<SecurityStampValidatorOptions>(options =>
             {
                 // enables immediate logout, after updating the user's stat.
@@ -141,7 +141,7 @@ namespace BitShuva.Chavah
             services.AddResponseCompression(options =>
             {
                 options.EnableForHttps = true;
-                options.Providers.Add(new BrotliCompressionProvider());
+                options.Providers.Add<BrotliCompressionProvider>();
             });
         }
 
@@ -152,6 +152,9 @@ namespace BitShuva.Chavah
             ILoggerFactory loggerFactory,
             IApiVersionDescriptionProvider provider)
         {
+            // Compression must be specified before .UseStaticFiles, otherwise static files won't be compressed. https://stackoverflow.com/questions/46832723/net-core-response-compression-middleware-for-static-files
+            app.UseResponseCompression();
+
             if (env.IsDevelopment())
             {
                 // Static files without caching.
@@ -174,7 +177,6 @@ namespace BitShuva.Chavah
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
-            app.UseResponseCompression();
             
             app.UseMvc(routes =>
             {

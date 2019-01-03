@@ -100,5 +100,19 @@ namespace BitShuva.Chavah.Controllers
         {
             return RedirectToActionPermanent("ActivityFeed", "Activities");
         }
+
+        /// <summary>
+        /// Implements the upcoming web standard that helps password managers change a user's password.
+        /// </summary>
+        /// <remarks>
+        /// https://github.com/WICG/change-password-url/blob/gh-pages/explainer.md
+        /// </remarks>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(".well-known/change-password")]
+        public IActionResult ChangePassword()
+        {
+            return RedirectPermanent("/#/forgotpassword");
+        }
     }
 }

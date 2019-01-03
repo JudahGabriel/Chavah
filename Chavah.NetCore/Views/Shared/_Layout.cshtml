@@ -102,7 +102,7 @@
     <environment include="Test,Staging,Production">
         <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic&v=1' crossorigin="anonymous" rel='stylesheet' type='text/css' />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?v=1" crossorigin="anonymous" />
-        <link rel="stylesheet" href="~/dist/app.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/dist/app.min.css" asp-append-version="true" />
     </environment>
 </head>
 
@@ -160,7 +160,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js" asp-fallback-src="~/lib/tinycolor/tinycolor.js" asp-fallback-test="window.tinycolor"></script>
 
         @*Chavah JS*@
-        <script src="~/dist/app.min.js" asp-append-version="true"></script>
+        <script src="~/js/dist/app.min.js" asp-append-version="true"></script>
     </environment>
 
     @await RenderSectionAsync("Scripts", required: false).ConfigureAwait(false)
