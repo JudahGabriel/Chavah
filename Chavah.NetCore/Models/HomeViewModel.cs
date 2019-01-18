@@ -88,6 +88,11 @@ namespace BitShuva.Chavah.Models
         public bool IsDownForMaintenance { get; set; }
 
         /// <summary>
+        /// Gets the public key for Service Worker push notifications.
+        /// </summary>
+        public string PushNotificationsPublicKey { get; set; }
+
+        /// <summary>
         /// Converts the view model to a JSON object.
         /// </summary>
         /// <returns></returns>
@@ -110,7 +115,8 @@ namespace BitShuva.Chavah.Models
                 SoundEffects = new System.Uri(cdnSettings.HttpPath).Combine(cdnSettings.SoundEffects).ToString(),
                 User = user,
                 Song = song,
-                IsDownForMaintenance = appSettings.IsDownForMaintenance
+                IsDownForMaintenance = appSettings.IsDownForMaintenance,
+                PushNotificationsPublicKey = appSettings.PushNotificationsPublicKey
             };
             
             if (song != null)

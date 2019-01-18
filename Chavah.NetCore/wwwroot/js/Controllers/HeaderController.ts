@@ -9,6 +9,7 @@
             "accountApi",
             "appNav",
             "pwaInstall",
+            "pushNotifications",
             "audioPlayer"
         ];
 
@@ -17,6 +18,7 @@
             private readonly accountApi: AccountService,
             private readonly appNav: AppNavService,
             private readonly pwaInstall: PwaInstallService,
+            private readonly pushNotifications: PushNotificationService,
             private readonly audioPlayer: AudioPlayerService) {
 
             this.accountApi.signedInState
@@ -86,6 +88,10 @@
                     }
                 })
             }
+        }
+
+        askPermissionForPushNotifications() {
+            this.pushNotifications.askPermission();
         }
     }
 

@@ -37,6 +37,8 @@
         public string Language { get; set; }
         public string FacebookId { get; set; }
         public bool IsDownForMaintenance { get; set; }
+        public string PushNotificationsPublicKey { get; set; }
+        public string PushNotificationsPrivateKey { get; set; }
     }
 
     public class Logging

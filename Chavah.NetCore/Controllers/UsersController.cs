@@ -99,6 +99,13 @@ namespace BitShuva.Chavah.Controllers
             await cdnManager.DeleteProfilePicAsync(oldProfilePic.OriginalString).ConfigureAwait(false);
             return user.ProfilePicUrl;
         }
+
+        [HttpPost]
+        public async Task<PushSubscription> AddPushNotificationSubscription(PushSubscription subscription)
+        {
+            await DbSession.StoreAsync(subscription);
+            return subscription;
+        }
         
         [HttpGet]
         public async Task<Uri> GetProfilePicForEmailAddress(string email)

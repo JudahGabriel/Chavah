@@ -81,7 +81,7 @@
 	  <Content Remove="wwwroot\js\Services\ConfigService..js" />
 	  <Content Remove="wwwroot\js\Services\ConfigService..js.map" />
 	  <Content Remove="wwwroot\js\Services\ConfigService..ts" />
-	  <Content Remove="wwwroot\js\Services\PwaInstallService.ts" />
+	  <Content Remove="wwwroot\js\Services\PushNotificationService.ts" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.js" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.js.map" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.ts" />
@@ -110,6 +110,10 @@
 
 	<ItemGroup>
 	  <Folder Include="wwwroot\js\Components\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <TypeScriptCompile Include="wwwroot\js\Services\PushNotificationService.ts" />
 	</ItemGroup>
 
 	<Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
