@@ -93,6 +93,11 @@ namespace BitShuva.Chavah.Models
         public string PushNotificationsPublicKey { get; set; }
 
         /// <summary>
+        /// Gets the path to the service worker to use.
+        /// </summary>
+        public string ServiceWorker { get; set; }
+
+        /// <summary>
         /// Converts the view model to a JSON object.
         /// </summary>
         /// <returns></returns>
@@ -117,6 +122,7 @@ namespace BitShuva.Chavah.Models
                 Song = song,
                 IsDownForMaintenance = appSettings.IsDownForMaintenance,
                 PushNotificationsPublicKey = appSettings.PushNotificationsPublicKey
+                ServiceWorker = appSettings.ServiceWorker
             };
             
             if (song != null)

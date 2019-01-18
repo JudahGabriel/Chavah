@@ -181,6 +181,7 @@
         song: Song | null;
         user: IUserViewModel | null;
         isDownForMaintenance: boolean;
+        serviceWorker: string;
         pushNotificationsPublicKey: string;
     };
 

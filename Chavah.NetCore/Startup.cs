@@ -116,7 +116,6 @@ namespace BitShuva.Chavah
             });
             services.AddCustomAddSwagger();
             services.AddPwnedPassword(_=> new PwnedOptions());
-            services.AddProgressiveWebApp();
             services.Configure<SecurityStampValidatorOptions>(options =>
             {
                 // enables immediate logout, after updating the user's stat.
