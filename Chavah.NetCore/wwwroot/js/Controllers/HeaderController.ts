@@ -3,6 +3,7 @@
         
         notifications: Server.Notification[];
         profilePicUrl: string | null = null;
+        canSubscribeToPushNotifications = false;
 
         static $inject = [
             "homeViewModel",
@@ -58,6 +59,15 @@
             return this.pwaInstall.canInstall;
         }
 
+        $onInit() {
+            this.loadPushNotificationState();
+        }
+
+        loadPushNotificationState() {
+            this.pushNotifications.canSubscribe()
+                .then(val => this.canSubscribeToPushNotifications = val);
+        }
+
         markNotificationsAsRead() {
             if (this.notifications.some(n => n.isUnread)) {
                 this.notifications.forEach(n => n.isUnread = false);
@@ -90,8 +100,15 @@
             }
         }
 
-        askPermissionForPushNotifications() {
-            this.pushNotifications.askPermission();
+        async askPermissionForPushNotifications() {
+            const permissionResult = await this.pushNotifications.askPermission();
+            if (permissionResult === "granted") {
+                await this.pushNotifications.subscribe();
+            } else {
+                console.log("Push notification permission wasn't granted", permissionResult);
+            }
+
+            this.loadPushNotificationState();
         }
     }
 

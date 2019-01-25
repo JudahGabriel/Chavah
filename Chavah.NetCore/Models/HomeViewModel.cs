@@ -122,7 +122,6 @@ namespace BitShuva.Chavah.Models
                 Song = song,
                 IsDownForMaintenance = appSettings.IsDownForMaintenance,
                 PushNotificationsPublicKey = appSettings.PushNotificationsPublicKey
-                ServiceWorker = appSettings.ServiceWorker
             };
             
             if (song != null)

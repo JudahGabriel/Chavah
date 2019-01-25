@@ -1,7 +1,4 @@
-﻿<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.css?v=1" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.js?v=1"></script>-->
-
-<div ng-include="Partials.goBack"></div>
+﻿<div ng-include="Partials.goBack"></div>
 <section class="page profile-page" ng-controller="ProfileController as vm">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-offset-2">
@@ -57,9 +54,34 @@
                             <input type="text" class="form-control" id="nameInput" placeholder="HaMatbil" ng-model="vm.user.lastName">
                         </div>
                         <div class="form-group">
-                            <label for="nameInput">Email</label>
-                            <p class="form-control-static">{{vm.user.email}}</p>
+                            <label for="emailInput">Email</label>
+                            <p id="emailInput" class="form-control-static">{{vm.user.email}}</p>
                         </div>
+
+                        <!--Push notifications-->
+                        <div class="form-group">
+                            <label for="pushNotificationsBtns">Alert me of new music</label>
+                            <br />
+                            <div ng-show="vm.deviceSupportsPushNotifications">
+                                <div id="pushNotificationsBtns" class="btn-group" role="group">
+                                    <button type="button" class="btn btn-default" ng-class="{ 'active': vm.isSubscribedPushNotifications }" ng-click="vm.subscribeToPushNotifications()" ng-disabled="vm.showPushNotificationsBlocked">
+                                        <i class="fa fa-fw" ng-class="{ 'fa-check': vm.isSubscribedPushNotifications }"></i>
+                                        Yes
+                                    </button>
+                                    <button type="button" class="btn btn-default" ng-class="{ 'active': !vm.isSubscribedPushNotifications }" ng-click="vm.unsubscribeFromPushNotifications()" ng-disabled="vm.showPushNotificationsBlocked">
+                                        <i class="fa fa-fw" ng-class="{ 'fa-check': !vm.isSubscribedPushNotifications }"></i>
+                                        No
+                                    </button>
+                                </div>
+                            </div>
+                            <div ng-hide="vm.deviceSupportsPushNotifications">
+                                <i class="fa fa-exclamation-triangle"></i> Your device doesn't support new music push notifications. <a href="https://caniuse.com/#search=push">See which devices support this feature</a>.
+                            </div>
+                            <p class="help-block text-warning" ng-show="vm.showPushNotificationsBlocked">
+                                <i class="fa fa-exclamation-triangle"></i> Your device is currently blocking alerts. <a href="https://support.google.com/chrome/answer/3220216?co=GENIE.Platform%3DDesktop&hl=en" target="_blank" rel="noopener noreferrer">Unblock them</a>.
+                            </p>
+                        </div>
+
                         <div class="form-group">
                             <label for="nameInput">Registered</label>
                             <p class="form-control-static">{{vm.registrationDateAgo}}</p>

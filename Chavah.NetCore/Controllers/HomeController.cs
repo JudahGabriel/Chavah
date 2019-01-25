@@ -25,10 +25,10 @@ namespace BitShuva.Chavah.Controllers
             IAlbumService albumService,
             IUserService userService,
             AngularCacheBustedViews ngViews,
-            IAsyncDocumentSession dbSession,
-            ILogger<HomeController> logger,
             IOptions<AppSettings> options,
-            IMapper mapper)
+            IMapper mapper,
+            IAsyncDocumentSession dbSession,
+            ILogger<HomeController> logger)
             : base(dbSession, logger)
         {
             this.songService = songService;
@@ -43,7 +43,7 @@ namespace BitShuva.Chavah.Controllers
         /// Urls like "https://messianicradio.com?song=songs/32" need to load the server-rendered Razor 
         /// page with info about that song.
         /// This is used for social media sites like Facebook and Twitter which show images, title, 
-        /// and description from the loaded page.
+        /// and description from the loaded page before any JS is executed.
         /// </summary>
         [HttpGet]
         [Route("")]
@@ -93,6 +93,15 @@ namespace BitShuva.Chavah.Controllers
         public Task<IActionResult> Embed(string artist = null, string album = null, string song = null)
         {
             return Index(artist, album, song, true);
+        }
+
+        [HttpGet]
+        [Route("serviceworker")]
+        public IActionResult ServiceWorker()
+        {
+            var name = options.Value.Application.ServiceWorker;
+            var path = "~/js/ServiceWorkers/" + name;
+            return File(path, "application/javascript");
         }
 
         [HttpGet]

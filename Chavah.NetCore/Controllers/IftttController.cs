@@ -25,14 +25,17 @@ namespace BitShuva.Chavah.Controllers
     public class IftttController : RavenController
     {
         private readonly AppSettings appSettings;
+        private readonly IPushNotificationSender pushNotifications;
 
         public IftttController(
             IOptions<AppSettings> appSettings,
+            IPushNotificationSender pushNotifications,
             IAsyncDocumentSession dbSession,
             ILogger<IftttController> logger)
             : base(dbSession, logger)
         {
             this.appSettings = appSettings.Value;
+            this.pushNotifications = pushNotifications;
         }
 
         [HttpGet]
@@ -86,6 +89,7 @@ namespace BitShuva.Chavah.Controllers
 
             logger.LogInformation("IFTTT CreateNotification called with {token}, {title}, {imgUrl}, {srcName}, {url}", secretToken, title, imgUrl, sourceName, url);
 
+            // Create a notification in the users' alerts menu
             var notification = new Notification
             {
                 Date = DateTime.UtcNow,
@@ -95,16 +99,31 @@ namespace BitShuva.Chavah.Controllers
                 Title = title,
                 Url = url
             };
-            var jsonNotification = JsonConvert.SerializeObject(notification);
+            this.NotifyAllUsers(notification);
 
+            // Send out HTML5 push notifications.
+            var pushNotification = new PushNotification
+            {
+                Title = title,
+                ImageUrl = imgUrl,
+                Body = $"The latest from the {sourceName}",
+                ClickUrl = url
+            };
+            this.pushNotifications.QueueSendNotificationToAll(pushNotification);
+
+            return Json(notification);
+        }
+
+        private void NotifyAllUsers(Notification notification)
+        {
+            var jsonNotification = JsonConvert.SerializeObject(notification);
             var patchScript = @"
                 this.Notifications.unshift(" + jsonNotification + @");
                 if (this.Notifications.length > 10) {
                     this.Notifications.length = 10;
                 }
-";
+            ";
             this.DbSession.Advanced.DocumentStore.PatchAll<AppUser>(patchScript);
-            return Json(notification);
         }
 
         private void AuthorizeKey(string key)

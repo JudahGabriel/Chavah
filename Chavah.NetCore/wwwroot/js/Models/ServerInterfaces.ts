@@ -181,7 +181,6 @@
         song: Song | null;
         user: IUserViewModel | null;
         isDownForMaintenance: boolean;
-        serviceWorker: string;
         pushNotificationsPublicKey: string;
     };
 
@@ -234,5 +233,12 @@
         status: SignInStatus;
         errorMessage: string | null;
         user: User | null;
+    }
+
+    export interface IPushSubscription {
+        appUserId: string;
+        createDate: string;
+        endpoint: string;
+        keys: { auth: string; p256dh: string; }
     }
 }

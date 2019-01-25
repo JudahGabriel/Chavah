@@ -5,6 +5,9 @@ using System.Web;
 
 namespace BitShuva.Chavah.Models
 {
+    /// <summary>
+    /// This is a notification that shows up in the user's "unread" alerts menu.
+    /// </summary>
     public class Notification
     {
         public string Title { get; set; }

@@ -17,11 +17,6 @@
             return this.httpApi.postFormData(url, formData);
         }
 
-        addPushNotificationSubscription(subscription: PushSubscription) {
-            const url = "/api/users/addPushNotificationSubscription";
-            return this.httpApi.post(url, subscription);
-        }
-
         saveVolume(volume: number) {
             const args = {
                 volume: volume
