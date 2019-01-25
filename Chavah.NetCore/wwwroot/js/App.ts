@@ -216,7 +216,6 @@
 
                     // If we're an admin route, load the admin-specific scripts.
                     if (route.access === RouteAccess.Admin) {
-                        // Also, cancel navigation if we're not an admin user and redirect to sign-in.
                         adminScripts.install();
                     }
                 }
@@ -225,9 +224,4 @@
 
     // Setup Fastclick to remove the 300ms click delay on mobile browsers.
     document.addEventListener("DOMContentLoaded", () => FastClick.attach(document.body), false);
-
-    // Install our service worker
-    if ('serviceWorker' in navigator && !!homeVm.serviceWorker) {
-        navigator.serviceWorker.register(homeVm.serviceWorker);
-    }
 }

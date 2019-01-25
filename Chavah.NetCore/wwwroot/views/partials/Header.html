@@ -69,13 +69,19 @@
                                     Trending songs
                                 </a>
                             </li>
+                            <li class="divider" role="separator"></li>
                             <li ng-show="vm.canInstallPwa">
                                 <a href="javascript:void(0)" ng-click="vm.installPwa()">
                                     <i class="fa fa-download fa-fw"></i>
                                     Install App
                                 </a>
                             </li>
-                            <li class="divider" role="separator"></li>
+                            <li>
+                                <a href="javascript:void(0)" ng-show="vm.canSubscribeToPushNotifications" ng-click="vm.askPermissionForPushNotifications()">
+                                    <i class="fa fa-fw fa-bell"></i>
+                                    Alert me of new music
+                                </a>
+                            </li>
                             <li>
                                 <a href="#/support">
                                     <i class="fa fa-envelope-o fa-fw"></i>

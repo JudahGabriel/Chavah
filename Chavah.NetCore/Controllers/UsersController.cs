@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -99,7 +100,7 @@ namespace BitShuva.Chavah.Controllers
             await cdnManager.DeleteProfilePicAsync(oldProfilePic.OriginalString).ConfigureAwait(false);
             return user.ProfilePicUrl;
         }
-        
+                
         [HttpGet]
         public async Task<Uri> GetProfilePicForEmailAddress(string email)
         {

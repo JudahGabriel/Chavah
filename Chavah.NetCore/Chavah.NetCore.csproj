@@ -45,6 +45,7 @@
 		<PackageReference Include="SimpleSitemap" Version="3.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
 		<PackageReference Include="System.Interactive" Version="3.2.0" />
+		<PackageReference Include="WebPush" Version="1.0.11" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -80,12 +81,12 @@
 	  <Content Remove="wwwroot\js\Services\ConfigService..js" />
 	  <Content Remove="wwwroot\js\Services\ConfigService..js.map" />
 	  <Content Remove="wwwroot\js\Services\ConfigService..ts" />
-	  <Content Remove="wwwroot\js\Services\PwaInstallService.ts" />
+	  <Content Remove="wwwroot\js\Services\PushNotificationService.ts" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.js" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.js.map" />
 	  <Content Remove="wwwroot\js\Services\TemplateService.ts" />
-	  <Content Remove="wwwroot\js\ServiceWorkers\CacheFingerprinted.ts" />
-	  <Content Remove="wwwroot\js\ServiceWorkers\Minimal.ts" />
+	  <Content Remove="wwwroot\js\ServiceWorkers\CacheFingerprinted.js" />
+	  <Content Remove="wwwroot\js\ServiceWorkers\Minimal.js" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -114,8 +115,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\CacheFingerprinted.ts" />
-	  <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\Minimal.ts" />
+	  <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\CacheFingerprinted.js">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </TypeScriptCompile>
+	  <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\Minimal.js">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </TypeScriptCompile>
+	  <TypeScriptCompile Include="wwwroot\js\Services\PushNotificationService.ts" />
 	</ItemGroup>
 
 	<Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">

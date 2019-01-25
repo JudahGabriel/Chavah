@@ -24,6 +24,6 @@
     "wwwroot/js/directives/*",
     "wwwroot/js/services/*",
     "wwwroot/js/controllers/*",
-    "wwwroot/js/app.ts"
+    "wwwroot/js/app.ts", "Services/PushNotificationSender.cs"
   ]
 }

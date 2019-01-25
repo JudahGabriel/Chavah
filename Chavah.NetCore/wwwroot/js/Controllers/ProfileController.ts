@@ -4,7 +4,8 @@
         static $inject = [
             "appNav",
             "accountApi",
-            "userApi"
+            "userApi",
+            "pushNotifications"
         ];
 
         user: User;
@@ -13,11 +14,15 @@
         isSaving = false;
         isUploadingPhoto = false;
         hasSavedSuccessfully = false;
+        deviceSupportsPushNotifications = false;
+        isSubscribedPushNotifications = false;
+        showPushNotificationsBlocked = false;
                 
         constructor(
             private readonly appNav: AppNavService,
             private readonly accountApi: AccountService,
-            private readonly userApi: UserApiService) {
+            private readonly userApi: UserApiService,
+            private readonly pushNotifications: PushNotificationService) {
 
             // Make a copy of the user so that we can edit freely without committing.
             this.user = new User(this.accountApi.currentUser!);
@@ -32,6 +37,16 @@
         }
 
         $onInit() {
+            this.loadPushNotificationState();
+        }
+
+        async loadPushNotificationState() {
+            this.deviceSupportsPushNotifications = await this.pushNotifications.isSupported();
+            this.isSubscribedPushNotifications = await this.pushNotifications.isSubscribed();
+
+            // Show some UI if we're blocked.
+            const state = await this.pushNotifications.getStatus();
+            this.showPushNotificationsBlocked = state === "denied";
         }
 
         launchImagePicker() {
@@ -66,6 +81,36 @@
                     }
                 }
             }
+        }
+
+        async subscribeToPushNotifications() {
+            // Already subscribed? Punt.
+            const existingSub = await this.pushNotifications.isSubscribed();
+            if (existingSub) {
+                return;
+            }
+
+            const permissionResult = await this.pushNotifications.askPermission();
+            if (permissionResult === "granted") {
+                this.isSaving = true;
+                try {
+                    await this.pushNotifications.subscribe();
+                } finally {
+                    this.isSaving = false;
+                }
+            }
+
+            this.loadPushNotificationState();
+        }
+
+        async unsubscribeFromPushNotifications() {
+            this.isSaving = true;
+            try {
+                await this.pushNotifications.unsubscribe();
+            } finally {
+                this.isSaving = false;
+            }
+            this.loadPushNotificationState();
         }
 
         async save() {

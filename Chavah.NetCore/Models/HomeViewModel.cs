@@ -88,6 +88,11 @@ namespace BitShuva.Chavah.Models
         public bool IsDownForMaintenance { get; set; }
 
         /// <summary>
+        /// Gets the public key for Service Worker push notifications.
+        /// </summary>
+        public string PushNotificationsPublicKey { get; set; }
+
+        /// <summary>
         /// Gets the path to the service worker to use.
         /// </summary>
         public string ServiceWorker { get; set; }
@@ -116,7 +121,7 @@ namespace BitShuva.Chavah.Models
                 User = user,
                 Song = song,
                 IsDownForMaintenance = appSettings.IsDownForMaintenance,
-                ServiceWorker = appSettings.ServiceWorker
+                PushNotificationsPublicKey = appSettings.PushNotificationsPublicKey
             };
             
             if (song != null)

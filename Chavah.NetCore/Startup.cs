@@ -48,6 +48,7 @@ namespace BitShuva.Chavah
 
             // Add application services.
             services.AddTransient<IEmailService, SendGridEmailService>();
+            services.AddTransient<IPushNotificationSender, PushNotificationSender>();
             services.AddTransient<ICdnManagerService, CdnManagerService>();
             services.AddScoped<IChannelProvider, RssChannelProvider>();
             services.AddTransient<ISongService, SongService>();
