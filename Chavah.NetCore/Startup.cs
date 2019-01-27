@@ -68,7 +68,7 @@ namespace BitShuva.Chavah
             services
                 .AddRavenDocStore() // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession() // Create a RavenDB IAsyncDocumentSession for each request.
-                .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles. 
+                .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles.
                 {
                     c.Password.RequireNonAlphanumeric = false;
                     c.Password.RequireUppercase = false;
@@ -80,18 +80,16 @@ namespace BitShuva.Chavah
             services.InstallIndexes();
             services.AddMemoryCache();
 
-            services.AddMvcCore().AddVersionedApiExplorer(
-              options =>
-              {
-                  options.GroupNameFormat = "'v'VVV";
+            services.AddApiVersioning(v =>
+            {
+                v.ReportApiVersions = true;
+                v.AssumeDefaultVersionWhenUnspecified = true;
+            });
 
-                   // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
-                   // can also be used to control the format of the API version in route templates
-                   options.SubstituteApiVersionInUrl = true;
-              });
+            services.AddVersionedApiExplorer();
 
             services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores()))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(options=>
                 {
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -142,13 +140,13 @@ namespace BitShuva.Chavah
             services.AddResponseCompression(options =>
             {
                 options.EnableForHttps = true;
-                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.BrotliCompressionProvider>();
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
-            IApplicationBuilder app, 
+            IApplicationBuilder app,
             IHostingEnvironment env,
             ILoggerFactory loggerFactory,
             IApiVersionDescriptionProvider provider)
@@ -178,15 +176,15 @@ namespace BitShuva.Chavah
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
-            
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-                
+
             });
-            
+
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
