@@ -96,6 +96,12 @@
             });
         }
 
+        pushSubscriptionSuccessful(): ng.ui.bootstrap.IModalServiceInstance {
+            return this.$uibModal.open({
+                templateUrl: this.templatePaths.pushSubscriptionSuccessful
+            });
+        }
+
         createAlbum() {
             this.$location.url("/admin/album/create");
         }
