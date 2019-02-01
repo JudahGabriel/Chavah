@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <UserSecretsId>a20a8833-d0a8-48c8-b1ab-5a4807355c27</UserSecretsId>
+    <UserSecretsId>c9b7e1c3-1564-4d7d-85ea-3455587a330d</UserSecretsId>
     <AssemblyName>BitShuva.Chavah</AssemblyName>
     <RootNamespace>BitShuva.Chavah</RootNamespace>
     <TypeScriptCompileBlocked>false</TypeScriptCompileBlocked>
@@ -52,22 +52,24 @@
     <Content Remove="Views\Partials\**" />
     <Content Remove="wwwroot\css\**\*.less" />
     <None Include="wwwroot\css\**\*.less" />
+    <Content Remove="wwwroot\js\Components\**" />
     <Content Remove="wwwroot\js\dist\**" />
     <Content Remove="wwwroot\css\dist\**" />
     <Content Remove="wwwroot\js\**\*.ts" />
     <Content Include="wwwroot\js\**\*.ts" />
     <Compile Remove="Views\Partials\**" />
+    <Compile Remove="wwwroot\js\Components\**" />
     <Compile Remove="wwwroot\js\dist\**" />
     <Compile Remove="wwwroot\css\dist\**" />
     <Content Remove="node_modules\**" />
     <EmbeddedResource Remove="Views\Partials\**" />
+    <EmbeddedResource Remove="wwwroot\js\Components\**" />
     <None Remove="Views\Partials\**" />
+    <None Remove="wwwroot\js\Components\**" />
     <None Remove="wwwroot\js\dist\**" />
     <None Remove="wwwroot\css\dist\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="wwwroot\js\Common\AngularBindings.ts" />
-    <Content Remove="wwwroot\js\Polyfills\BeforeInstallPromptEvent.ts" />
     <Content Remove="wwwroot\js\Services\ConfigService..js" />
     <Content Remove="wwwroot\js\Services\ConfigService..js.map" />
     <Content Remove="wwwroot\js\Services\ConfigService..ts" />
@@ -96,9 +98,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="wwwroot\js\Components\" />
-  </ItemGroup>
-  <ItemGroup>
     <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\CacheFingerprinted.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </TypeScriptCompile>
@@ -111,14 +110,14 @@
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="wwwroot\css\dist\**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
     </ItemGroup>
     <ItemGroup>
       <DistFiles Include="wwwroot\js\dist\**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>

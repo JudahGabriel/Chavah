@@ -11,8 +11,9 @@ services:
       - DbConnection_FileName=ChavahDb.ravendbdump
       # Fix for docker ssl issue please update password from
       # Manage UserSecrets "Kestrel:Certificates:Development:Password": "a20a8833-d0a8-48c8-b1ab-5a4807355c27"
-      - Kestrel_Certificates_Default_Password="a20a8833-d0a8-48c8-b1ab-5a4807355c27"
-      - Kestrel_Certificates_Default_Path=/root/.aspnet/https/Chavah.NetCore.pfx
+#      - Kestrel_Certificates_Development_Password=c9b7e1c3-1564-4d7d-85ea-3455587a330d
+#      - Kestrel_Certificates_Default_Password=c9b7e1c3-1564-4d7d-85ea-3455587a330d
+#      - Kestrel_Certificates_Default_Path=/root/.aspnet/https/Chavah.NetCore.pfx
     ports:
       - "5600:80"
       - "44363:443"

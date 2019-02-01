@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -136,11 +137,20 @@ namespace BitShuva.Chavah
             services.AddAuthorization(options => options.AddPolicy(Policies.Administrator, policy => policy.RequireRole(AppUser.AdminRole)));
 
             // Enable GZip and Brotli compression.
-            services.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Optimal);
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
+            services.Configure<BrotliCompressionProviderOptions>(options =>
+            {
+                options.Level = System.IO.Compression.CompressionLevel.Fastest;
+            });
+
             services.AddResponseCompression(options =>
             {
                 options.EnableForHttps = true;
-                options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.BrotliCompressionProvider>();
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
             });
         }
 
@@ -182,7 +192,6 @@ namespace BitShuva.Chavah
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-
             });
 
             app.UseSwagger();
@@ -195,6 +204,7 @@ namespace BitShuva.Chavah
                         description.GroupName.ToUpperInvariant());
                 }
             });
+
 
             // Run pending Raven migrations.
             var migrationService = app.ApplicationServices.GetService<MigrationRunner>();
