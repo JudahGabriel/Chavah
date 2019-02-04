@@ -1,6 +1,7 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using DalSoft.Hosting.BackgroundQueue;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Optional;
@@ -26,15 +27,22 @@ namespace BitShuva.Services
         private readonly ILogger<SendGridEmailService> logger;
         private readonly IDocumentStore db;
         private readonly BackgroundQueue backgroundWorker;
+        private readonly IHostingEnvironment host;
 
-        public SendGridEmailService(BackgroundQueue queue, IDocumentStore db, IOptions<AppSettings> appSettings, ILogger<SendGridEmailService> logger)
+        public SendGridEmailService(
+            BackgroundQueue queue, 
+            IDocumentStore db, 
+            IOptions<AppSettings> appSettings, 
+            ILogger<SendGridEmailService> logger,
+            IHostingEnvironment host)
         {
             this.emailSettings = appSettings.Value.Email;
             this.logger = logger;
             this.db = db;
             this.backgroundWorker = queue;
+            this.host = host;
         }
-
+        
         public async Task QueueSendEmail(string recipient, string subject, string body, string replyTo = null)
         {
             // Store the email on this thread.
@@ -149,7 +157,7 @@ namespace BitShuva.Services
 
                 if (!string.IsNullOrEmpty(replyTo))
                 {
-                    email.ReplyToList.Add(replyTo);
+                    email.ReplyToList.Add(new MailAddress(replyTo));
                 }
 
                 email.To.Add(recipient);
@@ -180,6 +188,26 @@ namespace BitShuva.Services
             var plainTextContent = Regex.Replace(htmlContent.Value, "<[^>]*>", "");
             var mail = MailHelper.CreateSingleEmailToMultipleRecipients(from, to.ToList(), subject, plainTextContent, htmlContent.Value);
             await client.SendEmailAsync(mail);
+        }
+
+        public Option<string> GetEmailTemplate(string fileName)
+        {
+            var templatePath = System.IO.Path.Combine(host.WebRootPath, System.IO.Path.Combine("emails", fileName));
+            try
+            {
+                if (System.IO.File.Exists(templatePath))
+                {
+                    return Option.Some(System.IO.File.ReadAllText(templatePath));
+                }
+                
+                logger.LogError("Unable to find email template {templatePath}", templatePath);
+            }
+            catch (Exception error)
+            {
+                logger.LogError(error, "Error loading email template {name}", fileName);
+            }
+
+            return Option.None<string>();
         }
     }
 }

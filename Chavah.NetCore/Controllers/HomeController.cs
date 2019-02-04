@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
@@ -19,7 +19,7 @@ namespace BitShuva.Chavah.Controllers
         private readonly AngularCacheBustedViews ngViews;
         private readonly IOptions<AppSettings> options;
         private readonly IMapper mapper;
-
+        
         public HomeController(
             ISongService songService,
             IAlbumService albumService,

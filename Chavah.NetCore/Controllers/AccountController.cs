@@ -367,6 +367,9 @@ namespace BitShuva.Chavah.Controllers
 
                 // Add a welcome notification for the user.
                 user.AddNotification(Notification.Welcome());
+
+                // Send them a welcome email.
+                emailSender.QueueWelcomeEmail(email);
             }
             else if (!regToken.HasValue)
             {

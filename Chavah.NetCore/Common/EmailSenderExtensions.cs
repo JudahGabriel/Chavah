@@ -1,5 +1,7 @@
-using BitShuva.Chavah.Models;
+﻿using BitShuva.Chavah.Models;
 using BitShuva.Services;
+using Microsoft.AspNetCore.Hosting;
+using Optional;
 using System;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -8,7 +10,7 @@ namespace BitShuva.Chavah.Common
 {
     public static class EmailSenderExtensions
     {
-        public static void QueueEmailConfirmationAsync(this IEmailService emailSender, string destination, string link)
+        public static void QueueEmailConfirmation(this IEmailService emailSender, string destination, string link)
         {
             var subject = "Confirm your email";
             var body = $"Please confirm your account by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
@@ -50,6 +52,13 @@ namespace BitShuva.Chavah.Common
                 </p>
                 <p>{message.Message}</p>";
             emailSender.QueueSendEmail(recipient, subject, body, message.Email);
+        }
+
+        public static void QueueWelcomeEmail(this IEmailService emailSender, string recipient)
+        {
+            var subject = "Welcome to Chavah! ❤";
+            var body = emailSender.GetEmailTemplate("WelcomeToChavah.html");
+            body.MatchSome(bodyVal => emailSender.QueueSendEmail(recipient, subject, bodyVal));
         }
 
         private static string GetAngularRouteEscapedCode(string input)
