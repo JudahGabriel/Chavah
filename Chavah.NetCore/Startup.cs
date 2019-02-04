@@ -139,11 +139,11 @@ namespace BitShuva.Chavah
             // Enable GZip and Brotli compression.
             services.Configure<GzipCompressionProviderOptions>(options =>
             {
-                options.Level = CompressionLevel.Optimal;
+                options.Level = CompressionLevel.Fastest;
             });
             services.Configure<BrotliCompressionProviderOptions>(options =>
             {
-                options.Level = System.IO.Compression.CompressionLevel.Fastest;
+                options.Level = CompressionLevel.Fastest;
             });
 
             services.AddResponseCompression(options =>
