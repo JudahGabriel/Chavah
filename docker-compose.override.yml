@@ -21,18 +21,6 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
-  # https://github.com/ravendb/ravendb/tree/v4.1/docker
-  chavah.ravendb:
-    environment:
-    - RAVEN_Setup_Mode=None
-    - RAVEN_Security_UnsecuredAccessAllowed=PrivateNetwork
-    - RAVEN_License_Eula_Accepted=true
-    - RAVEN_ARGS="--log-to-console"
-    ports:
-      - "8181:8080"
-      - "38888:38888"
-
-
   chavah.mail:
     image: mailhog/mailhog
     ports:

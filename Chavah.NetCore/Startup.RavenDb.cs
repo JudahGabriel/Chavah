@@ -1,14 +1,9 @@
 ﻿using System.IO;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using Raven.Client.Documents;
-using Raven.Client.Documents.Smuggler;
-using Raven.Client.ServerWide;
-using Raven.Client.ServerWide.Operations;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -43,32 +38,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             docStore.Initialize();
             services.AddSingleton<IDocumentStore>(docStore);
-
-            // Docker instance seed with data.
-            if (host.IsDevelopment() && !string.IsNullOrEmpty(settings.FileName))
-            {
-                var importFilePath = Path.Combine(host.ContentRootPath, settings.FileName);
-
-                var operation = new GetDatabaseNamesOperation(0, 1000); // 1000 is safe enough for me.
-                var databaseNames = docStore.Maintenance.Server.Send(operation);
-                if (databaseNames.Any(_ => _ == docStore.Database)) return services; // database already exists!
-
-                docStore.Maintenance.Server.Send(
-                new CreateDatabaseOperation(new DatabaseRecord(settings.DatabaseName)));
-
-                var importOperation = docStore
-                                        .Smuggler
-                                        .ImportAsync(
-                                            new DatabaseSmugglerImportOptions
-                                            {
-                                                OperateOnTypes = DatabaseItemType.Documents
-                                            },
-                                            importFilePath,
-                                            new CancellationToken()).ConfigureAwait(false).GetAwaiter().GetResult();
-
-
-                importOperation.WaitForCompletionAsync().Wait();
-            }
 
             return services;
         }
