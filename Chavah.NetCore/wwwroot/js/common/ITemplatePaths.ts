@@ -9,5 +9,6 @@
         footerPartial: string;
         adminSidebar: string;
         goBack: string;
+        pushSubscriptionSuccessful: string;
     }
 }

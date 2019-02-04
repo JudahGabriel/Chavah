@@ -68,59 +68,78 @@
     <None Remove="wwwroot\js\Components\**" />
     <None Remove="wwwroot\js\dist\**" />
     <None Remove="wwwroot\css\dist\**" />
-  </ItemGroup>
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Content Remove="wwwroot\js\Common\AngularBindings.ts" />
+	  <Content Remove="wwwroot\js\Polyfills\BeforeInstallPromptEvent.ts" />
+	  <Content Remove="wwwroot\js\Services\ConfigService..js" />
+	  <Content Remove="wwwroot\js\Services\ConfigService..js.map" />
+	  <Content Remove="wwwroot\js\Services\ConfigService..ts" />
+	  <Content Remove="wwwroot\js\Services\PushNotificationService.ts" />
+	  <Content Remove="wwwroot\js\Services\TemplateService.js" />
+	  <Content Remove="wwwroot\js\Services\TemplateService.js.map" />
+	  <Content Remove="wwwroot\js\Services\TemplateService.ts" />
+	  <Content Remove="wwwroot\js\ServiceWorkers\CacheFingerprinted.js" />
+	  <Content Remove="wwwroot\js\ServiceWorkers\Minimal.js" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="wwwroot\css\app\password.less" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Content Include="wwwroot\css\app\password.less" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="Models\**\*.cs">
+			<DependentUpon>%(Filename).d.ts</DependentUpon>
+		</None>
+		<None Update="ravencert.*.pfx">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Views\EmailTemplates\" />
+	  <Folder Include="wwwroot\js\Components\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\emails\WelcomeToChavah.html" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\CacheFingerprinted.js">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </TypeScriptCompile>
+	  <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\Minimal.js">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </TypeScriptCompile>
+	  <TypeScriptCompile Include="wwwroot\js\Services\PushNotificationService.ts" />
+	</ItemGroup>
+
+	<Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
+		<!-- Include the newly-built files in the publish output -->
+		<ItemGroup>
+			<DistFiles Include="wwwroot\css\dist\**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>%(DistFiles.Identity)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</ResolvedFileToPublish>
+		</ItemGroup>
   <ItemGroup>
-    <Content Remove="wwwroot\js\Services\ConfigService..js" />
-    <Content Remove="wwwroot\js\Services\ConfigService..js.map" />
-    <Content Remove="wwwroot\js\Services\ConfigService..ts" />
-    <Content Remove="wwwroot\js\Services\PushNotificationService.ts" />
-    <Content Remove="wwwroot\js\Services\TemplateService.js" />
-    <Content Remove="wwwroot\js\Services\TemplateService.js.map" />
-    <Content Remove="wwwroot\js\Services\TemplateService.ts" />
-    <Content Remove="wwwroot\js\ServiceWorkers\CacheFingerprinted.js" />
-    <Content Remove="wwwroot\js\ServiceWorkers\Minimal.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="wwwroot\css\app\password.less" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="wwwroot\css\app\password.less" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Models\**\*.cs">
-      <DependentUpon>%(Filename).d.ts</DependentUpon>
-    </None>
-    <None Update="ravencert.*.pfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\CacheFingerprinted.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\Minimal.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\js\Services\PushNotificationService.ts" />
-  </ItemGroup>
-  <Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
-    <!-- Include the newly-built files in the publish output -->
-    <ItemGroup>
-      <DistFiles Include="wwwroot\css\dist\**" />
-      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>%(DistFiles.Identity)</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </ResolvedFileToPublish>
-    </ItemGroup>
-    <ItemGroup>
-      <DistFiles Include="wwwroot\js\dist\**" />
-      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>%(DistFiles.Identity)</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </ResolvedFileToPublish>
-    </ItemGroup>
-  </Target>
+			<DistFiles Include="wwwroot\js\dist\**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>%(DistFiles.Identity)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+	</Target>
+
 </Project>

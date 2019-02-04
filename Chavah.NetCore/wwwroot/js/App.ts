@@ -43,7 +43,8 @@
         footerPartial: findCacheBustedView("/partials/Footer.html"),
         adminSidebar: findCacheBustedView("/partials/AdminSidebar.html"),
         goBack: findCacheBustedView("/partials/GoBack.html"),
-        cropImageModal: findCacheBustedView("/modals/CropImageModal.html")
+        cropImageModal: findCacheBustedView("/modals/CropImageModal.html"),
+        pushSubscriptionSuccessful: findCacheBustedView("/modals/PushSubscriptionSuccessful.html"),
     };
     App.constant("templatePaths", templatePaths);
 

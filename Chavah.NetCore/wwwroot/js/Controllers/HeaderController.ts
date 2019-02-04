@@ -26,7 +26,7 @@
                 .select(() => this.accountApi.currentUser)
                 .subscribe(user => this.signedInUserChanged(user));
         }
-
+        
         get isAdmin(): boolean {
             if (this.accountApi.currentUser === undefined || this.accountApi.currentUser === null) {
                 return false;
@@ -104,6 +104,7 @@
             const permissionResult = await this.pushNotifications.askPermission();
             if (permissionResult === "granted") {
                 await this.pushNotifications.subscribe();
+                this.appNav.pushSubscriptionSuccessful();
             } else {
                 console.log("Push notification permission wasn't granted", permissionResult);
             }

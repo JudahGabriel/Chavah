@@ -5,15 +5,76 @@
         @media(max-width: @screen-xs-max) {
             text-align: center;
         }
+
+        font-size: 2em;
     }
 
     hr {
         border-color: @text-color-darker;
     }
 
+    h3 {
+        font-size: 1.5em;
+        font-weight: normal;
+    }
+
+    p, li {
+        line-height: 1.5em;
+    }
+
+    p {
+        padding-bottom: 10px;
+    }
+
+    .feature-img {
+        box-shadow: 0 0 10px gray;
+        margin-bottom: 10px;
+    }
+
+    .feature-img-left {
+        float: left;
+        margin-right: 15px;
+        border-radius: 0 20px 20px 0;
+    }
+
+    .feature-img-right {
+        float: right;
+        margin-left: 15px;
+        border-radius: 20px 0 0 20px;
+    }
+
+    .judah-profile-pic {
+        max-height: 200px;
+        border-radius: 100px;
+        margin-right: 20px;
+        box-shadow: 0 0 10px gray;
+    }
+
     .take-me-to-music {
         @media (max-width: @screen-xs-max) {
             display: block;
         }
+    }
+
+    .song-request-icon {
+        background-color: @brand-primary;
+        padding: 3px;
+        color: white;
+    }
+
+    .chavah-face {
+        cursor: pointer;
+        color: mediumpurple;
+        display: inline-block;
+        transition: all ease-in-out 2s;
+
+        &:hover {
+            filter: hue-rotate(60deg) brightness(1.5);
+            transform: rotateY(20deg) rotateZ(-5deg);
+        }
+
+       .bow {
+           color: deeppink;
+       }
     }
 }
