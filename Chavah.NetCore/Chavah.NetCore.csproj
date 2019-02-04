@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>c9b7e1c3-1564-4d7d-85ea-3455587a330d</UserSecretsId>
@@ -19,14 +19,14 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="BCrypt.Net-Next" Version="3.1.2" />
+    <PackageReference Include="BCrypt.Net-Next" Version="3.1.3" />
     <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
     <PackageReference Include="BuildWebCompiler" Version="1.12.394" />
     <PackageReference Include="cloudscribe.Syndication.Web" Version="2.1.2" />
     <PackageReference Include="CoreFtp" Version="1.4.0" />
     <PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" PrivateAssets="All" />
@@ -45,101 +45,62 @@
     <PackageReference Include="System.Interactive" Version="3.2.0" />
     <PackageReference Include="WebPush" Version="1.0.11" />
   </ItemGroup>
+
   <ItemGroup>
-    <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.8.391" />
-  </ItemGroup>
-  <ItemGroup>
+
     <Content Remove="Views\Partials\**" />
-    <Content Remove="wwwroot\css\**\*.less" />
-    <None Include="wwwroot\css\**\*.less" />
-    <Content Remove="wwwroot\js\Components\**" />
-    <Content Remove="wwwroot\js\dist\**" />
-    <Content Remove="wwwroot\css\dist\**" />
-    <Content Remove="wwwroot\js\**\*.ts" />
-    <Content Include="wwwroot\js\**\*.ts" />
     <Compile Remove="Views\Partials\**" />
-    <Compile Remove="wwwroot\js\Components\**" />
-    <Compile Remove="wwwroot\js\dist\**" />
-    <Compile Remove="wwwroot\css\dist\**" />
-    <Content Remove="node_modules\**" />
-    <EmbeddedResource Remove="Views\Partials\**" />
-    <EmbeddedResource Remove="wwwroot\js\Components\**" />
     <None Remove="Views\Partials\**" />
+    <EmbeddedResource Remove="Views\Partials\**" />
+
+    <Content Remove="wwwroot\js\Components\**" />
+    <Compile Remove="wwwroot\js\Components\**" />
     <None Remove="wwwroot\js\Components\**" />
+    <EmbeddedResource Remove="wwwroot\js\Components\**" />
+
+    <Content Include="wwwroot\js\**\*.ts" />
+    <Content Remove="wwwroot\js\**\*.ts" />
+
+    <Content Remove="wwwroot\js\dist\**" />
+    <Compile Remove="wwwroot\js\dist\**" />
     <None Remove="wwwroot\js\dist\**" />
+
+    <Content Remove="wwwroot\css\dist\**" />
+    <Compile Remove="wwwroot\css\dist\**" />
+    <Content Remove="wwwroot\css\**\*.less" />
     <None Remove="wwwroot\css\dist\**" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Content Remove="wwwroot\js\Common\AngularBindings.ts" />
-	  <Content Remove="wwwroot\js\Polyfills\BeforeInstallPromptEvent.ts" />
-	  <Content Remove="wwwroot\js\Services\ConfigService..js" />
-	  <Content Remove="wwwroot\js\Services\ConfigService..js.map" />
-	  <Content Remove="wwwroot\js\Services\ConfigService..ts" />
-	  <Content Remove="wwwroot\js\Services\PushNotificationService.ts" />
-	  <Content Remove="wwwroot\js\Services\TemplateService.js" />
-	  <Content Remove="wwwroot\js\Services\TemplateService.js.map" />
-	  <Content Remove="wwwroot\js\Services\TemplateService.ts" />
-	  <Content Remove="wwwroot\js\ServiceWorkers\CacheFingerprinted.js" />
-	  <Content Remove="wwwroot\js\ServiceWorkers\Minimal.js" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <None Remove="wwwroot\css\app\password.less" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Content Include="wwwroot\css\app\password.less" />
-	</ItemGroup>
 
-	<ItemGroup>
-		<Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-	</ItemGroup>
+    <None Include="wwwroot\css\**\*.less" />
 
-	<ItemGroup>
-		<None Update="Models\**\*.cs">
-			<DependentUpon>%(Filename).d.ts</DependentUpon>
-		</None>
-		<None Update="ravencert.*.pfx">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
+    <Content Remove="node_modules\**" />
 
-	<ItemGroup>
-	  <Folder Include="Views\EmailTemplates\" />
-	  <Folder Include="wwwroot\js\Components\" />
-	</ItemGroup>
+  </ItemGroup>
 
-	<ItemGroup>
-	  <None Include="wwwroot\emails\WelcomeToChavah.html" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\CacheFingerprinted.js">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </TypeScriptCompile>
-	  <TypeScriptCompile Include="wwwroot\js\ServiceWorkers\Minimal.js">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </TypeScriptCompile>
-	  <TypeScriptCompile Include="wwwroot\js\Services\PushNotificationService.ts" />
-	</ItemGroup>
-
-	<Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
-		<!-- Include the newly-built files in the publish output -->
-		<ItemGroup>
-			<DistFiles Include="wwwroot\css\dist\**" />
-			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-				<RelativePath>%(DistFiles.Identity)</RelativePath>
-				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-			</ResolvedFileToPublish>
-		</ItemGroup>
   <ItemGroup>
-			<DistFiles Include="wwwroot\js\dist\**" />
-			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-				<RelativePath>%(DistFiles.Identity)</RelativePath>
-				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-			</ResolvedFileToPublish>
-		</ItemGroup>
-	</Target>
+    <None Update="Models\**\*.cs">
+      <DependentUpon>%(Filename).d.ts</DependentUpon>
+    </None>
+    <None Update="ravencert.*.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="wwwroot\css\dist\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+    <ItemGroup>
+      <DistFiles Include="wwwroot\js\dist\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 
 </Project>
