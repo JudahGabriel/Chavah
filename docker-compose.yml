@@ -6,8 +6,9 @@ services:
     build:
       context: .
       dockerfile: Chavah.NetCore/Dockerfile
-    depends_on: 
-      - chavah.ravendb
-  chavah.ravendb:
-    image: ravendb/ravendb
-  
+    depends_on:
+      - chavah.db
+  chavah.db:
+    image: kdcllc/chavahdb
+    ports:
+      - "8181:8080"
