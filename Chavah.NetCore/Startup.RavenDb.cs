@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var provider = services.BuildServiceProvider();
             var host = provider.GetRequiredService<IHostingEnvironment>();
 
-            var settings = provider.GetRequiredService<IOptions<AppSettings>>().Value.DbConnection;
+            var settings = provider.GetRequiredService<IOptionsMonitor<AppSettings>>().CurrentValue.DbConnection;
             var docStore = new DocumentStore
             {
                 Urls = new[] { settings.Url },
