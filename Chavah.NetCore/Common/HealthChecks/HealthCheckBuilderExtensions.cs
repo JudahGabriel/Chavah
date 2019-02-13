@@ -28,15 +28,14 @@ namespace Microsoft.Extensions.DependencyInjection
             HealthStatus? failureStatus = default,
             IEnumerable<string> tags = default)
         {
-            var provider = builder.Services.BuildServiceProvider();
-
-            var options = provider.GetRequiredService<IOptions<AppSettings>>().Value.DbConnection;
-
-            var hostingEnviroment = provider.GetRequiredService<IHostingEnvironment>();
-
             builder.Add(new HealthCheckRegistration(
                 name,
-                sp => new RavenDdHealthCheck(options, hostingEnviroment),
+                sp => {
+                    var options = sp.GetRequiredService<IOptions<AppSettings>>().Value.DbConnection;
+                    var hostingEnviroment = sp.GetRequiredService<IHostingEnvironment>();
+                    return new RavenDdHealthCheck(options, hostingEnviroment);
+                 },
+
                 failureStatus,
                 tags));
 
