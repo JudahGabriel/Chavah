@@ -15,22 +15,20 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class HealthCheckBuilderExtensions
     {
         /// <summary>
-        /// Add a healthcheck for ravendb.
+        /// Add a HealthCheck for RavenDb.
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="services"></param>
-        /// <param name="name"></param>
-        /// <param name="failureStatus"></param>
-        /// <param name="tags"></param>
+        /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
+        /// <param name="name">The name of the HealthCheck.</param>
+        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
+        /// <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
         /// <returns></returns>
         public static IHealthChecksBuilder AddRavenDbCheck(
             this IHealthChecksBuilder builder,
-            IServiceCollection services,
             string name = "ravendb",
             HealthStatus? failureStatus = default,
             IEnumerable<string> tags = default)
         {
-            var provider = services.BuildServiceProvider();
+            var provider = builder.Services.BuildServiceProvider();
 
             var options = provider.GetRequiredService<IOptions<AppSettings>>().Value.DbConnection;
 
@@ -41,6 +39,37 @@ namespace Microsoft.Extensions.DependencyInjection
                 sp => new RavenDdHealthCheck(options, hostingEnviroment),
                 failureStatus,
                 tags));
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Add a HealthCheck for Garbage Collection Memory check.
+        /// </summary>
+        /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
+        /// <param name="name">The name of the HealthCheck.</param>
+        /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
+        /// <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
+        /// <param name="thresholdInBytes">The Threshold in bytes. The default is 1073741824 bytes or 1Gig.</param>
+        /// <returns></returns>
+        public static IHealthChecksBuilder AddMemoryHealthCheck(
+                    this IHealthChecksBuilder builder,
+                    string name = "memory",
+                    HealthStatus? failureStatus = null,
+                    IEnumerable<string> tags = null,
+                    long? thresholdInBytes = null)
+        {
+            // Register a check of type GCInfo.
+            builder.AddCheck<MemoryHealthCheck>(name, failureStatus ?? HealthStatus.Degraded, tags);
+
+            // Configure named options to pass the threshold into the check.
+            if (thresholdInBytes.HasValue)
+            {
+                builder.Services.Configure<MemoryCheckOptions>(name, options =>
+                {
+                    options.Threshold = thresholdInBytes.Value;
+                });
+            }
 
             return builder;
         }

@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.HealthChecks
 {
+    /// <summary>
+    /// HealthCheck for RavenDb
+    /// </summary>
     public class RavenDdHealthCheck : IHealthCheck
     {
         private readonly DbConnection _options;
@@ -25,7 +28,7 @@ namespace Microsoft.Extensions.HealthChecks
 
         public async Task<HealthCheckResult> CheckHealthAsync(
             HealthCheckContext context,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             try
             {
@@ -55,13 +58,13 @@ namespace Microsoft.Extensions.HealthChecks
                     }
                     else
                     {
-                        return HealthCheckResult.Healthy();
+                        return HealthCheckResult.Healthy("ChavaDb is operational.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                return new HealthCheckResult(context.Registration.FailureStatus, exception: ex);
+                return new HealthCheckResult(context.Registration.FailureStatus, description: "ChavahDb is down", exception: ex);
             }
         }
     }

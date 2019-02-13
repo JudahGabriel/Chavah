@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,7 +50,11 @@ namespace BitShuva.Chavah
             services.Configure<AppSettings>(Configuration);
 
             var hcBuilder = services.AddHealthChecks();
-            hcBuilder.AddRavenDbCheck(services);
+
+            hcBuilder.AddRavenDbCheck(tags: new string[] {"database"});
+
+            hcBuilder.AddMemoryHealthCheck(tags: new string[] { "memory" });
+
 
             // Add application services.
             services.AddTransient<IEmailService, SendGridEmailService>();
@@ -167,7 +172,6 @@ namespace BitShuva.Chavah
         public void Configure(
             IApplicationBuilder app,
             IHostingEnvironment env,
-            ILoggerFactory loggerFactory,
             IApiVersionDescriptionProvider provider)
         {
             // Compression must be specified before .UseStaticFiles, otherwise static files won't be compressed. https://stackoverflow.com/questions/46832723/net-core-response-compression-middleware-for-static-files
