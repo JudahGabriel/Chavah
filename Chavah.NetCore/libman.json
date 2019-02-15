@@ -4,7 +4,7 @@
     "libraries": [
         {
             "provider": "cdnjs",
-            "library": "twitter-bootstrap@3.3.6",
+            "library": "twitter-bootstrap@3.4.0",
             "destination": "wwwroot/lib/bootstrap/",
             "files": [
                 "js/bootstrap.js"
@@ -20,7 +20,7 @@
         },
         {
             "provider": "cdnjs",
-            "library": "moment.js@2.13.0",
+            "library": "moment.js@2.22.1",
             "destination": "wwwroot/lib/moment/",
             "files": [
                 "moment.js"
@@ -28,7 +28,7 @@
         },
         {
             "provider": "cdnjs",
-            "library": "angular.js@1.6.6",
+            "library": "angular.js@1.7.7",
             "destination": "wwwroot/lib/angular/",
             "files": [
                 "angular-animate.js",

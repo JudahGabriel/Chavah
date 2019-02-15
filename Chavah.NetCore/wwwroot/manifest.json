@@ -2,6 +2,8 @@
   "name": "Chavah Messianic Radio",
   "short_name": "Chavah",
   "description": "The very best Messianic Jewish and Hebrew Roots music on the web",
+  "display": "standalone",
+  "start_url": "/",
   "background_color": "#2f3d58",
   "theme_color": "#2f3d58",
   "mjs_api_access": [
@@ -227,7 +229,5 @@
       "src": "/images/chavah2208x1242.png",
       "sizes": "2208x1242"
     }
-  ],
-  "display": "standalone",
-  "start_url": "/"
+  ]
 }

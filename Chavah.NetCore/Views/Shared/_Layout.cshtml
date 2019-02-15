@@ -7,6 +7,7 @@
     <base href="/">
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <link rel="manifest" href="/manifest.json" />
     <meta name="mobile-web-app-capable" content="yes" />
 
     @*This allows fixed position elements to work properly*@
@@ -87,15 +88,15 @@
     }
 
     @*CSS for development*@
-        <environment include="Development">
-            <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css' async />
-            <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" async />
-            <link rel="stylesheet" href="~/css/bootswatch.css" async />
-            <link rel="stylesheet" href="~/css/bootstrap-flatly.css" async />
-            <link rel="stylesheet" href="~/css/bootstrap-flatly-tweaks.css" async />
-            <link rel="stylesheet" href="~/css/nprogress.css" async />
-            <link rel="stylesheet" asp-href-include="~/css/app/*.min.css" asp-append-version="true" async />
-        </environment>
+    <environment include="Development">
+        <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Simonetta:400italic' rel='stylesheet' type='text/css' async />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" async />
+        <link rel="stylesheet" href="~/css/bootswatch.css" async />
+        <link rel="stylesheet" href="~/css/bootstrap-flatly.css" async />
+        <link rel="stylesheet" href="~/css/bootstrap-flatly-tweaks.css" async />
+        <link rel="stylesheet" href="~/css/nprogress.css" async />
+        <link rel="stylesheet" asp-href-include="~/css/app/*.min.css" asp-append-version="true" async />
+    </environment>
 
     @*CSS for production*@
     <environment include="Test,Staging,Production">
@@ -142,26 +143,27 @@
     <environment names="Test,Staging,Production">
         @*3rd party JS*@
         <script src="https://code.jquery.com/jquery-2.2.4.min.js" asp-fallback-src="~/lib/jquery/dist/jquery.min.js" asp-fallback-test="window.jQuery"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js" asp-fallback-src="~/lib/angular/angular.js" asp-fallback-test="window.angular"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-animate.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js" asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.min.js" asp-fallback-src="~/lib/angular/angular.js" asp-fallback-test="window.angular"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular-route.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular-animate.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.7.1/angular-local-storage.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" asp-fallback-src="~/lib/nprogress/nprogress.js" asp-fallback-test="window.NProgress"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js" asp-fallback-src="~/lib/moment/moment.js" asp-fallback-test="window.moment"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js" asp-fallback-src="~/lib/moment/moment.js" asp-fallback-test="window.moment"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js" asp-fallback-src="~/lib/lodash/dist/lodash.js" asp-fallback-test="window._"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.lite.js" asp-fallback-src="~/lib/rxjs/dist/rx.all.min.js" asp-fallback-test="window.Rx && window.Rx.Observable"></script>
-        <script src="https://cdn.jsdelivr.net/npm/tslib@1.9.3/tslib.js" asp-fallback-src="~/lib/tslib/tslib.js" asp-fallback-test="window.__asyncValues"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tslib/1.9.3/tslib.js" asp-fallback-src="~/lib/tslib/tslib.js" asp-fallback-test="window.__asyncValues"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js" asp-fallback-src="~/lib/fastclick/lib/fastclick.js" asp-fallback-test="window.FastClick"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js" asp-fallback-src="~/lib/tinycolor/tinycolor.js" asp-fallback-test="window.tinycolor"></script>
 
         @*Chavah JS*@
         <script src="~/js/dist/app.min.js" asp-append-version="true"></script>
-    </environment>
 
+    </environment>
+        
     @await RenderSectionAsync("Scripts", required: false).ConfigureAwait(false)
 
     @*Hanukkah partial*@
