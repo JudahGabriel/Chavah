@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using BitShuva.Services;
 using cloudscribe.Syndication.Models.Rss;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -48,6 +50,13 @@ namespace BitShuva.Chavah
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
 
+            var hcBuilder = services.AddHealthChecks();
+
+            hcBuilder.AddRavenDbCheck(tags: new string[] {"database"});
+
+            hcBuilder.AddMemoryHealthCheck(tags: new string[] { "memory" });
+
+
             // Add application services.
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddTransient<IPushNotificationSender, PushNotificationSender>();
@@ -68,8 +77,8 @@ namespace BitShuva.Chavah
 
             // Add RavenDB and identity.
             services
-                .AddRavenDocStore() // Create a RavenDB DocumentStore singleton.
-                .AddRavenDbAsyncSession() // Create a RavenDB IAsyncDocumentSession for each request.
+                .AddRavenDocStore()         // Create a RavenDB DocumentStore singleton.
+                .AddRavenDbAsyncSession()   // Create a RavenDB IAsyncDocumentSession for each request.
                 .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles.
                 {
                     c.Password.RequireNonAlphanumeric = false;
@@ -115,13 +124,17 @@ namespace BitShuva.Chavah
                     new HeaderApiVersionReader("api-version", "api-v")
                     );
             });
+
             services.AddCustomAddSwagger();
+
             services.AddPwnedPassword(_=> new PwnedOptions());
+
             services.Configure<SecurityStampValidatorOptions>(options =>
             {
                 // enables immediate logout, after updating the user's stat.
                 options.ValidationInterval = TimeSpan.Zero;
             });
+
             services.AddAuthentication(options=>
             {
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -134,6 +147,7 @@ namespace BitShuva.Chavah
                     return Task.CompletedTask;
                 };
             });
+
             services.AddHttpsRedirection(options => options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect );
             services.AddAuthorization(options => options.AddPolicy(Policies.Administrator, policy => policy.RequireRole(AppUser.AdminRole)));
 
@@ -159,7 +173,6 @@ namespace BitShuva.Chavah
         public void Configure(
             IApplicationBuilder app,
             IHostingEnvironment env,
-            ILoggerFactory loggerFactory,
             IApiVersionDescriptionProvider provider)
         {
             // Compression must be specified before .UseStaticFiles, otherwise static files won't be compressed. https://stackoverflow.com/questions/46832723/net-core-response-compression-middleware-for-static-files
@@ -184,6 +197,11 @@ namespace BitShuva.Chavah
                     }
                 });
             }
+
+            app.UseHealthChecks("/healthy", new HealthCheckOptions
+            {
+                ResponseWriter = HealthCheckBuilderExtensions.WriteResponse
+            });
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
