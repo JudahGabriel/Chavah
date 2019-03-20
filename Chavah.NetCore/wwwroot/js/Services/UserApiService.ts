@@ -13,7 +13,7 @@
         updateProfilePic(file: Blob | string): ng.IPromise<string> {
             const url = "/api/users/uploadProfilePicture";
             const formData = new FormData();
-            formData.append("file", file);
+            formData.append("photo", file);
             return this.httpApi.postFormData(url, formData);
         }
 

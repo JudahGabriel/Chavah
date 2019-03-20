@@ -126,6 +126,7 @@ namespace BitShuva.Chavah.Controllers
                     .Search(s => s.HebrewName, searchText)
                     .Search(s => s.Album, searchText)
                     .Search(s => s.Artist, searchText)
+                    .Take(10)
                     .ToListAsync();
 
             // No results? See if we can suggest some near matches.

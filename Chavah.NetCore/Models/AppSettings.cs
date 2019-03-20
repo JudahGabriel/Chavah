@@ -61,6 +61,7 @@
         public bool SendEmails { get; set; }
         public string SenderName { get; set; }
         public string SenderEmail { get; set; }
+        public int RetryFailedEmailTimeInMinutes { get; set; }
     }
 
     public class Cdn

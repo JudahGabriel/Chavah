@@ -17,22 +17,22 @@ namespace BitShuva.Chavah.Services
     /// </summary>
     public class EmailRetryJob : IJob
     {
-        private static IServiceCollection services;
+        private readonly IDocumentStore docStore;
+        private readonly IEmailService emailSender;
+
         private const int maxDaysOld = 7; // Any emails older than this won't be retried. TODO: move to config
         private const int maxRetryCount = 10; // Any emails retried more than this will be abandoned. TODO: move to config
-
-        public static void Initialize(IServiceCollection services)
+        
+        public EmailRetryJob(IDocumentStore docStore, IEmailService emailSender)
         {
-            EmailRetryJob.services = services;
+            this.docStore = docStore;
+            this.emailSender = emailSender;
         }
 
         async Task IJob.Execute(IJobExecutionContext context)
         {
             // Find failed emails that are less than a week old.
-            var svcProvider = services.BuildServiceProvider();
-            var db = svcProvider.GetRequiredService<IDocumentStore>();
-            var emailSender = svcProvider.GetRequiredService<IEmailService>();
-            using (var dbSession = db.OpenAsyncSession())
+            using (var dbSession = this.docStore.OpenAsyncSession())
             {
                 var weekAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(maxDaysOld));
                 var failedEmailOrNull = await dbSession.Query<Email>()

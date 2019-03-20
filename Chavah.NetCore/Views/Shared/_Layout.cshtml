@@ -109,6 +109,20 @@
 <body>
     @RenderBody()
 
+    @*Splash screen. This is hidden inside App.ts when the Angular app is ready to go. Inline styles so that we don't have to wait for the external CSS to load.*@
+    <div class="splash" style="width: 100%; height: 100%; position: fixed; background-color: #333f58; left: 0; right: 0; top: 0; bottom: 0; z-index: 999;">
+        <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+            <div style="text-align: center;">
+                <picture style="width: 120px; height: 120px;">
+                    <source srcset="https://bitshuvafiles01.com/chavah/chavah-splash.webp?v=1" type="image/webp">
+                    <source srcset="https://bitshuvafiles01.com/chavah/chavah-splash.png?v=1" type="image/png">
+                </picture>
+                <br />
+                <h5 style="color: #e9dd9a;">Chavah Messianic Radio</h5>
+            </div>
+        </div>
+    </div>
+
     @*JS for dev*@
     <environment names="Development">
         @*3rd party JS*@
@@ -163,7 +177,7 @@
         <script src="~/js/dist/app.min.js" asp-append-version="true"></script>
 
     </environment>
-        
+
     @await RenderSectionAsync("Scripts", required: false).ConfigureAwait(false)
 
     @*Hanukkah partial*@

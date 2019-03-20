@@ -23,6 +23,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Pwned.AspNetCore;
+using Quartz.Spi;
 using Raven.Identity;
 using Raven.Migrations;
 using Raven.StructuredLog;
@@ -56,9 +57,9 @@ namespace BitShuva.Chavah
             services.AddTransient<ISongUploadService, SongUploadService>();
             services.AddTransient<IAlbumService, AlbumService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<EmailRetryJob>();
 
             services.AddBackgroundQueueWithLogging(1, TimeSpan.FromSeconds(5));
-            services.AddEmailRetryService();
             services.AddCacheBustedAngularViews("/views");
 
             // Use our BCrypt for password hashing. Must be added before AddIdentity().
@@ -205,6 +206,8 @@ namespace BitShuva.Chavah
                 }
             });
 
+            // Use our EmailRetryService
+            app.UseQuartzForEmailRetry();
 
             // Run pending Raven migrations.
             var migrationService = app.ApplicationServices.GetService<MigrationRunner>();
