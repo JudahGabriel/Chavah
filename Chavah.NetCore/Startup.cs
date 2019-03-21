@@ -26,6 +26,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Pwned.AspNetCore;
 using Quartz.Spi;
+using Raven.DependencyInjection;
 using Raven.Identity;
 using Raven.Migrations;
 using Raven.StructuredLog;
@@ -49,6 +50,7 @@ namespace BitShuva.Chavah
         {
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
+            services.Configure<RavenSettings>(Configuration.GetSection("RavenSettings")); // Needed for Raven.DependencyInjection
 
             var hcBuilder = services.AddHealthChecks();
 
@@ -77,16 +79,17 @@ namespace BitShuva.Chavah
 
             // Add RavenDB and identity.
             services
-                .AddRavenDocStore()         // Create a RavenDB DocumentStore singleton.
+                .AddRavenDbDocStore()       // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession()   // Create a RavenDB IAsyncDocumentSession for each request.
+                .AddRavenDbMigrations()     // Use RavenDB migrations
                 .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles.
                 {
                     c.Password.RequireNonAlphanumeric = false;
                     c.Password.RequireUppercase = false;
                     c.Password.RequiredLength = 6;
-                })
-                .AddLogging(logger => logger.AddRavenStructuredLogger())
-                .AddRavenDbMigrations(); // Add the migrations
+                });
+
+            services.AddLogging(logger => logger.AddRavenStructuredLogger());
 
             services.InstallIndexes();
             services.AddMemoryCache();
@@ -148,7 +151,7 @@ namespace BitShuva.Chavah
                 };
             });
 
-            services.AddHttpsRedirection(options => options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect );
+            services.AddHttpsRedirection(options => options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect);
             services.AddAuthorization(options => options.AddPolicy(Policies.Administrator, policy => policy.RequireRole(AppUser.AdminRole)));
 
             // Enable GZip and Brotli compression.

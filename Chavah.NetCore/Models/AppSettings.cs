@@ -1,23 +1,17 @@
-﻿namespace BitShuva.Chavah.Models
+﻿using Raven.DependencyInjection;
+
+namespace BitShuva.Chavah.Models
 {
 
     public class AppSettings
     {
-        public DbConnection DbConnection { get; set; }
+        public RavenSettings DbConnection { get; set; }
         public Application Application { get; set; }
         public Logging Logging { get; set; }
         public EmailSettings Email { get; set; }
         public Cdn Cdn { get; set; }
         public Filepickr FilePickr { get; set; }
         public Ifttt Ifttt { get; set; }
-    }
-
-    public class DbConnection
-    {
-        public string Url { get; set; }
-        public string DatabaseName { get; set; }
-        public string CertFileName { get; set; }
-        public string CertPassword { get; set; }
     }
 
     public class Application

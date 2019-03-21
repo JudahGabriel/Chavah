@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 sp => {
                     var options = sp.GetRequiredService<IOptions<AppSettings>>().Value.DbConnection;
                     var hostingEnviroment = sp.GetRequiredService<IHostingEnvironment>();
-                    return new RavenDdHealthCheck(options, hostingEnviroment);
+                    return new RavenDbHealthCheck(options, hostingEnviroment);
                  },
 
                 failureStatus,

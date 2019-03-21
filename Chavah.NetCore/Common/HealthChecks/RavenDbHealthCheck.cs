@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Raven.Client.Documents;
 using Raven.Client.ServerWide.Operations;
+using Raven.DependencyInjection;
 using System;
 using System.IO;
 using System.Linq;
@@ -15,12 +16,12 @@ namespace Microsoft.Extensions.HealthChecks
     /// <summary>
     /// HealthCheck for RavenDb
     /// </summary>
-    public class RavenDdHealthCheck : IHealthCheck
+    public class RavenDbHealthCheck : IHealthCheck
     {
-        private readonly DbConnection _options;
+        private readonly RavenSettings _options;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public RavenDdHealthCheck(DbConnection options, IHostingEnvironment hostingEnvironment)
+        public RavenDbHealthCheck(RavenSettings options, IHostingEnvironment hostingEnvironment)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _hostingEnvironment = hostingEnvironment ?? throw new ArgumentException(nameof(hostingEnvironment));
@@ -34,13 +35,13 @@ namespace Microsoft.Extensions.HealthChecks
             {
                 using (var store = new DocumentStore
                 {
-                    Urls = new[] { _options.Url },
+                    Urls = _options.Urls,
                     Database = _options.DatabaseName
                 })
                 {
-                    if (!string.IsNullOrWhiteSpace(_options.CertFileName))
+                    if (!string.IsNullOrWhiteSpace(_options.CertFilePath))
                     {
-                        var certFilePath = Path.Combine(_hostingEnvironment.ContentRootPath, _options.CertFileName);
+                        var certFilePath = Path.Combine(_hostingEnvironment.ContentRootPath, _options.CertFilePath);
                         store.Certificate = new X509Certificate2(certFilePath, _options.CertPassword);
                     }
 
