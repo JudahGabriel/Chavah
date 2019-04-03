@@ -14,7 +14,6 @@ namespace BitShuva.Chavah.Models.Rss
                                Uri feedAlternateLink, string id,
                                IEnumerable<SyndicationItem> items)
         {
-
             Title = title;
             Description = description;
             Link = new SyndicationLink(feedAlternateLink);
@@ -22,7 +21,6 @@ namespace BitShuva.Chavah.Models.Rss
             Items = items;
             LastUpdatedTime = DateTimeOffset.UtcNow;
         }
-
 
         public string Id { get; set; }
         public string Title { get; set; }

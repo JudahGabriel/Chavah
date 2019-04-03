@@ -85,7 +85,6 @@ namespace BitShuva.Chavah.Controllers
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> SignIn([BindRequired, FromBody, FromForm]SignInModel model)
         {
-
             if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
             {
                 return Ok(new Models.Account.SignInResult

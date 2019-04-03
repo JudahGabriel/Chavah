@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO.Compression;
-using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using BitShuva.Chavah.Common;
@@ -11,7 +10,6 @@ using BitShuva.Services;
 using cloudscribe.Syndication.Models.Rss;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -24,8 +22,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Polly;
 using Pwned.AspNetCore;
-using Quartz.Spi;
 using Raven.DependencyInjection;
 using Raven.Identity;
 using Raven.Migrations;
@@ -50,14 +48,12 @@ namespace BitShuva.Chavah
         {
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
-            services.Configure<RavenSettings>(Configuration.GetSection("RavenSettings")); // Needed for Raven.DependencyInjection
 
             var hcBuilder = services.AddHealthChecks();
 
             hcBuilder.AddRavenDbCheck(tags: new string[] {"database"});
 
             hcBuilder.AddMemoryHealthCheck(tags: new string[] { "memory" });
-
 
             // Add application services.
             services.AddTransient<IEmailService, SendGridEmailService>();
@@ -130,7 +126,11 @@ namespace BitShuva.Chavah
 
             services.AddCustomAddSwagger();
 
-            services.AddPwnedPassword(_=> new PwnedOptions());
+            //services.AddPwnedPassword();
+
+            services.AddPwnedPasswordHttpClient(Configuration)
+                  .AddTransientHttpErrorPolicy(p => p.RetryAsync(3))
+                  .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(2)));
 
             services.Configure<SecurityStampValidatorOptions>(options =>
             {
@@ -141,7 +141,6 @@ namespace BitShuva.Chavah
             services.AddAuthentication(options=>
             {
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-
             }).AddCookie(o =>
             {
                 o.Events.OnRedirectToLogin = (context) =>
@@ -201,10 +200,7 @@ namespace BitShuva.Chavah
                 });
             }
 
-            app.UseHealthChecks("/healthy", new HealthCheckOptions
-            {
-                ResponseWriter = HealthCheckBuilderExtensions.WriteResponse
-            });
+            app.UseHealthyHealthCheck();
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

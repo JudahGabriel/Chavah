@@ -304,7 +304,6 @@ namespace BitShuva.Chavah.Services
                     .ToArray());
             }
         }
-
  
     }
 }

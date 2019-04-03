@@ -52,7 +52,6 @@ namespace xUnitTests
             sut.ExecuteResult(mockActionContext);
 
             responseMock.Verify(x => x.Body);
-
         }
     }
 }

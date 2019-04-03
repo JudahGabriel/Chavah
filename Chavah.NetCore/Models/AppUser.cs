@@ -104,6 +104,5 @@ namespace BitShuva.Chavah.Models
         }
 
         public bool IsAdmin() => this.Roles.Contains(AppUser.AdminRole);
-
     }
 }

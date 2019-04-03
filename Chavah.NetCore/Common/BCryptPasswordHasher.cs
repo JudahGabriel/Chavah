@@ -66,5 +66,4 @@ namespace BitShuva.Chavah.Common
     {
         public bool RehashPasswords { get; set; }
     }
-
 }

@@ -15,6 +15,12 @@ namespace BitShuva.Chavah
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
+                    .ConfigureAppConfiguration((hostingContext, configBuilder) =>
+                    {
+                        var envName = hostingContext.HostingEnvironment.EnvironmentName;
+                        var configuration = configBuilder.AddAzureKeyVault(hostingEnviromentName: envName, usePrefix: true);
+                        configuration.DebugConfigurations();
+                    })
                     // configure logging on the webhost instance
                     .ConfigureLogging((context, logger) =>
                     {

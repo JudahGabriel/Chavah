@@ -23,7 +23,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddCustomAddSwagger(this IServiceCollection services)
         {
-
             services.AddSwaggerGen(
                 options =>
                 {
@@ -114,7 +113,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/pull/413
                 foreach (var parameter in operation.Parameters.OfType<NonBodyParameter>())
                 {
-
                     try
                     {
                         var description = context.ApiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
@@ -139,7 +137,6 @@ namespace Microsoft.Extensions.DependencyInjection
                     }
                     catch (Exception)
                     {
-
                         continue;
                     }
                 }

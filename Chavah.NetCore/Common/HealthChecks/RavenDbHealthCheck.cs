@@ -1,6 +1,7 @@
 ﻿using BitShuva.Chavah.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Raven.Client.Documents;
 using Raven.Client.ServerWide.Operations;
 using Raven.DependencyInjection;
@@ -18,13 +19,16 @@ namespace Microsoft.Extensions.HealthChecks
     /// </summary>
     public class RavenDbHealthCheck : IHealthCheck
     {
-        private readonly RavenSettings _options;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly RavenOptions _options;
 
-        public RavenDbHealthCheck(RavenSettings options, IHostingEnvironment hostingEnvironment)
+        public RavenDbHealthCheck(
+            IOptions<RavenOptions> options,
+            IHostingEnvironment hostingEnvironment
+)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
             _hostingEnvironment = hostingEnvironment ?? throw new ArgumentException(nameof(hostingEnvironment));
+            _options = options.Value;
         }
 
         public async Task<HealthCheckResult> CheckHealthAsync(
@@ -33,39 +37,29 @@ namespace Microsoft.Extensions.HealthChecks
         {
             try
             {
-                using (var store = new DocumentStore
+                var store = _options.GetDocumentStore(null);
+
+                var operation = new GetDatabaseNamesOperation(start: 0, pageSize: 100);
+                var databaseNames = await store.Maintenance.Server.SendAsync(operation);
+
+                if (!string.IsNullOrWhiteSpace(_options.Settings.DatabaseName)
+                    && !databaseNames.Contains(_options.Settings.DatabaseName, StringComparer.OrdinalIgnoreCase))
                 {
-                    Urls = _options.Urls,
-                    Database = _options.DatabaseName
-                })
+                    return new HealthCheckResult(
+                        context.Registration.FailureStatus,
+                        $"RavenDB doesn't contains '{_options.Settings.DatabaseName}' database.");
+                }
+                else
                 {
-                    if (!string.IsNullOrWhiteSpace(_options.CertFilePath))
-                    {
-                        var certFilePath = Path.Combine(_hostingEnvironment.ContentRootPath, _options.CertFilePath);
-                        store.Certificate = new X509Certificate2(certFilePath, _options.CertPassword);
-                    }
-
-                    store.Initialize();
-
-                    var operation = new GetDatabaseNamesOperation(start: 0, pageSize: 100);
-                    var databaseNames = await store.Maintenance.Server.SendAsync(operation);
-
-                    if (!string.IsNullOrWhiteSpace(_options.DatabaseName)
-                        && !databaseNames.Contains(_options.DatabaseName, StringComparer.OrdinalIgnoreCase))
-                    {
-                        return new HealthCheckResult(
-                            context.Registration.FailureStatus,
-                            $"RavenDB doesn't contains '{_options.DatabaseName}' database.");
-                    }
-                    else
-                    {
-                        return HealthCheckResult.Healthy("ChavaDb is operational.");
-                    }
+                    return HealthCheckResult.Healthy("ChavaDb is operational.");
                 }
             }
             catch (Exception ex)
             {
-                return new HealthCheckResult(context.Registration.FailureStatus, description: "ChavahDb is down", exception: ex);
+                return new HealthCheckResult(
+                    context.Registration.FailureStatus,
+                    description: "ChavahDb is down",
+                    exception: ex);
             }
         }
     }

@@ -2,7 +2,6 @@
 
 namespace BitShuva.Chavah.Models
 {
-
     public class AppSettings
     {
         public RavenSettings DbConnection { get; set; }
