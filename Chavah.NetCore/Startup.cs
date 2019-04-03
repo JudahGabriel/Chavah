@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO.Compression;
-using System.Net.Http;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
@@ -23,11 +19,15 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Polly;
-using Pwned.AspNetCore;
 using Raven.DependencyInjection;
 using Raven.Identity;
 using Raven.Migrations;
 using Raven.StructuredLog;
+using System;
+using System.IO.Compression;
+using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 
 namespace BitShuva.Chavah
 {
@@ -36,11 +36,16 @@ namespace BitShuva.Chavah
         public IConfiguration Configuration { get; }
 
         private readonly ILogger<Startup> _logger;
+        private readonly IHostingEnvironment _environment;
 
-        public Startup(IConfiguration configuration, ILogger<Startup> logger)
+        public Startup(
+            IConfiguration configuration,
+            ILogger<Startup> logger,
+            IHostingEnvironment environment)
         {
             Configuration = configuration;
             _logger = logger;
+            _environment = environment;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -75,7 +80,20 @@ namespace BitShuva.Chavah
 
             // Add RavenDB and identity.
             services
-                .AddRavenDbDocStore()       // Create a RavenDB DocumentStore singleton.
+                .AddRavenDbDocStore(options: options=>
+                {
+                    var settings = new RavenSettings();
+                    Configuration.Bind(nameof(RavenSettings), settings);
+                    options.Settings = settings;
+
+                    // password is stored in azure vault.
+                    var certString = Configuration.GetValue<string>(settings.CertFilePath);
+                    if (certString != null)
+                    {
+                        var certificate = Convert.FromBase64String(certString);
+                        options.Certificate = new X509Certificate2(certificate);
+                     }
+                })       // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession()   // Create a RavenDB IAsyncDocumentSession for each request.
                 .AddRavenDbMigrations()     // Use RavenDB migrations
                 .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles.
