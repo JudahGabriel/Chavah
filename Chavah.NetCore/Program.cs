@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace BitShuva.Chavah
 {
+#pragma warning disable RCS1102 // Make class static.
     public class Program
+#pragma warning restore RCS1102 // Make class static.
     {
         public static void Main(string[] args)
         {
@@ -17,17 +18,15 @@ namespace BitShuva.Chavah
             return WebHost.CreateDefaultBuilder(args)
                     .ConfigureAppConfiguration((hostingContext, configBuilder) =>
                     {
+                        // based on environment Development = dev; Production = prod prefix in Azure Vault.
                         var envName = hostingContext.HostingEnvironment.EnvironmentName;
                         var configuration = configBuilder.AddAzureKeyVault(hostingEnviromentName: envName, usePrefix: true);
-                        configuration.DebugConfigurations();
-                    })
-                    // configure logging on the webhost instance
-                    .ConfigureLogging((context, logger) =>
-                    {
-                        logger.AddDebug();
-                        logger.AddConsole();
-                        //logger.AddRavenStructuredLogger();
-                        logger.AddConfiguration(context.Configuration.GetSection("Logging"));
+
+                        // helpful to see what was retrieved from all of the configuration providers.
+                        if (hostingContext.HostingEnvironment.IsDevelopment())
+                        {
+                            configuration.DebugConfigurations();
+                        }
                     })
                     .UseStartup<Startup>();
         }

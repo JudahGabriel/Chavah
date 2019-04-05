@@ -5,11 +5,9 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Raven.Client.Documents;
-using Raven.Client.Documents.Session;
 using Raven.StructuredLog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,21 +18,21 @@ namespace BitShuva.Chavah.Services
     /// </summary>
     public class PushNotificationSender : IPushNotificationSender
     {
-        private readonly IOptions<AppSettings> settings;
-        private readonly ILogger<PushNotificationSender> logger;
-        private readonly BackgroundQueue backgroundQueue;
-        private readonly IDocumentStore db;
+        private readonly IOptions<AppSettings> _settings;
+        private readonly ILogger<PushNotificationSender> _logger;
+        private readonly BackgroundQueue _backgroundQueue;
+        private readonly IDocumentStore _db;
 
         public PushNotificationSender(
             BackgroundQueue backgroundQueue,
-            IOptions<AppSettings> settings, 
+            IOptions<AppSettings> settings,
             IDocumentStore db,
             ILogger<PushNotificationSender> logger)
         {
-            this.backgroundQueue = backgroundQueue;
-            this.settings = settings;
-            this.db = db;
-            this.logger = logger;
+            _backgroundQueue = backgroundQueue;
+            _settings = settings;
+            _db = db;
+            _logger = logger;
         }
 
         /// <summary>
@@ -43,15 +41,17 @@ namespace BitShuva.Chavah.Services
         /// <param name="notification">The message to send.</param>
         /// <param name="recipients">The recipients of the message.</param>
         /// <returns></returns>
-        public void QueueSendNotification(PushNotification notification, List<PushSubscription> recipients)
+        public void QueueSendNotification(
+            PushNotification notification,
+            List<PushSubscription> recipients)
         {
-            var logger = this.logger;
-            this.backgroundQueue.Enqueue(cancelToken => SendNotificationToRecipients(
-                recipients.AsReadOnly(), 
-                notification, 
-                settings.Value.Email.SenderEmail, 
-                settings.Value.Application.PushNotificationsPublicKey,
-                settings.Value.Application.PushNotificationsPrivateKey,
+            var logger = _logger;
+            _backgroundQueue.Enqueue(cancelToken => SendNotificationToRecipients(
+                recipients.AsReadOnly(),
+                notification,
+                _settings.Value.Email.SenderEmail,
+                _settings.Value.Application.PushNotificationsPublicKey,
+                _settings.Value.Application.PushNotificationsPrivateKey,
                 logger,
                 cancelToken));
         }
@@ -63,9 +63,9 @@ namespace BitShuva.Chavah.Services
         /// <returns></returns>
         public void QueueSendNotificationToAll(PushNotification notification)
         {
-            var db = this.db;
-            var logger = this.logger;
-            this.backgroundQueue.Enqueue(async cancelToken =>
+            var db = _db;
+            var logger = _logger;
+            _backgroundQueue.Enqueue(async cancelToken =>
             {
                 // Stream in all the recipients.
                 var recipients = await StreamSubscriptions(db);
@@ -74,20 +74,20 @@ namespace BitShuva.Chavah.Services
                 await SendNotificationToRecipients(
                     recipients.AsReadOnly(),
                     notification,
-                    settings.Value.Email.SenderEmail,
-                    settings.Value.Application.PushNotificationsPublicKey,
-                    settings.Value.Application.PushNotificationsPrivateKey,
+                    _settings.Value.Email.SenderEmail,
+                    _settings.Value.Application.PushNotificationsPublicKey,
+                    _settings.Value.Application.PushNotificationsPrivateKey,
                     logger,
                     cancelToken);
             });
         }
 
         private static async Task SendNotificationToRecipients(
-            IEnumerable<PushSubscription> recipients, 
-            PushNotification notification, 
-            string senderEmail, 
-            string publicKey, 
-            string privateKey, 
+            IEnumerable<PushSubscription> recipients,
+            PushNotification notification,
+            string senderEmail,
+            string publicKey,
+            string privateKey,
             ILogger logger,
             CancellationToken cancelToken)
         {
@@ -109,8 +109,8 @@ namespace BitShuva.Chavah.Services
 
         private static async Task TrySendPushNotification(
             PushNotification notification,
-            PushSubscription recipient, 
-            WebPush.VapidDetails details, 
+            PushSubscription recipient,
+            WebPush.VapidDetails details,
             WebPush.WebPushClient client,
             JsonSerializerSettings serializerSettings,
             ILogger logger)

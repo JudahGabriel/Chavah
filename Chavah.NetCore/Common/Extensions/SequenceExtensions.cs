@@ -1,12 +1,10 @@
 ﻿using Optional;
-using Raven.Client;
 using Raven.Client.Documents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace BitShuva.Chavah.Common
 {
@@ -20,7 +18,9 @@ namespace BitShuva.Chavah.Common
             return result.SomeNotNull();
         }
 
-        public static Task<Option<TSource>> FirstOrNoneAsync<TSource>(this IQueryable<TSource> source, Expression<Func<TSource, bool>> predicate)
+        public static Task<Option<TSource>> FirstOrNoneAsync<TSource>(
+            this IQueryable<TSource> source,
+            Expression<Func<TSource, bool>> predicate)
         {
             return source.Where(predicate).FirstOrNoneAsync();
         }
@@ -32,7 +32,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="items"></param>
         /// <param name="selector"></param>
         /// <returns></returns>
-        public static Option<T> FindMax<T>(this IEnumerable<T> items, Func<T, double> selector)
+        public static Option<T> FindMax<T>(
+            this IEnumerable<T> items,
+            Func<T, double> selector)
         {
             var maxItem = default(T);
             var maxVal = double.NegativeInfinity;

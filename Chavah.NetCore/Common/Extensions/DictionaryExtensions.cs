@@ -3,20 +3,21 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 
 namespace BitShuva.Chavah.Common
 {
     public static class DictionaryExtensions
     {
-        public static TValue GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
+        public static TValue GetValueOrDefault<TKey, TValue>(
+            this Dictionary<TKey, TValue> dictionary,
+            TKey key)
         {
             if (dictionary.TryGetValue(key, out TValue foundValue))
             {
                 return foundValue;
             }
 
-            return default(TValue);
+            return default;
         }
 
         /// <summary>
@@ -27,7 +28,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="dictionary"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static TValue? GetValueOrNull<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
+        public static TValue? GetValueOrNull<TKey, TValue>(
+            this Dictionary<TKey, TValue> dictionary,
+            TKey key)
             where TValue : struct
         {
             if (dictionary.TryGetValue(key, out TValue foundValue))
@@ -35,7 +38,7 @@ namespace BitShuva.Chavah.Common
                 return foundValue;
             }
 
-            return default(TValue?);
+            return default;
         }
 
         public static string ToKeyValuePairString<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
@@ -65,7 +68,9 @@ namespace BitShuva.Chavah.Common
             return builder.ToString();
         }
 
-        public static List<Tuple<TKey, TValue>> TryRemoveMultiple<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, int maxRemove)
+        public static List<Tuple<TKey, TValue>> TryRemoveMultiple<TKey, TValue>(
+            this ConcurrentDictionary<TKey, TValue> dictionary,
+            int maxRemove)
         {
             var keys = dictionary.Keys.Take(maxRemove).ToList();
             var results = new List<Tuple<TKey, TValue>>();

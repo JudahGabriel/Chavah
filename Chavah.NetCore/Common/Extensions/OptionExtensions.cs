@@ -21,10 +21,13 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Evaluates a specified function, based on whether a value is present or not.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="option"></param>
         /// <param name="some">The function to evaluate if the value is present.</param>
         /// <returns>The result of the evaluated function.</returns>
-        public static Task MatchSome<T>(this AsyncOption<T> option, Action<T> some)
+        public static Task MatchSome<T>(
+            this AsyncOption<T> option,
+            Action<T> some)
         {
             return option.Match(some, () => { });
         }
@@ -45,7 +48,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="option"></param>
         /// <param name="mapper"></param>
         /// <returns></returns>
-        public static Option<TMap> FlatMap<T, TMap>(this Option<T> option, Func<T, TMap> mapper)
+        public static Option<TMap> FlatMap<T, TMap>(
+            this Option<T> option,
+            Func<T, TMap> mapper)
         {
             return option
                 .Map(mapper)

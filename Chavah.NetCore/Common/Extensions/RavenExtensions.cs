@@ -1,5 +1,4 @@
 ﻿using Optional;
-using Raven.Client;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace BitShuva.Chavah.Common
 {
@@ -23,7 +21,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<Option<T>> LoadOptionAsync<T>(this IAsyncDocumentSession session, string id)
+        public static async Task<Option<T>> LoadOptionAsync<T>(
+            this IAsyncDocumentSession session,
+            string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -41,7 +41,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="ids">The IDs of the documents to load.</param>
         /// <returns></returns>
-        public static async Task<IEnumerable<Option<T>>> LoadOptionAsync<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
+        public static async Task<IEnumerable<Option<T>>> LoadOptionAsync<T>(
+            this IAsyncDocumentSession session,
+            IEnumerable<string> ids)
         {
             var result = await session.LoadAsync<T>(ids);
             return result.Values.Select(v => v.SomeNotNull());
@@ -54,7 +56,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public static async Task<List<T>> LoadWithoutNulls<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
+        public static async Task<List<T>> LoadWithoutNulls<T>(
+            this IAsyncDocumentSession session,
+            IEnumerable<string> ids)
         {
             var result = await session.LoadAsync<T>(ids);
             return result.Values
@@ -69,7 +73,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<T> LoadRequiredAsync<T>(this IAsyncDocumentSession session, string id)
+        public static async Task<T> LoadRequiredAsync<T>(
+            this IAsyncDocumentSession session,
+            string id)
         {
             if (id == null)
             {
@@ -92,7 +98,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="sessionOps"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static Lazy<Task<T>> LoadRequiredAsync<T>(this IAsyncLazySessionOperations sessionOps, string id)
+        public static Lazy<Task<T>> LoadRequiredAsync<T>(
+            this IAsyncLazySessionOperations sessionOps,
+            string id)
         {
             if (id == null)
             {
@@ -126,10 +134,10 @@ namespace BitShuva.Chavah.Common
         /// <param name="id"></param>
         /// <param name="thrower"></param>
         /// <returns></returns>
-        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncDocumentSession session, 
-            string id, 
-            Func<TException> thrower)
-            where TException : Exception
+        public static async Task<T> LoadRequiredAsync<T, TException>(
+            this IAsyncDocumentSession session,
+            string id,
+            Func<TException> thrower) where TException : Exception
         {
             if (id == null)
             {
@@ -152,7 +160,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public static async Task<List<T>> LoadWithoutNulls<T>(this IAsyncLoaderWithInclude<T> session, IEnumerable<string> ids)
+        public static async Task<List<T>> LoadWithoutNulls<T>(
+            this IAsyncLoaderWithInclude<T> session,
+            IEnumerable<string> ids)
         {
             if (ids == null)
             {
@@ -172,7 +182,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<T> LoadRequiredAsync<T>(this IAsyncLoaderWithInclude<T> session, string id)
+        public static async Task<T> LoadRequiredAsync<T>(
+            this IAsyncLoaderWithInclude<T> session,
+            string id)
         {
             if (id == null)
             {
@@ -191,13 +203,16 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Loads a document from the session and throws the specified exception if null.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TException"></typeparam>
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <param name="thrower"></param>
         /// <returns></returns>
-        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncLoaderWithInclude<T> session, 
-            string id, Func<TException> thrower)
-            where TException : Exception
+        public static async Task<T> LoadRequiredAsync<T, TException>(
+            this IAsyncLoaderWithInclude<T> session,
+            string id,
+            Func<TException> thrower) where TException : Exception
         {
             if (id == null)
             {
@@ -220,7 +235,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<Option<T>> LoadOptionAsync<T>(this IAsyncLoaderWithInclude<T> session, string id)
+        public static async Task<Option<T>> LoadOptionAsync<T>(
+            this IAsyncLoaderWithInclude<T> session,
+            string id)
         {
             var result = await session.LoadAsync<T>(id);
             return result.SomeNotNull();
@@ -233,7 +250,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public static async Task<IEnumerable<Option<T>>> LoadOptionAsync<T>(this IAsyncLoaderWithInclude<T> session, IEnumerable<string> ids)
+        public static async Task<IEnumerable<Option<T>>> LoadOptionAsync<T>(
+            this IAsyncLoaderWithInclude<T> session,
+            IEnumerable<string> ids)
         {
             var result = await session.LoadAsync<T>(ids);
             return result.Values.Select(v => v.SomeNotNull());
@@ -246,7 +265,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static Option<T> LoadOption<T>(this IDocumentSession session, string id)
+        public static Option<T> LoadOption<T>(
+            this IDocumentSession session,
+            string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -262,7 +283,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="lazyOps"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static Lazy<Task<Option<T>>> LoadOptionAsync<T>(this IAsyncLazySessionOperations lazyOps, string id)
+        public static Lazy<Task<Option<T>>> LoadOptionAsync<T>(
+            this IAsyncLazySessionOperations lazyOps,
+            string id)
         {
             var loadTask = lazyOps.LoadAsync<T>(id);
             var optionTask = new Lazy<Task<Option<T>>>(() =>
@@ -278,7 +301,13 @@ namespace BitShuva.Chavah.Common
         /// Sets the Raven document expiration for this object. The document will be deleted from the database after the specified date.
         /// Note: This specified object must be .Store()'d in the database before calling this method.
         /// </summary>
-        public static void SetRavenExpiration<T>(this IAsyncDocumentSession dbSession, T obj, DateTime expiry)
+        /// <param name="dbSession"></param>
+        /// <param name="obj"></param>
+        /// <param name="expiry"></param>
+        public static void SetRavenExpiration<T>(
+            this IAsyncDocumentSession dbSession,
+            T obj,
+            DateTime expiry)
         {
             dbSession.Advanced.GetMetadataFor(obj)["@expires"] = expiry.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
         }
@@ -287,27 +316,45 @@ namespace BitShuva.Chavah.Common
         /// Sets the Raven document expiration for this object. The document will be deleted from the database after the specified date.
         /// Note: This specified object must be .Store()'d in the database before calling this method.
         /// </summary>
-        public static void SetRavenExpiration<T>(this IDocumentSession dbSession, T obj, DateTime expiry)
+        /// <param name="dbSession"></param>
+        /// <param name="obj"></param>
+        /// <param name="expiry"></param>
+        public static void SetRavenExpiration<T>(
+            this IDocumentSession dbSession,
+            T obj,
+            DateTime expiry)
         {
             dbSession.Advanced.GetMetadataFor(obj)["@expires"] = DateTime.UtcNow.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
         }
 
-        public static Operation PatchAll<T>(this IDocumentStore db, string jsPatchScript)
+        public static Operation PatchAll<T>(
+            this IDocumentStore db,
+            string jsPatchScript)
         {
             return PatchAll(db, db.Conventions.GetCollectionName(typeof(T)), jsPatchScript, default(Dictionary<string, object>).None());
         }
 
-        public static Operation PatchAll<T>(this IDocumentStore db, string jsPatchScript, Option<Dictionary<string, object>> variables)
+        public static Operation PatchAll<T>(
+            this IDocumentStore db,
+            string jsPatchScript,
+            Option<Dictionary<string, object>> variables)
         {
             return PatchAll(db, db.Conventions.GetCollectionName(typeof(T)), jsPatchScript, variables);
         }
 
-        public static Operation PatchAll(this IDocumentStore db, string collectionName, string jsPatchScript)
+        public static Operation PatchAll(
+            this IDocumentStore db,
+            string collectionName,
+            string jsPatchScript)
         {
             return PatchAll(db, collectionName, jsPatchScript, default(Dictionary<string, object>).None());
         }
 
-        public static Operation PatchAll(this IDocumentStore db, string collectionName, string jsPatchScript, Option<Dictionary<string, object>> variables)
+        public static Operation PatchAll(
+            this IDocumentStore db,
+            string collectionName,
+            string jsPatchScript,
+            Option<Dictionary<string, object>> variables)
         {
             // Patch is in RQL. Example: "from AppUsers update { this.Foo = 123; }"
             var rqlPatch = new StringBuilder();

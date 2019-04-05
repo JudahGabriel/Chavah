@@ -35,16 +35,13 @@ namespace BitShuva.Chavah
     {
         public IConfiguration Configuration { get; }
 
-        private readonly ILogger<Startup> _logger;
         private readonly IHostingEnvironment _environment;
 
         public Startup(
             IConfiguration configuration,
-            ILogger<Startup> logger,
             IHostingEnvironment environment)
         {
             Configuration = configuration;
-            _logger = logger;
             _environment = environment;
         }
 
