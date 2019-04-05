@@ -87,6 +87,7 @@ namespace BitShuva.Chavah.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
             {
+                logger.LogInformation("Sign-in failed due to empty {email} or {password}", model.Email, model.Password);
                 return Ok(new Models.Account.SignInResult
                 {
                     ErrorMessage = "Bad user name or password",
@@ -146,7 +147,7 @@ namespace BitShuva.Chavah.Controllers
             // If we've successfully signed in, store the json web token in the user.
             if (result.Status != SignInStatus.Success)
             {
-                logger.LogInformation("Sign in failed with {result}", result);
+                logger.LogInformation("Sign in failed with {status}: {errorMessage}", result.Status, result.ErrorMessage);
             }
 
             return Ok(result);
@@ -270,7 +271,8 @@ namespace BitShuva.Chavah.Controllers
 
             // Reject throwaway emails. We need to do this because this helps prevent upvote/downvote fraud. 
             var throwawayDomainsDoc = await DbSession.LoadOptionAsync<ThrowawayEmailDomains>("ThrowawayEmailDomains/1");
-            var isThrowawayEmail = throwawayDomainsDoc.Exists(doc => doc.Domains.Any(domain => emailLower.Contains(domain, StringComparison.InvariantCultureIgnoreCase)));
+            var attemptedDomain = emailLower.Substring(emailLower.LastIndexOf('@') + 1);
+            var isThrowawayEmail = throwawayDomainsDoc.Exists(throwAway => throwAway.Domains.Contains(attemptedDomain, StringComparison.InvariantCultureIgnoreCase));
             if (isThrowawayEmail)
             {
                 logger.LogInformation("Rejected attempt to register with a throwaway email address {email}", emailLower);
@@ -494,6 +496,7 @@ namespace BitShuva.Chavah.Controllers
                 }
             }
 
+            logger.LogInformation("Successfully reset password for {email} using token {code}", email, passwordResetCode);
             return new ResetPasswordResult
             {
                 Success = passwordResetResult.Succeeded,
