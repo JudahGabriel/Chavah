@@ -77,20 +77,7 @@ namespace BitShuva.Chavah
 
             // Add RavenDB and identity.
             services
-                .AddRavenDbDocStore(options: options=>
-                {
-                    var settings = new RavenSettings();
-                    Configuration.Bind(nameof(RavenSettings), settings);
-                    options.Settings = settings;
-
-                    // password is stored in azure vault.
-                    var certString = Configuration.GetValue<string>(settings.CertFilePath);
-                    if (certString != null)
-                    {
-                        var certificate = Convert.FromBase64String(certString);
-                        options.Certificate = new X509Certificate2(certificate);
-                     }
-                })       // Create a RavenDB DocumentStore singleton.
+                .AddChavahRavenDbDocStore(Configuration)       // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession()   // Create a RavenDB IAsyncDocumentSession for each request.
                 .AddRavenDbMigrations()     // Use RavenDB migrations
                 .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles.

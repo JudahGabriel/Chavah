@@ -1,12 +1,16 @@
-﻿using Optional;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Optional;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
 using Raven.Client.Documents.Session.Loaders;
 using Raven.Client.Documents.Session.Operations.Lazy;
+using Raven.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,6 +18,34 @@ namespace BitShuva.Chavah.Common
 {
     public static class RavenExtensions
     {
+        /// <summary>
+        /// Add Chavah Raven Db instance with SSL Certificate loaded from Azure Vault.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddChavahRavenDbDocStore(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.AddRavenDbDocStore(options: options =>
+             {
+                 var settings = new RavenSettings();
+                 configuration.Bind(nameof(RavenSettings), settings);
+                 options.Settings = settings;
+
+                 // password is stored in azure vault.
+                 var certString = configuration.GetValue<string>(settings.CertFilePath);
+                 if (certString != null)
+                 {
+                     var certificate = Convert.FromBase64String(certString);
+                     options.Certificate = new X509Certificate2(certificate);
+                 }
+             });
+
+            return services;
+        }
+
         /// <summary>
         /// Asynchronously loads a document from Raven and stores it in an Option.
         /// </summary>
