@@ -62,7 +62,7 @@ namespace BitShuva.Chavah {
         }
 
         chooseAlbumArt() {
-            filepicker.setKey(this.this.homeViewModel.filePickerKey);
+            filepicker.setKey(this.homeViewModel.filePickrKey);
             let options: FilepickerMultipleFilePickOptions = {
                 extensions: [".jpg", ".png"],
             };

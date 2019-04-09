@@ -16,7 +16,10 @@ namespace BitShuva.Chavah.Common
             _settings = settings;
         }
 
-        public override PasswordVerificationResult VerifyHashedPassword(TUser user, string hashedPassword, string providedPassword)
+        public override PasswordVerificationResult VerifyHashedPassword(
+            TUser user,
+            string hashedPassword,
+            string providedPassword)
         {
             if (hashedPassword == null) { throw new ArgumentNullException(nameof(hashedPassword)); }
             if (providedPassword == null) { throw new ArgumentNullException(nameof(providedPassword)); }
@@ -57,7 +60,7 @@ namespace BitShuva.Chavah.Common
 
             //convert back to string for BCrypt, ignoring first byte
             var storedHash = Encoding.UTF8.GetString(hashedPassword, 1, hashedPassword.Length - 1);
-            
+
             return BCrypt.Net.BCrypt.Verify(password, storedHash);
         }
     }
