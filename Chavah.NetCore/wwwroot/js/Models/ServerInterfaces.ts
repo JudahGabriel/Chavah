@@ -182,6 +182,7 @@
         user: IUserViewModel | null;
         isDownForMaintenance: boolean;
         pushNotificationsPublicKey: string;
+        filePickrKey: string
     };
 
     export interface IUserViewModel {

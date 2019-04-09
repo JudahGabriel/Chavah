@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
 using BitShuva.Chavah.Services;
 using BitShuva.Services;
 using cloudscribe.Syndication.Models.Rss;
@@ -48,8 +49,9 @@ namespace BitShuva.Chavah
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions();
-            services.Configure<AppSettings>(Configuration);
+            services.Configure<ApplicationOptions>(Configuration.GetSection("App"));
+            services.Configure<EmailOptions>(Configuration.GetSection("Email"));
+            services.Configure<CdnOptions>(Configuration.GetSection("Cdn"));
 
             var hcBuilder = services.AddHealthChecks();
 

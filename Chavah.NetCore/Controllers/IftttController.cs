@@ -1,15 +1,14 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Rss;
+using BitShuva.Chavah.Options;
 using BitShuva.Chavah.Services;
 using Chavah.Common;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SyndicationFeed;
 using Newtonsoft.Json;
-using Optional;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using System;
@@ -19,23 +18,24 @@ using System.Threading.Tasks;
 namespace BitShuva.Chavah.Controllers
 {
     /// <summary>
-    /// Controller called by If This Then That (https://ifttt.com) to trigger Chavah notifications when external events (e.g. Chavah blog posts) occur.
+    /// Controller called by If This Then That (https://ifttt.com)
+    /// to trigger Chavah notifications when external events (e.g. Chavah blog posts) occur.
     /// </summary>
     [Route("[controller]/[action]")]
     public class IftttController : RavenController
     {
-        private readonly AppSettings appSettings;
-        private readonly IPushNotificationSender pushNotifications;
+        private readonly ApplicationOptions _appOptions;
+        private readonly IPushNotificationSender _pushNotifications;
 
         public IftttController(
-            IOptions<AppSettings> appSettings,
+            IOptionsMonitor<ApplicationOptions> appOptions,
             IPushNotificationSender pushNotifications,
             IAsyncDocumentSession dbSession,
             ILogger<IftttController> logger)
             : base(dbSession, logger)
         {
-            this.appSettings = appSettings.Value;
-            this.pushNotifications = pushNotifications;
+            _appOptions = appOptions.CurrentValue;
+            _pushNotifications = pushNotifications;
         }
 
         [HttpGet]
@@ -59,24 +59,32 @@ namespace BitShuva.Chavah.Controllers
                 Published = user.RegistrationDate,
             })
             .ToList();
-            feedItems.ForEach(i => i.AddLink(new SyndicationLink(new Uri(appSettings.Application.DefaultUrl + "/?newUser=" + i.Published.ToUnixTimeSeconds().ToString()))));
 
-            var feed = new SyndicationFeed("Chavah Messianic Radio - New Users",
-                                           "The most recent registered users at Chavah Messianic Radio",
-                                           new Uri(appSettings.Application.DefaultUrl), "Chavah", feedItems)
-            {
-                Language = "en-US"
-            };
+            feedItems.ForEach(i => i.AddLink(new SyndicationLink(new Uri($"{_appOptions.DefaultUrl}/?newUser={i.Published.ToUnixTimeSeconds().ToString()}"))));
+
+            var feed = new SyndicationFeed(
+                $"{_appOptions.Title} - New Users",
+                "The most recent registered users at Chavah Messianic Radio",
+                new Uri(_appOptions.DefaultUrl),
+                _appOptions.Name,
+                feedItems,
+                _appOptions.Language);
+
             return new RssActionResult(feed);
         }
 
         [HttpPost]
-        public IActionResult CreateNotification(string secretToken, string title, string imgUrl, string sourceName, string url)
+        public IActionResult CreateNotification(
+            string secretToken,
+            string title,
+            string imgUrl,
+            string sourceName,
+            string url)
         {
-            this.AuthorizeKey(secretToken);
+            AuthorizeKey(secretToken);
 
             // Use only HTTPS images.
-            if (imgUrl != null && imgUrl.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase))
+            if (imgUrl?.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) == true)
             {
                 imgUrl = imgUrl.Replace("http://", "https://", StringComparison.InvariantCultureIgnoreCase);
             }
@@ -99,7 +107,8 @@ namespace BitShuva.Chavah.Controllers
                 Title = title,
                 Url = url
             };
-            this.NotifyAllUsers(notification);
+
+            NotifyAllUsers(notification);
 
             // Send out HTML5 push notifications.
             var pushNotification = new PushNotification
@@ -109,7 +118,7 @@ namespace BitShuva.Chavah.Controllers
                 Body = $"The latest from the {sourceName}",
                 ClickUrl = url
             };
-            this.pushNotifications.QueueSendNotificationToAll(pushNotification);
+            _pushNotifications.QueueSendNotificationToAll(pushNotification);
 
             return Json(notification);
         }
@@ -123,12 +132,12 @@ namespace BitShuva.Chavah.Controllers
                     this.Notifications.length = 10;
                 }
             ";
-            this.DbSession.Advanced.DocumentStore.PatchAll<AppUser>(patchScript);
+            DbSession.Advanced.DocumentStore.PatchAll<AppUser>(patchScript);
         }
 
         private void AuthorizeKey(string key)
         {
-            if (this.appSettings.Ifttt.Key != key)
+            if (_appOptions.IftttKey != key)
             {
                 throw new UnauthorizedAccessException();
             }

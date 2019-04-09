@@ -1,4 +1,5 @@
 ﻿using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
 using BitShuva.Services;
 using System;
 using System.Text.Encodings.Web;
@@ -21,13 +22,13 @@ namespace BitShuva.Chavah.Common
             this IEmailService emailSender,
             string toEmail,
             string resetCode,
-            Application app)
+            ApplicationOptions appOptions)
         {
-            var subject = $"{app.Title} - reset your password";
+            var subject = $"{appOptions.Title} - reset your password";
             var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
             var confirmationCodeEscaped = GetAngularRouteEscapedCode(resetCode);
-            var confirmUrl = $"{app.DefaultUrl}/#/resetpassword/{emailEscaped}/{confirmationCodeEscaped}";
-            var html = $"Shalom from {app.Title}!<p>Please <strong><a href='{confirmUrl}'>click here</a></strong> if you wish to reset your password.</p>";
+            var confirmUrl = $"{appOptions.DefaultUrl}/#/resetpassword/{emailEscaped}/{confirmationCodeEscaped}";
+            var html = $"Shalom from {appOptions.Title}!<p>Please <strong><a href='{confirmUrl}'>click here</a></strong> if you wish to reset your password.</p>";
 
             emailSender.QueueSendEmail(toEmail, subject, html);
         }
@@ -36,13 +37,13 @@ namespace BitShuva.Chavah.Common
             this IEmailService emailSender,
             string toEmail,
             string confirmationCode,
-            Application app)
+            ApplicationOptions appOptions)
         {
-            var subject = $"{app.Title} - confirm your email";
+            var subject = $"{appOptions.Title} - confirm your email";
             var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
             var confirmationCodeEscaped = GetAngularRouteEscapedCode(confirmationCode);
-            var confirmUrl = $"{app.DefaultUrl}/#/confirmemail/{emailEscaped}/{confirmationCodeEscaped}";
-            var html = $"Shalom from {app.Title}!<p>Please <strong><a href='{confirmUrl}'>click here</a></strong> to confirm your email address.</p>";
+            var confirmUrl = $"{appOptions.DefaultUrl}/#/confirmemail/{emailEscaped}/{confirmationCodeEscaped}";
+            var html = $"Shalom from {appOptions.Title}!<p>Please <strong><a href='{confirmUrl}'>click here</a></strong> to confirm your email address.</p>";
 
             emailSender.QueueSendEmail(toEmail, subject, html);
         }

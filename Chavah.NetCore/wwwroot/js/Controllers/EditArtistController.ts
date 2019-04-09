@@ -4,6 +4,7 @@
             "artistApi",
             "$routeParams",
             "$scope",
+            "homeViewModel"
         ];
 
         private artist: Artist | null;
@@ -11,7 +12,8 @@
         constructor(
             private artistApi: ArtistApiService,
             $routeParams: ng.route.IRouteParamsService,
-            private $scope: ng.IScope) {
+            private $scope: ng.IScope,
+            private homeViewModel: Server.HomeViewModel) {
 
             let artistName: string | null = $routeParams["artistName"];
             if (artistName && artistName.length > 0) {
@@ -30,7 +32,7 @@
         }
 
         addImages() {
-            filepicker.setKey(UploadAlbumController.filePickerKey);
+            filepicker.setKey(this.homeViewModel.filePickrKey);
             let options: FilepickerMultipleFilePickOptions = {
                 extensions: [".jpg", ".png"],
                 maxFiles: 100,

@@ -6,6 +6,7 @@
             "appNav",
             "$routeParams",
             "$q",
+            "homeViewModel"
         ];
 
         album: Album | null = null;
@@ -16,7 +17,8 @@
             private albumApi: AlbumApiService,
             private appNav: AppNavService,
             $routeParams: ng.route.IRouteParamsService,
-            private $q: ng.IQService) {
+            private $q: ng.IQService,
+            private homeViewModel: Server.HomeViewModel) {
 
             // We allow the user to pass in:
             // - An album and artist: /#/admin/album/lamb/sacrifice
@@ -104,7 +106,7 @@
         }
 
         chooseAlbumArt() {
-            filepicker.setKey(UploadAlbumController.filePickerKey);
+            filepicker.setKey(this.homeViewModel.filePickrKey);
             let options: FilepickerMultipleFilePickOptions = {
                 extensions: [".jpg", ".png"],
             };

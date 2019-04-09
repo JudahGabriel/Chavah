@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BitShuva.Chavah;
-using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -30,16 +30,20 @@ namespace Microsoft.Extensions.DependencyInjection
                     options.DescribeAllParametersInCamelCase();
                     // resolve the IApiVersionDescriptionProvider service
                     // note: that we have to build a temporary service provider here because one has not been created yet
-                    var provider = services.BuildServiceProvider()
-                        .GetRequiredService<IApiVersionDescriptionProvider>();
-                    var config = services.BuildServiceProvider().GetRequiredService<IOptions<AppSettings>>().Value;
+
+                    var sp = services.BuildServiceProvider();
+
+                    var apiProvider = sp.GetRequiredService<IApiVersionDescriptionProvider>();
+                    var appOptions = sp.GetRequiredService<IOptionsMonitor<ApplicationOptions>>().CurrentValue;
+                    var emailOptions = sp.GetRequiredService<IOptionsMonitor<EmailOptions>>().CurrentValue;
 
                     // add a swagger document for each discovered API version
                     // note: you might choose to skip or document deprecated API versions differently
-                    foreach (var description in provider.ApiVersionDescriptions)
+                    foreach (var description in apiProvider.ApiVersionDescriptions)
                     {
-                        options.SwaggerDoc(description.GroupName,
-                            CreateInfoForApiVersion(description, config));
+                        options.SwaggerDoc(
+                            description.GroupName,
+                            CreateInfoForApiVersion(description, appOptions, emailOptions));
                     }
 
                     // add a custom operation filter which sets default values
@@ -64,19 +68,26 @@ namespace Microsoft.Extensions.DependencyInjection
             get
             {
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var fileName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name + ".xml";
+                var fileName = $"{typeof(Startup).GetTypeInfo().Assembly.GetName().Name}.xml";
                 return Path.Combine(basePath, fileName);
             }
         }
 
-        private static Info CreateInfoForApiVersion(ApiVersionDescription description, AppSettings appSettings)
+        private static Info CreateInfoForApiVersion(
+            ApiVersionDescription description,
+            ApplicationOptions appOptions,
+            EmailOptions emailOptions)
         {
             var info = new Info()
             {
-                Title = $"{appSettings?.Application?.Name} API {description.ApiVersion}",
+                Title = $"{appOptions?.Name} API {description.ApiVersion}",
                 Version = description.ApiVersion.ToString(),
-                Description = $"{appSettings?.Application.Title}",
-                Contact = new Contact() { Name = appSettings.Email.SenderName, Email = appSettings.Email.SenderEmail },
+                Description = $"{appOptions?.Title}",
+                Contact = new Contact()
+                {
+                    Name = emailOptions?.SenderName,
+                    Email = emailOptions?.SenderEmail
+                },
                 TermsOfService = "Nonprofit",
                 License = new License() { Name = "MIT", Url = "https://opensource.org/licenses/MIT" }
             };

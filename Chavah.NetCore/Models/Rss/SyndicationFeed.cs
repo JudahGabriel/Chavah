@@ -1,4 +1,5 @@
-﻿using Microsoft.SyndicationFeed;
+﻿using BitShuva.Chavah.Common;
+using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Rss;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,28 @@ namespace BitShuva.Chavah.Models.Rss
 {
     public class SyndicationFeed
     {
-        public SyndicationFeed(string title, string description,
-                               Uri feedAlternateLink, string id,
-                               IEnumerable<SyndicationItem> items)
+        private string v1;
+        private string v2;
+        private Uri uri;
+        private string v3;
+        private List<SyndicationLinkItem> rssItems;
+
+        public SyndicationFeed(string v1, string v2, Uri uri, string v3, List<SyndicationLinkItem> rssItems)
+        {
+            this.v1 = v1;
+            this.v2 = v2;
+            this.uri = uri;
+            this.v3 = v3;
+            this.rssItems = rssItems;
+        }
+
+        public SyndicationFeed(
+            string title,
+            string description,
+            Uri feedAlternateLink,
+            string id,
+            IEnumerable<SyndicationItem> items,
+            string language)
         {
             Title = title;
             Description = description;
@@ -20,12 +40,13 @@ namespace BitShuva.Chavah.Models.Rss
             Id = id;
             Items = items;
             LastUpdatedTime = DateTimeOffset.UtcNow;
+            Language = language;
         }
 
         public string Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Language { get; set; }
+        public string Language { get;}
 
         public SyndicationLink Link { get; set; }
         public IEnumerable<SyndicationItem> Items { get; set; }

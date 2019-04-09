@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
 using BitShuva.Chavah.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,52 +14,54 @@ namespace BitShuva.Chavah.Controllers
     [RequireHttps]
     public class HomeController : RavenController
     {
-        private readonly ISongService songService;
-        private readonly IAlbumService albumService;
-        private readonly IUserService userService;
-        private readonly AngularCacheBustedViews ngViews;
-        private readonly IOptions<AppSettings> options;
-        private readonly IMapper mapper;
-        
+        private readonly ISongService _songService;
+        private readonly AngularCacheBustedViews _ngViews;
+        private readonly ApplicationOptions _appOptions;
+        private readonly IMapper _mapper;
+        private readonly CdnOptions _cdnOptions;
+
         public HomeController(
             ISongService songService,
-            IAlbumService albumService,
-            IUserService userService,
             AngularCacheBustedViews ngViews,
-            IOptions<AppSettings> options,
+            IOptionsMonitor<ApplicationOptions> appOptions,
+            IOptionsMonitor<CdnOptions> cdnOptions,
             IMapper mapper,
             IAsyncDocumentSession dbSession,
             ILogger<HomeController> logger)
             : base(dbSession, logger)
         {
-            this.songService = songService;
-            this.albumService = albumService;
-            this.userService = userService;
-            this.ngViews = ngViews;
-            this.options = options;
-            this.mapper = mapper;
+            _songService = songService ?? throw new System.ArgumentNullException(nameof(songService));
+            _ngViews = ngViews ?? throw new System.ArgumentNullException(nameof(ngViews));
+            _mapper = mapper ?? throw new System.ArgumentNullException(nameof(mapper));
+
+            _appOptions = appOptions.CurrentValue;
+            _cdnOptions = cdnOptions.CurrentValue;
         }
 
         /// <summary>
-        /// Urls like "https://messianicradio.com?song=songs/32" need to load the server-rendered Razor 
+        /// Urls like "https://messianicradio.com?song=songs/32" need to load the server-rendered Razor
         /// page with info about that song.
-        /// This is used for social media sites like Facebook and Twitter which show images, title, 
+        /// This is used for social media sites like Facebook and Twitter which show images, title,
         /// and description from the loaded page before any JS is executed.
         /// </summary>
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult>  Index(string artist = null, string album = null, string song = null, bool embed = false)
+        public async Task<IActionResult> Index(
+            string artist = null,
+            string album = null,
+            string song = null,
+            bool embed = false)
         {
-            var user = await this.GetUser();
-            var userVm = user != null ? mapper.Map<UserViewModel>(user) : null;
-            var loadedSong = await this.GetSongFromQuery(artist, album, song);
-            var homeViewModel = HomeViewModel.From(userVm, loadedSong, options.Value.Application, options.Value.Cdn);
+            var user = await GetUser();
+            var userVm = user != null ? _mapper.Map<UserViewModel>(user) : null;
+            var loadedSong = await GetSongFromQuery(artist, album, song);
+            var homeViewModel = HomeViewModel.From(userVm, loadedSong, _appOptions, _cdnOptions);
             homeViewModel.Embed = embed;
-            homeViewModel.CacheBustedAngularViews = this.ngViews.Views;
+            homeViewModel.CacheBustedAngularViews = _ngViews.Views;
 
             // TODO
-            //homeViewModel.Redirect = 
-            
+            //homeViewModel.Redirect =
+
             return View("Index", homeViewModel);
         }
 
@@ -66,23 +69,24 @@ namespace BitShuva.Chavah.Controllers
         {
             if (!string.IsNullOrEmpty(songId))
             {
-                return songService.GetSongByIdQueryAsync(songId);
+                return _songService.GetSongByIdQueryAsync(songId);
             }
 
             // Both artist and album specified? Load one of those.
-            if (!string.IsNullOrEmpty(artist) && !string.IsNullOrEmpty(album))
+            if (!string.IsNullOrEmpty(artist)
+                && !string.IsNullOrEmpty(album))
             {
-                return songService.GetMatchingSongAsync(s => s.Artist == artist && s.Album == album);
+                return _songService.GetMatchingSongAsync(s => s.Artist == artist && s.Album == album);
             }
 
             if (!string.IsNullOrEmpty(artist))
             {
-                return songService.GetSongByArtistAsync(artist);
+                return _songService.GetSongByArtistAsync(artist);
             }
 
             if (!string.IsNullOrEmpty(album))
             {
-                return songService.GetSongByAlbumAsync(album);
+                return _songService.GetSongByAlbumAsync(album);
             }
 
             return Task.FromResult<Song>(null);
@@ -99,7 +103,7 @@ namespace BitShuva.Chavah.Controllers
         [Route("serviceworker")]
         public IActionResult ServiceWorker()
         {
-            var name = options.Value.Application.ServiceWorker;
+            var name = _appOptions.ServiceWorker;
             var path = "~/js/ServiceWorkers/" + name;
             return File(path, "application/javascript");
         }

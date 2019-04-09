@@ -1,4 +1,5 @@
 ﻿using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
 using DalSoft.Hosting.BackgroundQueue;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,21 +19,25 @@ namespace BitShuva.Chavah.Services
     /// </summary>
     public class PushNotificationSender : IPushNotificationSender
     {
-        private readonly IOptions<AppSettings> _settings;
+        private readonly ApplicationOptions _appOptions;
         private readonly ILogger<PushNotificationSender> _logger;
         private readonly BackgroundQueue _backgroundQueue;
         private readonly IDocumentStore _db;
+        private readonly EmailOptions _emailOptions;
 
         public PushNotificationSender(
             BackgroundQueue backgroundQueue,
-            IOptions<AppSettings> settings,
+            IOptionsMonitor<ApplicationOptions> appOptions,
+            IOptionsMonitor<EmailOptions> emailOptions,
             IDocumentStore db,
             ILogger<PushNotificationSender> logger)
         {
-            _backgroundQueue = backgroundQueue;
-            _settings = settings;
-            _db = db;
-            _logger = logger;
+            _backgroundQueue = backgroundQueue ?? throw new ArgumentNullException(nameof(backgroundQueue));
+            _db = db ?? throw new ArgumentNullException(nameof(db));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _appOptions = appOptions.CurrentValue;
+            _emailOptions = emailOptions.CurrentValue;
         }
 
         /// <summary>
@@ -49,9 +54,9 @@ namespace BitShuva.Chavah.Services
             _backgroundQueue.Enqueue(cancelToken => SendNotificationToRecipients(
                 recipients.AsReadOnly(),
                 notification,
-                _settings.Value.Email.SenderEmail,
-                _settings.Value.Application.PushNotificationsPublicKey,
-                _settings.Value.Application.PushNotificationsPrivateKey,
+                _emailOptions.SenderEmail,
+                _appOptions.PushNotificationsPublicKey,
+                _appOptions.PushNotificationsPrivateKey,
                 logger,
                 cancelToken));
         }
@@ -74,9 +79,9 @@ namespace BitShuva.Chavah.Services
                 await SendNotificationToRecipients(
                     recipients.AsReadOnly(),
                     notification,
-                    _settings.Value.Email.SenderEmail,
-                    _settings.Value.Application.PushNotificationsPublicKey,
-                    _settings.Value.Application.PushNotificationsPrivateKey,
+                    _emailOptions.SenderEmail,
+                    _appOptions.PushNotificationsPublicKey,
+                    _appOptions.PushNotificationsPrivateKey,
                     logger,
                     cancelToken);
             });

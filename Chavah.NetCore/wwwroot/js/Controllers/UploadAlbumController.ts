@@ -2,14 +2,13 @@
 namespace BitShuva.Chavah {
     export class UploadAlbumController {
 
-        static filePickerKey = "AwdRIarCGT8COm0mkYX1Ez";
-
         static $inject = [
             "artistApi",
             "albumApi",
             "appNav",
             "$scope",
             "$sce",
+            "homeViewModel"
         ];
 
         albumName = "";
@@ -32,13 +31,14 @@ namespace BitShuva.Chavah {
             private albumApi: AlbumApiService,
             private appNav: AppNavService,
             private $scope: ng.IScope,
-            private $sce: ng.ISCEService) {
+            private $sce: ng.ISCEService,
+            private homeViewModel: Server.HomeViewModel) {
 
             artistApi.getAll().then(results => this.allArtists = results.items);
         }
 
         chooseSongs() {
-            filepicker.setKey(UploadAlbumController.filePickerKey);
+            filepicker.setKey(this.homeViewModel.filePickrKey);
             let options: FilepickerMultipleFilePickOptions = {
                 extension: ".mp3",
             };
@@ -62,7 +62,7 @@ namespace BitShuva.Chavah {
         }
 
         chooseAlbumArt() {
-            filepicker.setKey(UploadAlbumController.filePickerKey);
+            filepicker.setKey(this.this.homeViewModel.filePickerKey);
             let options: FilepickerMultipleFilePickOptions = {
                 extensions: [".jpg", ".png"],
             };

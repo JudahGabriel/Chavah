@@ -1,5 +1,4 @@
-﻿using BitShuva.Chavah.Models;
-using Microsoft.AspNetCore.Hosting;
+﻿using BitShuva.Chavah.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -8,24 +7,22 @@ namespace BitShuva.Chavah.Controllers
 {
     public class OffersController : Controller
     {
-        private readonly ILogger<OffersController> logger;
-        private readonly IHostingEnvironment host;
-        private readonly IOptions<AppSettings> options;
+        private readonly ILogger<OffersController> _logger;
+        private readonly CdnOptions _options;
 
-        public OffersController(IHostingEnvironment host, 
-                                ILogger<OffersController> logger,
-                                IOptions<AppSettings> options)
+        public OffersController(
+            ILogger<OffersController> logger,
+            IOptionsMonitor<CdnOptions> options)
         {
-            this.logger = logger;
-            this.host = host;
-            this.options = options;
+            _logger = logger;
+            _options = options.CurrentValue;
         }
 
         public IActionResult KolYonahFreeDownload()
         {
             Request.Headers.TryGetValue("User-Agent", out var userAgent);
-            logger.LogInformation("Free Kol Yonah download has been downloaded. User agent {userAgent}", userAgent);
-            return Redirect($"{options?.Value?.Cdn?.HttpPath}{options?.Value?.Cdn?.MusicDirectory}/Micha'el%20Eliyahu%20BenDavid/Micha_el%20Eliyahu%20BenDavid%20-%20Kol%20Yonah%20-%2010%20-%20Rejoice%20in%20Yah.mp3");
+            _logger.LogInformation("Free Kol Yonah download has been downloaded. User agent {userAgent}", userAgent);
+            return Redirect($"{_options?.HttpPath}{_options?.MusicDirectory}/Micha'el%20Eliyahu%20BenDavid/Micha_el%20Eliyahu%20BenDavid%20-%20Kol%20Yonah%20-%2010%20-%20Rejoice%20in%20Yah.mp3");
         }
     }
 }

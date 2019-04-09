@@ -1,4 +1,5 @@
 ﻿using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace BitShuva.Chavah.Models
             this.Debug = true;
 #endif
         }
-        
+
         /// <summary>
         /// The currently signed in user, or null if there is no user signed in.
         /// </summary>
@@ -98,35 +99,45 @@ namespace BitShuva.Chavah.Models
         public string ServiceWorker { get; set; }
 
         /// <summary>
+        /// FilePickrKey
+        /// </summary>
+        public string FilePickrKey { get; set; }
+
+        /// <summary>
         /// Converts the view model to a JSON object.
         /// </summary>
         /// <returns></returns>
         public string ToJson()
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new JsonSerializerSettings
+            return JsonConvert.SerializeObject(this, new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
         }
 
-        public static HomeViewModel From(UserViewModel user, Song song, Application appSettings, Cdn cdnSettings)
+        public static HomeViewModel From(
+            UserViewModel user,
+            Song song,
+            ApplicationOptions appOptions,
+            CdnOptions cdnOptions)
         {
             var vm = new HomeViewModel
             {
-                PageTitle = appSettings.Title,
-                PageDescription = appSettings.Description,
-                DefaultUrl = appSettings.DefaultUrl,
-                CdnUrl = cdnSettings.HttpPath,
-                SoundEffects = new System.Uri(cdnSettings.HttpPath).Combine(cdnSettings.SoundEffects).ToString(),
+                PageTitle = appOptions.Title,
+                PageDescription = appOptions.Description,
+                DefaultUrl = appOptions.DefaultUrl,
+                CdnUrl = cdnOptions.HttpPath,
+                SoundEffects = new System.Uri(cdnOptions.HttpPath).Combine(cdnOptions.SoundEffects).ToString(),
                 User = user,
                 Song = song,
-                IsDownForMaintenance = appSettings.IsDownForMaintenance,
-                PushNotificationsPublicKey = appSettings.PushNotificationsPublicKey
+                IsDownForMaintenance = appOptions.IsDownForMaintenance,
+                PushNotificationsPublicKey = appOptions.PushNotificationsPublicKey,
+                FilePickrKey = appOptions.FilePickrKey
             };
-            
+
             if (song != null)
             {
-                vm.PageTitle = $"{song.Name} by {song.Artist} on {appSettings.Title}";
+                vm.PageTitle = $"{song.Name} by {song.Artist} on {appOptions.Title}";
                 vm.DescriptiveImageUrl = song.AlbumArtUri?.ToString();
                 vm.Song = song;
                 vm.SongNth = song.Number.ToNumberWord();

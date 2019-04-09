@@ -1,19 +1,17 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Raven.Client.Documents;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Services
 {
     /// <summary>
-    /// Quartz.NET scheduling job that retries any emails that failed to send. 
-    /// Initialized by <see cref="EmailRetryServiceProvider"/>.
+    /// Quartz.NET scheduling job that retries any emails that failed to send.
+    /// Initialized by <see cref="QuartzAppBuilderExtensions"/>.
     /// </summary>
     public class EmailRetryJob : IJob
     {
@@ -22,8 +20,10 @@ namespace BitShuva.Chavah.Services
 
         private const int maxDaysOld = 7; // Any emails older than this won't be retried. TODO: move to config
         private const int maxRetryCount = 10; // Any emails retried more than this will be abandoned. TODO: move to config
-        
-        public EmailRetryJob(IDocumentStore docStore, IEmailService emailSender)
+
+        public EmailRetryJob(
+            IDocumentStore docStore,
+            IEmailService emailSender)
         {
             this.docStore = docStore;
             this.emailSender = emailSender;
