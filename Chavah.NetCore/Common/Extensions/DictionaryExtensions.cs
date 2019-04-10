@@ -8,11 +8,9 @@ namespace BitShuva.Chavah.Common
 {
     public static class DictionaryExtensions
     {
-        public static TValue GetValueOrDefault<TKey, TValue>(
-            this Dictionary<TKey, TValue> dictionary,
-            TKey key)
+        public static TValue GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
         {
-            if (dictionary.TryGetValue(key, out TValue foundValue))
+            if (dictionary.TryGetValue(key, out var foundValue))
             {
                 return foundValue;
             }
@@ -28,12 +26,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="dictionary"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static TValue? GetValueOrNull<TKey, TValue>(
-            this Dictionary<TKey, TValue> dictionary,
-            TKey key)
-            where TValue : struct
+        public static TValue? GetValueOrNull<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key) where TValue : struct
         {
-            if (dictionary.TryGetValue(key, out TValue foundValue))
+            if (dictionary.TryGetValue(key, out var foundValue))
             {
                 return foundValue;
             }
@@ -68,9 +63,7 @@ namespace BitShuva.Chavah.Common
             return builder.ToString();
         }
 
-        public static List<Tuple<TKey, TValue>> TryRemoveMultiple<TKey, TValue>(
-            this ConcurrentDictionary<TKey, TValue> dictionary,
-            int maxRemove)
+        public static List<Tuple<TKey, TValue>> TryRemoveMultiple<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, int maxRemove)
         {
             var keys = dictionary.Keys.Take(maxRemove).ToList();
             var results = new List<Tuple<TKey, TValue>>();
@@ -78,8 +71,8 @@ namespace BitShuva.Chavah.Common
             {
                 var key = keys[0];
                 keys.RemoveAt(0);
-                var val = default(TValue);
-                if (dictionary.TryRemove(key, out val))
+
+                if (dictionary.TryRemove(key, out var val))
                 {
                     results.Add(Tuple.Create(key, val));
                 }

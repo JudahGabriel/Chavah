@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mail;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Models
 {
@@ -18,7 +15,7 @@ namespace BitShuva.Chavah.Models
                 Body = smtpEmail.Body,
                 Bcc = smtpEmail.Bcc?.ToString() ?? string.Empty,
                 CC = smtpEmail.CC?.ToString() ?? string.Empty,
-                ReplyTo = smtpEmail.From?.ToString() ?? null,
+                ReplyTo = smtpEmail.From?.ToString(),
                 Created = DateTimeOffset.UtcNow,
                 Subject = smtpEmail.Subject,
                 To = smtpEmail.To?.ToString() ?? string.Empty

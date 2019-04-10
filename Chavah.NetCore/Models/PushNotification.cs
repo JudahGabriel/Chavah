@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BitShuva.Chavah.Models
+﻿namespace BitShuva.Chavah.Models
 {
     /// <summary>
     /// An HTML5 push notification. This is serialized to JSON and sent to the service worker, which unpacks it and shows the notification.

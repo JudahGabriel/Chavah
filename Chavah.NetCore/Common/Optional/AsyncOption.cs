@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 
 // NOTE: this was written by Nils Lück as part of his Optional.Async library, which is not yet on NuGet.
@@ -15,15 +13,13 @@ namespace Optional.Async
     /// <typeparam name="T">The type of the value to be wrapped.</typeparam>
     public struct AsyncOption<T>
     {
-        private readonly Task<Option<T>> optionTask;
-
         /// <summary>
         /// Initializes an async optional from an task-wrapped optional.
         /// </summary>
         /// <param name="optionTask">The task-wrapped optional.</param>
         public AsyncOption(Task<Option<T>> optionTask)
         {
-            this.optionTask = optionTask;
+            InnerTask = optionTask;
         }
 
         /// <summary>
@@ -32,18 +28,18 @@ namespace Optional.Async
         /// <returns>The awaiter.</returns>
         public ConfiguredTaskAwaitable<Option<T>>.ConfiguredTaskAwaiter GetAwaiter()
         {
-            return optionTask.ConfigureAwait(AsyncOption.continueOnCapturedContext).GetAwaiter();
+            return InnerTask.ConfigureAwait(AsyncOption.continueOnCapturedContext).GetAwaiter();
         }
 
         /// <summary>
         /// Returns the wrapped task.
         /// </summary>
-        public Task<Option<T>> InnerTask { get { return optionTask; } }
+        public Task<Option<T>> InnerTask { get; }
 
         /// <summary>
         /// Checks if a value is present.
         /// </summary>
-        public Task<bool> HasValue { get { return InnerTask.Map(option => option.HasValue); } }
+        public Task<bool> HasValue => InnerTask.Map(option => option.HasValue);
 
         /// <summary>
         /// Determines if the current optional contains a specified value.
@@ -67,7 +63,7 @@ namespace Optional.Async
         }
 
         /// <summary>
-        /// Determines if the current optional contains a value 
+        /// Determines if the current optional contains a value
         /// satisfying a specified predicate.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
@@ -79,7 +75,7 @@ namespace Optional.Async
 
         // TODO: TEST
         /// <summary>
-        /// Determines if the current optional contains a value 
+        /// Determines if the current optional contains a value
         /// satisfying a specified predicate.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
@@ -221,7 +217,7 @@ namespace Optional.Async
         /// <param name="some">The action to evaluate if the value is present.</param>
         public Task MatchSome(Action<T> some)
         {
-            return this.Match(some, () => { });
+            return Match(some, () => { });
         }
 
         /// <summary>
@@ -268,7 +264,7 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another async optional. The result is flattened, 
+        /// into another async optional. The result is flattened,
         /// and if either is empty, an empty optional is returned.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -284,7 +280,7 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another async optional. The result is flattened, 
+        /// into another async optional. The result is flattened,
         /// and if either is empty, an empty optional is returned.
         /// If the option contains an exception, it is removed.
         /// </summary>
@@ -297,7 +293,7 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another async optional. The result is flattened, 
+        /// into another async optional. The result is flattened,
         /// and if either is empty, an empty optional is returned.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -309,7 +305,7 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another async optional. The result is flattened, 
+        /// into another async optional. The result is flattened,
         /// and if either is empty, an empty optional is returned.
         /// If the option contains an exception, it is removed.
         /// </summary>
@@ -322,7 +318,7 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another optional. The result is flattened, 
+        /// into another optional. The result is flattened,
         /// and if either is empty, an empty optional is returned.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -334,7 +330,7 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another optional. The result is flattened, 
+        /// into another optional. The result is flattened,
         /// and if either is empty, an empty optional is returned.
         /// If the option contains an exception, it is removed.
         /// </summary>
@@ -404,15 +400,13 @@ namespace Optional.Async
     /// <typeparam name="TException">A exceptional value describing the lack of an actual value.</typeparam>
     public struct AsyncOption<T, TException>
     {
-        private readonly Task<Option<T, TException>> optionTask;
-
         /// <summary>
         /// Initializes an async optional from an task-wrapped optional.
         /// </summary>
         /// <param name="optionTask">The task-wrapped optional.</param>
         public AsyncOption(Task<Option<T, TException>> optionTask)
         {
-            this.optionTask = optionTask;
+            InnerTask = optionTask;
         }
 
         /// <summary>
@@ -421,18 +415,18 @@ namespace Optional.Async
         /// <returns>The awaiter.</returns>
         public ConfiguredTaskAwaitable<Option<T, TException>>.ConfiguredTaskAwaiter GetAwaiter()
         {
-            return optionTask.ConfigureAwait(AsyncOption.continueOnCapturedContext).GetAwaiter();
+            return InnerTask.ConfigureAwait(AsyncOption.continueOnCapturedContext).GetAwaiter();
         }
 
         /// <summary>
         /// Returns the wrapped task.
         /// </summary>
-        public Task<Option<T, TException>> InnerTask { get { return optionTask; } }
+        public Task<Option<T, TException>> InnerTask { get; }
 
         /// <summary>
         /// Checks if a value is present.
         /// </summary>
-        public Task<bool> HasValue { get { return InnerTask.Map(option => option.HasValue); } }
+        public Task<bool> HasValue => InnerTask.Map(option => option.HasValue);
 
         /// <summary>
         /// Determines if the current optional contains a specified value.
@@ -445,7 +439,7 @@ namespace Optional.Async
         }
 
         /// <summary>
-        /// Determines if the current optional contains a value 
+        /// Determines if the current optional contains a value
         /// satisfying a specified predicate.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
@@ -575,7 +569,7 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another async optional. The result is flattened, 
+        /// into another async optional. The result is flattened,
         /// and if either is empty, an empty optional is returned.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -591,8 +585,8 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another async optional. The result is flattened, 
-        /// and if either is empty, an empty optional is returned, 
+        /// into another async optional. The result is flattened,
+        /// and if either is empty, an empty optional is returned,
         /// with a specified exceptional value.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -605,8 +599,8 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another async optional. The result is flattened, 
-        /// and if either is empty, an empty optional is returned, 
+        /// into another async optional. The result is flattened,
+        /// and if either is empty, an empty optional is returned,
         /// with a specified exceptional value.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -619,7 +613,7 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another async optional. The result is flattened, 
+        /// into another async optional. The result is flattened,
         /// and if either is empty, an empty optional is returned.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -631,8 +625,8 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another async optional. The result is flattened, 
-        /// and if either is empty, an empty optional is returned, 
+        /// into another async optional. The result is flattened,
+        /// and if either is empty, an empty optional is returned,
         /// with a specified exceptional value.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -645,8 +639,8 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another async optional. The result is flattened, 
-        /// and if either is empty, an empty optional is returned, 
+        /// into another async optional. The result is flattened,
+        /// and if either is empty, an empty optional is returned,
         /// with a specified exceptional value.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -659,7 +653,7 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another optional. The result is flattened, 
+        /// into another optional. The result is flattened,
         /// and if either is empty, an empty optional is returned.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -671,8 +665,8 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another optional. The result is flattened, 
-        /// and if either is empty, an empty optional is returned, 
+        /// into another optional. The result is flattened,
+        /// and if either is empty, an empty optional is returned,
         /// with a specified exceptional value.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -685,8 +679,8 @@ namespace Optional.Async
 
         /// <summary>
         /// Transforms the inner value in an async optional
-        /// into another optional. The result is flattened, 
-        /// and if either is empty, an empty optional is returned, 
+        /// into another optional. The result is flattened,
+        /// and if either is empty, an empty optional is returned,
         /// with a specified exceptional value.
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
@@ -698,7 +692,7 @@ namespace Optional.Async
         }
 
         /// <summary>
-        /// Empties an optional, and attaches an exceptional value, 
+        /// Empties an optional, and attaches an exceptional value,
         /// if a specified predicate is not satisfied.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
@@ -710,7 +704,7 @@ namespace Optional.Async
         }
 
         /// <summary>
-        /// Empties an optional, and attaches an exceptional value, 
+        /// Empties an optional, and attaches an exceptional value,
         /// if a specified predicate is not satisfied.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
@@ -758,7 +752,7 @@ namespace Optional.Async
         /// <returns>An empty async optional.</returns>
         public static AsyncOption<T> None<T>()
         {
-            return new AsyncOption<T>(Task.FromResult(Option.None<T>())); ;
+            return new AsyncOption<T>(Task.FromResult(Option.None<T>()));
         }
 
         /// <summary>
@@ -782,7 +776,7 @@ namespace Optional.Async
         }
 
         /// <summary>
-        /// Creates an empty async optional, 
+        /// Creates an empty async optional,
         /// with a specified exceptional value.
         /// </summary>
         /// <param name="exception">The exceptional value.</param>

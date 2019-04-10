@@ -1,5 +1,6 @@
-﻿using Raven.Client.Documents.Indexes;
-using System.Linq;
+﻿using System.Linq;
+
+using Raven.Client.Documents.Indexes;
 
 namespace BitShuva.Chavah.Models.Indexes
 {
@@ -19,7 +20,7 @@ namespace BitShuva.Chavah.Models.Indexes
                            let dislikeCount = like.Status == LikeStatus.Dislike ? 1 : 0
                            select new
                            {
-                               UserId = like.UserId,
+                               like.UserId,
                                Songs = new LikeDislikeCount[]
                                {
                                     new LikeDislikeCount

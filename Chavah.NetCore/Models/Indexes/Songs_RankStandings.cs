@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using BitShuva.Chavah.Models;
+
 using Raven.Client.Documents.Indexes;
 
 namespace BitShuva.Chavah.Models.Indexes
@@ -15,13 +13,13 @@ namespace BitShuva.Chavah.Models.Indexes
     {
         public Songs_RankStandings()
         {
-            this.Map = songs => from song in songs
+            Map = songs => from song in songs
                                 select new Result
                                 {
                                     Standing = song.CommunityRankStanding,
                                     SongIds = new List<string> { song.Id }
                                 };
-            this.Reduce = results => from result in results
+            Reduce = results => from result in results
                                      group result by result.Standing into standingGroup
                                      select new
                                      {

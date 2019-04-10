@@ -1,7 +1,9 @@
-﻿using Raven.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Raven.Identity;
+
 namespace BitShuva.Chavah.Models
 {
     /// <summary>
@@ -13,7 +15,7 @@ namespace BitShuva.Chavah.Models
         public const string AdminRole = "admin";
         public const int MaxNotifications = 5;
         public const int MaxRecentSongs = 10;
-        
+
         /// <summary>
         /// Gets the total number of songs played by this user.
         /// </summary>
@@ -48,7 +50,7 @@ namespace BitShuva.Chavah.Models
         /// Gets the list of notifications for the user.
         /// </summary>
         public List<Notification> Notifications { get; set; } = new List<Notification>();
-        
+
         /// <summary>
         /// The last set volume, from 0 (muted) to 1 (full volume).
         /// </summary>
@@ -58,7 +60,7 @@ namespace BitShuva.Chavah.Models
         /// Gets the URL for the user's profile picture. Will be null if the user doesn't have a profile pic setup.
         /// </summary>
         public Uri ProfilePicUrl { get; set; }
-        
+
         /// <summary>
         /// The user's first name.
         /// </summary>
@@ -71,19 +73,19 @@ namespace BitShuva.Chavah.Models
 
         public void AddNotification(Notification notification)
         {
-            this.Notifications.Insert(0, notification);
-            if (this.Notifications.Count > MaxNotifications)
+            Notifications.Insert(0, notification);
+            if (Notifications.Count > MaxNotifications)
             {
-                this.Notifications.RemoveAt(MaxNotifications);
+                Notifications.RemoveAt(MaxNotifications);
             }
         }
 
         public void AddRecentSong(string songId)
         {
-            this.RecentSongIds.Insert(0, songId);
-            if (this.RecentSongIds.Count > MaxRecentSongs)
+            RecentSongIds.Insert(0, songId);
+            if (RecentSongIds.Count > MaxRecentSongs)
             {
-                this.RecentSongIds.RemoveAt(MaxRecentSongs);
+                RecentSongIds.RemoveAt(MaxRecentSongs);
             }
         }
 
@@ -91,18 +93,21 @@ namespace BitShuva.Chavah.Models
         {
             return new AppUser
             {
-                Id = this.Id,
-                LastSeen = this.LastSeen,
-                TotalSongRequests = this.TotalSongRequests,
-                RegistrationDate = this.RegistrationDate,
-                RequiresPasswordReset = this.RequiresPasswordReset,
-                TotalPlays = this.TotalPlays,
-                Email = this.Email,
-                UserName = this.UserName,
-                LockoutEnabled = this.LockoutEnabled
+                Id = Id,
+                LastSeen = LastSeen,
+                TotalSongRequests = TotalSongRequests,
+                RegistrationDate = RegistrationDate,
+                RequiresPasswordReset = RequiresPasswordReset,
+                TotalPlays = TotalPlays,
+                Email = Email,
+                UserName = UserName,
+                LockoutEnabled = LockoutEnabled
             };
         }
 
-        public bool IsAdmin() => this.Roles.Contains(AppUser.AdminRole);
+        public bool IsAdmin()
+        {
+            return Roles.Contains(AppUser.AdminRole);
+        }
     }
 }

@@ -149,9 +149,9 @@ namespace BitShuva.Chavah.Common
                 var hash = 23;
                 foreach (var line in lines)
                 {
-                    foreach (char c in line)
+                    foreach (var c in line)
                     {
-                        hash = hash * 31 + c;
+                        hash = (hash * 31) + c;
                     }
                 }
 

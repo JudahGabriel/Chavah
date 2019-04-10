@@ -1,22 +1,28 @@
-﻿using BitShuva.Chavah.Common;
-using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Options;
-using DalSoft.Hosting.BackgroundQueue;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Optional;
-using Optional.Async;
-using Raven.Client.Documents;
-using Raven.StructuredLog;
-using SendGrid.Helpers.Mail;
-using System;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
+
+using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
+
+using DalSoft.Hosting.BackgroundQueue;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+using Optional;
+using Optional.Async;
+
+using Raven.Client.Documents;
+using Raven.StructuredLog;
+
+using SendGrid.Helpers.Mail;
 
 namespace BitShuva.Services
 {
@@ -46,11 +52,7 @@ namespace BitShuva.Services
             _emailOptions = emailOptions.CurrentValue;
         }
 
-        public async Task QueueSendEmail(
-            string recipient,
-            string subject,
-            string body,
-            string replyTo = null)
+        public async Task QueueSendEmail(string recipient, string subject, string body, string replyTo = null)
         {
             // Store the email on this thread.
             var email = await StoreEmail(recipient, subject, body, replyTo);
@@ -98,13 +100,7 @@ namespace BitShuva.Services
             }
         }
 
-        private Task TrySendEmailWithTimeoutAndRetry(
-            string emailId,
-            string recipient,
-            string subject,
-            string body,
-            string replyTo,
-            CancellationToken cancelToken)
+        private Task TrySendEmailWithTimeoutAndRetry(string emailId, string recipient, string subject, string body, string replyTo, CancellationToken cancelToken)
         {
             if (!cancelToken.IsCancellationRequested)
             {

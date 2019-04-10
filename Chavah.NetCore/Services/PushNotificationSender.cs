@@ -1,16 +1,21 @@
-﻿using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Options;
-using DalSoft.Hosting.BackgroundQueue;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Raven.Client.Documents;
-using Raven.StructuredLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
+
+using DalSoft.Hosting.BackgroundQueue;
+
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+using Raven.Client.Documents;
+using Raven.StructuredLog;
 
 namespace BitShuva.Chavah.Services
 {
@@ -46,9 +51,7 @@ namespace BitShuva.Chavah.Services
         /// <param name="notification">The message to send.</param>
         /// <param name="recipients">The recipients of the message.</param>
         /// <returns></returns>
-        public void QueueSendNotification(
-            PushNotification notification,
-            List<PushSubscription> recipients)
+        public void QueueSendNotification(PushNotification notification, List<PushSubscription> recipients)
         {
             var logger = _logger;
             _backgroundQueue.Enqueue(cancelToken => SendNotificationToRecipients(
@@ -87,14 +90,7 @@ namespace BitShuva.Chavah.Services
             });
         }
 
-        private static async Task SendNotificationToRecipients(
-            IEnumerable<PushSubscription> recipients,
-            PushNotification notification,
-            string senderEmail,
-            string publicKey,
-            string privateKey,
-            ILogger logger,
-            CancellationToken cancelToken)
+        private static async Task SendNotificationToRecipients(IEnumerable<PushSubscription> recipients, PushNotification notification, string senderEmail, string publicKey, string privateKey, ILogger logger, CancellationToken cancelToken)
         {
             // This is run in a background thread. We should not access or update any mutable state.
             var vapidDetails = new WebPush.VapidDetails($"mailto:{senderEmail}", publicKey, privateKey);
@@ -112,13 +108,7 @@ namespace BitShuva.Chavah.Services
             }
         }
 
-        private static async Task TrySendPushNotification(
-            PushNotification notification,
-            PushSubscription recipient,
-            WebPush.VapidDetails details,
-            WebPush.WebPushClient client,
-            JsonSerializerSettings serializerSettings,
-            ILogger logger)
+        private static async Task TrySendPushNotification(PushNotification notification, PushSubscription recipient, WebPush.VapidDetails details, WebPush.WebPushClient client, JsonSerializerSettings serializerSettings, ILogger logger)
         {
             // This is run in a background thread. We should not access or update mutable state.
             try

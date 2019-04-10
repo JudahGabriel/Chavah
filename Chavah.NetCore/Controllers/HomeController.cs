@@ -1,13 +1,17 @@
-﻿using AutoMapper;
+﻿using System.Threading.Tasks;
+
+using AutoMapper;
+
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Options;
 using BitShuva.Chavah.Services;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using Raven.Client.Documents.Session;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -46,11 +50,7 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(
-            string artist = null,
-            string album = null,
-            string song = null,
-            bool embed = false)
+        public async Task<IActionResult> Index(string artist = null, string album = null, string song = null, bool embed = false)
         {
             var user = await GetUser();
             var userVm = user != null ? _mapper.Map<UserViewModel>(user) : null;
@@ -103,8 +103,7 @@ namespace BitShuva.Chavah.Controllers
         [Route("serviceworker")]
         public IActionResult ServiceWorker()
         {
-            var name = _appOptions.ServiceWorker;
-            var path = "~/js/ServiceWorkers/" + name;
+            var path = $"~/js/ServiceWorkers/{_appOptions.ServiceWorker}";
             return File(path, "application/javascript");
         }
 

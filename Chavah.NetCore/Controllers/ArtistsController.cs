@@ -1,36 +1,35 @@
-﻿using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Models.Indexes;
-using BitShuva.Chavah.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Session;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Indexes;
+using BitShuva.Chavah.Services;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 
 namespace BitShuva.Chavah.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class ArtistsController : RavenController
     {
-        private readonly ICdnManagerService cdnManagerService;
-
         public ArtistsController(
-            ICdnManagerService cdnManagerService,
             IAsyncDocumentSession dbSession,
             ILogger<UsersController> logger)
             : base(dbSession, logger)
         {
-            this.cdnManagerService = cdnManagerService;
         }
 
         [HttpGet]
         public async Task<Artist> GetByName(string artistName)
         {
-            var artist = await this.DbSession
+            var artist = await DbSession
                 .Query<Artist>()
                 .FirstOrDefaultAsync(a => a.Name == artistName);
             return artist;
@@ -39,7 +38,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<PagedList<Artist>> GetAll(string search, int skip, int take)
         {
-            IQueryable<Artist> query = this.DbSession.Query<Artist>()
+            IQueryable<Artist> query = DbSession.Query<Artist>()
                 .Statistics(out var stats);
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -66,12 +65,12 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<dynamic> Rank(string artistName)
         {
-            var songsByArtist = await this.DbSession.Query<Song, Songs_GeneralQuery>()
+            var songsByArtist = await DbSession.Query<Song, Songs_GeneralQuery>()
                 .Where(s => s.Artist == artistName)
                 .ToListAsync();
             if (songsByArtist.Count == 128)
             {
-                var additionalSongs = await this.DbSession.Query<Song, Songs_GeneralQuery>()
+                var additionalSongs = await DbSession.Query<Song, Songs_GeneralQuery>()
                     .Where(s => s.Artist == artistName)
                     .Skip(128)
                     .ToListAsync();
@@ -92,7 +91,7 @@ namespace BitShuva.Chavah.Controllers
         [Authorize]
         public async Task<PagedList<ArtistWithNetLikeCount>> GetLikedArtists(int skip, int take, string search)
         {
-            var userId = this.GetUserIdOrThrow();
+            var userId = GetUserIdOrThrow();
             var query = DbSession.Query<Like, Likes_ByArtist>()
                 .Statistics(out var stats)
                 .Where(u => u.UserId == userId)
@@ -164,7 +163,7 @@ namespace BitShuva.Chavah.Controllers
         //    return imageUris;
         //}
 
-        static string FindUnusedArtistImageFileName(string artist, int index, IList<string> allFileNames)
+        private static string FindUnusedArtistImageFileName(string artist, int index, IList<string> allFileNames)
         {
             const int maxArtistImages = 10000;
             var artistCdnSafe = CdnManagerService.GetAlphaNumericEnglish(artist);

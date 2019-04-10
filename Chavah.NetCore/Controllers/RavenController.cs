@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Optional;
+
 using Raven.Client.Documents.Session;
 using Raven.Client.Exceptions;
 using Raven.StructuredLog;
@@ -20,7 +22,9 @@ namespace BitShuva.Chavah.Controllers
         protected readonly ILogger logger;
         private  AppUser currentUser;
 
-        protected RavenController(IAsyncDocumentSession dbSession, ILogger logger)
+        protected RavenController(
+            IAsyncDocumentSession dbSession,
+            ILogger logger)
         {
             DbSession = dbSession ?? throw new ArgumentNullException(nameof(dbSession));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -32,7 +36,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         /// <summary>
-        /// Gets the RavenDB document session created for the current request. 
+        /// Gets the RavenDB document session created for the current request.
         /// Changes will be saved automatically when the action finishes executing without error.
         /// </summary>
         public IAsyncDocumentSession DbSession { get; }
@@ -124,8 +128,8 @@ namespace BitShuva.Chavah.Controllers
                 {
                     logger.LogWarning(error.Message);
                 }
-                else if (error is RavenException ravenEx &&
-                    ravenEx.Message.Contains("The server returned an invalid or unrecognized response", StringComparison.InvariantCultureIgnoreCase))
+                else if (error is RavenException ravenEx
+                    && ravenEx.Message.Contains("The server returned an invalid or unrecognized response", StringComparison.InvariantCultureIgnoreCase))
                 {
                     logger.LogError(ravenEx.Message);
                 }
@@ -138,8 +142,8 @@ namespace BitShuva.Chavah.Controllers
                     // This occurs when the database is down.
                     logger.LogError("Unable to reach database");
                 }
-                else if (error is System.Net.WebException && 
-                    string.Equals(error.Message, "An error occurred while sending the request. The buffers supplied to a function was too small", StringComparison.InvariantCultureIgnoreCase))
+                else if (error is System.Net.WebException
+                    && string.Equals(error.Message, "An error occurred while sending the request. The buffers supplied to a function was too small", StringComparison.InvariantCultureIgnoreCase))
                 {
                     logger.LogError("The buffers supplied to a function was too small");
                 }

@@ -1,12 +1,15 @@
-﻿using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Raven.Client.Documents.Session;
-using Raven.StructuredLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Services;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+using Raven.Client.Documents.Session;
+using Raven.StructuredLog;
 
 namespace BitShuva.Chavah.Controllers
 {

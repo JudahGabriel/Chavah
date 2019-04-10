@@ -1,8 +1,10 @@
-﻿using BitShuva.Chavah.Common;
+﻿using System.Collections.Generic;
+
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Options;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Collections.Generic;
 
 namespace BitShuva.Chavah.Models
 {
@@ -14,7 +16,7 @@ namespace BitShuva.Chavah.Models
         public HomeViewModel()
         {
 #if DEBUG
-            this.Debug = true;
+            Debug = true;
 #endif
         }
 

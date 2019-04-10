@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BitShuva.Chavah.Common
 {
@@ -25,9 +26,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="svc"></param>
         /// <param name="viewsFolderRelativePath">The folder containing the angular views relative to the /wwwroot folder.</param>
         /// <returns></returns>
-        public static IServiceCollection AddCacheBustedAngularViews(
-            this IServiceCollection svc,
-            string viewsFolderRelativePath)
+        public static IServiceCollection AddCacheBustedAngularViews(this IServiceCollection svc, string viewsFolderRelativePath)
         {
             var relativeFileSystemSeparator = viewsFolderRelativePath.TrimStart('/');
             svc.AddSingleton(svcProvider => CreateCacheBustedViewsInstance(svcProvider, relativeFileSystemSeparator));
@@ -35,9 +34,7 @@ namespace BitShuva.Chavah.Common
             return svc;
         }
 
-        private static AngularCacheBustedViews CreateCacheBustedViewsInstance(
-            IServiceProvider svcProvider,
-            string viewsFolderRelativePath)
+        private static AngularCacheBustedViews CreateCacheBustedViewsInstance(IServiceProvider svcProvider, string viewsFolderRelativePath)
         {
             var host = svcProvider.GetRequiredService<IHostingEnvironment>();
             var viewsFolder = Path.Combine(host.WebRootPath, viewsFolderRelativePath);
@@ -49,9 +46,7 @@ namespace BitShuva.Chavah.Common
             };
         }
 
-        private static string GetCacheBustedRelativeUrl(
-            string htmlFilePath,
-            string viewsFolderRelativePath)
+        private static string GetCacheBustedRelativeUrl(string htmlFilePath, string viewsFolderRelativePath)
         {
             using (var file = File.OpenRead(htmlFilePath))
             using (var md5 = System.Security.Cryptography.MD5.Create())
@@ -59,7 +54,8 @@ namespace BitShuva.Chavah.Common
                 // default windows path detaction
                 var viewsFolder = '\\' + viewsFolderRelativePath + '\\';
 
-                if (OperatingSystem.IsLinux()) {
+                if (OperatingSystem.IsLinux())
+                {
                     viewsFolder = $"/{viewsFolderRelativePath}/";
                 }
 
@@ -80,7 +76,7 @@ namespace BitShuva.Chavah.Common
 
                 var fileContentHash = string.Join(string.Empty, md5.ComputeHash(file));
                 var fileNameWithHash = htmlFileName + "?v=" + fileContentHash;
-                return Path.Combine($"/" + viewsFolderRelativePath, filePathRelativeToViewsFolder, fileNameWithHash)
+                return Path.Combine("/" + viewsFolderRelativePath, filePathRelativeToViewsFolder, fileNameWithHash)
                     .Replace("\\", "/")
                     .ToLowerInvariant();
             }

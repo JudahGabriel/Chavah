@@ -11,8 +11,9 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <LangVersion>Latest</LangVersion>
-    <NoWarn>1701;1702;1591;</NoWarn>
+    <NoWarn>1701;1702;1591;IDE1006</NoWarn>
     <BetCommnon>1.1.19</BetCommnon>
+    <CodeAnalysisRuleSet>..\Chavah.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+
 using Microsoft.AspNetCore.Identity;
 
 namespace BitShuva.Chavah.Common
@@ -10,21 +11,25 @@ namespace BitShuva.Chavah.Common
     /// </summary>
     public class BCryptPasswordHasher<TUser> : PasswordHasher<TUser> where TUser : class
     {
-        readonly BCryptPasswordSettings _settings;
+        private readonly BCryptPasswordSettings _settings;
+
         public BCryptPasswordHasher(BCryptPasswordSettings settings)
         {
             _settings = settings;
         }
 
-        public override PasswordVerificationResult VerifyHashedPassword(
-            TUser user,
-            string hashedPassword,
-            string providedPassword)
+        public override PasswordVerificationResult VerifyHashedPassword(TUser user, string hashedPassword, string providedPassword)
         {
-            if (hashedPassword == null) { throw new ArgumentNullException(nameof(hashedPassword)); }
-            if (providedPassword == null) { throw new ArgumentNullException(nameof(providedPassword)); }
+            if (hashedPassword == null)
+            {
+                throw new ArgumentNullException(nameof(hashedPassword));
+            }
+            if (providedPassword == null)
+            {
+                throw new ArgumentNullException(nameof(providedPassword));
+            }
 
-            byte[] decodedHashedPassword = Convert.FromBase64String(hashedPassword);
+            var decodedHashedPassword = Convert.FromBase64String(hashedPassword);
 
             // read the format marker from the hashed password
             if (decodedHashedPassword.Length == 0)

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using BitShuva.Chavah.Common;
 
 namespace BitShuva.Chavah.Models
 {
@@ -46,21 +43,21 @@ namespace BitShuva.Chavah.Models
 
         private int CalculateRank()
         {
-            var totalLikes = this.LikedSongCount;
-            var totalDislikes = this.DislikedSongCount;
-            if (this.TotalPlays > 50000 && totalLikes > 100 && totalDislikes > 10) {
+            var totalLikes = LikedSongCount;
+            var totalDislikes = DislikedSongCount;
+            if (TotalPlays > 50000 && totalLikes > 100 && totalDislikes > 10) {
                 return 6;
-            } else if (this.TotalPlays > 20000 && totalLikes > 50 && totalDislikes > 5) {
+            } else if (TotalPlays > 20000 && totalLikes > 50 && totalDislikes > 5) {
                 return 5;
-            } else if (this.TotalPlays > 10000 && totalLikes > 30 && totalDislikes > 1) {
+            } else if (TotalPlays > 10000 && totalLikes > 30 && totalDislikes > 1) {
                 return 4;
-            } else if (this.TotalPlays > 5000 && totalLikes > 20) {
+            } else if (TotalPlays > 5000 && totalLikes > 20) {
                 return 3;
-            } else if (this.TotalPlays > 1000 && totalLikes > 10) {
+            } else if (TotalPlays > 1000 && totalLikes > 10) {
                 return 2;
-            } else if (this.TotalPlays > 250 && totalLikes > 0) {
+            } else if (TotalPlays > 250 && totalLikes > 0) {
                 return 1;
-            } 
+            }
 
             return 0;
         }

@@ -1,11 +1,14 @@
-﻿using BitShuva.Chavah.Common;
-using BitShuva.Chavah.Models;
-using BitShuva.Services;
-using Quartz;
-using Raven.Client.Documents;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+
+using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Services;
+
+using Quartz;
+
+using Raven.Client.Documents;
 
 namespace BitShuva.Chavah.Services
 {
@@ -32,7 +35,7 @@ namespace BitShuva.Chavah.Services
         async Task IJob.Execute(IJobExecutionContext context)
         {
             // Find failed emails that are less than a week old.
-            using (var dbSession = this.docStore.OpenAsyncSession())
+            using (var dbSession = docStore.OpenAsyncSession())
             {
                 var weekAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(maxDaysOld));
                 var failedEmailOrNull = await dbSession.Query<Email>()

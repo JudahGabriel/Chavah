@@ -1,16 +1,18 @@
-﻿using Optional;
-using Raven.Client.Documents;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
+using Optional;
+
+using Raven.Client.Documents;
+
 namespace BitShuva.Chavah.Common
 {
     public static class SequenceExtensions
     {
-        static Random random = new Random();
+        private static readonly Random Random = new Random();
 
         public static async Task<Option<TSource>> FirstOrNoneAsync<TSource>(this IQueryable<TSource> source)
         {
@@ -18,9 +20,7 @@ namespace BitShuva.Chavah.Common
             return result.SomeNotNull();
         }
 
-        public static Task<Option<TSource>> FirstOrNoneAsync<TSource>(
-            this IQueryable<TSource> source,
-            Expression<Func<TSource, bool>> predicate)
+        public static Task<Option<TSource>> FirstOrNoneAsync<TSource>(this IQueryable<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
             return source.Where(predicate).FirstOrNoneAsync();
         }
@@ -32,9 +32,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="items"></param>
         /// <param name="selector"></param>
         /// <returns></returns>
-        public static Option<T> FindMax<T>(
-            this IEnumerable<T> items,
-            Func<T, double> selector)
+        public static Option<T> FindMax<T>(this IEnumerable<T> items, Func<T, double> selector)
         {
             var maxItem = default(T);
             var maxVal = double.NegativeInfinity;
@@ -53,18 +51,14 @@ namespace BitShuva.Chavah.Common
 
         public static T RandomElement<T>(this IEnumerable<T> items)
         {
-            var collection = items as ICollection<T>;
-            if (collection == null)
-            {
-                collection = new List<T>(items);
-            }
+            var collection = items as ICollection<T> ?? new List<T>(items);
 
             if (collection.Count == 0)
             {
-                return default(T);
+                return default;
             }
 
-            var randomElementIndex = random.Next(0, collection.Count);
+            var randomElementIndex = Random.Next(0, collection.Count);
             return items.ElementAtOrDefault(randomElementIndex);
         }
     }

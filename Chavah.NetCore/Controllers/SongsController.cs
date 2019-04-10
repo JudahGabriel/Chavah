@@ -1,19 +1,23 @@
-﻿using BitShuva.Chavah.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using Optional.Collections;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Linq.Expressions;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -189,7 +193,7 @@ namespace BitShuva.Chavah.Controllers
             stopWatch.Stop();
 
             var songsOrderedByWeight = table
-                .Select(s => (SongId: s.Key, Weight: s.Value.Weight, ArtistMultiplier: s.Value.ArtistMultiplier, AlbumMultiplier: s.Value.AlbumMultiplier, SongMultipler: s.Value.SongMultiplier, TagMultiplier: s.Value.TagMultiplier, RankMultiplier: s.Value.CommunityRankMultiplier))
+                .Select(s => (SongId: s.Key, s.Value.Weight, s.Value.ArtistMultiplier, s.Value.AlbumMultiplier, SongMultipler: s.Value.SongMultiplier, s.Value.TagMultiplier, RankMultiplier: s.Value.CommunityRankMultiplier))
                 .OrderByDescending(s => s.Weight)
                 .Select(s => $"Song ID {s.SongId}, Weight {s.Weight}, Artist multiplier: {s.ArtistMultiplier}, Album multipler: {s.AlbumMultiplier}, Song multiplier: {s.SongMultipler}, Tag multiplier {s.TagMultiplier}, Rank multiplier: {s.RankMultiplier}")
                 .ToList();
@@ -307,8 +311,8 @@ namespace BitShuva.Chavah.Controllers
                 {
                     var pickReasons = pickedSongs[i];
                     var songLikeDislike = userPreferences.Songs.FirstOrDefault(s => s.SongId == song.Id);
-                    var songLikeStatus = songLikeDislike != null && songLikeDislike.LikeCount > 0 ?
-                        LikeStatus.Like : songLikeDislike != null && songLikeDislike.DislikeCount > 0 ?
+                    var songLikeStatus = songLikeDislike?.LikeCount > 0 ?
+                        LikeStatus.Like : songLikeDislike?.DislikeCount > 0 ?
                         LikeStatus.Dislike : LikeStatus.None;
                     var dto = song.ToDto(songLikeStatus, pickReasons);
                     songDtos.Add(dto);
@@ -550,7 +554,7 @@ namespace BitShuva.Chavah.Controllers
                 var album = await DbSession.LoadAsync<Album>(existingSong.AlbumId);
                 if (album != null)
                 {
-                    album.SongCount = album.SongCount - 1;
+                    album.SongCount--;
 
                     // No more songs on the album? Delete it.
                     if (album.SongCount == 0)

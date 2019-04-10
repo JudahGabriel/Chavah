@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using Optional;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
@@ -23,10 +26,9 @@ namespace BitShuva.Chavah.Controllers
     [ApiController]
     public class TagsController : RavenController
     {
-        private const string AuthSchemes = CookieAuthenticationDefaults.AuthenticationScheme; //+ "," +
-                                           //JwtBearerDefaults.AuthenticationScheme;
-
-        public TagsController(IAsyncDocumentSession dbSession, ILogger<TagsController> logger)
+        public TagsController(
+            IAsyncDocumentSession dbSession,
+            ILogger<TagsController> logger)
             : base(dbSession, logger)
         {
         }

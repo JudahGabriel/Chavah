@@ -1,9 +1,8 @@
-﻿using cloudscribe.Syndication.Models.Rss;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
+
+using cloudscribe.Syndication.Models.Rss;
 
 namespace BitShuva.Chavah.Common
 {
@@ -15,7 +14,7 @@ namespace BitShuva.Chavah.Common
         public string Name => "ChavahRssChannelProvider";
 
         // TODO: implement this. See https://github.com/joeaudette/cloudscribe.Syndication
-        public Task<RssChannel> GetChannel(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<RssChannel> GetChannel(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

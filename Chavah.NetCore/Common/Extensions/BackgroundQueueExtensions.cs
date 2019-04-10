@@ -1,8 +1,10 @@
-﻿using DalSoft.Hosting.BackgroundQueue;
+﻿using System;
+
+using DalSoft.Hosting.BackgroundQueue;
 using DalSoft.Hosting.BackgroundQueue.DependencyInjection;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace BitShuva.Chavah.Common
 {

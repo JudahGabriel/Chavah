@@ -1,14 +1,17 @@
-﻿using BitShuva.Chavah.Common;
+﻿using System;
+using System.Threading.Tasks;
+
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Options;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using System;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -110,7 +113,7 @@ namespace BitShuva.Chavah.Controllers
             // Update the community rank.
             var multiplier = isReversal ? 2 : isNoChange ? 0 : 1;
             var changePositiveOrNegative = likeStatus == LikeStatus.Like ? 1 : -1;
-            song.CommunityRank = song.CommunityRank + (multiplier * changePositiveOrNegative);
+            song.CommunityRank += (multiplier * changePositiveOrNegative);
 
             var communityRankStats = await DbSession
                 .Query<Song, Songs_AverageCommunityRank>()

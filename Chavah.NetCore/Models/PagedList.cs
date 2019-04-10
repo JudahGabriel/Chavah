@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace BitShuva.Chavah.Models
 {
@@ -9,7 +6,7 @@ namespace BitShuva.Chavah.Models
     {
         public PagedList()
         {
-            this.Items = new List<T>();
+            Items = new List<T>();
         }
 
         public int Total { get; set; }

@@ -2,13 +2,16 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
 using BitShuva.Chavah;
 using BitShuva.Chavah.Options;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
+
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -100,7 +103,6 @@ namespace Microsoft.Extensions.DependencyInjection
             return info;
         }
 
-
         /// <summary>
         /// Represents the Swagger/Swashbuckle operation filter used to document the implicit API version parameter.
         /// </summary>
@@ -163,7 +165,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public void Apply(ActionModel action)
         {
             if (action.Controller.ControllerName.Equals("Pwa"))
+            {
                 action.ApiExplorer.IsVisible = false;
+            }
         }
     }
 }

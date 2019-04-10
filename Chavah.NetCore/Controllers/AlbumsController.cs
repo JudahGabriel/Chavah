@@ -1,22 +1,26 @@
-﻿using BitShuva.Chavah.Common;
-using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Models.Indexes;
-using BitShuva.Chavah.Options;
-using BitShuva.Chavah.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Optional.Async;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Linq;
-using Raven.Client.Documents.Session;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+
+using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Indexes;
+using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Services;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+using Optional.Async;
+
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Session;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -54,7 +58,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<PagedList<Album>> GetAll(int skip, int take, string search)
         {
-            IRavenQueryable<Album> query = string.IsNullOrWhiteSpace(search) ?
+            var query = string.IsNullOrWhiteSpace(search) ?
                 DbSession.Query<Album>() :
                 DbSession.Query<Album>().Where(a => a.Name.StartsWith(search) || a.Artist.StartsWith(search));
             var albums = await query
@@ -171,11 +175,7 @@ namespace BitShuva.Chavah.Controllers
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()
-                .FirstOrDefaultAsync(a => a.Name == album.Name && a.Artist == album.Artist);
-            if (existingAlbum == null)
-            {
-                existingAlbum = new Album();
-            }
+                .FirstOrDefaultAsync(a => a.Name == album.Name && a.Artist == album.Artist) ?? new Album();
 
             var existingArtist = await DbSession.Query<Artist>()
                 .FirstOrDefaultAsync(a => a.Name == album.Artist);
@@ -207,7 +207,8 @@ namespace BitShuva.Chavah.Controllers
             foreach (var albumSong in album.Songs)
             {
                 //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
-                var songName = albumSong.FileName.GetEnglishAndHebrew();
+                var (english, hebrew) = albumSong.FileName.GetEnglishAndHebrew();
+
                 var song = new Song
                 {
                     Album = album.Name,
@@ -215,8 +216,8 @@ namespace BitShuva.Chavah.Controllers
                     AlbumArtUri = albumArtUriCdn,
                     CommunityRankStanding = CommunityRankStanding.Normal,
                     Genres = album.Genres.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                    Name = songName.english,
-                    HebrewName = songName.hebrew,
+                    Name = english,
+                    HebrewName = hebrew,
                     Number = songNumber,
                     PurchaseUri = album.PurchaseUrl,
                     UploadDate = DateTime.UtcNow,
@@ -267,7 +268,6 @@ namespace BitShuva.Chavah.Controllers
                 throw new ArgumentNullException(nameof(imageUrl));
             }
 
-            var response = new HttpResponseMessage();
             using (var webClient = new WebClient())
             {
                 var bytes = await webClient.DownloadDataTaskAsync(imageUrl);
@@ -293,7 +293,7 @@ namespace BitShuva.Chavah.Controllers
             {
                 SongId = songId,
                 existingAlbum?.Artist,
-                Name = existingAlbum?.Name,
+                existingAlbum?.Name,
                 existingAlbum?.AlbumArtUri
             };
         }

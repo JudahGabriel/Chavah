@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Threading.Tasks;
+
 using Optional;
-using System;
-using System.Threading.Tasks;
 
 namespace BitShuva.Services
 {
@@ -16,7 +15,7 @@ namespace BitShuva.Services
         /// <param name="replyTo">Who replies should be sent to. If null, will use Chavah's email adddress.</param>
         /// <returns>A task that stores the email in the database.</returns>
         Task QueueSendEmail(string recipient, string subject, string body, string replyTo = null);
-        
+
         /// <summary>
         /// Sends an email that previously failed to send.
         /// </summary>

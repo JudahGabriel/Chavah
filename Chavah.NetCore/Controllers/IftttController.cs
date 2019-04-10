@@ -1,19 +1,24 @@
-﻿using BitShuva.Chavah.Common;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Rss;
 using BitShuva.Chavah.Options;
 using BitShuva.Chavah.Services;
+
 using Chavah.Common;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SyndicationFeed;
+
 using Newtonsoft.Json;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -74,12 +79,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateNotification(
-            string secretToken,
-            string title,
-            string imgUrl,
-            string sourceName,
-            string url)
+        public IActionResult CreateNotification(string secretToken, string title, string imgUrl, string sourceName, string url)
         {
             AuthorizeKey(secretToken);
 
@@ -92,7 +92,7 @@ namespace BitShuva.Chavah.Controllers
             // If the image is the default "no image available" from IFTTT, use Chavah logo.
             if (string.Equals(imgUrl, "https://ifttt.com/images/no_image_card.png", StringComparison.InvariantCultureIgnoreCase))
             {
-                imgUrl = Notification.ChavahSystemNotificationImage;
+                imgUrl = _appOptions.PushNotificationsImageUrl;
             }
 
             logger.LogInformation("IFTTT CreateNotification called with {token}, {title}, {imgUrl}, {srcName}, {url}", secretToken, title, imgUrl, sourceName, url);

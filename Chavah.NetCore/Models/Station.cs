@@ -1,7 +1,8 @@
-﻿using BitShuva.Chavah.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using BitShuva.Chavah.Common;
 
 namespace BitShuva.Chavah.Models
 {
@@ -9,10 +10,10 @@ namespace BitShuva.Chavah.Models
     {
         public Station()
         {
-            this.SeedArtists = new List<string>();
-            this.SeedAlbums = new List<string>();
-            this.SeedSongs = new List<string>();
-            this.SeedGenres = new List<string>();
+            SeedArtists = new List<string>();
+            SeedAlbums = new List<string>();
+            SeedSongs = new List<string>();
+            SeedGenres = new List<string>();
         }
 
         public string Name { get; set; }
@@ -24,21 +25,21 @@ namespace BitShuva.Chavah.Models
 
         public Tuple<StationSongChoice, string> PickRandomSeed()
         {
-            var allElements = this.SeedArtists.Concat(this.SeedAlbums).Concat(this.SeedSongs).Concat(this.SeedGenres);
+            var allElements = SeedArtists.Concat(SeedAlbums).Concat(SeedSongs).Concat(SeedGenres);
             var element = allElements.RandomElement();
-            if (this.SeedArtists.Contains(element))
+            if (SeedArtists.Contains(element))
             {
                 return Tuple.Create(StationSongChoice.Artist, element);
             }
-            if (this.SeedAlbums.Contains(element))
+            if (SeedAlbums.Contains(element))
             {
                 return Tuple.Create(StationSongChoice.Album, element);
             }
-            if (this.SeedGenres.Contains(element))
+            if (SeedGenres.Contains(element))
             {
                 return Tuple.Create(StationSongChoice.Genre, element);
             }
-            if (this.SeedSongs.Contains(element))
+            if (SeedSongs.Contains(element))
             {
                 return Tuple.Create(StationSongChoice.Song, element);
             }

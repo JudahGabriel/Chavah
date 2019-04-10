@@ -48,6 +48,13 @@
 
         public string PushNotificationsPrivateKey { get; set; }
 
+        public string PushNotificationsImageUrl { get; set; }
+
+        /// <summary>
+        /// Used for push notifications.
+        /// </summary>
+        public string AuthorImageUrl { get; set; }
+
         public string IftttKey { get; set; }
 
         public string FilePickrKey { get; set; }

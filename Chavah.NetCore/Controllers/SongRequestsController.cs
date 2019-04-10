@@ -1,16 +1,19 @@
-﻿using BitShuva.Chavah.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Options;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -152,8 +155,8 @@ namespace BitShuva.Chavah.Controllers
                  .ToListAsync();
             recentSongRequests
                 .Where(req =>
-                    songIds.Contains(req.SongId, StringComparison.OrdinalIgnoreCase) &&
-                    !req.PlayedForUserIds.Contains(userId, StringComparison.OrdinalIgnoreCase))
+                    songIds.Contains(req.SongId, StringComparison.OrdinalIgnoreCase)
+                    && !req.PlayedForUserIds.Contains(userId, StringComparison.OrdinalIgnoreCase))
                 .ForEach(req => req.PlayedForUserIds.Add(userId));
             return songIds;
         }
@@ -199,7 +202,7 @@ namespace BitShuva.Chavah.Controllers
                 // In such a case, try loading it directly from storage, rather than queried from index.
                 DbSession.Advanced.Evict(req);
                 var refreshedSongRequest = await DbSession.LoadAsync<SongRequest>(req.Id);
-                if (refreshedSongRequest != null && !refreshedSongRequest.PlayedForUserIds.Contains(userId))
+                if (refreshedSongRequest?.PlayedForUserIds.Contains(userId) == false)
                 {
                     refreshedSongRequest.PlayedForUserIds.Add(userId);
                     await DbSession.SaveChangesAsync();

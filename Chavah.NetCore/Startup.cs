@@ -1,10 +1,18 @@
-﻿using AutoMapper;
+﻿using System;
+using System.IO.Compression;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+using AutoMapper;
+
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Options;
 using BitShuva.Chavah.Services;
 using BitShuva.Services;
+
 using cloudscribe.Syndication.Models.Rss;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,19 +24,16 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+
 using Polly;
+
 using Raven.DependencyInjection;
 using Raven.Identity;
 using Raven.Migrations;
 using Raven.StructuredLog;
-using System;
-using System.IO.Compression;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah
 {
@@ -36,14 +41,10 @@ namespace BitShuva.Chavah
     {
         public IConfiguration Configuration { get; }
 
-        private readonly IHostingEnvironment _environment;
-
         public Startup(
-            IConfiguration configuration,
-            IHostingEnvironment environment)
+            IConfiguration configuration)
         {
             Configuration = configuration;
-            _environment = environment;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.

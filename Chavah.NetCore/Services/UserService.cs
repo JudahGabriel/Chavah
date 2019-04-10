@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using BitShuva.Chavah.Models;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 

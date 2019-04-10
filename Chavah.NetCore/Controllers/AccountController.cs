@@ -2,19 +2,24 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+
 using AutoMapper;
+
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Account;
 using BitShuva.Chavah.Options;
 using BitShuva.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using Pwned.AspNetCore;
+
 using Raven.Client.Documents.Session;
 using Raven.StructuredLog;
 
@@ -368,7 +373,7 @@ namespace BitShuva.Chavah.Controllers
                 logger.LogInformation("Successfully confirmed new account", email);
 
                 // Add a welcome notification for the user.
-                user.AddNotification(Notification.Welcome());
+                user.AddNotification(Notification.Welcome(_appOptions.AuthorImageUrl));
 
                 // Send them a welcome email.
                 _emailSender.QueueWelcomeEmail(email);
@@ -425,7 +430,7 @@ namespace BitShuva.Chavah.Controllers
             var passwordResetToken = new AccountToken //await userManager.GeneratePasswordResetTokenAsync(user);
             {
                 ApplicationUserId = userId,
-                Id = "AccountTokens/Reset/" + user.Email,
+                Id = $"AccountTokens/Reset/{user.Email}",
                 Token = Guid.NewGuid().ToString()
             };
             await DbSession.StoreAsync(passwordResetToken).ConfigureAwait(false);
@@ -546,7 +551,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task ResendConfirmationEmail([FromBody]AppUser user) // user is just the container for .Email, the rest of the properties aren't filled out
         {
             var userWithEmail = await DbSession.LoadAsync<AppUser>("AppUsers/" + user.Email);
-            if (userWithEmail != null && !userWithEmail.EmailConfirmed)
+            if (userWithEmail?.EmailConfirmed == false)
             {
                 var confirmToken = new AccountToken
                 {

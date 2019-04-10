@@ -1,11 +1,13 @@
-﻿using BitShuva.Chavah.Models;
+﻿using System;
+
 using BitShuva.Chavah.Options;
 using BitShuva.Chavah.Services;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
 using Quartz;
-using System;
 
 namespace BitShuva.Chavah.Common
 {

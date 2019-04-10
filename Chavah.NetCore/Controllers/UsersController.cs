@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 
@@ -95,12 +96,12 @@ namespace BitShuva.Chavah.Controllers
                 user.ProfilePicUrl = await cdnManager.UploadProfilePicAsync(fileStream, upload.Photo.ContentType ?? "image/jpg")
                     .ConfigureAwait(false);
             }
-            
+
             //delete the old image
             await cdnManager.DeleteProfilePicAsync(oldProfilePic.OriginalString).ConfigureAwait(false);
             return user.ProfilePicUrl;
         }
-                
+
         [HttpGet]
         public async Task<Uri> GetProfilePicForEmailAddress(string email)
         {

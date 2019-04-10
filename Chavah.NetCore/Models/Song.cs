@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Diagnostics.Contracts;
-using Microsoft.Extensions.Options;
+using System.IO;
 
 namespace BitShuva.Chavah.Models
 {
@@ -11,8 +11,8 @@ namespace BitShuva.Chavah.Models
     {
         public Song()
         {
-            this.Tags = new List<string>();
-            this.Genres = new List<string>();
+            Tags = new List<string>();
+            Genres = new List<string>();
         }
 
         public string Name { get; set; }
@@ -46,7 +46,7 @@ namespace BitShuva.Chavah.Models
             fileName = System.Uri.UnescapeDataString(fileName);
 
             var song = new Song();
-            var fileNameWithouExtension = System.IO.Path.GetFileNameWithoutExtension(fileName);
+            var fileNameWithouExtension = Path.GetFileNameWithoutExtension(fileName);
             var indexOfLastDash = fileNameWithouExtension.LastIndexOf(" - ");
             if (indexOfLastDash != -1)
             {
@@ -118,27 +118,27 @@ namespace BitShuva.Chavah.Models
         {
             return new Song
             {
-                Album = this.Album,
-                Artist = this.Artist,
-                CommunityRank = this.CommunityRank,
-                CommunityRankStanding = this.CommunityRankStanding,
-                Id = this.Id,
+                Album = Album,
+                Artist = Artist,
+                CommunityRank = CommunityRank,
+                CommunityRankStanding = CommunityRankStanding,
+                Id = Id,
                 SongLike = likeStatus,
-                Name = this.Name,
-                HebrewName = this.HebrewName,
-                Number = this.Number,
-                Uri = this.Uri,
-                AlbumArtUri = this.AlbumArtUri,
-                PurchaseUri = this.PurchaseUri,
-                Genres = this.Genres,
-                Tags = this.Tags,
-                Lyrics = this.Lyrics,
-                TotalPlays = this.TotalPlays,
+                Name = Name,
+                HebrewName = HebrewName,
+                Number = Number,
+                Uri = Uri,
+                AlbumArtUri = AlbumArtUri,
+                PurchaseUri = PurchaseUri,
+                Genres = Genres,
+                Tags = Tags,
+                Lyrics = Lyrics,
+                TotalPlays = TotalPlays,
                 ReasonsPlayed = pickReasons,
-                AlbumId = this.AlbumId,
-                ArtistId = this.ArtistId,
-                CommentCount = this.CommentCount,
-                AlbumColors = this.AlbumColors
+                AlbumId = AlbumId,
+                ArtistId = ArtistId,
+                CommentCount = CommentCount,
+                AlbumColors = AlbumColors
             };
         }
 
@@ -153,17 +153,17 @@ namespace BitShuva.Chavah.Models
 
         public Uri GetSongShareLink(string url)
         {
-            return new Uri($"{url}/?song={this.Id}");
+            return new Uri($"{url}/?song={Id}");
         }
 
         public string GetCommunityRankText()
         {
-            if (this.CommunityRank > 0)
+            if (CommunityRank > 0)
             {
-                return $"+{this.CommunityRank}";
+                return $"+{CommunityRank}";
             }
 
-            return this.CommunityRank.ToString();
+            return CommunityRank.ToString();
         }
 
         /// <summary>
@@ -172,12 +172,12 @@ namespace BitShuva.Chavah.Models
         /// <param name="album"></param>
         public void UpdateAlbumInfo(Album album)
         {
-            this.Album = album.Name;
-            this.AlbumArtUri = album.AlbumArtUri;
-            this.AlbumColors.Background = album.BackgroundColor;
-            this.AlbumColors.Foreground = album.ForegroundColor;
-            this.AlbumColors.Muted = album.MutedColor;
-            this.AlbumColors.TextShadow = album.TextShadowColor;
+            Album = album.Name;
+            AlbumArtUri = album.AlbumArtUri;
+            AlbumColors.Background = album.BackgroundColor;
+            AlbumColors.Foreground = album.ForegroundColor;
+            AlbumColors.Muted = album.MutedColor;
+            AlbumColors.TextShadow = album.TextShadowColor;
         }
     }
 }

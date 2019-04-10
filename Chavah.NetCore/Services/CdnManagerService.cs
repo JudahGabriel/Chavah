@@ -3,10 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Options;
+
 using CoreFtp;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -47,12 +50,7 @@ namespace BitShuva.Chavah.Services
         /// <param name="songNumber"></param>
         /// <param name="songName"></param>
         /// <returns>The HTTP URI to the MP3 file on the CDN.</returns>
-        public async Task<Uri> UploadMp3Async(
-            Uri tempHttpAddress,
-            string artist,
-            string album,
-            int songNumber,
-            string songName)
+        public async Task<Uri> UploadMp3Async(Uri tempHttpAddress, string artist, string album, int songNumber, string songName)
         {
             var tempDownloadedFile = default(string);
             try
@@ -106,11 +104,7 @@ namespace BitShuva.Chavah.Services
         /// <param name="album"></param>
         /// <param name="fileExtension">The desired file extension for the file on the CDN.</param>
         /// <returns>A task that represents the async operation.</returns>
-        public async Task<Uri> UploadAlbumArtAsync(
-            Uri tempHttpAddress,
-            string artist,
-            string album,
-            string fileExtension)
+        public async Task<Uri> UploadAlbumArtAsync(Uri tempHttpAddress, string artist, string album, string fileExtension)
         {
             var tempDownloadedFile = default(string);
             try
@@ -133,9 +127,7 @@ namespace BitShuva.Chavah.Services
         /// <param name="tempHttpPath">The temporary HTTP path where the image currently resides. This file will be donwloaded and moved to the CDN.</param>
         /// <param name="fileName"></param>
         /// <returns>The new HTTP URI to the image on the CDN.</returns>
-        public async Task<Uri> UploadArtistImageAsync(
-            Uri tempHttpPath,
-            string fileName)
+        public async Task<Uri> UploadArtistImageAsync(Uri tempHttpPath, string fileName)
         {
             using (var ftpConnection = await CreateFtpConnection())
             {
@@ -155,9 +147,7 @@ namespace BitShuva.Chavah.Services
             }
         }
 
-        public async Task<Uri> UploadProfilePicAsync(
-            Stream imageStream,
-            string contentType)
+        public async Task<Uri> UploadProfilePicAsync(Stream imageStream, string contentType)
         {
             using (var ftpConnection = await CreateFtpConnection())
             {
@@ -183,13 +173,9 @@ namespace BitShuva.Chavah.Services
         /// <param name="filePath">The fully qualified path to a local file.</param>
         /// <param name="fileExtension">The desired file extension for the file on the CDN.</param>
         /// <returns>The HTTP URI to the file on the CDN.</returns>
-        private async Task<Uri> UploadAlbumArt(
-            string artist,
-            string album,
-            string filePath,
-            string fileExtension)
+        private async Task<Uri> UploadAlbumArt(string artist, string album, string filePath, string fileExtension)
         {
-            var fullFileName = string.Join(string.Empty, artist, " - ", album, fileExtension).ToLowerInvariant();
+            var fullFileName = string.Concat(artist, " - ", album, fileExtension).ToLowerInvariant();
             return await UploadAlbumArt(fullFileName, filePath);
         }
 
@@ -199,9 +185,7 @@ namespace BitShuva.Chavah.Services
         /// <param name="destinationFileName">The file name, including extension, for the file. This will be the name of the file placed in the CDN.</param>
         /// <param name="sourceFilePath">The path to the contents of the file.</param>
         /// <returns></returns>
-        private async Task<Uri> UploadAlbumArt(
-            string destinationFileName,
-            string sourceFilePath)
+        private async Task<Uri> UploadAlbumArt(string destinationFileName, string sourceFilePath)
         {
             using (var ftpConnection = await CreateFtpConnection())
             {
@@ -283,11 +267,7 @@ namespace BitShuva.Chavah.Services
             return client;
         }
 
-        private static string GetCdnSafeSongFileName(
-            string artist,
-            string album,
-            int songNumber,
-            string songName)
+        private static string GetCdnSafeSongFileName(string artist, string album, int songNumber, string songName)
         {
             if (string.IsNullOrWhiteSpace(artist))
             {

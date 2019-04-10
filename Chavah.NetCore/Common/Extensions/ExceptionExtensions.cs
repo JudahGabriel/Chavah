@@ -30,7 +30,7 @@ namespace BitShuva.Chavah.Common
 
             AppendValue(stringBuilder, "Type", exception.GetType().FullName, options);
 
-            foreach (PropertyInfo property in exception
+            foreach (var property in exception
                 .GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .Where(p => p.CanRead)
@@ -58,13 +58,9 @@ namespace BitShuva.Chavah.Common
             return stringBuilder.ToString().TrimEnd('\r', '\n');
         }
 
-        private static void AppendCollection(
-            StringBuilder stringBuilder,
-            string propertyName,
-            IEnumerable collection,
-            ExceptionOptions options)
+        private static void AppendCollection(StringBuilder stringBuilder, string propertyName, IEnumerable collection, ExceptionOptions options)
         {
-            stringBuilder.AppendLine($"{options.Indent}{propertyName} =");
+            stringBuilder.Append(options.Indent).Append(propertyName).AppendLine(" =");
 
             var innerOptions = new ExceptionOptions(options, options.CurrentIndentLevel + 1);
 
@@ -73,9 +69,8 @@ namespace BitShuva.Chavah.Common
             {
                 var innerPropertyName = $"[{i}]";
 
-                if (item is Exception)
+                if (item is Exception innerException)
                 {
-                    var innerException = (Exception)item;
                     AppendException(
                         stringBuilder,
                         innerPropertyName,
@@ -95,17 +90,13 @@ namespace BitShuva.Chavah.Common
             }
         }
 
-        private static void AppendException(
-            StringBuilder stringBuilder,
-            string propertyName,
-            Exception exception,
-            ExceptionOptions options)
+        private static void AppendException(StringBuilder stringBuilder, string propertyName, Exception exception, ExceptionOptions options)
         {
             var innerExceptionString = ToDetailedString(
                 exception,
                 new ExceptionOptions(options, options.CurrentIndentLevel + 1));
 
-            stringBuilder.AppendLine($"{options.Indent}{propertyName} =");
+            stringBuilder.Append(options.Indent).Append(propertyName).AppendLine(" =");
             stringBuilder.AppendLine(innerExceptionString);
         }
 
@@ -114,20 +105,20 @@ namespace BitShuva.Chavah.Common
             return value.Replace(Environment.NewLine, Environment.NewLine + options.Indent);
         }
 
-        private static void AppendValue(
-            StringBuilder stringBuilder,
-            string propertyName,
-            object value,
-            ExceptionOptions options)
+        private static void AppendValue(StringBuilder stringBuilder, string propertyName, object value, ExceptionOptions options)
         {
-            if (value is DictionaryEntry)
+            if (value is DictionaryEntry dictionaryEntry)
             {
-                DictionaryEntry dictionaryEntry = (DictionaryEntry)value;
-                stringBuilder.AppendLine($"{options.Indent}{propertyName} = {dictionaryEntry.Key} : {dictionaryEntry.Value}");
+                stringBuilder.Append(options.Indent)
+                    .Append(propertyName)
+                    .Append(" = ")
+                    .Append(dictionaryEntry.Key)
+                    .Append(" : ")
+                    .Append(dictionaryEntry.Value)
+                    .AppendLine();
             }
-            else if (value is Exception)
+            else if (value is Exception innerException)
             {
-                var innerException = (Exception)value;
                 AppendException(
                     stringBuilder,
                     propertyName,
@@ -147,7 +138,7 @@ namespace BitShuva.Chavah.Common
             }
             else
             {
-                stringBuilder.AppendLine($"{options.Indent}{propertyName} = {value}");
+                stringBuilder.Append(options.Indent).Append(propertyName).Append(" = ").Append(value).AppendLine();
             }
         }
 
@@ -176,12 +167,12 @@ namespace BitShuva.Chavah.Common
 
         internal ExceptionOptions(ExceptionOptions options, int currentIndent)
         {
-            this.CurrentIndentLevel = currentIndent;
-            this.IndentSpaces = options.IndentSpaces;
-            this.OmitNullProperties = options.OmitNullProperties;
+            CurrentIndentLevel = currentIndent;
+            IndentSpaces = options.IndentSpaces;
+            OmitNullProperties = options.OmitNullProperties;
         }
 
-        internal string Indent { get { return new string(' ', this.IndentSpaces * this.CurrentIndentLevel); } }
+        internal string Indent => new string(' ', IndentSpaces * CurrentIndentLevel);
 
         internal int CurrentIndentLevel { get; set; }
 

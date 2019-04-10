@@ -1,16 +1,17 @@
-﻿using BitShuva.Chavah.Common;
-using BitShuva.Chavah.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Session;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Optional;
-using Optional.Async;
+
+using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -18,9 +19,15 @@ namespace BitShuva.Chavah.Controllers
     [Authorize]
     public class SongEditsController : RavenController
     {
-        public SongEditsController(IAsyncDocumentSession dbSession, ILogger<SongEditsController> logger)
+        private readonly ApplicationOptions _appOptions;
+
+        public SongEditsController(
+            IAsyncDocumentSession dbSession,
+            IOptionsMonitor<ApplicationOptions> appOptions,
+            ILogger<SongEditsController> logger)
             : base(dbSession, logger)
         {
+            _appOptions = appOptions.CurrentValue;
         }
 
         /// <summary>
@@ -31,23 +38,23 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<SongEdit> Get(string songId)
         {
-            var user = await this.GetUserOrThrow();
+            var user = await GetUserOrThrow();
             var song = await DbSession.LoadRequiredAsync<Song>(songId);
             var songEditId = GetSongEditId(songId, user.Id);
             var existingEdit = await DbSession.LoadOptionAsync<SongEdit>(songEditId);
 
-            // If the existing edit is pending, return that. 
+            // If the existing edit is pending, return that.
             // Otherwise, return a fresh song edit.
             return existingEdit
                 .Filter(e => e.Status == SongEditStatus.Pending)
                 .ValueOr(() => new SongEdit(song, song));
         }
-        
+
         [HttpPost]
         public async Task<SongEdit> EditSong([FromBody] Song song)
         {
-            var user = await this.GetUserOrThrow();
-            var existingSong = await this.DbSession.LoadRequiredAsync<Song>(song.Id);
+            var user = await GetUserOrThrow();
+            var existingSong = await DbSession.LoadRequiredAsync<Song>(song.Id);
 
             var songEditId = GetSongEditId(existingSong.Id, user.Id);
             var songEdit = new SongEdit(existingSong, song)
@@ -72,24 +79,24 @@ namespace BitShuva.Chavah.Controllers
                     var admins = await DbSession.Query<AppUser>()
                         .Where(u => u.Roles.Contains(AppUser.AdminRole))
                         .ToListAsync();
-                    admins.ForEach(a => a.AddNotification(Notification.SongEditsNeedApproval()));
+                    admins.ForEach(a => a.AddNotification(Notification.SongEditsNeedApproval(_appOptions.PushNotificationsImageUrl)));
                 }
             }
 
             return songEdit;
         }
-        
+
         [HttpGet]
         [Authorize(Roles = AppUser.AdminRole)]
         public Task<List<SongEdit>> GetPendingEdits(int take = 20)
         {
-            return this.DbSession.Query<SongEdit>()
+            return DbSession.Query<SongEdit>()
                 .Where(s => s.Status == SongEditStatus.Pending)
                 .OrderByDescending(s => s.SubmitDate)
                 .Take(take)
                 .ToListAsync();
         }
-        
+
         [HttpPost]
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<SongEdit> Approve([FromBody] SongEdit songEdit)
@@ -104,15 +111,12 @@ namespace BitShuva.Chavah.Controllers
 
                 // Notify the user.
                 var user = await DbSession.LoadAsync<AppUser>(songEdit.UserId);
-                if (user != null)
-                {
-                    user.AddNotification(Notification.SongEditApproved(song));
-                }
+                user?.AddNotification(Notification.SongEditApproved(song));
             }
 
             return songEdit;
         }
-        
+
         [HttpPost]
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<SongEdit> Reject(string songEditId)
