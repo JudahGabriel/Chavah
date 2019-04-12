@@ -1,18 +1,18 @@
-﻿using Optional;
-using Raven.Client;
-using Raven.Client.Documents;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using System.Web;
+
+using Optional;
+
+using Raven.Client.Documents;
 
 namespace BitShuva.Chavah.Common
 {
     public static class SequenceExtensions
     {
-        static Random random = new Random();
+        private static readonly Random Random = new Random();
 
         public static async Task<Option<TSource>> FirstOrNoneAsync<TSource>(this IQueryable<TSource> source)
         {
@@ -51,18 +51,14 @@ namespace BitShuva.Chavah.Common
 
         public static T RandomElement<T>(this IEnumerable<T> items)
         {
-            var collection = items as ICollection<T>;
-            if (collection == null)
-            {
-                collection = new List<T>(items);
-            }
+            var collection = items as ICollection<T> ?? new List<T>(items);
 
             if (collection.Count == 0)
             {
-                return default(T);
+                return default;
             }
 
-            var randomElementIndex = random.Next(0, collection.Count);
+            var randomElementIndex = Random.Next(0, collection.Count);
             return items.ElementAtOrDefault(randomElementIndex);
         }
     }

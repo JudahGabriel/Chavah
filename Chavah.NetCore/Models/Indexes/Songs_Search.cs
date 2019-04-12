@@ -1,6 +1,7 @@
-﻿using Raven.Client.Documents.Indexes;
+﻿using System.Linq;
+
+using Raven.Client.Documents.Indexes;
 using Raven.Client.Documents.Linq.Indexing;
-using System.Linq;
 
 namespace BitShuva.Chavah.Models.Indexes
 {
@@ -13,8 +14,8 @@ namespace BitShuva.Chavah.Models.Indexes
                            {
                                Name = song.Name.Boost(2),
                                HebrewName = song.HebrewName.Boost(2),
-                               Artist = song.Artist,
-                               Album = song.Album
+                               song.Artist,
+                               song.Album
                            };
 
             Index(r => r.Name, FieldIndexing.Search);

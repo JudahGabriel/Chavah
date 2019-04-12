@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 using Optional;
 using Optional.Async;
 
@@ -21,6 +22,7 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Evaluates a specified function, based on whether a value is present or not.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="option"></param>
         /// <param name="some">The function to evaluate if the value is present.</param>
         /// <returns>The result of the evaluated function.</returns>
@@ -34,8 +36,10 @@ namespace BitShuva.Chavah.Common
         /// </summary>
         /// <param name="value">The Nullable&lt;T&gt; instance.</param>
         /// <returns>The Option&lt;T&gt; instance.</returns>
-        public static Option<T> ToOption<T>(this T? value) where T : struct =>
-            value.HasValue ? Option.Some(value.Value) : Option.None<T>();
+        public static Option<T> ToOption<T>(this T? value) where T : struct
+        {
+            return value.HasValue ? Option.Some(value.Value) : Option.None<T>();
+        }
 
         /// <summary>
         /// Combines .Map with .NotNull. Maps the value of the option using the mapper. If the result of the map is null, none will be returned.

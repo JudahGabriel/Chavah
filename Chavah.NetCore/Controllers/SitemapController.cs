@@ -1,20 +1,26 @@
-﻿using BitShuva.Chavah.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Session;
-using SimpleSiteMap;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
+using BitShuva.Chavah.Models;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
+
+using SimpleSiteMap;
+
 namespace BitShuva.Chavah.Controllers
 {
     public class SitemapController : RavenController
     {
-        public SitemapController(IAsyncDocumentSession dbSession, ILogger<SitemapController> logger)
+        public SitemapController(
+            IAsyncDocumentSession dbSession,
+            ILogger<SitemapController> logger)
             : base(dbSession, logger)
         {
         }

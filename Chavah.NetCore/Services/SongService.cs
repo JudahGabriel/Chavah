@@ -1,20 +1,18 @@
-﻿using BitShuva.Chavah.Models;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
-using Optional;
-using Raven.Client;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Services
 {
     public class SongService : ISongService
     {
-        private IAsyncDocumentSession _session;
+        private readonly IAsyncDocumentSession _session;
 
         public SongService(IAsyncDocumentSession session)
         {
@@ -35,7 +33,7 @@ namespace BitShuva.Chavah.Services
         {
             var properlyFormattedSongId = songQuery.StartsWith("songs/", StringComparison.InvariantCultureIgnoreCase) ?
                 songQuery :
-                "songs/" + songQuery;
+                $"songs/{songQuery}";
 
             return await _session.LoadAsync<Song>(properlyFormattedSongId);
         }

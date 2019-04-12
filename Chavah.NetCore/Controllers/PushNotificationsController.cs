@@ -1,32 +1,30 @@
-﻿using BitShuva.Chavah.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
-using DalSoft.Hosting.BackgroundQueue;
-using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Raven.Client.Documents;
+
 using Raven.Client.Documents.Session;
 using Raven.StructuredLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class PushNotificationsController : RavenController
     {
-        private readonly IPushNotificationSender pushSender;
+        private readonly IPushNotificationSender _pushSender;
 
         public PushNotificationsController(
-            IAsyncDocumentSession dbSession, 
+            IAsyncDocumentSession dbSession,
             ILogger<PushNotificationsController> logger,
             IPushNotificationSender pushSender)
             : base(dbSession, logger)
         {
-            this.pushSender = pushSender;
+            _pushSender = pushSender;
         }
 
         /// <summary>
@@ -38,8 +36,8 @@ namespace BitShuva.Chavah.Controllers
         public async Task<PushSubscription> Store([FromBody]PushSubscription subscription)
         {
             subscription.CreateDate = DateTimeOffset.UtcNow;
-            subscription.AppUserId = this.GetUserId();
-            await this.DbSession.StoreAsync(subscription, PushSubscription.GetRavenIdFromEndpoint(subscription.Endpoint));
+            subscription.AppUserId = GetUserId();
+            await DbSession.StoreAsync(subscription, PushSubscription.GetRavenIdFromEndpoint(subscription.Endpoint));
             using (logger.BeginKeyValueScope("subscription", subscription))
             {
                 logger.LogInformation("New push notification subscriber");
@@ -52,7 +50,8 @@ namespace BitShuva.Chavah.Controllers
                 Body = "You'll be notified of new Chavah music, features, news and more.",
                 ClickUrl = "https://blog.messianicradio.com/2019/01/new-feature-alert-me-of-new-music-on.html"
             };
-            this.pushSender.QueueSendNotification(notification, new List<PushSubscription>(1) { subscription });
+
+            _pushSender.QueueSendNotification(notification, new List<PushSubscription>(1) { subscription });
 
             return subscription;
         }
@@ -79,7 +78,7 @@ namespace BitShuva.Chavah.Controllers
 
                 return existingSub;
             }
-            
+
             logger.LogWarning("Attempted to deleted push subscription {id}, but no such subscription was found", subscriptionId);
             return null;
         }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 // NOTE: this was written by Nils Lück as part of his Optional.Async library, which is not yet on NuGet.

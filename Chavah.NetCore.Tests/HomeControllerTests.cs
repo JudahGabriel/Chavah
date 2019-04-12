@@ -1,3 +1,4 @@
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models.Rss;
 using Chavah.Common;
 using Microsoft.AspNetCore.Http;
@@ -7,14 +8,13 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Xunit;
 
 namespace xUnitTests
 {
     public class HomeControllerTests
     {
-        private const string radioUrl = "https://messianicradio.com";
+        private const string RadioUrl = "https://messianicradio.com";
 
         [Fact]
         public void RssActionResult_Success()
@@ -38,21 +38,23 @@ namespace xUnitTests
                 Id = "https://messianicradio.com/",
                 Published = DateTimeOffset.UtcNow
             };
-            var items = new List<SyndicationItem>();
-            items.Add(item);
+
+            var items = new List<SyndicationItem>
+            {
+                item
+            };
 
             var feed = new SyndicationFeed("Chavah Messianic Radio",
                                            "The most recent registered users at Chavah Messianic Radio",
-                                           new Uri(radioUrl),
+                                           new Uri(RadioUrl),
                                            "",
-                                           items.AsEnumerable());
- 
+                                           items, "en-US");
+
             var sut = new RssActionResult(feed);
 
             sut.ExecuteResult(mockActionContext);
 
             responseMock.Verify(x => x.Body);
-
         }
     }
 }

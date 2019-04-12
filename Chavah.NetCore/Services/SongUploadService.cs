@@ -1,14 +1,12 @@
-﻿using BitShuva.Chavah.Common;
-using BitShuva.Chavah.Models;
-using Optional;
-using Raven.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using System.Web;
-using Optional.Async;
+
+using BitShuva.Chavah.Models;
+
 using Microsoft.Extensions.Logging;
+
+using Optional;
+
 using Raven.Client.Documents;
 
 namespace BitShuva.Chavah.Services
@@ -24,8 +22,8 @@ namespace BitShuva.Chavah.Services
         private readonly IDocumentStore db;
 
         public SongUploadService(
-            ICdnManagerService cdnManagerService, 
-            IDocumentStore db, 
+            ICdnManagerService cdnManagerService,
+            IDocumentStore db,
             ILogger<SongUploadService> logger)
         {
             this.cdnManagerService = cdnManagerService;
@@ -36,7 +34,7 @@ namespace BitShuva.Chavah.Services
         public void QueueMp3Upload(SongUpload song, AlbumUpload album, int songNumber, string songId)
         {
             Task.Factory.StartNew(
-                () => this.TryUploadMp3(song, album, songNumber, songId), 
+                () => TryUploadMp3(song, album, songNumber, songId),
                 TaskCreationOptions.LongRunning);
         }
 
@@ -50,10 +48,10 @@ namespace BitShuva.Chavah.Services
             catch (Exception error)
             {
                 logger.LogError(error, "Unable to upload song MP3. {songId}, {songAddress}, {fileName}, {album}, {artist}", songId, song.Address, song.FileName, album.Name, album.Artist);
-                await this.TryDeleteSong(songId);
+                await TryDeleteSong(songId);
             }
 
-            albumArtUri.MatchSome(async uri => await this.TryUpdateSongUri(songId, uri));
+            albumArtUri.MatchSome(async uri => await TryUpdateSongUri(songId, uri));
         }
 
         private async Task TryUpdateSongUri(string songId, Uri albumArtUri)

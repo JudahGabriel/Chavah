@@ -1,13 +1,15 @@
-﻿using BitShuva.Chavah.Models;
+﻿using System.Linq;
+using System.Threading.Tasks;
+
+using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Raven.Client;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -17,7 +19,7 @@ namespace BitShuva.Chavah.Controllers
         private readonly IAsyncDocumentSession session;
         private readonly IActionDescriptorCollectionProvider provider;
 
-        public TestController(IAsyncDocumentSession session, 
+        public TestController(IAsyncDocumentSession session,
                               IActionDescriptorCollectionProvider provider)
         {
             this.session = session;
@@ -46,7 +48,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserInfo()
         {
-            var user = await session.LoadAsync<AppUser>("AppUsers/" + this.User.Identity.Name);
+            var user = await session.LoadAsync<AppUser>($"AppUsers/{User.Identity.Name}");
 
             return Ok(user);
         }
@@ -57,8 +59,8 @@ namespace BitShuva.Chavah.Controllers
             var routes = provider.ActionDescriptors.Items.Select(x => new {
                 Action = x?.RouteValues["Action"],
                 Controller = x?.RouteValues["Controller"],
-                Name = x?.AttributeRouteInfo?.Name,
-                Template = x?.AttributeRouteInfo?.Template,
+                x?.AttributeRouteInfo?.Name,
+                x?.AttributeRouteInfo?.Template,
                 Verb = x?.ActionConstraints
             }).ToList();
             return Ok(routes);

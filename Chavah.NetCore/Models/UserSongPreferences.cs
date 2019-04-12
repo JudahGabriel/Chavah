@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models.Indexes;
 
@@ -18,7 +18,7 @@ namespace BitShuva.Chavah.Models
         private const double GoodRankingMultipler = 2;
         private const double GreatRankingMultipler = 3;
         private const double BestRankingMultipler = 4;
-        
+
         private const double SongDislikedMultiplier = 0.1;
         private const double SongLikedMultipler = 2;
 
@@ -40,7 +40,7 @@ namespace BitShuva.Chavah.Models
         private const double TagVeryLikedMultiplier = 1.5;
         private const double TagFavoriteMultiplier = 2;
 
-        private static Random random = new Random();
+        private static readonly Random _random = new Random();
 
         public UserSongPreferences()
         {
@@ -62,11 +62,14 @@ namespace BitShuva.Chavah.Models
         /// <param name="songsWithRanking">Songs grouped by community rank standing.</param>
         /// <returns></returns>
         /// <remarks>
+        /// <para>
         /// Based off of the song weights algorithm described here:
         /// http://stackoverflow.com/questions/3345788/algorithm-for-picking-thumbed-up-items/3345838#3345838
-        /// 
+        /// </para>
+        /// <para>
         /// The song weights algorithm is loosely based on the more general Multiplicative Weight Update Algorithm (MWUA), described here:
         /// https://jeremykun.com/2017/02/27/the-reasonable-effectiveness-of-the-multiplicative-weights-update-algorithm/
+        /// </para>
         /// </remarks>
         public SongPickReasons PickSong(IList<Songs_RankStandings.Result> songsWithRanking)
         {
@@ -75,7 +78,7 @@ namespace BitShuva.Chavah.Models
 
             // Pick a number at random from zero to total song weights, and choose that song.
             var totalSongWeights = songWeights.Values.Sum(w => w.Weight);
-            var randomNumber = random.NextDouble() * totalSongWeights;
+            var randomNumber = _random.NextDouble() * totalSongWeights;
             var runningWeight = 0.0;
             var chosenSong = default(KeyValuePair<string, SongWeight>);
             foreach (var pair in songWeights)
@@ -110,7 +113,7 @@ namespace BitShuva.Chavah.Models
         /// <remarks>
         /// Based off of the song weights algorithm described here:
         /// http://stackoverflow.com/questions/3345788/algorithm-for-picking-thumbed-up-items/3345838#3345838
-        /// 
+        ///
         /// The song weights algorithm is loosely based on the more general Multiplicative Weight Update Algorithm (MWUA), described here:
         /// https://jeremykun.com/2017/02/27/the-reasonable-effectiveness-of-the-multiplicative-weights-update-algorithm/
         /// </remarks>
@@ -131,7 +134,7 @@ namespace BitShuva.Chavah.Models
 
             // Now we've generated the table with all songs, each weighted according to their community ranking.
             // Next, adjust the weight based on whether we like this song or not.
-            foreach (var likedSong in this.Songs)
+            foreach (var likedSong in Songs)
             {
                 if (songWeights.TryGetValue(likedSong.SongId, out var existingWeight))
                 {
@@ -141,7 +144,7 @@ namespace BitShuva.Chavah.Models
             }
 
             // Next, adjust the weight based on whether we like this artist or not.
-            var artistPrefs = this.Artists.GroupBy(a => a.Name);
+            var artistPrefs = Artists.GroupBy(a => a.Name);
             foreach (var artist in artistPrefs)
             {
                 var artistMultiplier = GetArtistMultiplier(artist);
@@ -158,7 +161,7 @@ namespace BitShuva.Chavah.Models
             }
 
             // Next, adjust the weight based on whether we like this album or not.
-            var albumPrefs = this.Albums.GroupBy(a => a.Name);
+            var albumPrefs = Albums.GroupBy(a => a.Name);
             foreach (var album in albumPrefs)
             {
                 var albumMultiplier = GetAlbumMultiplier(album);
@@ -175,14 +178,14 @@ namespace BitShuva.Chavah.Models
             }
 
             // Finally, adjust the weight based on whether we like the tags of the song or not.
-            var tagLikeDislikeDifferences = CreateTagLikeDislikeDifferences(this.Tags);
-            var songTags = this.Tags.GroupBy(t => t.SongId);
+            var tagLikeDislikeDifferences = CreateTagLikeDislikeDifferences(Tags);
+            var songTags = Tags.GroupBy(t => t.SongId);
             var songsWithTagMultipliers = songTags.Select(s => (SongId: s.Key, TagsMultiplier: GetCumulativeTagMultiplier(s.Key, s, tagLikeDislikeDifferences)));
-            foreach (var pref in songsWithTagMultipliers)
+            foreach (var (SongId, TagsMultiplier) in songsWithTagMultipliers)
             {
-                if (songWeights.TryGetValue(pref.SongId, out var existingWeight))
+                if (songWeights.TryGetValue(SongId, out var existingWeight))
                 {
-                    songWeights[pref.SongId] = existingWeight.WithTagMultiplier(pref.TagsMultiplier);
+                    songWeights[SongId] = existingWeight.WithTagMultiplier(TagsMultiplier);
                 }
             }
 
@@ -193,11 +196,11 @@ namespace BitShuva.Chavah.Models
         /// Creates a dictionary of tag name keys and like/dislike sum values. (Sum: a tag like = 1, a tag dislike = -1).
         /// </summary>
         /// <remarks>
-        /// For example, given the following tags: 
+        /// For example, given the following tags:
         ///    { Tag: "worship", LikeDislikeCount: 1, SongId: "songs/777" } // user liked song/777 which is tagged "worship"
         ///    { Tag: "worship", LikeDislikeCount: -1, SongId: "songs/666" } // user disliked song/666, which is tagged "worship"
         ///    { Tag: "male vocal", LikeDislikeCount: 1, SongId: "songs/444" } // user liked song/444, which is taggged "male vocal"
-        ///    
+        ///
         /// The output will be a dictionary containing these pairs:
         ///     { Key: "worship", Value: 0 } // 0 because 1 + -1 = 0
         ///     { Key: "male vocal", Value: 1 }
@@ -218,7 +221,7 @@ namespace BitShuva.Chavah.Models
             var songTagLikeDifferences = songTagLikes
                 .GroupBy(t => t.Name)
                 .Select(group => (Tag: group.Key, LikeDislikeDifference: tagLikeDislikeDifferences.GetValueOrNull(group.Key).GetValueOrDefault()));
-            
+
             double DifferenceToMultiplier(int difference)
             {
                 const int veryDislikedDiff = -10; // Sum of likes and dislikes = -10? Consider the tag very disliked.
@@ -236,12 +239,11 @@ namespace BitShuva.Chavah.Models
                     default: return 1; // The tag is neither liked nor disliked. Return a neutral multiplier.
                 }
             };
-            
 
             var runningMultiplier = 1.0;
-            foreach (var tagInfo in songTagLikeDifferences)
+            foreach (var (Tag, LikeDislikeDifference) in songTagLikeDifferences)
             {
-                var tagMultiplier = DifferenceToMultiplier(tagInfo.LikeDislikeDifference);
+                var tagMultiplier = DifferenceToMultiplier(LikeDislikeDifference);
                 runningMultiplier *= tagMultiplier;
             }
 

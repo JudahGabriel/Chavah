@@ -1,8 +1,6 @@
-﻿using Microsoft.SyndicationFeed;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
+
+using Microsoft.SyndicationFeed;
 
 namespace BitShuva.Chavah.Common
 {
@@ -13,10 +11,10 @@ namespace BitShuva.Chavah.Common
     {
         public SyndicationLinkItem(string id, string title, string description, Uri link)
         {
-            this.Id = id;
-            this.Title = title;
-            this.Description = description;
-            this.AddLink(new SyndicationLink(link));
+            Id = id;
+            Title = title;
+            Description = description;
+            AddLink(new SyndicationLink(link));
         }
     }
 }

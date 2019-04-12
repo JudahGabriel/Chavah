@@ -1,17 +1,21 @@
-﻿using BitShuva.Chavah.Models;
-using DalSoft.Hosting.BackgroundQueue;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Session;
-using Raven.StructuredLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
+
+using DalSoft.Hosting.BackgroundQueue;
+
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+using Raven.Client.Documents;
+using Raven.StructuredLog;
 
 namespace BitShuva.Chavah.Services
 {
@@ -20,21 +24,25 @@ namespace BitShuva.Chavah.Services
     /// </summary>
     public class PushNotificationSender : IPushNotificationSender
     {
-        private readonly IOptions<AppSettings> settings;
-        private readonly ILogger<PushNotificationSender> logger;
-        private readonly BackgroundQueue backgroundQueue;
-        private readonly IDocumentStore db;
+        private readonly ApplicationOptions _appOptions;
+        private readonly ILogger<PushNotificationSender> _logger;
+        private readonly BackgroundQueue _backgroundQueue;
+        private readonly IDocumentStore _db;
+        private readonly EmailOptions _emailOptions;
 
         public PushNotificationSender(
             BackgroundQueue backgroundQueue,
-            IOptions<AppSettings> settings, 
+            IOptionsMonitor<ApplicationOptions> appOptions,
+            IOptionsMonitor<EmailOptions> emailOptions,
             IDocumentStore db,
             ILogger<PushNotificationSender> logger)
         {
-            this.backgroundQueue = backgroundQueue;
-            this.settings = settings;
-            this.db = db;
-            this.logger = logger;
+            _backgroundQueue = backgroundQueue ?? throw new ArgumentNullException(nameof(backgroundQueue));
+            _db = db ?? throw new ArgumentNullException(nameof(db));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _appOptions = appOptions.CurrentValue;
+            _emailOptions = emailOptions.CurrentValue;
         }
 
         /// <summary>
@@ -45,13 +53,13 @@ namespace BitShuva.Chavah.Services
         /// <returns></returns>
         public void QueueSendNotification(PushNotification notification, List<PushSubscription> recipients)
         {
-            var logger = this.logger;
-            this.backgroundQueue.Enqueue(cancelToken => SendNotificationToRecipients(
-                recipients.AsReadOnly(), 
-                notification, 
-                settings.Value.Email.SenderEmail, 
-                settings.Value.Application.PushNotificationsPublicKey,
-                settings.Value.Application.PushNotificationsPrivateKey,
+            var logger = _logger;
+            _backgroundQueue.Enqueue(cancelToken => SendNotificationToRecipients(
+                recipients.AsReadOnly(),
+                notification,
+                _emailOptions.SenderEmail,
+                _appOptions.PushNotificationsPublicKey,
+                _appOptions.PushNotificationsPrivateKey,
                 logger,
                 cancelToken));
         }
@@ -63,9 +71,9 @@ namespace BitShuva.Chavah.Services
         /// <returns></returns>
         public void QueueSendNotificationToAll(PushNotification notification)
         {
-            var db = this.db;
-            var logger = this.logger;
-            this.backgroundQueue.Enqueue(async cancelToken =>
+            var db = _db;
+            var logger = _logger;
+            _backgroundQueue.Enqueue(async cancelToken =>
             {
                 // Stream in all the recipients.
                 var recipients = await StreamSubscriptions(db);
@@ -74,22 +82,15 @@ namespace BitShuva.Chavah.Services
                 await SendNotificationToRecipients(
                     recipients.AsReadOnly(),
                     notification,
-                    settings.Value.Email.SenderEmail,
-                    settings.Value.Application.PushNotificationsPublicKey,
-                    settings.Value.Application.PushNotificationsPrivateKey,
+                    _emailOptions.SenderEmail,
+                    _appOptions.PushNotificationsPublicKey,
+                    _appOptions.PushNotificationsPrivateKey,
                     logger,
                     cancelToken);
             });
         }
 
-        private static async Task SendNotificationToRecipients(
-            IEnumerable<PushSubscription> recipients, 
-            PushNotification notification, 
-            string senderEmail, 
-            string publicKey, 
-            string privateKey, 
-            ILogger logger,
-            CancellationToken cancelToken)
+        private static async Task SendNotificationToRecipients(IEnumerable<PushSubscription> recipients, PushNotification notification, string senderEmail, string publicKey, string privateKey, ILogger logger, CancellationToken cancelToken)
         {
             // This is run in a background thread. We should not access or update any mutable state.
             var vapidDetails = new WebPush.VapidDetails($"mailto:{senderEmail}", publicKey, privateKey);
@@ -107,13 +108,7 @@ namespace BitShuva.Chavah.Services
             }
         }
 
-        private static async Task TrySendPushNotification(
-            PushNotification notification,
-            PushSubscription recipient, 
-            WebPush.VapidDetails details, 
-            WebPush.WebPushClient client,
-            JsonSerializerSettings serializerSettings,
-            ILogger logger)
+        private static async Task TrySendPushNotification(PushNotification notification, PushSubscription recipient, WebPush.VapidDetails details, WebPush.WebPushClient client, JsonSerializerSettings serializerSettings, ILogger logger)
         {
             // This is run in a background thread. We should not access or update mutable state.
             try

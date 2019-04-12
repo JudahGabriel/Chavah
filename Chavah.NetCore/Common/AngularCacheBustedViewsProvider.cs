@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BitShuva.Chavah.Common
 {
@@ -51,14 +51,14 @@ namespace BitShuva.Chavah.Common
             using (var file = File.OpenRead(htmlFilePath))
             using (var md5 = System.Security.Cryptography.MD5.Create())
             {
-                
                 // default windows path detaction
                 var viewsFolder = '\\' + viewsFolderRelativePath + '\\';
-                
-                if (OperatingSystem.IsLinux()) {
+
+                if (OperatingSystem.IsLinux())
+                {
                     viewsFolder = $"/{viewsFolderRelativePath}/";
                 }
-                
+
                 var viewFolderIndex = htmlFilePath.LastIndexOf(viewsFolder, StringComparison.InvariantCultureIgnoreCase);
                 if (viewFolderIndex == -1)
                 {
@@ -76,7 +76,7 @@ namespace BitShuva.Chavah.Common
 
                 var fileContentHash = string.Join(string.Empty, md5.ComputeHash(file));
                 var fileNameWithHash = htmlFileName + "?v=" + fileContentHash;
-                return Path.Combine($"/" + viewsFolderRelativePath, filePathRelativeToViewsFolder, fileNameWithHash)
+                return Path.Combine("/" + viewsFolderRelativePath, filePathRelativeToViewsFolder, fileNameWithHash)
                     .Replace("\\", "/")
                     .ToLowerInvariant();
             }

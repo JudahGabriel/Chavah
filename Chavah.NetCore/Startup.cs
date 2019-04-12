@@ -1,17 +1,20 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO.Compression;
-using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+
 using AutoMapper;
+
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
 using BitShuva.Chavah.Services;
 using BitShuva.Services;
+
 using cloudscribe.Syndication.Models.Rss;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -21,11 +24,12 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Pwned.AspNetCore;
-using Quartz.Spi;
+
+using Polly;
+
 using Raven.DependencyInjection;
 using Raven.Identity;
 using Raven.Migrations;
@@ -37,27 +41,24 @@ namespace BitShuva.Chavah
     {
         public IConfiguration Configuration { get; }
 
-        private readonly ILogger<Startup> _logger;
-
-        public Startup(IConfiguration configuration, ILogger<Startup> logger)
+        public Startup(
+            IConfiguration configuration)
         {
             Configuration = configuration;
-            _logger = logger;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions();
-            services.Configure<AppSettings>(Configuration);
-            services.Configure<RavenSettings>(Configuration.GetSection("RavenSettings")); // Needed for Raven.DependencyInjection
+            services.Configure<ApplicationOptions>(Configuration.GetSection("App"));
+            services.Configure<EmailOptions>(Configuration.GetSection("Email"));
+            services.Configure<CdnOptions>(Configuration.GetSection("Cdn"));
 
             var hcBuilder = services.AddHealthChecks();
 
             hcBuilder.AddRavenDbCheck(tags: new string[] {"database"});
 
             hcBuilder.AddMemoryHealthCheck(tags: new string[] { "memory" });
-
 
             // Add application services.
             services.AddTransient<IEmailService, SendGridEmailService>();
@@ -79,7 +80,7 @@ namespace BitShuva.Chavah
 
             // Add RavenDB and identity.
             services
-                .AddRavenDbDocStore()       // Create a RavenDB DocumentStore singleton.
+                .AddChavahRavenDbDocStore(Configuration)       // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession()   // Create a RavenDB IAsyncDocumentSession for each request.
                 .AddRavenDbMigrations()     // Use RavenDB migrations
                 .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles.
@@ -130,7 +131,11 @@ namespace BitShuva.Chavah
 
             services.AddCustomAddSwagger();
 
-            services.AddPwnedPassword(_=> new PwnedOptions());
+            //services.AddPwnedPassword();
+
+            services.AddPwnedPasswordHttpClient(Configuration)
+                  .AddTransientHttpErrorPolicy(p => p.RetryAsync(3))
+                  .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(2)));
 
             services.Configure<SecurityStampValidatorOptions>(options =>
             {
@@ -141,7 +146,6 @@ namespace BitShuva.Chavah
             services.AddAuthentication(options=>
             {
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-
             }).AddCookie(o =>
             {
                 o.Events.OnRedirectToLogin = (context) =>
@@ -201,10 +205,7 @@ namespace BitShuva.Chavah
                 });
             }
 
-            app.UseHealthChecks("/healthy", new HealthCheckOptions
-            {
-                ResponseWriter = HealthCheckBuilderExtensions.WriteResponse
-            });
+            app.UseHealthyHealthCheck();
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

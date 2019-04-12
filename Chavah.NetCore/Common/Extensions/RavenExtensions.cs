@@ -1,21 +1,52 @@
-﻿using Optional;
-using Raven.Client;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+using Optional;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
 using Raven.Client.Documents.Session.Loaders;
 using Raven.Client.Documents.Session.Operations.Lazy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
+using Raven.DependencyInjection;
 
 namespace BitShuva.Chavah.Common
 {
     public static class RavenExtensions
     {
+        /// <summary>
+        /// Add Chavah Raven Db instance with SSL Certificate loaded from Azure Vault.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddChavahRavenDbDocStore(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddRavenDbDocStore(options: options =>
+             {
+                 var settings = new RavenSettings();
+                 configuration.Bind(nameof(RavenSettings), settings);
+                 options.Settings = settings;
+
+                 // password is stored in azure vault.
+                 var certString = configuration.GetValue<string>(settings.CertFilePath);
+                 if (certString != null)
+                 {
+                     var certificate = Convert.FromBase64String(certString);
+                     options.Certificate = new X509Certificate2(certificate);
+                 }
+             });
+
+            return services;
+        }
+
         /// <summary>
         /// Asynchronously loads a document from Raven and stores it in an Option.
         /// </summary>
@@ -79,7 +110,7 @@ namespace BitShuva.Chavah.Common
             var result = await session.LoadAsync<T>(id);
             if (result == null)
             {
-                throw new ArgumentException($"Tried to load a entity, but it wasn't found in the database.").WithData("id", id);
+                throw new ArgumentException("Tried to load a entity, but it wasn't found in the database.").WithData("id", id);
             }
 
             return result;
@@ -122,14 +153,13 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Loads a document from the session and throws the specified exception if null.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TException"></typeparam>
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <param name="thrower"></param>
         /// <returns></returns>
-        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncDocumentSession session, 
-            string id, 
-            Func<TException> thrower)
-            where TException : Exception
+        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncDocumentSession session, string id, Func<TException> thrower) where TException : Exception
         {
             if (id == null)
             {
@@ -191,13 +221,13 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Loads a document from the session and throws the specified exception if null.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TException"></typeparam>
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <param name="thrower"></param>
         /// <returns></returns>
-        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncLoaderWithInclude<T> session, 
-            string id, Func<TException> thrower)
-            where TException : Exception
+        public static async Task<T> LoadRequiredAsync<T, TException>(this IAsyncLoaderWithInclude<T> session, string id, Func<TException> thrower) where TException : Exception
         {
             if (id == null)
             {
@@ -278,6 +308,10 @@ namespace BitShuva.Chavah.Common
         /// Sets the Raven document expiration for this object. The document will be deleted from the database after the specified date.
         /// Note: This specified object must be .Store()'d in the database before calling this method.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dbSession"></param>
+        /// <param name="obj"></param>
+        /// <param name="expiry"></param>
         public static void SetRavenExpiration<T>(this IAsyncDocumentSession dbSession, T obj, DateTime expiry)
         {
             dbSession.Advanced.GetMetadataFor(obj)["@expires"] = expiry.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
@@ -287,6 +321,10 @@ namespace BitShuva.Chavah.Common
         /// Sets the Raven document expiration for this object. The document will be deleted from the database after the specified date.
         /// Note: This specified object must be .Store()'d in the database before calling this method.
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dbSession"></param>
+        /// <param name="obj"></param>
+        /// <param name="expiry"></param>
         public static void SetRavenExpiration<T>(this IDocumentSession dbSession, T obj, DateTime expiry)
         {
             dbSession.Advanced.GetMetadataFor(obj)["@expires"] = DateTime.UtcNow.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
@@ -311,7 +349,7 @@ namespace BitShuva.Chavah.Common
         {
             // Patch is in RQL. Example: "from AppUsers update { this.Foo = 123; }"
             var rqlPatch = new StringBuilder();
-            rqlPatch.AppendLine($"from {collectionName}");
+            rqlPatch.Append("from ").AppendLine(collectionName);
             rqlPatch.AppendLine("update {");
 
             // For each variable in the dictionary, declare the variable in the RQL script.

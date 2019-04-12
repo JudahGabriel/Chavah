@@ -1,35 +1,39 @@
-﻿using BitShuva.Chavah.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class SongRequestsController : RavenController
     {
-        private readonly IOptions<AppSettings> options;
-        private readonly TimeSpan songRequestValidTime = TimeSpan.FromMinutes(20);
+        private readonly ApplicationOptions _appOptions;
+        private readonly TimeSpan _songRequestValidTime = TimeSpan.FromMinutes(20);
 
         public SongRequestsController(
             IAsyncDocumentSession dbSession,
             ILogger<SongRequestsController> logger,
-            IOptions<AppSettings> options)
+            IOptionsMonitor<ApplicationOptions> appOptions)
             : base(dbSession, logger)
         {
-            this.options = options;
+            _appOptions = appOptions.CurrentValue;
         }
 
         /// <summary>
-        /// Finds a pending song request for the current user. 
+        /// Finds a pending song request for the current user.
         /// A song request is considered pending if:
         /// 1. It was recently requested
         /// 2. The user hasn't played it yet
@@ -39,14 +43,14 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<string> GetPending()
         {
-            var userId = this.GetUserId();
+            var userId = GetUserId();
             if (string.IsNullOrEmpty(userId))
             {
                 return null;
             }
 
-            var recent = DateTime.UtcNow.Subtract(songRequestValidTime);
-            var pendingSongReqs = await this.DbSession
+            var recent = DateTime.UtcNow.Subtract(_songRequestValidTime);
+            var pendingSongReqs = await DbSession
                  .Query<SongRequest>()
                  .OrderByDescending(r => r.DateTime)
                  .Where(r => r.DateTime >= recent)
@@ -66,7 +70,7 @@ namespace BitShuva.Chavah.Controllers
             if (updatedSongRequest != null)
             {
                 var songLikeId = Like.GetLikeId(userId, updatedSongRequest.SongId);
-                var songLike = await this.DbSession.LoadOptionAsync<Like>(songLikeId);
+                var songLike = await DbSession.LoadOptionAsync<Like>(songLikeId);
                 var userDislikesSong = songLike.Exists(l => l.Status == LikeStatus.Dislike);
                 if (!userDislikesSong)
                 {
@@ -80,8 +84,8 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public Task<List<string>> GetRecentRequestedSongIds()
         {
-            var recent = DateTime.UtcNow.Subtract(songRequestValidTime);
-            return this.DbSession
+            var recent = DateTime.UtcNow.Subtract(_songRequestValidTime);
+            return DbSession
                  .Query<SongRequest>()
                  .OrderByDescending(r => r.DateTime)
                  .Where(r => r.DateTime >= recent)
@@ -93,15 +97,15 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task RequestSong(string songId)
         {
-            var user = await this.GetUserOrThrow();
-            var song = await this.DbSession.LoadAsync<Song>(songId);
+            var user = await GetUserOrThrow();
+            var song = await DbSession.LoadAsync<Song>(songId);
 
             if (song != null)
             {
                 var requestExpiration = DateTime.UtcNow.AddDays(10);
-                var hasSongBeenRecentlyRequested = await this.HasSongBeenRequestedRecently(songId);
-                var hasManyRequestForArtist = await this.HasManyPendingSongRequestForArtist(song.Artist);
-                var hasManySongRequestsFromUser = await this.HasManyRecentSongRequestsFromUser(user.Id);
+                var hasSongBeenRecentlyRequested = await HasSongBeenRequestedRecently(songId);
+                var hasManyRequestForArtist = await HasManyPendingSongRequestForArtist(song.Artist);
+                var hasManySongRequestsFromUser = await HasManyRecentSongRequestsFromUser(user.Id);
                 var isPoorlyRated = song.CommunityRankStanding == CommunityRankStanding.VeryPoor;
                 if (!hasSongBeenRecentlyRequested && !hasManyRequestForArtist && !hasManySongRequestsFromUser && !isPoorlyRated)
                 {
@@ -115,20 +119,20 @@ namespace BitShuva.Chavah.Controllers
                         Name = song.Name,
                         UserId = user.Id
                     };
-                    await this.DbSession.StoreAsync(songRequest);
-                    this.DbSession.SetRavenExpiration(songRequest, requestExpiration);
+                    await DbSession.StoreAsync(songRequest);
+                    DbSession.SetRavenExpiration(songRequest, requestExpiration);
                     // Store an activity for the song request.
                     var activity = new Activity
                     {
                         DateTime = DateTime.UtcNow,
                         Title = $"{song.Artist} - {song.Name} was requested by one of our listeners",
-                        Description = $"\"{song.Name}\" by {song.Artist} was requested by one of our listeners on {options?.Value?.Application?.Title}.",
-                        MoreInfoUri = song.GetSongShareLink(options?.Value?.Application?.DefaultUrl),
+                        Description = $"\"{song.Name}\" by {song.Artist} was requested by one of our listeners on {_appOptions?.Title}.",
+                        MoreInfoUri = song.GetSongShareLink(_appOptions?.DefaultUrl),
                         EntityId = song.Id,
                         Type = ActivityType.Request
                     };
-                    await this.DbSession.StoreAsync(activity);
-                    this.DbSession.SetRavenExpiration(activity, requestExpiration);
+                    await DbSession.StoreAsync(activity);
+                    DbSession.SetRavenExpiration(activity, requestExpiration);
                 }
             }
         }
@@ -142,25 +146,25 @@ namespace BitShuva.Chavah.Controllers
         [Authorize]
         public async Task<List<string>> MarkAsPlayed([FromBody] List<string> songIds)
         {
-            var userId = this.GetUserIdOrThrow();
-            var recent = DateTime.UtcNow.Subtract(songRequestValidTime);
-            var recentSongRequests = await this.DbSession
+            var userId = GetUserIdOrThrow();
+            var recent = DateTime.UtcNow.Subtract(_songRequestValidTime);
+            var recentSongRequests = await DbSession
                  .Query<SongRequest>()
                  .Where(r => r.DateTime >= recent)
                  .Take(10)
                  .ToListAsync();
             recentSongRequests
-                .Where(req => 
-                    songIds.Contains(req.SongId, StringComparison.OrdinalIgnoreCase) && 
-                    !req.PlayedForUserIds.Contains(userId, StringComparison.OrdinalIgnoreCase))
+                .Where(req =>
+                    songIds.Contains(req.SongId, StringComparison.OrdinalIgnoreCase)
+                    && !req.PlayedForUserIds.Contains(userId, StringComparison.OrdinalIgnoreCase))
                 .ForEach(req => req.PlayedForUserIds.Add(userId));
             return songIds;
         }
-        
+
         private async Task<bool> HasSongBeenRequestedRecently(string songId)
         {
             var recent = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(120));
-            return await this.DbSession
+            return await DbSession
                 .Query<SongRequest>()
                 .AnyAsync(s => s.SongId == songId && s.DateTime >= recent);
         }
@@ -169,7 +173,7 @@ namespace BitShuva.Chavah.Controllers
         {
             var recent = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(30));
             var many = 1;
-            return await this.DbSession
+            return await DbSession
                 .Query<SongRequest>()
                 .CountAsync(s => s.Artist == artist && s.DateTime >= recent) >= many;
         }
@@ -178,7 +182,7 @@ namespace BitShuva.Chavah.Controllers
         {
             var recent = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(30));
             const int maxInHalfHour = 2;
-            var recentSongRequestsFromUser = await this.DbSession
+            var recentSongRequestsFromUser = await DbSession
                 .Query<SongRequest>()
                 .CountAsync(s => s.UserId == userId && s.DateTime >= recent);
             return recentSongRequestsFromUser >= maxInHalfHour;
@@ -189,7 +193,7 @@ namespace BitShuva.Chavah.Controllers
             req.PlayedForUserIds.Add(userId);
             try
             {
-                await this.DbSession.SaveChangesAsync();
+                await DbSession.SaveChangesAsync();
                 return req;
             }
             catch (Raven.Client.Exceptions.ConcurrencyException)
@@ -198,7 +202,7 @@ namespace BitShuva.Chavah.Controllers
                 // In such a case, try loading it directly from storage, rather than queried from index.
                 DbSession.Advanced.Evict(req);
                 var refreshedSongRequest = await DbSession.LoadAsync<SongRequest>(req.Id);
-                if (refreshedSongRequest != null && !refreshedSongRequest.PlayedForUserIds.Contains(userId))
+                if (refreshedSongRequest?.PlayedForUserIds.Contains(userId) == false)
                 {
                     refreshedSongRequest.PlayedForUserIds.Add(userId);
                     await DbSession.SaveChangesAsync();

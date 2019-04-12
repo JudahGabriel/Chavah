@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace BitShuva.Chavah.Common
 {
@@ -15,25 +14,26 @@ namespace BitShuva.Chavah.Common
 
     public class Match<T>
     {
-        private readonly T value;
+        private readonly T _value;
+
         public Match(T value)
         {
-            this.value = value;
+            _value = value;
         }
 
         public Match<T, TResult> With<TResult>(T otherValue, TResult result)
         {
-            return new Match<T, TResult>(this.value).With(otherValue, result);
+            return new Match<T, TResult>(_value).With(otherValue, result);
         }
 
         public Match<T, TResult> With<TResult>(Func<T, bool> predicate, TResult result)
         {
-            return new Match<T, TResult>(this.value).With(predicate, result);
+            return new Match<T, TResult>(_value).With(predicate, result);
         }
 
         public Match<T, TResult> With<TResult>(Func<T, bool> predicate, Func<T, TResult> resultFetcher)
         {
-            return new Match<T, TResult>(this.value).With(predicate, resultFetcher);
+            return new Match<T, TResult>(_value).With(predicate, resultFetcher);
         }
 
         /// <summary>
@@ -44,8 +44,8 @@ namespace BitShuva.Chavah.Common
         /// <returns>The result.</returns>
         public TResult PropertyOrDefault<TResult>(Func<T, TResult> propertyGetter)
         {
-            return new Match<T, TResult>(this.value)
-                .With(v => !EqualityComparer<T>.Default.Equals(v, default(T)), propertyGetter)
+            return new Match<T, TResult>(_value)
+                .With(v => !EqualityComparer<T>.Default.Equals(v, default), propertyGetter)
                 .DefaultTo(default(TResult))
                 .Evaluate();
         }
@@ -89,7 +89,7 @@ namespace BitShuva.Chavah.Common
 
         public Match<T, TResult> DefaultTo(Func<TResult> resultFetcher)
         {
-            this.defaultValueFetcher = resultFetcher;
+            defaultValueFetcher = resultFetcher;
             return this;
         }
 
@@ -102,9 +102,9 @@ namespace BitShuva.Chavah.Common
         {
             if (match == null)
             {
-                return default(TResult);
+                return default;
             }
-            
+
             var equality = EqualityComparer<T>.Default;
             var matchingPredicate = match.predicates.FirstOrDefault(p => p.Matches(match.value));
             if (matchingPredicate != null)
@@ -135,7 +135,7 @@ namespace BitShuva.Chavah.Common
 
         public bool Matches(T input)
         {
-            return EqualityComparer<T>.Default.Equals(this.value, input);
+            return EqualityComparer<T>.Default.Equals(value, input);
         }
 
         public TResult Result(T input)
@@ -174,7 +174,7 @@ namespace BitShuva.Chavah.Common
         public PredicateFetcherMatch(Func<T, bool> predicate, Func<T, TResult> fetcher)
         {
             this.predicate = predicate;
-            this.resultFetcher = fetcher;
+            resultFetcher = fetcher;
         }
 
         public bool Matches(T input)

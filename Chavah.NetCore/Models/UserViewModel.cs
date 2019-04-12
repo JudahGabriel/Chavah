@@ -1,6 +1,7 @@
-﻿using Raven.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using Raven.Identity;
 
 namespace BitShuva.Chavah.Models
 {
@@ -107,12 +108,12 @@ namespace BitShuva.Chavah.Models
         /// Whether the user is locked out.
         /// </summary>
         public DateTimeOffset? LockoutEndDate { get; set; }
-                
+
         /// <summary>
         /// Whether 2-factor authentication is enabled.
         /// </summary>
         public bool TwoFactorEnabled { get; set; }
-        
+
         /// <summary>
         /// The phone number.
         /// </summary>

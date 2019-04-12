@@ -6,7 +6,7 @@ namespace BitShuva.Chavah.Models
     {
         public Playlist()
         {
-            this.SongIds = new List<string>();
+            SongIds = new List<string>();
         }
 
         public string Name { get; set; }
@@ -17,8 +17,8 @@ namespace BitShuva.Chavah.Models
         {
             return new Playlist
             {
-                SongIds = new List<string>(this.SongIds),
-                Name = this.Name,
+                SongIds = new List<string>(SongIds),
+                Name = Name,
                 OwnerId = userId
             };
         }

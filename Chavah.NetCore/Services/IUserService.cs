@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+
 using BitShuva.Chavah.Models;
-using System.Collections.Generic;
 
 namespace BitShuva.Chavah.Services
 {

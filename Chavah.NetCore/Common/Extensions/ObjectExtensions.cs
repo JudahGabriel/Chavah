@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
+using System.Reflection;
 
 namespace BitShuva.Chavah.Common
 {
@@ -10,10 +8,10 @@ namespace BitShuva.Chavah.Common
         public static TDestination CopyPropsFrom<TSource, TDestination>(this TDestination destination, TSource source)
         {
             var sourceProperties = typeof(TSource)
-                .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.CanRead);
             var targetProperties = typeof(TDestination)
-                .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.CanWrite);
             foreach (var sourceProp in sourceProperties)
             {

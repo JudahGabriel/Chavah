@@ -1,23 +1,26 @@
-﻿using BitShuva.Chavah.Models;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Text;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using BitShuva.Chavah.Models.Indexes;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using BitShuva.Chavah.Common;
-using Microsoft.Extensions.Logging;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Indexes;
+
 using Microsoft.AspNetCore.Mvc;
-using Raven.Client.Documents.Session;
-using Raven.Client.Documents.Linq;
+using Microsoft.Extensions.Logging;
+
 using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Session;
 
 namespace BitShuva.Chavah.Controllers
 {
     public class StreamController : RavenController
     {
         public StreamController(
-            IAsyncDocumentSession dbSession, 
+            IAsyncDocumentSession dbSession,
             ILogger<StreamController> logger)
             : base(dbSession, logger)
         {
@@ -32,13 +35,13 @@ namespace BitShuva.Chavah.Controllers
             // The M3U file will contain a single URL:
             // The URL to our GetNextSong() action.
             // That method will intelligently pick a song.
-            
+
             // Build the M3U file.
             // M3U format is very simple: https://en.wikipedia.org/wiki/M3U
             var m3uBuilder = new StringBuilder();
             m3uBuilder.AppendLine("# EXTM3U"); // The header
 
-            var getNextSongUrl = this.Url.Action(nameof(GetNextSong), "Stream", null, this.Request.Scheme);
+            var getNextSongUrl = Url.Action(nameof(GetNextSong), "Stream", null, Request.Scheme);
             m3uBuilder.AppendLine(getNextSongUrl);
 
             var m3uBytes = Encoding.UTF8.GetBytes(m3uBuilder.ToString());
@@ -49,7 +52,7 @@ namespace BitShuva.Chavah.Controllers
         /// Returns an M3U file. Used for streaming services such as TuneIn radio.
         /// </summary>
         /// <returns></returns>
-        public ActionResult ShabbatMusic() 
+        public ActionResult ShabbatMusic()
         {
             // The M3U file will contain a single URL:
             // The URL to our GetNextSong() action.
@@ -60,7 +63,7 @@ namespace BitShuva.Chavah.Controllers
             var m3uBuilder = new StringBuilder();
             m3uBuilder.AppendLine("# EXTM3U"); // The header
 
-            var getNextSongUrl = this.Url.Action(nameof(GetNextShabbatSong), "Stream", null, this.Request.Scheme);
+            var getNextSongUrl = Url.Action(nameof(GetNextShabbatSong), "Stream", null, Request.Scheme);
             m3uBuilder.AppendLine(getNextSongUrl);
 
             var m3uBytes = Encoding.UTF8.GetBytes(m3uBuilder.ToString());
@@ -98,7 +101,7 @@ namespace BitShuva.Chavah.Controllers
             {
                 // This is NOT an unbounded result set:
                 // This queries the Songs_RankStandings index, which will reduce the results. Max number of results will be the number of CommunityRankStanding enum constants.
-                songsWithRanking = await this.DbSession.Query<Song, Songs_RankStandings>()
+                songsWithRanking = await DbSession.Query<Song, Songs_RankStandings>()
                     .As<Songs_RankStandings.Result>()
                     .ToListAsync();
             }

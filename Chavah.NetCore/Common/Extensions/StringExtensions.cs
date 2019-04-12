@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace BitShuva.Chavah.Common
 {
@@ -106,12 +105,18 @@ namespace BitShuva.Chavah.Common
             return (english, hebrew);
         }
 
-        public static bool EqualsAny(this string text, StringComparison comparison, params string[] others)
+        public static bool EqualsAny(
+            this string text,
+            StringComparison comparison,
+            params string[] others)
         {
             return others.Any(s => string.Equals(text, s, comparison));
         }
 
-        public static bool Contains(this string value, string substring, StringComparison comparison)
+        public static bool Contains(
+            this string value,
+            string substring,
+            StringComparison comparison)
         {
             return value.IndexOf(substring, comparison) != -1;
         }
@@ -122,7 +127,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="text"></param>
         /// <returns></returns>
         /// <remarks>
-        /// Based on https://stackoverflow.com/a/5155015/536 
+        /// Based on https://stackoverflow.com/a/5155015/536
         /// </remarks>
         public static int GetDeterministicHashCode(this string text)
         {
@@ -135,7 +140,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="lines"></param>
         /// <returns></returns>
         /// <remarks>
-        /// Based on https://stackoverflow.com/a/5155015/536 
+        /// Based on https://stackoverflow.com/a/5155015/536
         /// </remarks>
         public static int GetDeterministicHashCode(this IEnumerable<string> lines)
         {
@@ -144,9 +149,9 @@ namespace BitShuva.Chavah.Common
                 var hash = 23;
                 foreach (var line in lines)
                 {
-                    foreach (char c in line)
+                    foreach (var c in line)
                     {
-                        hash = hash * 31 + c;
+                        hash = (hash * 31) + c;
                     }
                 }
 

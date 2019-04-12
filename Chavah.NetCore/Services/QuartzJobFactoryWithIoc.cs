@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using Quartz;
 using Quartz.Spi;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Services
 {
@@ -23,6 +21,7 @@ namespace BitShuva.Chavah.Services
         {
             this.svcProvider = svcProvider;
         }
+
         public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
         {
             return svcProvider.GetRequiredService(bundle.JobDetail.JobType) as IJob;
@@ -30,8 +29,7 @@ namespace BitShuva.Chavah.Services
 
         public void ReturnJob(IJob job)
         {
-            var disposable = job as IDisposable;
-            if (disposable != null)
+            if (job is IDisposable disposable)
             {
                 disposable.Dispose();
             }

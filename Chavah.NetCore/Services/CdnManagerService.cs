@@ -3,9 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
+
 using CoreFtp;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,22 +21,25 @@ namespace BitShuva.Chavah.Services
     /// </summary>
     public class CdnManagerService : ICdnManagerService
     {
-        private readonly Cdn cdnSettings;
-        private readonly ILogger logger;
-        private readonly IHostingEnvironment hostingEnv;
+        private readonly CdnOptions _options;
+        private readonly ILogger _logger;
+        private readonly IHostingEnvironment _hosting;
 
-        public CdnManagerService(IOptions<AppSettings> options, ILogger<CdnManagerService> logger, IHostingEnvironment hostingEnv)
+        public CdnManagerService(
+            IOptionsMonitor<CdnOptions> options,
+            ILogger<CdnManagerService> logger,
+            IHostingEnvironment hostingEnv)
         {
-            this.cdnSettings = options.Value.Cdn;
-            this.logger = logger;
-            this.hostingEnv = hostingEnv;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _hosting = hostingEnv ?? throw new ArgumentNullException(nameof(hostingEnv));
+            _options = options.CurrentValue;
         }
 
-        public Uri HttpHost => new Uri(cdnSettings?.HttpPath);
-        public Uri HttpMusic => HttpHost.Combine(cdnSettings.MusicDirectory);
-        public Uri HttpAlbumArt => HttpHost.Combine(cdnSettings.AlbumArtDirectory);
-        public Uri HttpArtistImages => HttpHost.Combine(cdnSettings.ArtistImagesDirectory);
-        public Uri HttpProfilePics => HttpHost.Combine(cdnSettings.ProfilePicsDirectory);
+        public Uri HttpHost => new Uri(_options?.HttpPath);
+        public Uri HttpMusic => HttpHost.Combine(_options.MusicDirectory);
+        public Uri HttpAlbumArt => HttpHost.Combine(_options.AlbumArtDirectory);
+        public Uri HttpArtistImages => HttpHost.Combine(_options.ArtistImagesDirectory);
+        public Uri HttpProfilePics => HttpHost.Combine(_options.ProfilePicsDirectory);
 
         /// <summary>
         /// Uploads the song to the CDN.
@@ -52,7 +59,7 @@ namespace BitShuva.Chavah.Services
                 using (var ftpConnection = await CreateFtpConnection())
                 {
                     // Inside the music directory, create the artist directory as needed.
-                    await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings?.MusicDirectory);
+                    await ftpConnection.ChangeWorkingDirectoryAsync(_options?.MusicDirectory);
                     var musicArtistDirs = await ftpConnection.ListDirectoriesAsync();
                     var artistDirectory = GetAlphaNumericEnglish(artist);
                     var hasArtistDirectory = musicArtistDirs.Any(m => m.Name == artistDirectory);
@@ -71,20 +78,20 @@ namespace BitShuva.Chavah.Services
                         await sourceStream.CopyToAsync(destinationStream);
                     }
 
-                    return this.HttpMusic.Combine(artistDirectory, fileName);
+                    return HttpMusic.Combine(artistDirectory, fileName);
                 }
             }
             catch (Exception error)
             {
                 var errorMessage = "Unable to upload MP3 to CDN. {songInfo}";
-                logger.LogError(errorMessage, error, (artist, album, songName));
+                _logger.LogError(errorMessage, error, (artist, album, songName));
                 throw;
             }
             finally
             {
                 if (!string.IsNullOrEmpty(tempDownloadedFile))
                 {
-                    System.IO.File.Delete(tempDownloadedFile);
+                    File.Delete(tempDownloadedFile);
                 }
             }
         }
@@ -109,7 +116,7 @@ namespace BitShuva.Chavah.Services
             {
                 if (!string.IsNullOrEmpty(tempDownloadedFile))
                 {
-                    System.IO.File.Delete(tempDownloadedFile);
+                    File.Delete(tempDownloadedFile);
                 }
             }
         }
@@ -125,8 +132,8 @@ namespace BitShuva.Chavah.Services
             using (var ftpConnection = await CreateFtpConnection())
             {
                 // Switch to the artist images directory.
-                await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings?.ArtistImagesDirectory);
-                var safeFileName = GetAlphaNumericEnglish(System.IO.Path.GetFileNameWithoutExtension(fileName));
+                await ftpConnection.ChangeWorkingDirectoryAsync(_options?.ArtistImagesDirectory);
+                var safeFileName = GetAlphaNumericEnglish(Path.GetFileNameWithoutExtension(fileName));
 
                 // Copy the temporary HTTP path to the FTP destination.
                 using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(safeFileName))
@@ -136,7 +143,7 @@ namespace BitShuva.Chavah.Services
                     await sourceStream.CopyToAsync(destinationStream);
                 }
 
-                return this.HttpAlbumArt.Combine(fileName);
+                return HttpAlbumArt.Combine(fileName);
             }
         }
 
@@ -148,13 +155,13 @@ namespace BitShuva.Chavah.Services
                 var fileName = Guid.NewGuid().GetHashCode().ToString() + fileExtension;
 
                 // Switch to the album art directory.
-                await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings.ProfilePicsDirectory);
+                await ftpConnection.ChangeWorkingDirectoryAsync(_options.ProfilePicsDirectory);
                 using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(fileName))
                 {
                     await imageStream.CopyToAsync(destinationStream);
                 }
 
-                return this.HttpProfilePics.Combine(fileName);
+                return HttpProfilePics.Combine(fileName);
             }
         }
 
@@ -168,7 +175,7 @@ namespace BitShuva.Chavah.Services
         /// <returns>The HTTP URI to the file on the CDN.</returns>
         private async Task<Uri> UploadAlbumArt(string artist, string album, string filePath, string fileExtension)
         {
-            var fullFileName = string.Join(string.Empty, artist, " - ", album, fileExtension).ToLowerInvariant();
+            var fullFileName = string.Concat(artist, " - ", album, fileExtension).ToLowerInvariant();
             return await UploadAlbumArt(fullFileName, filePath);
         }
 
@@ -185,14 +192,14 @@ namespace BitShuva.Chavah.Services
                 var fileNameLower = destinationFileName.ToLowerInvariant();
 
                 // Switch to the album art directory.
-                await ftpConnection.ChangeWorkingDirectoryAsync(this.cdnSettings?.AlbumArtDirectory);
+                await ftpConnection.ChangeWorkingDirectoryAsync(_options?.AlbumArtDirectory);
                 using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(fileNameLower))
                 using (var sourceStream = File.OpenRead(sourceFilePath))
                 {
                     await sourceStream.CopyToAsync(destinationStream);
                 }
 
-                return this.HttpAlbumArt.Combine(fileNameLower);
+                return HttpAlbumArt.Combine(fileNameLower);
             }
         }
 
@@ -203,7 +210,7 @@ namespace BitShuva.Chavah.Services
         /// <returns>A task containing the downloaded file name..</returns>
         private async Task<string> DownloadFileLocally(Uri httpUrl)
         {
-            var appData = System.IO.Path.Combine(hostingEnv.ContentRootPath, "App_Data");
+            var appData = Path.Combine(_hosting.ContentRootPath, "App_Data");
             if (!Directory.Exists(appData))
             {
                 Directory.CreateDirectory(appData);
@@ -230,7 +237,7 @@ namespace BitShuva.Chavah.Services
                 var songFileName = GetCdnSafeSongFileName(song.Artist, song.Album, song.Number, song.Name);
 
                 // Go into the /music/[artist name] folder.
-                await connection.ChangeWorkingDirectoryAsync(cdnSettings.MusicDirectory);
+                await connection.ChangeWorkingDirectoryAsync(_options.MusicDirectory);
                 await connection.ChangeWorkingDirectoryAsync(artistFolder);
 
                 await connection.DeleteFileAsync(songFileName);
@@ -241,7 +248,7 @@ namespace BitShuva.Chavah.Services
         {
             using(var connection = await CreateFtpConnection())
             {
-                await connection.ChangeWorkingDirectoryAsync(cdnSettings.ProfilePicsDirectory).ConfigureAwait(false);
+                await connection.ChangeWorkingDirectoryAsync(_options.ProfilePicsDirectory).ConfigureAwait(false);
                 var fileName = picture.Split('/').Last();
                 await connection.DeleteFileAsync(fileName).ConfigureAwait(false);
             }
@@ -251,12 +258,12 @@ namespace BitShuva.Chavah.Services
         {
             var client = new FtpClient(new FtpClientConfiguration
             {
-                Host = this.cdnSettings?.FtpHost,
-                Username = this.cdnSettings?.FtpUserName,
-                Password = this.cdnSettings?.FtpPassword,
+                Host = _options?.FtpHost,
+                Username = _options?.FtpUserName,
+                Password = _options?.FtpPassword,
             });
             await client.LoginAsync();
-            await client.ChangeWorkingDirectoryAsync(this.cdnSettings?.FtpWorkingDirectory);
+            await client.ChangeWorkingDirectoryAsync(_options?.FtpWorkingDirectory);
             return client;
         }
 
@@ -276,7 +283,7 @@ namespace BitShuva.Chavah.Services
             }
 
             var songNumberPaddedByZero = songNumber > 0 && songNumber < 10 ? "0" + songNumber : songNumber.ToString();
-            
+
             return $"{GetAlphaNumericEnglish(artist)} - {GetAlphaNumericEnglish(album)} - {songNumberPaddedByZero} - {GetAlphaNumericEnglish(songName)}.mp3";
         }
 
@@ -304,7 +311,5 @@ namespace BitShuva.Chavah.Services
                     .ToArray());
             }
         }
-
- 
     }
 }

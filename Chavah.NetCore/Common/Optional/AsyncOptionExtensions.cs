@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 
 // NOTE: this was written by Nils Lück as part of his Optional.Async library, which is not yet on NuGet.
@@ -52,7 +48,7 @@ namespace Optional.Async
         }
 
         /// <summary>
-        /// Returns the existing value if present, or the attached 
+        /// Returns the existing value if present, or the attached
         /// exceptional value.
         /// </summary>
         /// <param name="option">The specified async optional.</param>

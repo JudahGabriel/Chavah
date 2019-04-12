@@ -1,7 +1,8 @@
-﻿using BitShuva.Chavah.Models;
-using System;
+﻿using System;
 using System.Linq;
 using System.Text;
+
+using BitShuva.Chavah.Models;
 
 namespace BitShuva.Chavah.Common
 {
@@ -22,7 +23,7 @@ namespace BitShuva.Chavah.Common
         /// <summary>
         /// Converts a Like database object into a SongLike enum.
         /// This is an extension method; if the Like object is null,
-        /// this will return SongLike.None. 
+        /// this will return SongLike.None.
         /// </summary>
         /// <param name="like"></param>
         /// <returns>

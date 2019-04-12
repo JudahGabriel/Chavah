@@ -1,19 +1,18 @@
-﻿using BitShuva.Chavah.Common;
-using BitShuva.Chavah;
-using BitShuva.Chavah.Models;
-using Raven.Client;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Raven.Client.Documents.Session;
+
+using BitShuva.Chavah.Models;
+
 using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
+using System.Linq.Expressions;
 
 namespace BitShuva.Chavah.Services
 {
     public class AlbumService : IAlbumService
     {
-        private IAsyncDocumentSession _session;
+        private readonly IAsyncDocumentSession _session;
 
         public AlbumService(IAsyncDocumentSession session)
         {
@@ -25,7 +24,7 @@ namespace BitShuva.Chavah.Services
             return await GetMatchingAlbumAsync(x => x.Name == album && x.Artist == artist);
         }
 
-        public async Task<Album> GetMatchingAlbumAsync(System.Linq.Expressions.Expression<Func<Album, bool>> predicate)
+        public async Task<Album> GetMatchingAlbumAsync(Expression<Func<Album, bool>> predicate)
         {
             return await _session.Query<Album>()
                 .Where(predicate)

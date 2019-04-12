@@ -1,8 +1,6 @@
-﻿using Raven.Client.Documents.Indexes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
+
+using Raven.Client.Documents.Indexes;
 
 namespace BitShuva.Chavah.Models.Indexes
 {
@@ -13,18 +11,18 @@ namespace BitShuva.Chavah.Models.Indexes
     {
         public Songs_GeneralQuery()
         {
-            this.Map = songs => from song in songs
+            Map = songs => from song in songs
                                 select new
                                 {
                                     __document_id = song.Id,
-                                    Album = song.Album,
-                                    AlbumId = song.AlbumId,
-                                    Artist = song.Artist,
-                                    CommunityRank = song.CommunityRank,
-                                    CommunityRankStanding = song.CommunityRankStanding,
-                                    Name = song.Name,
-                                    Tags = song.Tags,
-                                    UploadDate = song.UploadDate
+                                    song.Album,
+                                    song.AlbumId,
+                                    song.Artist,
+                                    song.CommunityRank,
+                                    song.CommunityRankStanding,
+                                    song.Name,
+                                    song.Tags,
+                                    song.UploadDate
                                 };
         }
     }

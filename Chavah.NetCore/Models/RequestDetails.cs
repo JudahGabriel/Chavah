@@ -1,12 +1,13 @@
-﻿using BitShuva.Chavah.Common;
-using Newtonsoft.Json;
-using Optional;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
+
+using BitShuva.Chavah.Common;
+
+using Newtonsoft.Json;
+
+using Optional;
 
 namespace BitShuva.Chavah.Models
 {

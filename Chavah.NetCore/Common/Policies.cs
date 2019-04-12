@@ -1,6 +1,6 @@
 ﻿namespace BitShuva.Chavah
 {
-    public class Policies
+    public static class Policies
     {
         public const string Administrator = "Admin";
     }

@@ -1,5 +1,11 @@
-﻿@inject IOptionsSnapshot<AppSettings> appSettings
+﻿@using BitShuva.Chavah.Options
+@inject IOptionsSnapshot<ApplicationOptions> snapshot
 @model HomeViewModel
+
+@{
+
+    var appOptions = snapshot.Value;
+}
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
@@ -39,11 +45,11 @@
     <meta name="msapplication-task" content="name=Chavah on Facebook;action-uri=http://www.facebook.com/pages/Chavah-Messianic-Radio/134887069882254;icon-uri=/content/images/jumplist_facebook.ico" />
     <meta name="msapplication-task" content="name=Chavah on Twitter;action-uri=http://twitter.com/messianicradio;icon-uri=/content/images/jumplist_twitter.ico" />
     <meta name="msapplication-navbutton-color" content="#2f3d58" />
-    <meta name="msapplication-starturl" content="@appSettings?.Value?.Application?.DefaultUrl" />
-    <meta name="msapplication-tooltip" content="@appSettings?.Value?.Application?.Title" />
+    <meta name="msapplication-starturl" content="@appOptions?.DefaultUrl" />
+    <meta name="msapplication-tooltip" content="@appOptions?.Title" />
 
     @*Windows 8.x tiles with notifications*@
-    <meta name="application-name" content="@appSettings?.Value?.Application?.Title" />
+    <meta name="application-name" content="@appOptions?.Title" />
     <meta name="msapplication-TileColor" content="#2f3d58" />
     <meta name="msapplication-square70x70logo" content="~/images/Windows81Tile/tiny.png" />
     <meta name="msapplication-square150x150logo" content="~/images/Windows81Tile/square.png" />
@@ -57,34 +63,34 @@
     {
         // Show a Twitter summary card with the song info.
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="@appSettings?.Value?.Application?.DefaultUrl@(Model.Song.GetSongShareLink(appSettings?.Value?.Application?.DefaultUrl))" />
+        <meta name="twitter:url" content="@appOptions?.DefaultUrl@(Model.Song.GetSongShareLink(appOptions?.DefaultUrl))" />
         <meta name="twitter:title" content="@Model.Song.Name by @Model.Song.Artist" />
         <meta name="twitter:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
         <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
 
         @*Facebook share info. See https://developers.facebook.com/docs/sharing/webmasters/*@
-        <meta property="og:url" content="@appSettings?.Value?.Application?.DefaultUrl@(Model.Song.GetSongShareLink(appSettings?.Value?.Application?.DefaultUrl))" />
+        <meta property="og:url" content="@appOptions?.DefaultUrl@(Model.Song.GetSongShareLink(appOptions?.DefaultUrl))" />
         <meta property="og:type" content="music.song" />
         <meta property="og:title" content="@Model.Song.Name by @Model.Song.Artist" />
         <meta property="og:description" content="Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music on the web" />
         @*We can't use Song.AlbumArtUri because that URL will be on a different domain, and Facebook restricts us to use only images on our domain. So we'll trick it with a redirect.*@
-        <meta property="og:image" content="@appSettings?.Value?.Application?.DefaultUrl/api/albums/getAlbumArtBySongId?songId=@Model.Song.Id" />
+        <meta property="og:image" content="@appOptions?.DefaultUrl/api/albums/getAlbumArtBySongId?songId=@Model.Song.Id" />
     }
     else
     {
         // No song? Show a Twitter summary card for Chavah itself, rather than for a song.
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="@appSettings?.Value?.Application?.DefaultUrl" />
-        <meta name="twitter:title" content="@appSettings?.Value?.Application?.Title" />
+        <meta name="twitter:url" content="@appOptions?.DefaultUrl" />
+        <meta name="twitter:title" content="@appOptions?.Title" />
         <meta name="twitter:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
-        <meta name="twitter:image" content="@appSettings?.Value?.Application?.DefaultUrl/images/chavah512x512.png?v=1" />
+        <meta name="twitter:image" content="@appOptions?.DefaultUrl/images/chavah512x512.png?v=1" />
 
         @*Facebook share info for Chavah itself, rather than a song. https://developers.facebook.com/docs/sharing/webmasters/*@
-        <meta property="og:url" content="@appSettings?.Value?.Application?.DefaultUrl" />
+        <meta property="og:url" content="@appOptions?.DefaultUrl" />
         <meta property="og:type" content="music.radio_station" />
-        <meta property="og:title" content="@appSettings?.Value?.Application?.Title" />
+        <meta property="og:title" content="@appOptions?.Title" />
         <meta property="og:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
-        <meta property="og:image" content="@appSettings?.Value?.Application?.DefaultUrl/images/chavah512x512.png?v=1" />
+        <meta property="og:image" content="@appOptions?.DefaultUrl/images/chavah512x512.png?v=1" />
     }
 
     @*CSS for development*@
@@ -199,9 +205,9 @@
 
         var userId = '@(Model != null && Model.User != null ? Model.User.Email : string.Empty)';
         if (userId) {
-            ga('create', '@appSettings?.Value?.Application?.GoogleAnalytics', 'auto', { userId: userId });
+            ga('create', '@appOptions?.GoogleAnalytics', 'auto', { userId: userId });
         } else {
-            ga('create', '@appSettings?.Value?.Application?.GoogleAnalytics', 'auto');
+            ga('create', '@appOptions?.GoogleAnalytics', 'auto');
         }
     </script>
 

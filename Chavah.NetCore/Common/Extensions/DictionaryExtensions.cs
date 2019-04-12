@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 
 namespace BitShuva.Chavah.Common
 {
@@ -11,12 +10,12 @@ namespace BitShuva.Chavah.Common
     {
         public static TValue GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
         {
-            if (dictionary.TryGetValue(key, out TValue foundValue))
+            if (dictionary.TryGetValue(key, out var foundValue))
             {
                 return foundValue;
             }
 
-            return default(TValue);
+            return default;
         }
 
         /// <summary>
@@ -27,15 +26,14 @@ namespace BitShuva.Chavah.Common
         /// <param name="dictionary"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static TValue? GetValueOrNull<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
-            where TValue : struct
+        public static TValue? GetValueOrNull<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key) where TValue : struct
         {
-            if (dictionary.TryGetValue(key, out TValue foundValue))
+            if (dictionary.TryGetValue(key, out var foundValue))
             {
                 return foundValue;
             }
 
-            return default(TValue?);
+            return default;
         }
 
         public static string ToKeyValuePairString<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
@@ -73,8 +71,8 @@ namespace BitShuva.Chavah.Common
             {
                 var key = keys[0];
                 keys.RemoveAt(0);
-                var val = default(TValue);
-                if (dictionary.TryRemove(key, out val))
+
+                if (dictionary.TryRemove(key, out var val))
                 {
                     results.Add(Tuple.Create(key, val));
                 }

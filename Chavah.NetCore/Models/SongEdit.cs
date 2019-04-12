@@ -12,19 +12,19 @@ namespace BitShuva.Chavah.Models
 
         public SongEdit(Song existing, Song updated)
         {
-            this.SongId = updated.Id;
-            this.NewArtist = updated.Artist;
-            this.NewAlbum = updated.Album;
-            this.NewName = updated.Name;
-            this.NewHebrewName = updated.HebrewName;
-            this.NewLyrics = updated.Lyrics;
-            this.NewTags = updated.Tags;
-            this.OldArtist = existing.Artist;
-            this.OldAlbum = existing.Album;
-            this.OldLyrics = existing.Lyrics;
-            this.OldName = existing.Name;
-            this.OldHebrewName = existing.HebrewName;
-            this.OldTags = existing.Tags;
+            SongId = updated.Id;
+            NewArtist = updated.Artist;
+            NewAlbum = updated.Album;
+            NewName = updated.Name;
+            NewHebrewName = updated.HebrewName;
+            NewLyrics = updated.Lyrics;
+            NewTags = updated.Tags;
+            OldArtist = existing.Artist;
+            OldAlbum = existing.Album;
+            OldLyrics = existing.Lyrics;
+            OldName = existing.Name;
+            OldHebrewName = existing.HebrewName;
+            OldTags = existing.Tags;
         }
 
         public string Id { get; set; }
@@ -47,22 +47,22 @@ namespace BitShuva.Chavah.Models
 
         public bool HasAnyChanges()
         {
-            return this.NewArtist != this.OldArtist ||
-                this.NewAlbum != this.OldAlbum ||
-                this.NewName != this.OldName ||
-                this.NewHebrewName != this.OldHebrewName ||
-                this.NewLyrics != this.OldLyrics ||
-                !this.NewTags.SequenceEqual(this.OldTags);
+            return NewArtist != OldArtist
+                || NewAlbum != OldAlbum
+                || NewName != OldName
+                || NewHebrewName != OldHebrewName
+                || NewLyrics != OldLyrics
+                || !NewTags.SequenceEqual(OldTags);
         }
 
         public void Apply(Song song)
         {
-            song.Album = this.NewAlbum;
-            song.Artist = this.NewArtist;
-            song.Lyrics = this.NewLyrics;
-            song.Name = this.NewName;
-            song.Tags = this.NewTags;
-            song.HebrewName = this.NewHebrewName;
+            song.Album = NewAlbum;
+            song.Artist = NewArtist;
+            song.Lyrics = NewLyrics;
+            song.Name = NewName;
+            song.Tags = NewTags;
+            song.HebrewName = NewHebrewName;
         }
     }
 }

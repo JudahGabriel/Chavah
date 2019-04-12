@@ -16,6 +16,5 @@ namespace BitShuva.Chavah.Models.Account
         public string Password { get; set; }
 
         public bool StaySignedIn { get; set; }
-
     }
 }

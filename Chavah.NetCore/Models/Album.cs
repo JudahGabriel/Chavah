@@ -20,13 +20,13 @@ namespace BitShuva.Chavah.Models
 
         public System.Linq.Expressions.Expression<Func<Song, bool>> SongMatchesAlbumNameAndArtistCriteria()
         {
-            if (this.IsVariousArtists)
+            if (IsVariousArtists)
             {
-                return s => s.Album == this.Name;
+                return s => s.Album == Name;
             }
             else
             {
-                return s => s.Album == this.Name && s.Artist == this.Artist;
+                return s => s.Album == Name && s.Artist == Artist;
             }
         }
     }

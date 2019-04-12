@@ -1,13 +1,16 @@
-﻿using BitShuva.Chavah.Common;
+﻿using System.Linq;
+using System.Threading.Tasks;
+
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using Raven.StructuredLog;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -15,7 +18,9 @@ namespace BitShuva.Chavah.Controllers
     [Authorize(Roles = AppUser.AdminRole)]
     public class LogsController : RavenController
     {
-        public LogsController(IAsyncDocumentSession dbSession, ILogger<LogsController> logger)
+        public LogsController(
+            IAsyncDocumentSession dbSession,
+            ILogger<LogsController> logger)
             : base(dbSession, logger)
         {
         }
@@ -23,7 +28,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<PagedList<StructuredLog>> GetAll(int skip, int take, LogLevel? level, LogSort sort)
         {
-            IQueryable<StructuredLog> query = this.DbSession.Query<StructuredLog>()
+            IQueryable<StructuredLog> query = DbSession.Query<StructuredLog>()
                 .Statistics(out var stats);
 
             if (sort == LogSort.Newest)

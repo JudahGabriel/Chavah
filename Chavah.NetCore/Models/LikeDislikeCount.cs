@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace BitShuva.Chavah.Models
+﻿namespace BitShuva.Chavah.Models
 {
     public class LikeDislikeCount
     {
@@ -11,7 +6,7 @@ namespace BitShuva.Chavah.Models
         /// The name of the artist, album, or other category.
         /// </summary>
         public string Name { get; set; }
-                
+
         /// <summary>
         /// The number of likes for the name.
         /// </summary>

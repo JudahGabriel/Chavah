@@ -1,20 +1,28 @@
-﻿using BitShuva.Chavah.Common;
-using BitShuva.Chavah.Models;
-using DalSoft.Hosting.BackgroundQueue;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Optional;
-using Optional.Async;
-using Raven.Client.Documents;
-using Raven.StructuredLog;
-using SendGrid.Helpers.Mail;
-using System;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+
+using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Options;
+
+using DalSoft.Hosting.BackgroundQueue;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+using Optional;
+using Optional.Async;
+
+using Raven.Client.Documents;
+using Raven.StructuredLog;
+
+using SendGrid.Helpers.Mail;
 
 namespace BitShuva.Services
 {
@@ -23,54 +31,61 @@ namespace BitShuva.Services
     /// </summary>
     public class SendGridEmailService : IEmailService
     {
-        private readonly EmailSettings emailSettings;
-        private readonly ILogger<SendGridEmailService> logger;
-        private readonly IDocumentStore db;
-        private readonly BackgroundQueue backgroundWorker;
-        private readonly IHostingEnvironment host;
+        private readonly EmailOptions _emailOptions;
+        private readonly ILogger<SendGridEmailService> _logger;
+        private readonly IDocumentStore _db;
+        private readonly BackgroundQueue _backgroundWorker;
+        private readonly IHostingEnvironment _host;
 
         public SendGridEmailService(
-            BackgroundQueue queue, 
-            IDocumentStore db, 
-            IOptions<AppSettings> appSettings, 
+            BackgroundQueue queue,
+            IDocumentStore db,
+            IOptionsMonitor<EmailOptions> emailOptions,
             ILogger<SendGridEmailService> logger,
             IHostingEnvironment host)
         {
-            this.emailSettings = appSettings.Value.Email;
-            this.logger = logger;
-            this.db = db;
-            this.backgroundWorker = queue;
-            this.host = host;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _db = db ?? throw new ArgumentNullException(nameof(db));
+            _backgroundWorker = queue ?? throw new ArgumentNullException(nameof(queue));
+            _host = host ?? throw new ArgumentNullException(nameof(host));
+
+            _emailOptions = emailOptions.CurrentValue;
         }
-        
+
         public async Task QueueSendEmail(string recipient, string subject, string body, string replyTo = null)
         {
             // Store the email on this thread.
             var email = await StoreEmail(recipient, subject, body, replyTo);
 
             // If we're not configured to send emails, punt.
-            var sendEmails = this.emailSettings.SendEmails;
+            var sendEmails = _emailOptions.SendEmails;
             if (sendEmails)
             {
                 // Queue up the email sending on a different thread.
-                logger.LogInformation("Queueing up {emailId} for sending.", email.Id);
-                this.backgroundWorker.Enqueue(cancelToken => TrySendEmailWithTimeoutAndRetry(email.Id, email.To, email.Subject, email.Body, email.ReplyTo, cancelToken));
+                _logger.LogInformation("Queueing up {emailId} for sending.", email.Id);
+                _backgroundWorker.Enqueue(cancelToken => TrySendEmailWithTimeoutAndRetry(
+                    email.Id,
+                    email.To,
+                    email.Subject,
+                    email.Body,
+                    email.ReplyTo,
+                    cancelToken));
             }
             else
             {
-                logger.LogInformation("Skipping sending {emailId} per configuration.", email.Id);
+                _logger.LogInformation("Skipping sending {emailId} per configuration.", email.Id);
             }
         }
 
         public Task QueueRetryEmail(string emailId)
         {
-            this.backgroundWorker.Enqueue(_ => RetryEmailWithTimeout(emailId));
+            _backgroundWorker.Enqueue(_ => RetryEmailWithTimeout(emailId));
             return Task.CompletedTask;
         }
 
         private async Task RetryEmailWithTimeout(string emailId)
         {
-            using (var dbSession = this.db.OpenAsyncSession())
+            using (var dbSession = _db.OpenAsyncSession())
             {
                 var email = await dbSession.LoadRequiredAsync<Email>(emailId);
                 var retryError = await TrySendEmailWithTimeout(email.To, email.Subject, email.Body, email.ReplyTo);
@@ -102,7 +117,7 @@ namespace BitShuva.Services
 
         private async Task<Email> StoreEmail(string recipient, string subject, string body, string replyTo)
         {
-            using (var dbSession = this.db.OpenAsyncSession())
+            using (var dbSession = _db.OpenAsyncSession())
             {
                 var email = new Email
                 {
@@ -123,7 +138,7 @@ namespace BitShuva.Services
 
         private async Task<Email> MarkEmailAsSucceeded(string emailId)
         {
-            using (var dbSession = this.db.OpenAsyncSession())
+            using (var dbSession = _db.OpenAsyncSession())
             {
                 var email = await dbSession.LoadRequiredAsync<Email>(emailId);
                 email.Sent = DateTimeOffset.UtcNow;
@@ -134,7 +149,7 @@ namespace BitShuva.Services
 
         private async Task<Email> MarkEmailAsFailed(string emailId, Exception error)
         {
-            using (var dbSession = this.db.OpenAsyncSession())
+            using (var dbSession = _db.OpenAsyncSession())
             {
                 var email = await dbSession.LoadRequiredAsync<Email>(emailId);
                 email.SendingErrorMessage = error.Message;
@@ -152,7 +167,7 @@ namespace BitShuva.Services
                     Subject = subject,
                     Body = body,
                     IsBodyHtml = true,
-                    From = new MailAddress(emailSettings.SenderEmail, emailSettings.SenderName)
+                    From = new MailAddress(_emailOptions.SenderEmail, _emailOptions.SenderName)
                 };
 
                 if (!string.IsNullOrEmpty(replyTo))
@@ -162,16 +177,16 @@ namespace BitShuva.Services
 
                 email.To.Add(recipient);
                 await SendEmailAsync(email);
-                logger.LogInformation("Sent email notification from {sender} to {recipient} with {subject}, {body}, {replyto}", email.From?.Address, recipient, subject, body, email.ReplyToList?.ToString());
+                _logger.LogInformation("Sent email notification from {sender} to {recipient} with {subject}, {body}, {replyto}", email.From?.Address, recipient, subject, body, email.ReplyToList?.ToString());
                 return Option.None<Exception>();
             }
             catch (Exception error)
             {
-                using (logger.BeginKeyValueScope("emailSettings", emailSettings))
-                using (logger.BeginKeyValueScope("recipient", recipient))
-                using (logger.BeginKeyValueScope("subject", subject))
+                using (_logger.BeginKeyValueScope("emailSettings", _emailOptions))
+                using (_logger.BeginKeyValueScope("recipient", recipient))
+                using (_logger.BeginKeyValueScope("subject", subject))
                 {
-                    logger.LogError(error, "Failed to send email");
+                    _logger.LogError(error, "Failed to send email");
                 }
 
                 return Option.Some(error);
@@ -180,7 +195,7 @@ namespace BitShuva.Services
 
         public async Task SendEmailAsync(MailMessage message)
         {
-            var client = new SendGrid.SendGridClient(this.emailSettings.SendGridApiKey);
+            var client = new SendGrid.SendGridClient(_emailOptions.SendGridApiKey);
             var from = new EmailAddress(message.From.Address, message.From.DisplayName);
             var subject = message.Subject;
             var to = message.To.Select(t => new EmailAddress(t.Address, t.DisplayName));
@@ -192,19 +207,19 @@ namespace BitShuva.Services
 
         public Option<string> GetEmailTemplate(string fileName)
         {
-            var templatePath = System.IO.Path.Combine(host.WebRootPath, System.IO.Path.Combine("emails", fileName));
+            var templatePath = Path.Combine(_host.WebRootPath, Path.Combine("emails", fileName));
             try
             {
-                if (System.IO.File.Exists(templatePath))
+                if (File.Exists(templatePath))
                 {
-                    return Option.Some(System.IO.File.ReadAllText(templatePath));
+                    return Option.Some(File.ReadAllText(templatePath));
                 }
-                
-                logger.LogError("Unable to find email template {templatePath}", templatePath);
+
+                _logger.LogError("Unable to find email template {templatePath}", templatePath);
             }
             catch (Exception error)
             {
-                logger.LogError(error, "Error loading email template {name}", fileName);
+                _logger.LogError(error, "Error loading email template {name}", fileName);
             }
 
             return Option.None<string>();

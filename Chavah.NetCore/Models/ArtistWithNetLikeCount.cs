@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BitShuva.Chavah.Models
+﻿namespace BitShuva.Chavah.Models
 {
     /// <summary>
     /// A user's view of an artist, containing the artist data as well as the number of songs by this artist liked and disliked by the user.

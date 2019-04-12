@@ -1,43 +1,48 @@
-﻿using BitShuva.Chavah.Common;
-using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Models.Indexes;
-using BitShuva.Chavah.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Optional.Async;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Linq;
-using Raven.Client.Documents.Queries;
-using Raven.Client.Documents.Session;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using BitShuva.Chavah.Common;
+using BitShuva.Chavah.Models;
+using BitShuva.Chavah.Models.Indexes;
+using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Services;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+using Optional.Async;
+
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Session;
+
 namespace BitShuva.Chavah.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class AlbumsController : RavenController
     {
-        private readonly ICdnManagerService cdnManagerService;
-        private readonly ISongUploadService songUploadService;
-        private readonly IOptions<AppSettings> options;
+        private readonly ICdnManagerService _cdnManagerService;
+        private readonly ISongUploadService _songUploadService;
+        private readonly ApplicationOptions _appOptions;
 
         public AlbumsController(
             ICdnManagerService cdnManagerService,
             ISongUploadService songUploadService,
             IAsyncDocumentSession dbSession,
             ILogger<AlbumsController> logger,
-            IOptions<AppSettings> options)
+            IOptionsMonitor<ApplicationOptions> options)
             : base(dbSession, logger)
         {
-            this.cdnManagerService = cdnManagerService;
-            this.songUploadService = songUploadService;
-            this.options = options;
+            _cdnManagerService = cdnManagerService ?? throw new ArgumentNullException(nameof(cdnManagerService));
+            _songUploadService = songUploadService ?? throw new ArgumentNullException(nameof(songUploadService));
+
+            _appOptions = options.CurrentValue;
         }
 
         /// <summary>
@@ -49,11 +54,11 @@ namespace BitShuva.Chavah.Controllers
         {
             return DbSession.LoadAsync<Album>(id);
         }
-        
+
         [HttpGet]
         public async Task<PagedList<Album>> GetAll(int skip, int take, string search)
         {
-            IRavenQueryable<Album> query = string.IsNullOrWhiteSpace(search) ?
+            var query = string.IsNullOrWhiteSpace(search) ?
                 DbSession.Query<Album>() :
                 DbSession.Query<Album>().Where(a => a.Name.StartsWith(search) || a.Artist.StartsWith(search));
             var albums = await query
@@ -70,14 +75,14 @@ namespace BitShuva.Chavah.Controllers
                 Total = stats.TotalResults
             };
         }
-        
+
         [HttpGet]
         public async Task<RedirectResult> GetAlbumArtBySongId(string songId)
         {
             var song = await DbSession.LoadRequiredAsync<Song>(songId);
             return Redirect(song.AlbumArtUri.ToString());
         }
-        
+
         [HttpGet]
         public async Task<Album> GetByArtistAlbum(string artist, string album)
         {
@@ -91,7 +96,7 @@ namespace BitShuva.Chavah.Controllers
 
             return matchingAlbum.ValueOr(default(Album));
         }
-        
+
         [HttpPost]
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<Album> ChangeArt(string albumId, string artUri)
@@ -102,18 +107,18 @@ namespace BitShuva.Chavah.Controllers
                 throw new ArgumentException("Couldn't find album with ID " + albumId);
             }
 
-            var albumArtUri = await cdnManagerService.UploadAlbumArtAsync(new Uri(artUri), album.Artist, album.Name, ".jpg");
+            var albumArtUri = await _cdnManagerService.UploadAlbumArtAsync(new Uri(artUri), album.Artist, album.Name, ".jpg");
             album.AlbumArtUri = albumArtUri;
 
             // Update the songs on this album.
-            var songsOnAlbum = await this.DbSession.Query<Song, Songs_GeneralQuery>()
+            var songsOnAlbum = await DbSession.Query<Song, Songs_GeneralQuery>()
                 .Where(s => s.Artist == album.Artist && s.Album == album.Name)
                 .ToListAsync();
             songsOnAlbum.ForEach(s => s.AlbumArtUri = albumArtUri);
 
             return album;
         }
-        
+
         [HttpPost]
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<Album> Save([FromBody] Album album)
@@ -136,7 +141,7 @@ namespace BitShuva.Chavah.Controllers
                 existingAlbum
                     .MatchSome(a => throw new ArgumentException($"There's already an album for {a.Artist} - {a.Name}: {a.Id}"));
             }
-            
+
             await DbSession.StoreAsync(album);
 
             // If we're creating a new album, update the songs that belong to this album.
@@ -166,15 +171,11 @@ namespace BitShuva.Chavah.Controllers
         public async Task<string> Upload([FromBody] AlbumUpload album)
         {
             // Put the album art on the CDN.
-            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtAsync(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
+            var albumArtUriCdn = await _cdnManagerService.UploadAlbumArtAsync(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()
-                .FirstOrDefaultAsync(a => a.Name == album.Name && a.Artist == album.Artist);
-            if (existingAlbum == null)
-            {
-                existingAlbum = new Album();
-            }
+                .FirstOrDefaultAsync(a => a.Name == album.Name && a.Artist == album.Artist) ?? new Album();
 
             var existingArtist = await DbSession.Query<Artist>()
                 .FirstOrDefaultAsync(a => a.Name == album.Artist);
@@ -198,7 +199,7 @@ namespace BitShuva.Chavah.Controllers
 
             if (string.IsNullOrEmpty(existingAlbum.Id))
             {
-                await this.DbSession.StoreAsync(existingAlbum);
+                await DbSession.StoreAsync(existingAlbum);
             }
 
             // Store the songs in the DB.
@@ -206,7 +207,8 @@ namespace BitShuva.Chavah.Controllers
             foreach (var albumSong in album.Songs)
             {
                 //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
-                var songName = albumSong.FileName.GetEnglishAndHebrew();
+                var (english, hebrew) = albumSong.FileName.GetEnglishAndHebrew();
+
                 var song = new Song
                 {
                     Album = album.Name,
@@ -214,8 +216,8 @@ namespace BitShuva.Chavah.Controllers
                     AlbumArtUri = albumArtUriCdn,
                     CommunityRankStanding = CommunityRankStanding.Normal,
                     Genres = album.Genres.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                    Name = songName.english,
-                    HebrewName = songName.hebrew,
+                    Name = english,
+                    HebrewName = hebrew,
                     Number = songNumber,
                     PurchaseUri = album.PurchaseUrl,
                     UploadDate = DateTime.UtcNow,
@@ -230,17 +232,17 @@ namespace BitShuva.Chavah.Controllers
                         TextShadow = existingAlbum.TextShadowColor
                     }
                 };
-                await this.DbSession.StoreAsync(song);
+                await DbSession.StoreAsync(song);
 
                 // Queue the songs to be uploaded to the CDN.
-                songUploadService.QueueMp3Upload(albumSong, album, songNumber, song.Id);
+                _songUploadService.QueueMp3Upload(albumSong, album, songNumber, song.Id);
                 songNumber++;
             }
 
-            await this.DbSession.SaveChangesAsync();
+            await DbSession.SaveChangesAsync();
             return existingAlbum.Id;
         }
-        
+
         [HttpGet]
         public Task<List<Album>> GetAlbums(string albumIdsCsv)
         {
@@ -250,9 +252,9 @@ namespace BitShuva.Chavah.Controllers
                 .Distinct();
             return DbSession.LoadWithoutNulls<Album>(validIds);
         }
-        
+
         /// <summary>
-        /// Streams an image from another domain through our domain. 
+        /// Streams an image from another domain through our domain.
         /// Needed for client-side canvas rendering of images on other domains (e.g. on our media CDN.)
         /// For example, when upload a new album, we use this URL to draw an image to a canvas in order to extract prominent colors from the album art.
         /// </summary>
@@ -265,8 +267,7 @@ namespace BitShuva.Chavah.Controllers
             {
                 throw new ArgumentNullException(nameof(imageUrl));
             }
-            
-            var response = new HttpResponseMessage();
+
             using (var webClient = new WebClient())
             {
                 var bytes = await webClient.DownloadDataTaskAsync(imageUrl);
@@ -285,18 +286,18 @@ namespace BitShuva.Chavah.Controllers
         [Route("art/{songId}/{artist}/{album}")]
         public async Task<dynamic> GetAlbumArt(string songId, string artist, string album)
         {
-            var existingAlbum = await this.DbSession
+            var existingAlbum = await DbSession
                 .Query<Album>()
                 .FirstOrDefaultAsync(a => a.Artist == artist && a.Name == album);
             return new
             {
                 SongId = songId,
                 existingAlbum?.Artist,
-                Name = existingAlbum?.Name,
+                existingAlbum?.Name,
                 existingAlbum?.AlbumArtUri
             };
         }
-        
+
         /// <summary>
         /// Gets the HTTP address for the album art image for the album with the specified name and artist.
         /// </summary>
@@ -308,21 +309,21 @@ namespace BitShuva.Chavah.Controllers
         public async Task<HttpResponseMessage> GetAlbumArt(string artist, string album)
         {
             var redirectUri = default(Uri);
-            await this.DbSession.Query<Album>()
+            await DbSession.Query<Album>()
                 .FirstOrNoneAsync(a => a.Artist == artist && a.Name == album)
                 .ToAsyncOption()
                 .Map(a => a.AlbumArtUri)
                 .MatchSome(uri => redirectUri = uri);
-            
+
             if (redirectUri == null)
             {
                 // We don't have an album for this. See if we have a matching song.
-                await this.DbSession.Query<Song, Songs_GeneralQuery>()
+                await DbSession.Query<Song, Songs_GeneralQuery>()
                     .FirstOrNoneAsync(s => s.Album == album && s.Artist == artist)
                     .ToAsyncOption()
                     .Map(s => s.AlbumArtUri)
                     .MatchSome(uri => redirectUri = uri);
-                
+
                 if (redirectUri == null)
                 {
                     // We can't find album art with this artist and album, nor any song with this album and artist.
@@ -342,7 +343,7 @@ namespace BitShuva.Chavah.Controllers
                 return response;
             }
 
-            this.logger.LogWarning("Unable to find matching album art.", (artist, album));
+            logger.LogWarning("Unable to find matching album art.", (artist, album));
             return new HttpResponseMessage(HttpStatusCode.NotFound);
         }
 
@@ -367,10 +368,10 @@ namespace BitShuva.Chavah.Controllers
                 .Where(s => s.Artist == artist && s.Album == album)
                 .ToListAsync();
             return songs
-                .Select(s => $"{s.Artist} - {s.Album} - {s.Number} - {s.Name}: {options?.Value?.Application?.DefaultUrl}/?song={s.Id}")
+                .Select(s => $"{s.Artist} - {s.Album} - {s.Number} - {s.Name}: {_appOptions?.DefaultUrl}/?song={s.Id}")
                 .ToList();
         }
-        
+
         [HttpPost]
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task Delete(string albumId)
@@ -389,7 +390,7 @@ namespace BitShuva.Chavah.Controllers
         [Authorize]
         public async Task<PagedList<AlbumWithNetLikeCount>> GetLikedAlbums(int skip, int take, string search)
         {
-            var userId = this.GetUserIdOrThrow();
+            var userId = GetUserIdOrThrow();
             var query = DbSession.Query<Like, Likes_ByAlbum>()
                 .Where(u => u.UserId == userId)
                 .ProjectInto<AlbumWithNetLikeCount>()
