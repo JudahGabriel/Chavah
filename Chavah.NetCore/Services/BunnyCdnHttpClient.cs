@@ -19,6 +19,7 @@ namespace BitShuva.Chavah.Services
         {
             BaseAddress = new Uri(storageHost);
             DefaultRequestHeaders.Add("AccessKey", settings.Value.ApiKey);
+            DefaultRequestHeaders.TryAddWithoutValidation("accept", "application/json");
         }
     }
 }

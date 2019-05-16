@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -164,6 +165,16 @@ namespace BitShuva.Chavah.Services
 
                 return HttpProfilePics.Combine(fileName);
             }
+        }
+
+        public Task<List<string>> GetFiles(string directory)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<string>> GetDirectories(string directory)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

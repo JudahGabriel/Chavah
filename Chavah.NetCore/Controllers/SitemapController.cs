@@ -5,7 +5,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 using BitShuva.Chavah.Models;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -61,5 +62,19 @@ namespace BitShuva.Chavah.Services
         /// <param name="song">The song who's MP3 will be deleted.</param>
         /// <returns></returns>
         Task DeleteSongAsync(Song song);
+
+        /// <summary>
+        /// Gets the files in a directory on the CDN.
+        /// </summary>
+        /// <param name="directory">The parent directory. Use / or an empty string to specify the root.</param>
+        /// <returns>A list of files.</returns>
+        Task<List<string>> GetFiles(string directory);
+
+        /// <summary>
+        /// Gets the subdirectories of the specified directory on the CDN.
+        /// </summary>
+        /// <param name="directory">The parent directory. Use / or an empty string to specify the root.</param>
+        /// <returns>A list of directories.</returns>
+        Task<List<string>> GetDirectories(string directory);
     }
 }

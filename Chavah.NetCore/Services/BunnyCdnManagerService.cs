@@ -125,6 +125,34 @@ namespace BitShuva.Chavah.Services
         }
 
         /// <summary>
+        /// Gets the files in the specified directory.
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        public async Task<List<string>> GetFiles(string directory)
+        {
+            var directoryListing = await GetDirectoryListingJson(directory);
+            return directoryListing
+                .Where(l => !l.IsDirectory)
+                .Select(l => l.ObjectName)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Gets the directories in the specified directory.
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        public async Task<List<string>> GetDirectories(string directory)
+        {
+            var directoryListing = await GetDirectoryListingJson(directory);
+            return directoryListing
+                .Where(l => l.IsDirectory)
+                .Select(l => l.ObjectName)
+                .ToList();
+        }
+
+        /// <summary>
         /// Downloads a file from HTTP to a local file on disk on the web server.
         /// </summary>
         /// <param name="httpUrl">The URL of the file to download.</param>
@@ -192,6 +220,35 @@ namespace BitShuva.Chavah.Services
         }
 
         /// <summary>
+        /// Gets a directory listing (files and directories) for the specified <paramref name="cdnPath"/>.
+        /// </summary>
+        /// <param name="cdnPath">The directory ("foo") or directory path ("foo/bar") to get the directory listing for.</param>
+        /// <returns>A JSON string containing the data.</returns>
+        /// <see cref="https://bunnycdnstorage.docs.apiary.io/#reference/0/storagezonenamepath/get"/>
+        private async Task<List<BunnyCdnDirectoryListing>> GetDirectoryListingJson(string cdnPath)
+        {
+            HttpResponseMessage listingResponseOrNull = null;
+            var responseJson = "";
+            try
+            {
+                listingResponseOrNull = await httpClient.GetAsync($"{settings.Value.StorageZone}/{cdnPath}/");
+                listingResponseOrNull.EnsureSuccessStatusCode();
+                responseJson = await listingResponseOrNull.Content.ReadAsStringAsync();
+            }
+            catch (HttpRequestException listingError)
+            {
+                listingError.Data.Add("cdnPath", cdnPath);
+                throw;
+            }
+            finally
+            {
+                listingResponseOrNull?.Dispose();
+            }
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<BunnyCdnDirectoryListing>>(responseJson);
+        }
+
+        /// <summary>
         /// Uploads media by first downloading from the specified <paramref name="source"/> and them uploading to BunnyCDN in the specified directory.
         /// </summary>
         /// <param name="source">The URI where the source media can be downloaded from.</param>
@@ -206,6 +263,7 @@ namespace BitShuva.Chavah.Services
             }
         }
 
+
         /// <summary>
         /// Uploads the source stream to BunnyCDN.
         /// </summary>
@@ -215,9 +273,10 @@ namespace BitShuva.Chavah.Services
         /// <returns>An HTTP URI pointing to the new file in BunnyCDN.</returns>
         private async Task<Uri> UploadMedia(Stream source, string directory, string fileName)
         {
+            var url = $"{settings.Value.StorageZone}/{directory}/{fileName}";
+            
             using (var sourceStreamContent = new StreamContent(source))
             {
-                var url = $"{settings.Value.StorageZone}/{directory}/{fileName}";
                 HttpResponseMessage uploadResponseOrNull = null;
                 try
                 {
@@ -235,6 +294,10 @@ namespace BitShuva.Chavah.Services
                         uploadError.Data.Add("reasonPhrase", uploadResponseOrNull.ReasonPhrase);
                     }
                     throw;
+                }
+                finally
+                {
+                    uploadResponseOrNull?.Dispose();
                 }
 
                 return HttpHost.Combine(directory, fileName);
@@ -259,6 +322,10 @@ namespace BitShuva.Chavah.Services
                     deleteError.Data.Add("reasonPhrase", deleteResultOrNull.ReasonPhrase);
                 }
                 throw;
+            }
+            finally
+            {
+                deleteResultOrNull?.Dispose();
             }
         }
 
