@@ -3,7 +3,7 @@
 Chavah Messianic Radio is a progressive web app that plays Messianic Jewish music. It's built in the vein of Pandora, which allows users to thumb-up and -down songs, which influences what gets played for each listener.
 [messianicradio.com](https://messianicradio.com)
 
-![Screenshot of Chavah](https://bitshuvafiles01.com/chavah/chavah-github.jpg "Logo Title Text 1")
+![Screenshot of Chavah](https://chavah.b-cdn.net/chavah-github.jpg "Chavah Screenshot")
 
 Chavah is packaged as an app in the [iOS app store](https://itunes.apple.com/us/app/chavah-messianic-radio/id1361894819?platform=ipad&preserveScrollPosition=true), [Google Play](https://play.google.com/store/apps/details?id=com.messianicradio&hl=en), and [Windows app store](https://www.microsoft.com/en-us/store/p/chavah/9nhkjb6lpptv) utilizing service worker, Cordova, and responsive design.
 

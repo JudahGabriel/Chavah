@@ -1,6 +1,6 @@
-﻿namespace BitShuva.Chavah.Options
+﻿namespace BitShuva.Chavah.Settings
 {
-    public class ApplicationOptions
+    public class AppSettings
     {
         /// <summary>
         /// Name of the application instance.

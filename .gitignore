@@ -488,3 +488,4 @@ Web.Configz
 
 # For iOS project, ignore the XCode intellisense database
 /Chavah.iOS/cordova/platforms/ios/Index/DataStore/v5
+/Chavah.NetCore/App_Data/*

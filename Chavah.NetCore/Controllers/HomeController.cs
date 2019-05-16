@@ -4,7 +4,7 @@ using AutoMapper;
 
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 using BitShuva.Chavah.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -20,15 +20,15 @@ namespace BitShuva.Chavah.Controllers
     {
         private readonly ISongService _songService;
         private readonly AngularCacheBustedViews _ngViews;
-        private readonly ApplicationOptions _appOptions;
+        private readonly AppSettings _appOptions;
         private readonly IMapper _mapper;
-        private readonly CdnOptions _cdnOptions;
+        private readonly CdnSettings _cdnOptions;
 
         public HomeController(
             ISongService songService,
             AngularCacheBustedViews ngViews,
-            IOptionsMonitor<ApplicationOptions> appOptions,
-            IOptionsMonitor<CdnOptions> cdnOptions,
+            IOptionsMonitor<AppSettings> appOptions,
+            IOptionsMonitor<CdnSettings> cdnOptions,
             IMapper mapper,
             IAsyncDocumentSession dbSession,
             ILogger<HomeController> logger)

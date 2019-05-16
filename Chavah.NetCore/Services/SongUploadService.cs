@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 
 using BitShuva.Chavah.Models;
-
+using DalSoft.Hosting.BackgroundQueue;
 using Microsoft.Extensions.Logging;
 
 using Optional;
@@ -20,12 +20,15 @@ namespace BitShuva.Chavah.Services
         private readonly ICdnManagerService cdnManagerService;
         private readonly ILogger<SongUploadService> logger;
         private readonly IDocumentStore db;
+        private readonly BackgroundQueue backgroundQueue;
 
         public SongUploadService(
+            BackgroundQueue backgroundQueue,
             ICdnManagerService cdnManagerService,
             IDocumentStore db,
             ILogger<SongUploadService> logger)
         {
+            this.backgroundQueue = backgroundQueue;
             this.cdnManagerService = cdnManagerService;
             this.logger = logger;
             this.db = db;
@@ -33,17 +36,16 @@ namespace BitShuva.Chavah.Services
 
         public void QueueMp3Upload(SongUpload song, AlbumUpload album, int songNumber, string songId)
         {
-            Task.Factory.StartNew(
-                () => TryUploadMp3(song, album, songNumber, songId),
-                TaskCreationOptions.LongRunning);
+            backgroundQueue.Enqueue(_ => TryUploadMp3(song, album, songNumber, songId));
         }
 
         private async Task TryUploadMp3(SongUpload song, AlbumUpload album, int songNumber, string songId)
         {
-            var albumArtUri = Option.None<Uri>();
+            var mp3Uri = Option.None<Uri>();
             try
             {
-                albumArtUri = Option.Some(await cdnManagerService.UploadMp3Async(song.Address, album.Artist, album.Name, songNumber, song.FileName));
+                var uri = await cdnManagerService.UploadMp3Async(song.Address, album.Artist, album.Name, songNumber, song.FileName);
+                mp3Uri = Option.Some(uri);
             }
             catch (Exception error)
             {
@@ -51,7 +53,7 @@ namespace BitShuva.Chavah.Services
                 await TryDeleteSong(songId);
             }
 
-            albumArtUri.MatchSome(async uri => await TryUpdateSongUri(songId, uri));
+            mp3Uri.MatchSome(async uri => await TryUpdateSongUri(songId, uri));
         }
 
         private async Task TryUpdateSongUri(string songId, Uri albumArtUri)

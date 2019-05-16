@@ -8,7 +8,7 @@ using AutoMapper;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Account;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 using BitShuva.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -33,8 +33,8 @@ namespace BitShuva.Chavah.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IEmailService _emailSender;
-        private readonly ApplicationOptions _appOptions;
-        private readonly EmailOptions _emailOptions;
+        private readonly AppSettings _appOptions;
+        private readonly EmailSettings _emailOptions;
         private readonly IMapper _mapper;
         private readonly IPwnedPasswordService _pwnedPasswordService;
 
@@ -46,8 +46,8 @@ namespace BitShuva.Chavah.Controllers
             IAsyncDocumentSession asyncDocumentSession,
             ILogger<AccountController> logger,
             IEmailService emailSender,
-            IOptionsMonitor<ApplicationOptions> appOptions,
-            IOptionsMonitor<EmailOptions> emailOptions,
+            IOptionsMonitor<AppSettings> appOptions,
+            IOptionsMonitor<EmailSettings> emailOptions,
             IMapper mapper,
             IPwnedPasswordService pwnedPasswordService)
             : base(asyncDocumentSession, logger)

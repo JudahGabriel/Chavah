@@ -1,4 +1,4 @@
-﻿using BitShuva.Chavah.Options;
+﻿using BitShuva.Chavah.Settings;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,11 +9,11 @@ namespace BitShuva.Chavah.Controllers
     public class OffersController : Controller
     {
         private readonly ILogger<OffersController> _logger;
-        private readonly CdnOptions _options;
+        private readonly CdnSettings _options;
 
         public OffersController(
             ILogger<OffersController> logger,
-            IOptionsMonitor<CdnOptions> options)
+            IOptionsMonitor<CdnSettings> options)
         {
             _logger = logger;
             _options = options.CurrentValue;

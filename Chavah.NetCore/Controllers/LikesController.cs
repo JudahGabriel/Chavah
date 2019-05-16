@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,12 +18,12 @@ namespace BitShuva.Chavah.Controllers
     [Route("api/[controller]/[action]")]
     public class LikesController : RavenController
     {
-        private readonly ApplicationOptions _appOptions;
+        private readonly AppSettings _appOptions;
 
         public LikesController(
             IAsyncDocumentSession dbSession,
             ILogger<LikesController> logger,
-            IOptionsMonitor<ApplicationOptions> appOptions) : base(dbSession, logger)
+            IOptionsMonitor<AppSettings> appOptions) : base(dbSession, logger)
         {
             _appOptions = appOptions.CurrentValue;
         }

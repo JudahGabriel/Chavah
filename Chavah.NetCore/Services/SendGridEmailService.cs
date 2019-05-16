@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 
 using DalSoft.Hosting.BackgroundQueue;
 
@@ -31,7 +31,7 @@ namespace BitShuva.Services
     /// </summary>
     public class SendGridEmailService : IEmailService
     {
-        private readonly EmailOptions _emailOptions;
+        private readonly EmailSettings _emailOptions;
         private readonly ILogger<SendGridEmailService> _logger;
         private readonly IDocumentStore _db;
         private readonly BackgroundQueue _backgroundWorker;
@@ -40,7 +40,7 @@ namespace BitShuva.Services
         public SendGridEmailService(
             BackgroundQueue queue,
             IDocumentStore db,
-            IOptionsMonitor<EmailOptions> emailOptions,
+            IOptionsMonitor<EmailSettings> emailOptions,
             ILogger<SendGridEmailService> logger,
             IHostingEnvironment host)
         {

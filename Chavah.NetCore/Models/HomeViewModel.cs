@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using BitShuva.Chavah.Common;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -120,8 +120,8 @@ namespace BitShuva.Chavah.Models
         public static HomeViewModel From(
             UserViewModel user,
             Song song,
-            ApplicationOptions appOptions,
-            CdnOptions cdnOptions)
+            AppSettings appOptions,
+            CdnSettings cdnOptions)
         {
             var vm = new HomeViewModel
             {

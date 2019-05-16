@@ -89,16 +89,18 @@ namespace BitShuva.Chavah.Controllers
             }
 
             var user = await GetUserOrThrow();
-            var oldProfilePic = user.ProfilePicUrl;
+
+            //delete the old image
+            if (user.ProfilePicUrl != null)
+            {
+                await cdnManager.DeleteProfilePicAsync(user);
+            }
 
             using (var fileStream = upload.Photo.OpenReadStream())
             {
-                user.ProfilePicUrl = await cdnManager.UploadProfilePicAsync(fileStream, upload.Photo.ContentType ?? "image/jpg")
-                    .ConfigureAwait(false);
+                user.ProfilePicUrl = await cdnManager.UploadProfilePicAsync(fileStream, upload.Photo.ContentType ?? "image/jpg");
             }
 
-            //delete the old image
-            await cdnManager.DeleteProfilePicAsync(oldProfilePic.OriginalString).ConfigureAwait(false);
             return user.ProfilePicUrl;
         }
 

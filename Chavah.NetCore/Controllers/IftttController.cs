@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Rss;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 using BitShuva.Chavah.Services;
 
 using Chavah.Common;
@@ -29,11 +29,11 @@ namespace BitShuva.Chavah.Controllers
     [Route("[controller]/[action]")]
     public class IftttController : RavenController
     {
-        private readonly ApplicationOptions _appOptions;
+        private readonly AppSettings _appOptions;
         private readonly IPushNotificationSender _pushNotifications;
 
         public IftttController(
-            IOptionsMonitor<ApplicationOptions> appOptions,
+            IOptionsMonitor<AppSettings> appOptions,
             IPushNotificationSender pushNotifications,
             IAsyncDocumentSession dbSession,
             ILogger<IftttController> logger)

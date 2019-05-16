@@ -43,14 +43,14 @@ namespace Microsoft.Extensions.HealthChecks
                 }
                 else
                 {
-                    return HealthCheckResult.Healthy("ChavaDb is operational.");
+                    return HealthCheckResult.Healthy("Chavah database is operational.");
                 }
             }
             catch (Exception ex)
             {
                 return new HealthCheckResult(
                     context.Registration.FailureStatus,
-                    description: "ChavahDb is down",
+                    description: "Chavah database is down",
                     exception: ex);
             }
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 using BitShuva.Chavah.Services;
 
 using Microsoft.AspNetCore.Builder;
@@ -23,7 +23,7 @@ namespace BitShuva.Chavah.Common
             // Use our QuartzJobFactoryWithIoC so that EmailRetryJob can be instantiated with dependencies.
             var scheduler = Quartz.Impl.StdSchedulerFactory.GetDefaultScheduler().Result;
             scheduler.JobFactory = new QuartzJobFactoryWithIoC(app.ApplicationServices);
-            var emailOptions = app.ApplicationServices.GetRequiredService<IOptionsMonitor<EmailOptions>>();
+            var emailOptions = app.ApplicationServices.GetRequiredService<IOptionsMonitor<EmailSettings>>();
 
             var retryJob = JobBuilder.Create<EmailRetryJob>().Build();
             var retryTrigger = TriggerBuilder.Create()

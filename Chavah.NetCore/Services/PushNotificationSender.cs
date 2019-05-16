@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 
 using DalSoft.Hosting.BackgroundQueue;
 
@@ -24,16 +24,16 @@ namespace BitShuva.Chavah.Services
     /// </summary>
     public class PushNotificationSender : IPushNotificationSender
     {
-        private readonly ApplicationOptions _appOptions;
+        private readonly AppSettings _appOptions;
         private readonly ILogger<PushNotificationSender> _logger;
         private readonly BackgroundQueue _backgroundQueue;
         private readonly IDocumentStore _db;
-        private readonly EmailOptions _emailOptions;
+        private readonly EmailSettings _emailOptions;
 
         public PushNotificationSender(
             BackgroundQueue backgroundQueue,
-            IOptionsMonitor<ApplicationOptions> appOptions,
-            IOptionsMonitor<EmailOptions> emailOptions,
+            IOptionsMonitor<AppSettings> appOptions,
+            IOptionsMonitor<EmailSettings> emailOptions,
             IDocumentStore db,
             ILogger<PushNotificationSender> logger)
         {

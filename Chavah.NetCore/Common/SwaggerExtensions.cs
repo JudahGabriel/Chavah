@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 
 using BitShuva.Chavah;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -37,8 +37,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     var sp = services.BuildServiceProvider();
 
                     var apiProvider = sp.GetRequiredService<IApiVersionDescriptionProvider>();
-                    var appOptions = sp.GetRequiredService<IOptionsMonitor<ApplicationOptions>>().CurrentValue;
-                    var emailOptions = sp.GetRequiredService<IOptionsMonitor<EmailOptions>>().CurrentValue;
+                    var appOptions = sp.GetRequiredService<IOptionsMonitor<AppSettings>>().CurrentValue;
+                    var emailOptions = sp.GetRequiredService<IOptionsMonitor<EmailSettings>>().CurrentValue;
 
                     // add a swagger document for each discovered API version
                     // note: you might choose to skip or document deprecated API versions differently
@@ -78,8 +78,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static Info CreateInfoForApiVersion(
             ApiVersionDescription description,
-            ApplicationOptions appOptions,
-            EmailOptions emailOptions)
+            AppSettings appOptions,
+            EmailSettings emailOptions)
         {
             var info = new Info()
             {

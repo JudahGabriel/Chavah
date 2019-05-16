@@ -166,7 +166,7 @@ namespace BitShuva.Chavah.Controllers
         private static string FindUnusedArtistImageFileName(string artist, int index, IList<string> allFileNames)
         {
             const int maxArtistImages = 10000;
-            var artistCdnSafe = CdnManagerService.GetAlphaNumericEnglish(artist);
+            var artistCdnSafe = FtpCdnManagerService.GetAlphaNumericEnglish(artist);
             while (index < maxArtistImages)
             {
                 var desiredFileName = $"{artistCdnSafe} {index}.jpg";

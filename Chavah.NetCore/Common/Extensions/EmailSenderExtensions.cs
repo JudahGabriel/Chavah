@@ -2,7 +2,7 @@
 using System.Text.Encodings.Web;
 
 using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 using BitShuva.Services;
 
 namespace BitShuva.Chavah.Common
@@ -16,7 +16,7 @@ namespace BitShuva.Chavah.Common
             emailSender.QueueSendEmail(destination, subject, body);
         }
 
-        public static void QueueResetPassword(this IEmailService emailSender, string toEmail, string resetCode, ApplicationOptions appOptions)
+        public static void QueueResetPassword(this IEmailService emailSender, string toEmail, string resetCode, AppSettings appOptions)
         {
             var subject = $"{appOptions.Title} - reset your password";
             var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());
@@ -27,7 +27,7 @@ namespace BitShuva.Chavah.Common
             emailSender.QueueSendEmail(toEmail, subject, html);
         }
 
-        public static void QueueConfirmEmail(this IEmailService emailSender, string toEmail, string confirmationCode, ApplicationOptions appOptions)
+        public static void QueueConfirmEmail(this IEmailService emailSender, string toEmail, string confirmationCode, AppSettings appOptions)
         {
             var subject = $"{appOptions.Title} - confirm your email";
             var emailEscaped = Uri.EscapeDataString(toEmail.ToLower());

@@ -7,7 +7,7 @@ using AutoMapper;
 
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 using BitShuva.Chavah.Services;
 using BitShuva.Services;
 
@@ -50,9 +50,9 @@ namespace BitShuva.Chavah
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<ApplicationOptions>(Configuration.GetSection("App"));
-            services.Configure<EmailOptions>(Configuration.GetSection("Email"));
-            services.Configure<CdnOptions>(Configuration.GetSection("Cdn"));
+            services.Configure<AppSettings>(Configuration.GetSection("App"));
+            services.Configure<EmailSettings>(Configuration.GetSection("Email"));
+            services.Configure<CdnSettings>(Configuration.GetSection("Cdn"));
 
             var hcBuilder = services.AddHealthChecks();
 
@@ -63,13 +63,14 @@ namespace BitShuva.Chavah
             // Add application services.
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddTransient<IPushNotificationSender, PushNotificationSender>();
-            services.AddTransient<ICdnManagerService, CdnManagerService>();
+            services.AddTransient<ICdnManagerService, BunnyCdnManagerService>();
             services.AddScoped<IChannelProvider, RssChannelProvider>();
             services.AddTransient<ISongService, SongService>();
             services.AddTransient<ISongUploadService, SongUploadService>();
             services.AddTransient<IAlbumService, AlbumService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<EmailRetryJob>();
+            services.AddSingleton<BunnyCdnHttpClient>();
 
             services.AddBackgroundQueueWithLogging(1, TimeSpan.FromSeconds(5));
             services.AddCacheBustedAngularViews("/views");

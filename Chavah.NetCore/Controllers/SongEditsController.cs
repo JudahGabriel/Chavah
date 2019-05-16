@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,11 +19,11 @@ namespace BitShuva.Chavah.Controllers
     [Authorize]
     public class SongEditsController : RavenController
     {
-        private readonly ApplicationOptions _appOptions;
+        private readonly AppSettings _appOptions;
 
         public SongEditsController(
             IAsyncDocumentSession dbSession,
-            IOptionsMonitor<ApplicationOptions> appOptions,
+            IOptionsMonitor<AppSettings> appOptions,
             ILogger<SongEditsController> logger)
             : base(dbSession, logger)
         {

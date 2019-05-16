@@ -1,7 +1,7 @@
 ﻿using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Rss;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 using Chavah.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,12 +18,12 @@ namespace BitShuva.Chavah.Controllers
     [Route("[controller]/[action]")]
     public class ActivitiesController : RavenController
     {
-        private readonly ApplicationOptions _appOptions;
+        private readonly AppSettings _appOptions;
 
         public ActivitiesController(
             IAsyncDocumentSession dbSession,
             ILogger<ActivitiesController> logger,
-            IOptionsMonitor<ApplicationOptions> appOptions) : base(dbSession, logger)
+            IOptionsMonitor<AppSettings> appOptions) : base(dbSession, logger)
         {
             _appOptions = appOptions.CurrentValue;
         }

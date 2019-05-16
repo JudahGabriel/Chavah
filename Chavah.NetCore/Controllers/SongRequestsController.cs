@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,13 +20,13 @@ namespace BitShuva.Chavah.Controllers
     [Route("api/[controller]/[action]")]
     public class SongRequestsController : RavenController
     {
-        private readonly ApplicationOptions _appOptions;
+        private readonly AppSettings _appOptions;
         private readonly TimeSpan _songRequestValidTime = TimeSpan.FromMinutes(20);
 
         public SongRequestsController(
             IAsyncDocumentSession dbSession,
             ILogger<SongRequestsController> logger,
-            IOptionsMonitor<ApplicationOptions> appOptions)
+            IOptionsMonitor<AppSettings> appOptions)
             : base(dbSession, logger)
         {
             _appOptions = appOptions.CurrentValue;

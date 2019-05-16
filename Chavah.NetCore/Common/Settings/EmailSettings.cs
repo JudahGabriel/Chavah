@@ -1,6 +1,6 @@
-﻿namespace BitShuva.Chavah.Options
+﻿namespace BitShuva.Chavah.Settings
 {
-    public class EmailOptions
+    public class EmailSettings
     {
         /// <summary>
         /// Send Grid Api Key

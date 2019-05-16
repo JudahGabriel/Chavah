@@ -189,6 +189,7 @@
 
   <ItemGroup>
     <Folder Include="Common\Extensions\" />
+    <Folder Include="Options\" />
   </ItemGroup>
 
   <Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
-using BitShuva.Chavah.Options;
+using BitShuva.Chavah.Settings;
 using BitShuva.Chavah.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -29,14 +29,14 @@ namespace BitShuva.Chavah.Controllers
     {
         private readonly ICdnManagerService _cdnManagerService;
         private readonly ISongUploadService _songUploadService;
-        private readonly ApplicationOptions _appOptions;
+        private readonly AppSettings _appOptions;
 
         public AlbumsController(
             ICdnManagerService cdnManagerService,
             ISongUploadService songUploadService,
             IAsyncDocumentSession dbSession,
             ILogger<AlbumsController> logger,
-            IOptionsMonitor<ApplicationOptions> options)
+            IOptionsMonitor<AppSettings> options)
             : base(dbSession, logger)
         {
             _cdnManagerService = cdnManagerService ?? throw new ArgumentNullException(nameof(cdnManagerService));
@@ -177,6 +177,7 @@ namespace BitShuva.Chavah.Controllers
             var existingAlbum = await DbSession.Query<Album>()
                 .FirstOrDefaultAsync(a => a.Name == album.Name && a.Artist == album.Artist) ?? new Album();
 
+            // Store the Artist as well.
             var existingArtist = await DbSession.Query<Artist>()
                 .FirstOrDefaultAsync(a => a.Name == album.Artist);
             if (existingArtist == null)
@@ -186,6 +187,7 @@ namespace BitShuva.Chavah.Controllers
                     Bio = "",
                     Name = album.Artist
                 };
+                await DbSession.StoreAsync(existingArtist);
             }
 
             existingAlbum.AlbumArtUri = albumArtUriCdn;
@@ -204,6 +206,7 @@ namespace BitShuva.Chavah.Controllers
 
             // Store the songs in the DB.
             var songNumber = 1;
+            var mp3sToUpload = new List<(SongUpload upload, Song song)>(album.Songs.Count);
             foreach (var albumSong in album.Songs)
             {
                 //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
@@ -234,12 +237,15 @@ namespace BitShuva.Chavah.Controllers
                 };
                 await DbSession.StoreAsync(song);
 
-                // Queue the songs to be uploaded to the CDN.
-                _songUploadService.QueueMp3Upload(albumSong, album, songNumber, song.Id);
+                mp3sToUpload.Add((albumSong, song));
                 songNumber++;
             }
 
             await DbSession.SaveChangesAsync();
+
+            // Queue up the MP3s to upload to the CDN now that the songs are saved in the database.
+            mp3sToUpload.ForEach(mp3 => _songUploadService.QueueMp3Upload(mp3.upload, album, mp3.song.Number, mp3.song.Id));
+
             return existingAlbum.Id;
         }
 

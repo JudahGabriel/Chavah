@@ -566,7 +566,7 @@ namespace BitShuva.Chavah.Controllers
 
             try
             {
-                await _cdnManager.DeleteAsync(existingSong);
+                await _cdnManager.DeleteSongAsync(existingSong);
             }
             catch (Exception deleteFromCdnError)
             {

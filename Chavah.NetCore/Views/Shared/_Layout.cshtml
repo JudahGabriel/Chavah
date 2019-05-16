@@ -1,5 +1,5 @@
-﻿@using BitShuva.Chavah.Options
-@inject IOptionsSnapshot<ApplicationOptions> snapshot
+﻿@using BitShuva.Chavah.Settings
+@inject IOptionsSnapshot<AppSettings> snapshot
 @model HomeViewModel
 
 @{
@@ -120,8 +120,8 @@
         <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
             <div style="text-align: center;">
                 <picture style="width: 120px; height: 120px;">
-                    <source srcset="https://bitshuvafiles01.com/chavah/chavah-splash.webp?v=1" type="image/webp">
-                    <source srcset="https://bitshuvafiles01.com/chavah/chavah-splash.png?v=1" type="image/png">
+                    <source srcset="@Model.CdnUrl/chavah-splash.webp?v=1" type="image/webp">
+                    <source srcset="@Model.CdnUrl/chavah-splash.png?v=1" type="image/png">
                 </picture>
                 <br />
                 <h5 style="color: #e9dd9a;">Chavah Messianic Radio</h5>
