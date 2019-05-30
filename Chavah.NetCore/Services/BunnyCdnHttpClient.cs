@@ -13,12 +13,13 @@ namespace BitShuva.Chavah.Services
     /// </summary>
     public class BunnyCdnHttpClient : HttpClient
     {
+        public const string AccessKeyHeader = "AccessKey";
         private const string storageHost = "https://storage.bunnycdn.com";
 
         public BunnyCdnHttpClient(IOptions<CdnSettings> settings)
         {
             BaseAddress = new Uri(storageHost);
-            DefaultRequestHeaders.Add("AccessKey", settings.Value.ApiKey);
+            DefaultRequestHeaders.Add(AccessKeyHeader, settings.Value.ApiKey);
             DefaultRequestHeaders.TryAddWithoutValidation("accept", "application/json");
         }
     }

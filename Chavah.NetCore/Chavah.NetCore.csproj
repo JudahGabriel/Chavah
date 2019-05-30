@@ -43,7 +43,7 @@
     <PackageReference Include="Quartz" Version="3.0.7" />
     <PackageReference Include="RavenDB.Client" Version="4.1.5" />
     <PackageReference Include="RavenDB.Identity" Version="6.0.3" />
-    <PackageReference Include="RavenDB.StructuredLogger" Version="4.0.7" />
+    <PackageReference Include="RavenDB.StructuredLogger" Version="4.0.8" />
     <PackageReference Include="RavenMigrations" Version="4.1.7" />
     <PackageReference Include="RavenDB.DependencyInjection" Version="3.0.0" />
     <PackageReference Include="Sendgrid" Version="9.11.0" />

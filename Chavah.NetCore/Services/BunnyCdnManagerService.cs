@@ -131,7 +131,7 @@ namespace BitShuva.Chavah.Services
         /// <returns></returns>
         public async Task<List<string>> GetFiles(string directory)
         {
-            var directoryListing = await GetDirectoryListingJson(directory);
+            var directoryListing = await GetDirectoryListings(directory);
             return directoryListing
                 .Where(l => !l.IsDirectory)
                 .Select(l => l.ObjectName)
@@ -145,7 +145,7 @@ namespace BitShuva.Chavah.Services
         /// <returns></returns>
         public async Task<List<string>> GetDirectories(string directory)
         {
-            var directoryListing = await GetDirectoryListingJson(directory);
+            var directoryListing = await GetDirectoryListings(directory);
             return directoryListing
                 .Where(l => l.IsDirectory)
                 .Select(l => l.ObjectName)
@@ -223,20 +223,22 @@ namespace BitShuva.Chavah.Services
         /// Gets a directory listing (files and directories) for the specified <paramref name="cdnPath"/>.
         /// </summary>
         /// <param name="cdnPath">The directory ("foo") or directory path ("foo/bar") to get the directory listing for.</param>
-        /// <returns>A JSON string containing the data.</returns>
+        /// <returns>The directory listings.</returns>
         /// <see cref="https://bunnycdnstorage.docs.apiary.io/#reference/0/storagezonenamepath/get"/>
-        private async Task<List<BunnyCdnDirectoryListing>> GetDirectoryListingJson(string cdnPath)
+        private async Task<List<BunnyCdnDirectoryListing>> GetDirectoryListings(string cdnPath)
         {
             HttpResponseMessage listingResponseOrNull = null;
             var responseJson = "";
+            var url = $"{settings.Value.StorageZone}/{cdnPath}/";
             try
             {
-                listingResponseOrNull = await httpClient.GetAsync($"{settings.Value.StorageZone}/{cdnPath}/");
+                listingResponseOrNull = await httpClient.GetAsync(url);
                 listingResponseOrNull.EnsureSuccessStatusCode();
                 responseJson = await listingResponseOrNull.Content.ReadAsStringAsync();
             }
             catch (HttpRequestException listingError)
             {
+                listingError.Data.Add("url", url);
                 listingError.Data.Add("cdnPath", cdnPath);
                 throw;
             }
