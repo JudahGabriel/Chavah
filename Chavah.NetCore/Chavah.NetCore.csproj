@@ -41,7 +41,7 @@
     <PackageReference Include="Optional" Version="4.0.0" />
     <PackageReference Include="Pwned.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Quartz" Version="3.0.7" />
-    <PackageReference Include="RavenDB.Client" Version="4.1.5" />
+    <PackageReference Include="RavenDB.Client" Version="4.2.0" />
     <PackageReference Include="RavenDB.Identity" Version="6.0.3" />
     <PackageReference Include="RavenDB.StructuredLogger" Version="4.0.8" />
     <PackageReference Include="RavenMigrations" Version="4.1.7" />

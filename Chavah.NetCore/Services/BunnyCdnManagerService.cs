@@ -312,7 +312,7 @@ namespace BitShuva.Chavah.Services
             HttpResponseMessage deleteResultOrNull = null;
             try
             {
-                deleteResultOrNull = await httpClient.DeleteAsync(new Uri(url));
+                deleteResultOrNull = await httpClient.DeleteAsync(url);
                 deleteResultOrNull.EnsureSuccessStatusCode();
             }
             catch (HttpRequestException deleteError)
