@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
 using BitShuva.Chavah.Settings;
@@ -13,7 +14,7 @@ using Raven.Client.Documents.Session;
 
 namespace BitShuva.Chavah.Controllers
 {
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     public class CdnController : RavenController
     {
         private readonly ICdnManagerService cdnManager;
@@ -58,6 +59,17 @@ namespace BitShuva.Chavah.Controllers
             }
 
             return invalidSongUris.ToList();
+        }
+
+        /// <summary>
+        /// Redirects to a random station identifier MP3 on the CDN.
+        /// </summary>
+        /// <returns></returns>
+        public RedirectResult GetStationId()
+        {
+            var directory = new Uri(cdnSettings.Value.HttpPath).Combine(cdnSettings.Value.SoundEffects);
+            var idAnnouncement = new Random().Next(1, 9);
+            return Redirect(directory.Combine($"StationId{idAnnouncement}.mp3").AbsoluteUri);
         }
     }
 }

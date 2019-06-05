@@ -101,7 +101,7 @@ namespace BitShuva.Chavah.Models
         public string ServiceWorker { get; set; }
 
         /// <summary>
-        /// FilePickrKey
+        /// The API key used for FilePickr.
         /// </summary>
         public string FilePickrKey { get; set; }
 

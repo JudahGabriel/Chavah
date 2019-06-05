@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -35,6 +35,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task<RecentUserSummary> GetRecent(int minutes)
         {
             var recent = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(minutes));
@@ -60,10 +61,10 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="volume"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public async Task SaveVolume(double volume)
         {
-            // TODO: trace down the logic for the authentication. it should never be triggred from ui.
-            var user = await GetUser().ConfigureAwait(false);
+            var user = await GetUser();
             if (user != null)
             {
                 user.Volume = volume;
@@ -76,6 +77,7 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="upload"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public async Task<Uri> UploadProfilePicture([FromForm]ProfilePictureUpload upload)
         {
             if (upload.Photo == null)
@@ -122,6 +124,7 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="updatedUser"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public async Task<AppUser> UpdateProfile([FromBody]AppUser updatedUser)
         {
             var user = await GetUserOrThrow().ConfigureAwait(false);

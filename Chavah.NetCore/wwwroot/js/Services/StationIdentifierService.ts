@@ -32,10 +32,7 @@
         }
 
         playStationIdAnnouncement() {
-            let announcementNumbers = [1, 2, 3, 4, 5, 6, 7];
-            // tslint:disable-next-line:max-line-length
-            let songRequestName = "StationId" + announcementNumbers[Math.floor(Math.random() * announcementNumbers.length)] + ".mp3";
-            let songUrl = `${this.homeViewModel.soundEffects}/${songRequestName}`;
+            let songUrl = "/api/cdn/getstationid";
             this.audioPlayer.playNewUri(songUrl);
         }
     }
