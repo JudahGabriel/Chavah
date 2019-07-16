@@ -41,8 +41,12 @@ namespace BitShuva.Chavah.Controllers
             var m3uBuilder = new StringBuilder();
             m3uBuilder.AppendLine("# EXTM3U"); // The header
 
+            // Normally we could append just a single URL, but some apps (like Roku) only play 1 song then. We're fixing that here by appending many songs.
             var getNextSongUrl = Url.Action(nameof(GetNextSong), "Stream", null, Request.Scheme);
-            m3uBuilder.AppendLine(getNextSongUrl);
+            for (var i = 0; i < 100; i++)
+            {
+                m3uBuilder.AppendLine(getNextSongUrl + "?i=" + i.ToString());
+            }
 
             var m3uBytes = Encoding.UTF8.GetBytes(m3uBuilder.ToString());
             return File(m3uBytes, "application/vnd.apple.mpegurl", "ChavahTuneInStream.m3u");
@@ -63,8 +67,12 @@ namespace BitShuva.Chavah.Controllers
             var m3uBuilder = new StringBuilder();
             m3uBuilder.AppendLine("# EXTM3U"); // The header
 
+            // Normally we could append just a single URL, but some apps (like Roku) only play 1 song then. We're fixing that here by appending many songs.
             var getNextSongUrl = Url.Action(nameof(GetNextShabbatSong), "Stream", null, Request.Scheme);
-            m3uBuilder.AppendLine(getNextSongUrl);
+            for (var i = 0; i < 100; i++)
+            {
+                m3uBuilder.AppendLine(getNextSongUrl);
+            }
 
             var m3uBytes = Encoding.UTF8.GetBytes(m3uBuilder.ToString());
             return File(m3uBytes, "application/vnd.apple.mpegurl", "ChavahTuneInStream.m3u");
