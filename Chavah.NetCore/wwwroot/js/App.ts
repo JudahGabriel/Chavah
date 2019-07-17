@@ -47,50 +47,7 @@
         pushSubscriptionSuccessful: findCacheBustedView("/modals/PushSubscriptionSuccessful.html"),
     };
     App.constant("templatePaths", templatePaths);
-
-    const views = {
-        nowPlaying: "/NowPlaying.html",
-        trending: "/Trending.html",
-        profile: "/Profile.html",
-        popular: "/Popular.html",
-        recent: "/RecentSongs.html",
-        myLikes: "/MyLikes.html",
-        editSong: "/EditSong.html",
-        shareThanks: "/ShareThanks.html",
-        about: "/Legal.html",
-        welcome: "/Welcome.html",
-        songEditApproved: "/SongEditApproved.html",
-        privacyPolicy: "/PrivacyPolicy.html",
-        support: "/Support.html",
-        maintenance: "/Maintenance.html",
-
-        // Sign in
-        promptSignIn: "/PromptSignIn.html",
-        signIn: "/SignIn.html",
-        password: "/Password.html",
-        forgotPassword: "/ForgotPassword.html",
-        createPassword: "/CreatePassword.html",
-        register: "/Register.html",
-        confirmEmail: "/ConfirmEmail.html",
-        resetPassword: "/ResetPassword.html",
-
-        // Donate
-        donate: "/Donate.html",
-        donateSuccess: "/DonateSuccess.html",
-        donateCancelled: "/DonateCancelled.html",
-
-        // Admin
-        albums: "/Albums.html",
-        uploadAlbum: "/UploadAlbum.html",
-        createAlbum: "/EditAlbum.html",
-        editAlbum: "/EditAlbum.html",
-        editArtist: "/EditArtist.html",
-        songEdits: "/ApproveSongEdits.html",
-        tags: "/TagEditor.html",
-        logs: "/LogEditor.html",
-        editSongs: "/EditSongs.html"
-    };
-
+    
     App.config(["$routeProvider", "$locationProvider", "$compileProvider",
         (
             $routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider, $compileProvider: ng.ICompileProvider) => {
@@ -100,48 +57,48 @@
             $compileProvider.debugInfoEnabled(homeVm.debug);
 
             $routeProvider
-                .when("/", createRoute("NowPlaying.html"))
+                .when("/", createRoute("/NowPlaying.html"))
                 .when("/nowplaying", { redirectTo: "/" })
-                .when("/trending", createRoute("Trending.html"))
-                .when("/profile", createRoute(views.profile, RouteAccess.Authenticated))
-                .when("/popular", createRoute(views.popular))
-                .when("/recent", createRoute(views.recent))
-                .when("/mylikes", createRoute(views.myLikes, RouteAccess.Authenticated))
-                .when("/edit/songs/:id", createRoute(views.editSong, RouteAccess.Authenticated))
-                .when("/sharethanks/:artist?", createRoute(views.shareThanks))
-                .when("/about", createRoute(views.about))
-                .when("/welcome", createRoute(views.welcome))
-                .when("/songeditapproved/:artist/:songName", createRoute(views.songEditApproved))
-                .when("/privacy", createRoute(views.privacyPolicy))
-                .when("/support", createRoute(views.support))
-                .when("/maintenance", createRoute(views.maintenance))
+                .when("/trending", createRoute("/Trending.html"))
+                .when("/profile", createRoute("/Profile.html", RouteAccess.Authenticated))
+                .when("/popular", createRoute("/Popular.html"))
+                .when("/recent", createRoute("/RecentSongs.html"))
+                .when("/mylikes", createRoute("/MyLikes.html", RouteAccess.Authenticated))
+                .when("/edit/songs/:id", createRoute("/EditSong.html", RouteAccess.Authenticated))
+                .when("/sharethanks/:artist?", createRoute("/ShareThanks.html"))
+                .when("/about", createRoute("/Legal.html"))
+                .when("/welcome", createRoute("/Welcome.html"))
+                .when("/songeditapproved/:artist/:songName", createRoute("/SongEditApproved.html"))
+                .when("/privacy", createRoute("/PrivacyPolicy.html"))
+                .when("/support", createRoute("/Support.html"))
+                .when("/maintenance", createRoute("/Maintenance.html"))
 
                 // Sign in
-                .when("/promptsignin", createRoute(views.promptSignIn))
-                .when("/signin", createRoute(views.signIn))
-                .when("/password/:email", createRoute(views.password))
-                .when("/forgotpassword/:email?/:pwned?", createRoute(views.forgotPassword))
-                .when("/createpassword/:email", createRoute(views.createPassword))
-                .when("/register/:email?", createRoute(views.register))
-                .when("/confirmemail/:email/:confirmCode", createRoute(views.confirmEmail))
-                .when("/resetpassword/:email/:confirmCode", createRoute(views.resetPassword))
+                .when("/promptsignin", createRoute("/PromptSignIn.html"))
+                .when("/signin", createRoute("/SignIn.html"))
+                .when("/password/:email", createRoute("/Password.html"))
+                .when("/forgotpassword/:email?/:pwned?", createRoute("/ForgotPassword.html"))
+                .when("/createpassword/:email", createRoute("/CreatePassword.html"))
+                .when("/register/:email?", createRoute("/Register.html"))
+                .when("/confirmemail/:email/:confirmCode", createRoute("/ConfirmEmail.html"))
+                .when("/resetpassword/:email/:confirmCode", createRoute("/ResetPassword.html"))
 
                 // Donate
-                .when("/donate/:artist?", createRoute(views.donate))
-                .when("/donatesuccess", createRoute(views.donateSuccess))
-                .when("/donatecancelled", createRoute(views.donateCancelled))
+                .when("/donate/:artist?", createRoute("/Donate.html"))
+                .when("/donatesuccess", createRoute("/DonateSuccess.html"))
+                .when("/donatecancelled", createRoute("/DonateCancelled.html"))
 
                 // Admin
-                .when("/admin", createRoute(views.editSongs, RouteAccess.Admin))
-                .when("/admin/albums", createRoute(views.albums, RouteAccess.Admin))
-                .when("/admin/album/upload", createRoute(views.uploadAlbum, RouteAccess.Admin))
-                .when("/admin/album/create", createRoute(views.createAlbum, RouteAccess.Admin))
-                .when("/admin/album/:artist/:album", createRoute(views.editAlbum, RouteAccess.Admin))
-                .when("/admin/artists/:artistName?", createRoute(views.editArtist, RouteAccess.Admin))
-                .when("/admin/songedits", createRoute(views.songEdits, RouteAccess.Admin))
-                .when("/admin/tags", createRoute(views.tags, RouteAccess.Admin))
-                .when("/admin/logs", createRoute(views.logs, RouteAccess.Admin))
-                .when("/admin/songs", createRoute(views.editSongs, RouteAccess.Admin)) 
+                .when("/admin", createRoute("/EditSongs.html", RouteAccess.Admin))
+                .when("/admin/albums", createRoute("/Albums.html", RouteAccess.Admin))
+                .when("/admin/album/upload", createRoute("/UploadAlbum.html", RouteAccess.Admin))
+                .when("/admin/album/create", createRoute("/EditAlbum.html", RouteAccess.Admin))
+                .when("/admin/album/:artist/:album", createRoute("/EditAlbum.html", RouteAccess.Admin))
+                .when("/admin/artists/:artistName?", createRoute("/EditArtist.html", RouteAccess.Admin))
+                .when("/admin/songedits", createRoute("/ApproveSongEdits.html", RouteAccess.Admin))
+                .when("/admin/tags", createRoute("/TagEditor.html", RouteAccess.Admin))
+                .when("/admin/logs", createRoute("/LogEditor.html", RouteAccess.Admin))
+                .when("/admin/songs", { redirectTo: "/admin" }) 
 
                 .otherwise({
                     redirectTo: "/nowplaying",

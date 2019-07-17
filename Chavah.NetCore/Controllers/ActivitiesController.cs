@@ -88,6 +88,7 @@ namespace BitShuva.Chavah.Controllers
 
             var activitiesInLast60Minutes = await DbSession.Query<Activity>()
                 .OrderBy(a => a.DateTime) // oldest first, so that the list doesn't change as the hour goes by.
+                .Where(a => a.Type == ActivityType.Like || a.Type == ActivityType.Request)
                 .Where(a => a.DateTime >= hourAgo)
                 .Take(100)
                 .ToListAsync();
@@ -113,6 +114,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task<IActionResult> ActivityFeed(int take = 5)
         {
             var recentActivities = await DbSession.Query<Activity>()
+                .Where(a => a.Type == ActivityType.Like || a.Type == ActivityType.Request)
                 .OrderByDescending(a => a.DateTime)
                 .Take(take)
                 .ToListAsync();
@@ -131,6 +133,33 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetCommentsFeed()
+        {
+            var dayAgo = DateTimeOffset.UtcNow.Subtract(TimeSpan.FromDays(1));
+
+            var comments = await DbSession.Query<Activity>()
+                .Where(a => a.Type == ActivityType.Comment)
+                .OrderByDescending(a => a.DateTime)
+                .Take(50)
+                .ToListAsync();
+
+            var rssItems = comments.Select(activity => new SyndicationLinkItem(
+                id: activity.Id,
+                title: activity.Title,
+                description: activity.Description,
+                link: activity.MoreInfoUri));
+
+            var feed = new SyndicationFeed(
+                $"{_appOptions.Name} Recent Comments",
+                $"Recent comments on {_appOptions.Title}",
+                new Uri(_appOptions.DefaultUrl),
+                "RecentComments",
+                rssItems,
+                language: _appOptions.Language);
+
+            return new RssActionResult(feed);
+        }
+
         private static SyndicationLinkItem ActivityToRssItem(Activity activity)
         {
             return new SyndicationLinkItem(activity.Id, activity.Title, activity.Description, activity.MoreInfoUri);

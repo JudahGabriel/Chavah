@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace BitShuva.Chavah.Models
 {
@@ -11,17 +12,23 @@ namespace BitShuva.Chavah.Models
         public int FlagCount { get; set; }
         public DateTimeOffset? LastFlagDate { get; set; }
 
-        public static string GetUserDisplayNameFromId(string userId)
+        public static string GetUserDisplayName(AppUser user)
         {
+            // Use the First and Last name if we have it.
+            if (!string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName))
+            {
+                return user.FirstName + " " + user.LastName;
+            }
+
             // "AppUsers/yochanansheqel@gmail.com" -> "yochanansheqel"
-            var domainIndex = userId.LastIndexOf('@');
+            var domainIndex = user.Id.LastIndexOf('@');
             var userIdPrefixLength = AppUser.AppUserPrefix.Length;
             if (domainIndex > userIdPrefixLength)
             {
-                return userId.Substring(userIdPrefixLength, domainIndex - userIdPrefixLength);
+                return user.Id.Substring(userIdPrefixLength, domainIndex - userIdPrefixLength);
             }
 
-            return userId;
+            return user.Id;
         }
     }
 }

@@ -154,7 +154,8 @@ namespace BitShuva.Chavah {
                     foreground: "",
                     muted: "",
                     textShadow: ""
-                }
+                },
+                commentCount: 0
             });
         }
 

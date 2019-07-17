@@ -2,7 +2,7 @@
 {
     public class AddComment
     {
-        public string Comment { get; set; }
+        public string Content { get; set; }
         public string SongId { get; set; }
     }
 }

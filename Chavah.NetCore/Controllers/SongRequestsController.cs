@@ -125,8 +125,8 @@ namespace BitShuva.Chavah.Controllers
                     var activity = new Activity
                     {
                         DateTime = DateTime.UtcNow,
-                        Title = $"{song.Artist} - {song.Name} was requested by one of our listeners",
-                        Description = $"\"{song.Name}\" by {song.Artist} was requested by one of our listeners on {_appOptions?.Title}.",
+                        Title = $"{song.Artist} - {song.Name} was requested by a listener",
+                        Description = $"\"{song.Name}\" by {song.Artist} was requested by a listener on {_appOptions?.Title}.",
                         MoreInfoUri = song.GetSongShareLink(_appOptions?.DefaultUrl),
                         EntityId = song.Id,
                         Type = ActivityType.Request

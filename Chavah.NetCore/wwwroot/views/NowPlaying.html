@@ -113,6 +113,62 @@
                 </h4>
             </div>
 
+            <!-- Comments -->
+            <div class="panel-group expander comments-expander" role="tablist">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" ng-style="{ 'background-color': vm.currentSong.albumColors.background, 'color': vm.currentSong.albumColors.foreground }" ng-click="vm.tryNativeShare()">
+                        <h3 class="panel-title text-center" role="button" ng-click="vm.toggleCommentThread()">
+                            <i class="fa fa-comments" style="font-size: 22px;"></i>
+                            <span>{{vm.commentsTitle}}</span>
+                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.areCommentsExpanded, 'fa-angle-up': vm.currentSong.areCommentsExpanded }"></i>
+                        </h3>
+                    </div>
+                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.areCommentsExpanded }" role="tabpanel">
+                        <div class="panel-body" ng-style="{ 'color': vm.currentSong.albumColors.foreground, 'background-color': vm.currentSong.albumColors.background }">
+                            <!--Loading-->
+                            <div class="progress" ng-show="vm.isLoadingCommentThread">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                    <span class="sr-only">100% Complete</span>
+                                </div>
+                            </div>
+
+                            <div ng-if="vm.commentThread">
+                                <div class="media comment" ng-repeat="comment in vm.commentThread.comments">
+                                    <div class="media-left">
+                                        <a ng-href="{{'/api/cdn/getUserProfile?userId=' + comment.userId}}">
+                                            <img class="media-object" ng-src="{{'/api/cdn/getUserProfile?userId=' + comment.userId}}" />
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="media-heading">
+                                            <a ng-href="{{'/api/cdn/getUserProfile?userId=' + comment.userId}}">{{comment.userDisplayName}}</a>
+                                        </h4>
+                                        <span class="content-readonly">{{comment.content}}</span>
+                                    </div>
+                                </div>
+
+                                <!--Add a comment-->
+                                <div class="media comment add-comment" ng-show="vm.accountApi.isSignedIn">
+                                    <div class="media-left">
+                                        <a href="#/profile">
+                                            <img class="media-object" ng-src="{{vm.currentUserProfileUrl}}" />
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <input class="form-control content" placeholder="Write a comment..." enter-handler="vm.addNewComment()" ng-model="vm.newCommentText" />
+                                    </div>
+                                </div>
+
+                                <!--Not signed in, can't comment-->
+                                <div class="not-signed-in" ng-hide="vm.accountApi.isSignedIn">
+                                    <h4><i class="fa fa-info-circle"></i> <a href="#/signin">Sign in</a> to comment on this song</h4>
+                                </div>
+                            </div   >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!--Share-->
             <div class="panel-group expander share-expander" role="tablist">
                 <div class="panel panel-default">
@@ -180,25 +236,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Comments -->
-            <!--<div class="panel-group expander comments-expander" role="tablist">
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" ng-style="{ 'background-color': vm.currentSong.albumColors.background, 'color': vm.currentSong.albumColors.foreground }">
-                        <h3 class="panel-title text-center" ng-click="vm.currentSong.areCommentsExpanded = !vm.currentSong.areCommentsExpanded">
-                            <i class="fa fa-comment fa-flip-horizontal" style="font-size: 22px;"></i>
-                            {{vm.currentSong.commentCount}} {{vm.currentSong.commentCount === 1 ? 'comment' : 'comments'}}
-                            <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.areCommentsExpanded, 'fa-angle-up': vm.currentSong.areCommentsExpanded }"></i>
-                        </h3>
-                    </div>
-                </div>
-                <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.areCommentsExpanded }" role="tabpanel">
-                    <div class="panel-body text-center" ng-style="{ 'color': vm.currentSong.albumColors.foreground, 'border-color': vm.currentSong.albumColors.background }">
-                        <img class="img-responsive" src="../images/commentsLoading.gif" />
-                    </div>
-                </div>
-            </div>-->
-
+            
             <!--Support artist-->
             <div class="panel-group expander support-expander" role="tablist">
                 <div class="panel panel-default">

@@ -71,5 +71,29 @@ namespace BitShuva.Chavah.Controllers
             var idAnnouncement = new Random().Next(1, 9);
             return Redirect(directory.Combine($"StationId{idAnnouncement}.mp3").AbsoluteUri);
         }
+
+        /// <summary>
+        /// Redirects to the profile picture of the user with the specified ID. If it doesn't exist, 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<RedirectResult> GetUserProfile(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Redirect(DefaultProfilePic.ToString());
+            }
+
+            var user = await DbSession.LoadOptionAsync<AppUser>(userId);
+            var profilePic = user
+                .Map(u => u.ProfilePicUrl)
+                .NotNull()
+                .ValueOr(() => DefaultProfilePic);
+            return Redirect(profilePic.ToString());
+        }
+
+        private Uri DefaultProfilePic => new Uri(cdnSettings.Value.HttpPath)
+            .Combine(cdnSettings.Value.ProfilePicsDirectory)
+            .Combine("unknown-user.jpg");
     }
 }

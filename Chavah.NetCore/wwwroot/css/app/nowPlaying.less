@@ -9,7 +9,6 @@
         margin-top: 20px;
         display: flex;
         justify-content: center; // flex + justify-content makes the songs centered in the page.
-
         // on very large screens, shift the songs to the right a bit.
         @media (min-width: 1400px) {
             padding-left: 20px;
@@ -228,17 +227,6 @@
         }
     }
 
-    .comments-expander {
-        .panel-body {
-            background-color: white;
-            margin-top: -1px;
-            border-width: 0 3px 3px 3px;
-            border-style: solid;
-            margin-left: 1px;
-            margin-right: 1px;
-        }
-    }
-
     .tag {
         padding: 10px;
         margin-right: 10px;
@@ -256,6 +244,61 @@
 
         .fa-tags {
             color: rgb(44, 62, 80);
+        }
+    }
+
+    .comments-expander {
+        .comment {
+            .media-object {
+                width: 32px;
+                height: 32px;
+                border-radius: 32px;
+                border: 1px solid gray;
+            }
+
+            .media-body {
+                background-color: #f2f3f5;
+                border-radius: 18px;
+                color: #1c1e21;
+                width: auto;
+                padding: 5px 15px 5px 15px;
+
+                h4 {
+                    display: inline-block;
+                    font-size: 16px;
+                }
+
+                .content-readonly {
+                    padding-right: 15px;
+                }
+            }
+
+            &.add-comment {
+                .media-body {
+                    border: 1px solid gray;
+                    width: 10000px;
+                }
+
+                input.content {
+                    height: 32px;
+                    border: none;
+                    background-color: #f2f3f5;
+                    padding-left: 0;
+
+                    &:focus, &:active {
+                        border: none;
+                    }
+
+                    &::placeholder {
+                        color: #8d949e;
+                    }
+                }
+            }
+        }
+
+        .not-signed-in {
+            margin-left: 45px;
+            margin-top: 20px;
         }
     }
 }

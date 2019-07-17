@@ -14,7 +14,7 @@
 
         getEmbedCode(id: string): string {
             // tslint:disable-next-line:max-line-length
-            return `<iframe style="border-top: medium none; height: 558px; border-right: medium none; width: 350px; border-bottom: medium none; border-left: medium none" src="${this.homeViewModel.defaultUrl}/home/embed?song=${id}" scrolling="none"></iframe>`;
+            return `<iframe loading="lazy" style="border-top: medium none; height: 558px; border-right: medium none; width: 350px; border-bottom: medium none; border-left: medium none" src="${this.homeViewModel.defaultUrl}/home/embed?song=${id}" scrolling="none"></iframe>`;
         }
 
         facebookShareUrl(song: Song): string {

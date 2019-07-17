@@ -3,6 +3,7 @@
     public enum ActivityType
     {
         Like,
-        Request
+        Request,
+        Comment
     }
 }

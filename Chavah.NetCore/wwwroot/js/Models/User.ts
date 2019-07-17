@@ -40,6 +40,14 @@
             return this.roles.map(v=> v.toLowerCase()).includes(User.roles.admin.toLowerCase());
         }
 
+        get displayName(): string {
+            if (this.firstName && this.lastName) {
+                return `${this.firstName} ${this.lastName}`;
+            }
+
+            return this.email.substring(0, this.email.indexOf('@'));
+        }
+
         updateFrom(other: Server.IUserViewModel) {
             angular.merge(this, other);
         }

@@ -161,6 +161,7 @@
     <TypeScriptCompile Include="wwwroot\js\Services\AudioPlayerService.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\HttpApiService.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\IOSMediaSessionService.ts" />
+	<TypeScriptCompile Include="wwwroot\js\Services\CommentThreadService.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\LikeApiService.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\LoadingProgressService.ts" />
     <TypeScriptCompile Include="wwwroot\js\Services\LogService.ts" />
