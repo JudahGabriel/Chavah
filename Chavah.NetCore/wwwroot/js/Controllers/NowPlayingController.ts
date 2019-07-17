@@ -12,6 +12,7 @@
         commentThread: Server.CommentThread | null = null;
         isLoadingCommentThread = false;
         newCommentText = "";
+        readonly canNativeShare = !!navigator["share"];
 
         static $inject = [
             "songApi",
@@ -289,7 +290,7 @@
         }
 
         tryNativeShare() {
-            if (this.currentSong && this.currentSong.isShareExpanded) {
+            if (this.currentSong) {
                 this.sharing.nativeShareUrl(this.currentSong);
             }
         }
