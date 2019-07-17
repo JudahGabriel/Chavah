@@ -258,22 +258,25 @@
 
         copyShareUrl() {
             // iOS share functionality.
-            let shareUrlInput = document.querySelector("#currentSongShareLink") as HTMLInputElement;
-            var isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
+            const shareUrlInput = document.querySelector("#currentSongShareLink") as HTMLInputElement;
+            const isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
 
-            // iOS has specific rules about copying text. https://stackoverflow.com/a/43001673/536
-            if (isiOSDevice) {
-
-                var editable = shareUrlInput.contentEditable;
-                var readOnly = shareUrlInput.readOnly;
+            // If we're a modern browser, we 
+            if (navigator["clipboard"]) {
+                navigator["clipboard"].writeText(shareUrlInput.value);
+            } else if (isiOSDevice) {
+                // Older versions of iOS have specific rules about copying text. https://stackoverflow.com/a/43001673/536
+            
+                const editable = shareUrlInput.contentEditable;
+                const readOnly = shareUrlInput.readOnly;
 
                 shareUrlInput.contentEditable = "true"; // yes, a string: "true", "false", "inheritable" https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/contentEditable
                 shareUrlInput.readOnly = false;
 
-                var range = document.createRange();
+                const range = document.createRange();
                 range.selectNodeContents(shareUrlInput);
 
-                var selection = window.getSelection();
+                const selection = window.getSelection();
                 selection.removeAllRanges();
                 selection.addRange(range);
 
@@ -282,11 +285,10 @@
                 shareUrlInput.readOnly = readOnly;
 
             } else {
-                // Not iOS? Just select the text box containing the URL to share.
+                // Old browsers.
                 shareUrlInput.select();
+                document.execCommand("copy");
             }
-            
-            document.execCommand("copy");
         }
 
         tryNativeShare() {
