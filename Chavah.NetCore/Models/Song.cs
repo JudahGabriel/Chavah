@@ -36,9 +36,9 @@ namespace BitShuva.Chavah.Models
         public string ArtistId { get; set; }
         public int CommentCount { get; set; }
         public AlbumColors AlbumColors { get; set; }
-        // Add a property here? It should probably be added to .ToDto()
-
         public SongPickReasons ReasonsPlayed { get; set; }
+        public List<string> ContributingArtists { get; set; } = new List<string>();
+        // Add a property here? It should probably be added to .ToDto()
 
         public static Song FromFileName(string fileName)
         {
@@ -138,7 +138,8 @@ namespace BitShuva.Chavah.Models
                 AlbumId = AlbumId,
                 ArtistId = ArtistId,
                 CommentCount = CommentCount,
-                AlbumColors = AlbumColors
+                AlbumColors = AlbumColors,
+                ContributingArtists = ContributingArtists
             };
         }
 

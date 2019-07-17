@@ -19,12 +19,14 @@ namespace BitShuva.Chavah.Models
             NewHebrewName = updated.HebrewName;
             NewLyrics = updated.Lyrics;
             NewTags = updated.Tags;
+            NewContributingArtists = updated.ContributingArtists;
             OldArtist = existing.Artist;
             OldAlbum = existing.Album;
             OldLyrics = existing.Lyrics;
             OldName = existing.Name;
             OldHebrewName = existing.HebrewName;
             OldTags = existing.Tags;
+            OldContributingArtists = existing.ContributingArtists;
         }
 
         public string Id { get; set; }
@@ -37,6 +39,7 @@ namespace BitShuva.Chavah.Models
         public string NewName { get; set; }
         public string NewHebrewName { get; set; }
         public List<string> NewTags { get; set; } = new List<string>();
+        public List<string> NewContributingArtists { get; set; } = new List<string>();
         public string NewLyrics { get; set; }
         public string OldArtist { get; set; }
         public string OldAlbum { get; set; }
@@ -44,6 +47,7 @@ namespace BitShuva.Chavah.Models
         public string OldName { get; set; }
         public string OldHebrewName { get; set; }
         public List<string> OldTags { get; set; } = new List<string>();
+        public List<string> OldContributingArtists { get; set; } = new List<string>();
 
         public bool HasAnyChanges()
         {
@@ -52,7 +56,8 @@ namespace BitShuva.Chavah.Models
                 || NewName != OldName
                 || NewHebrewName != OldHebrewName
                 || NewLyrics != OldLyrics
-                || !NewTags.SequenceEqual(OldTags);
+                || !NewTags.SequenceEqual(OldTags)
+                || !NewContributingArtists.SequenceEqual(OldContributingArtists);
         }
 
         public void Apply(Song song)
@@ -63,6 +68,7 @@ namespace BitShuva.Chavah.Models
             song.Name = NewName;
             song.Tags = NewTags;
             song.HebrewName = NewHebrewName;
+            song.ContributingArtists = NewContributingArtists;
         }
     }
 }

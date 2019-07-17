@@ -75,12 +75,14 @@
         newHebrewName: string;
         newTags: string[];
         newLyrics: string;
+        newContributingArtists: string[];
         oldArtist: string;
         oldAlbum: string;
         oldLyrics: string;
         oldName: string;
         oldHebrewName: string;
         oldTags: string[];
+        oldContributingArtists: string[];
     }
 
     export interface AlbumUpload {

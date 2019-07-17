@@ -23,6 +23,10 @@
                             <input type="text" class="form-control" id="artistInput" placeholder="Artist" ng-model="vm.song.artist">
                         </div>
                         <div class="form-group" ng-show="vm.isAdmin">
+                            <label for="artistInput">Contributing artists (comma separated)</label>
+                            <input type="text" class="form-control" id="artistInput" placeholder="Artist" ng-model="vm.contributingArtistsInput">
+                        </div>
+                        <div class="form-group" ng-show="vm.isAdmin">
                             <label for="albumInput">Album</label>
                             <input type="text" class="form-control" id="albumInput" placeholder="Album" ng-model="vm.song.album">
                         </div>
@@ -34,21 +38,21 @@
                             <label for="tagsInput"><i class="fa fa-tags"></i> Tags</label>
                             <div class="tags-container">
                                 <div class="tag" ng-repeat="tag in vm.tags">
-                                    <i class="fa fa-tag"></i> 
+                                    <i class="fa fa-tag"></i>
                                     {{tag}}
                                     <button type="button" class="close" data-dismiss="modal" ng-click="vm.removeTag(tag)" aria-hidden="true" title="Remove tag">×</button>
                                 </div>
                             </div>
                             <input type="text" class="form-control" id="tagsInput" ng-attr-placeholder="{{vm.tagPlaceholder}}" ng-model="vm.tagsInput" ng-change="vm.tagsInputChanged()"
                                    uib-typeahead="tag for tag in vm.searchTags($viewValue) | limitTo:8"
-                                           typeahead-min-length="1"
-                                           typeahead-show-hint="true"
-                                           typeahead-select-on-exact="false"
-                                           typeahead-select-on-blur="false"
-                                           typeahead-editable="true"
-                                           typeahead-focus-first="false"
-                                           typeahead-on-select="vm.autoCompleteTagSelected($item)"
-                                           enter-handler="vm.tagsEnterKeyPressed()">
+                                   typeahead-min-length="1"
+                                   typeahead-show-hint="true"
+                                   typeahead-select-on-exact="false"
+                                   typeahead-select-on-blur="false"
+                                   typeahead-editable="true"
+                                   typeahead-focus-first="false"
+                                   typeahead-on-select="vm.autoCompleteTagSelected($item)"
+                                   enter-handler="vm.tagsEnterKeyPressed()">
                             <p class="help-block"><i class="fa fa-info-circle"></i> Optional. Song tags; characteristics about the song. Example: piano, male vocal, worship, hebrew, psalms</p>
                         </div>
 

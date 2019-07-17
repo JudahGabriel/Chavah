@@ -29,6 +29,7 @@ namespace BitShuva.Chavah {
         albumId: string | null;
         albumColors: Server.AlbumColors;
         commentCount: number;
+        contributingArtists: string[];
 
         albumSwatchDarker = "black"; // The darker of two: either foreground or background
         albumSwatchLighter = "white"; // The lighter of the two: either foreground or background

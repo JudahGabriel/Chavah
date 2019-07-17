@@ -11,6 +11,7 @@
         isLyricsFocused = true;
         tagPlaceholder = "piano, violin, male vocal, hebrew, psalms";
         readonly songId: string;
+        contributingArtistsInput = "";
 
         static $inject = [
             "songEditApi",
@@ -54,6 +55,8 @@
             if (this.tags.length > 0) {
                 this.tagPlaceholder = "";
             }
+
+            this.contributingArtistsInput = songEdit.newContributingArtists.join(", ");
         }
 
         tagsInputChanged() {
@@ -94,6 +97,10 @@
         submit() {
             if (this.song && !this.isSaving) {
                 this.song.tags = this.tags;
+                this.song.contributingArtists = this.contributingArtistsInput
+                    .split(',')
+                    .map(i => i.trim())
+                    .filter(i => !!i);
 
                 this.isSaving = true;
                 this.songEditApi.submit(this.song)

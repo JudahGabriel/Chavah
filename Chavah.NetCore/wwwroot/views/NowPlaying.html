@@ -53,13 +53,18 @@
                     </h4>
                 </button>
             </div>
+            <div class="text-center" ng-if="vm.currentSong.contributingArtists && vm.currentSong.contributingArtists.length">
+                <h4 class="text-center" ng-style="{ 'color': vm.currentSong.albumSwatchDarker }">
+                    Featuring {{vm.currentSong.contributingArtists.join(', ')}}
+                </h4>
+            </div>
             <div class="text-center">
                 <button class="btn btn-link current-song-album" ng-click="vm.playSongFromCurrentAlbum()" uib-tooltip="Click to play another song from {{vm.currentSong.album}}" tooltip-placement="right" role="button">
                     <h4 class="text-center" ng-style="{ 'color': vm.currentSong.albumSwatchDarker }">
                         <span class="sr-only">Play another song from the album</span>
                         {{vm.currentSong.album}}
                     </h4>
-                </button>                
+                </button>
             </div>
             <br />
 
@@ -163,7 +168,7 @@
                                 <div class="not-signed-in" ng-hide="vm.accountApi.isSignedIn">
                                     <h4><i class="fa fa-info-circle"></i> <a href="#/signin">Sign in</a> to comment on this song</h4>
                                 </div>
-                            </div   >
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,7 +179,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab" ng-style="{ 'background-color': vm.currentSong.albumColors.background, 'color': vm.currentSong.albumColors.foreground }">
                         <h3 class="panel-title text-center" ng-click="vm.currentSong.isShareExpanded = !vm.currentSong.isShareExpanded">
-                            <i class="fa fa-share" style="font-size: 22px;"></i> 
+                            <i class="fa fa-share" style="font-size: 22px;"></i>
                             Share
                             <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isShareExpanded, 'fa-angle-up': vm.currentSong.isShareExpanded }"></i>
                         </h3>
@@ -239,7 +244,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!--Support artist-->
             <div class="panel-group expander support-expander" role="tablist">
                 <div class="panel panel-default">
@@ -261,7 +266,7 @@
                     </div>
                 </div>
             </div>
-            
+
 
         </div>
         <div class="col-sm-3 hidden-xs">
