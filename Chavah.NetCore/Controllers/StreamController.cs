@@ -53,6 +53,58 @@ namespace BitShuva.Chavah.Controllers
         }
 
         /// <summary>
+        /// Returns a PLS file format for streaming playlists, used for stations like TuneIn Radio.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> TuneInV3()
+        {
+            // Build the PLS file.
+            // PLS format is very simple: https://en.wikipedia.org/wiki/PLS_(file_format)
+            var plsBuilder = new StringBuilder();
+            plsBuilder.AppendLine("[playlist]"); // The header
+
+            var songsWithRanking = await DbSession.Query<Song, Songs_RankStandings>()
+                    .As<Songs_RankStandings.Result>()
+                    .ToListAsync();
+            var userPrefs = new UserSongPreferences();
+            const int totalSongCount = 25;
+            var songPicks = Enumerable
+                .Range(0, totalSongCount)
+                .Select(s => userPrefs.PickSong(songsWithRanking))
+                .ToList();
+            var songs = await DbSession.LoadWithoutNulls<Song>(songPicks.Select(p => p.SongId));
+            for (var i = 0; i < songs.Count; i++)
+            {
+                var oneBasedIndex = i + 1;
+
+                // File1=http://thefile.mp3
+                plsBuilder.AppendLine();
+                plsBuilder.Append("File");
+                plsBuilder.Append(oneBasedIndex);
+                plsBuilder.Append('=');
+                plsBuilder.AppendLine(songs[i].Uri.ToString());
+
+                // Title1=Shema Yisrael by Barry & Batya Segal
+                plsBuilder.Append("Title");
+                plsBuilder.Append(oneBasedIndex);
+                plsBuilder.Append('=');
+                var songName = string.IsNullOrEmpty(songs[i].HebrewName) ? songs[i].Name : songs[i].Name + " " + songs[i].HebrewName;
+                plsBuilder.Append(songName);
+                plsBuilder.Append(" by ");
+                plsBuilder.AppendLine(songs[i].Artist);
+            }
+
+            // NumberOfEntries=20
+            plsBuilder.AppendLine();
+            plsBuilder.Append("NumberOfEntries");
+            plsBuilder.Append('=');
+            plsBuilder.Append(songs.Count);
+
+            var plsBytes = Encoding.UTF8.GetBytes(plsBuilder.ToString());
+            return File(plsBytes, "application/pls+xml", "ChavahTuneInStream.pls");
+        }
+
+        /// <summary>
         /// Returns an M3U file. Used for streaming services such as TuneIn radio.
         /// </summary>
         /// <returns></returns>

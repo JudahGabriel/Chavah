@@ -45,7 +45,6 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<CommentThread> AddComment([FromBody]AddComment commentInfo)
         {
             var user = await GetUserOrThrow();

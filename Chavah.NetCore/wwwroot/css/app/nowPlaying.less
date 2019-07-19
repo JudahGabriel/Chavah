@@ -275,19 +275,17 @@
 
             &.add-comment {
                 .media-body {
-                    border: 1px solid gray;
-                    width: 10000px;
+                    width: 100%;
+                    background-color: transparent;
                 }
 
-                input.content {
-                    height: 32px;
-                    border: none;
+                textarea.content {
                     background-color: #f2f3f5;
-                    padding-left: 0;
-
-                    &:focus, &:active {
-                        border: none;
-                    }
+                    margin-left: -15px;
+                    padding: 8px 15px 8px 15px;
+                    border-radius: 25px;
+                    box-shadow: 2px 2px 8px rgba(0,0,0, 0.3);
+                    border: 0;
 
                     &::placeholder {
                         color: #8d949e;

@@ -124,7 +124,7 @@
     <TypeScriptCompile Include="wwwroot\js\Controllers\TagEditorController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\TrendingController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\UploadAlbumController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Directives\AudioStatusChanged.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Directives\AutoExpandingTextArea.ts" />
     <TypeScriptCompile Include="wwwroot\js\Directives\BackgroundImage.ts" />
     <TypeScriptCompile Include="wwwroot\js\Directives\EnterHandler.ts" />
     <TypeScriptCompile Include="wwwroot\js\Directives\FileUploadChanged.ts" />
