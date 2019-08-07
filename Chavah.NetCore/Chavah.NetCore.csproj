@@ -105,6 +105,7 @@
     <TypeScriptCompile Include="wwwroot\js\Controllers\EditArtistController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\EditSongController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\EditSongsController.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Controllers\ErrorPlayingAudioController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\FooterController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\ForgotPasswordController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\HeaderController.ts" />

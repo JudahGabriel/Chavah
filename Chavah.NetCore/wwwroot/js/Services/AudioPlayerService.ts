@@ -17,13 +17,13 @@ namespace BitShuva.Chavah {
         readonly duration = new Rx.BehaviorSubject<number>(0);
         playedSongs: Song[] = [];
         private audio: HTMLAudioElement;
-        private audioErrors = new Rx.Subject<IAudioErrorInfo>();
+        readonly error = new Rx.Subject<IAudioErrorInfo>();
 
         private lastPlayedTime = 0;
 
         constructor(
-            private songApi: SongApiService,
-            private homeViewModel: Server.HomeViewModel) {
+            private readonly songApi: SongApiService,
+            private readonly homeViewModel: Server.HomeViewModel) {
 
             // Listen for when the song changes and update the document title.
             this.song
@@ -96,6 +96,18 @@ namespace BitShuva.Chavah {
             this.playSongWhenFinishedLoading(task);
         }
 
+        playSongAtTrackPosition(songId: string, trackPosition: number) {
+            if (songId) {
+                const loadSongTask = this.songApi.getSongById(songId);
+                this.playSongWhenFinishedLoading(loadSongTask)
+                    .then(loadedSong => {
+                        if (loadedSong && loadedSong.id === songId) {
+                            this.audio.currentTime = trackPosition;
+                        }
+                    });
+            }
+        }
+
         playSongFromArtistAndAlbum(artist: string, album: string) {
             const task = this.songApi.getSongByArtistAndAlbum(artist, album);
             this.playSongWhenFinishedLoading(task);
@@ -121,19 +133,22 @@ namespace BitShuva.Chavah {
             this.playSongWhenFinishedLoading(task);
         }
 
-        playSongWhenFinishedLoading(task: ng.IPromise<Song | null>) {
+        playSongWhenFinishedLoading(task: ng.IPromise<Song | null>): ng.IPromise<Song | null> {
             let currentSong = this.song.getValue();
             this.pause();
 
-            task.then(songResult => {
+            return task.then(songResult => {
                 let isStillWaitingForSong = this.song.getValue() === currentSong;
                 if (isStillWaitingForSong) {
                     if (songResult) {
                         this.playNewSong(songResult);
+                        return songResult;
                     } else {
                         this.resume();
                     }
                 }
+
+                return this.song.getValue();
             });
         }
 
@@ -195,23 +210,20 @@ namespace BitShuva.Chavah {
             console.log("Audio aborted", this.audio.currentSrc, args);
         }
 
-        private erred(args: any) {
+        private erred(args: ErrorEvent) {
             this.status.onNext(AudioStatus.Erred);
-            console.log("Audio erred. Error code: ",
-                        this.audio.error, "Audio source: ",
-                        this.audio.currentSrc, "Error event: ", args);
-
-            let currentSong = this.song.getValue();
-            this.audioErrors.onNext({
+            const currentSong = this.song.getValue();
+            const errorInfo: IAudioErrorInfo = {
                 errorCode: this.audio.error,
                 songId: currentSong ? currentSong.id : "",
-                trackPosition: this.audio.currentTime,
-            });
+                trackPosition: this.audio.currentTime
+            };
+            this.error.onNext(errorInfo);
         }
 
         private ended() {
-            let currentSong = this.song.getValue();
-            if (this.audio && currentSong && this.audio.src === encodeURI(currentSong.uri)) {
+            const currentSong = this.song.getValue();
+            if (this.audio && currentSong && (this.audio.src === currentSong.uri || this.audio.src === encodeURI(currentSong.uri))) {
                 this.songCompleted.onNext(currentSong);
             }
 
@@ -219,8 +231,7 @@ namespace BitShuva.Chavah {
         }
 
         private stalled(args: any) {
-            this.status.onNext(AudioStatus.Stalled);
-            
+            this.status.onNext(AudioStatus.Stalled);            
             console.log("Audio stalled, unable to stream in audio data.", this.audio.currentSrc, args);
         }
 
@@ -245,10 +256,6 @@ namespace BitShuva.Chavah {
                 this.remainingTimeText.onNext(remainingTime.format("m:ss"));
                 this.playedTimePercentage.onNext((100 / duration) * currentTimeRounded);
             }
-        }
-
-        private submitAudioError(val: IAudioErrorInfo) {
-            this.songApi.songFailed(val);
         }
 
         private updateDocumentTitle(song: Song | null) {

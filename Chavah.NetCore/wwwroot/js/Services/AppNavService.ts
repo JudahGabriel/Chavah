@@ -102,6 +102,18 @@
             });
         }
 
+        showErrorPlayingAudio(error: IAudioErrorInfo, song: Song | null): ng.ui.bootstrap.IModalInstanceService {
+            return this.$uibModal.open({
+                controller: "ErrorPlayingAudioController as vm",
+                templateUrl: this.templatePaths.errorPlayingAudioModal,
+                windowClass: "error-playing-audio-modal",
+                resolve: {
+                    song: () => song,
+                    error: () => error
+                }
+            });
+        }
+
         createAlbum() {
             this.$location.url("/admin/album/create");
         }

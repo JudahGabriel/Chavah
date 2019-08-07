@@ -30,7 +30,7 @@ namespace BitShuva.Chavah.Controllers
         /// Returns an M3U file. Used for streaming services such as TuneIn radio.
         /// </summary>
         /// <returns></returns>
-        public IActionResult TuneInV2()
+        public IActionResult TuneInV4()
         {
             // The M3U file will contain a single URL:
             // The URL to our GetNextSong() action.

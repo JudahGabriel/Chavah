@@ -7,6 +7,7 @@
         lastAudioErrorTime: Date | null = null;
         stalledTimerHandle: number | null = null;
         audio: HTMLAudioElement | null = null;
+        isShowingAudioError = false;
 
         static $inject = [
             "audioPlayer",
@@ -35,7 +36,7 @@
 
             // Notify the scope when the audio status changes.
             this.audioPlayer.status
-                .debounce(100)
+                .debounce(1000)
                 .subscribe(status => this.audioStatusChanged(status));
 
             // Update the track time. We don't use angular for this, because of the constant (per second) update.
@@ -51,12 +52,16 @@
             this.audioPlayer.playedTimePercentage
                 .distinctUntilChanged()
                 .subscribe(percent => $(".footer .trackbar").width(percent + "%"));
-
+            this.audioPlayer.error
+                .debounce(2000)
+                .where(val => this.shouldShowErrorNotification(val))
+                .subscribe(audioError => this.showAudioErrorNotification(audioError));
+                        
             // If we sign in, restore the volume preference for the user.
             this.accountApi.signedInState
                 .distinctUntilChanged()
                 .where(isSignedIn => isSignedIn)
-                .subscribe(_ => this.restoreVolumeFromSignedInUser())
+                .subscribe(_ => this.restoreVolumeFromSignedInUser());
         }
 
         get likesCurrentSong(): boolean {
@@ -287,6 +292,23 @@
                 this.accountApi.currentUser.volume = volume;
                 this.userApi.saveVolume(volume);
             }
+        }
+
+        shouldShowErrorNotification(errorInfo: IAudioErrorInfo): boolean {
+            const currentSong = this.audioPlayer.song.getValue();
+            const isErrorForCurrentSong = !currentSong || !errorInfo.songId || currentSong.id === errorInfo.songId;
+
+            // The song may have started playing after the initial error.
+            const isSongPlaying = this.audioPlayer.status.getValue() === AudioStatus.Playing;
+
+            return isErrorForCurrentSong && !isSongPlaying;
+        }
+
+        private showAudioErrorNotification(errorInfo: IAudioErrorInfo) {
+            console.log("Error playing audio", errorInfo);
+            this.isShowingAudioError = true;
+            this.appNav.showErrorPlayingAudio(errorInfo, this.audioPlayer.song.getValue())
+                .closed.finally(() => this.isShowingAudioError = false);
         }
     }
 

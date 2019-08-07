@@ -45,6 +45,7 @@
         goBack: findCacheBustedView("/partials/GoBack.html"),
         cropImageModal: findCacheBustedView("/modals/CropImageModal.html"),
         pushSubscriptionSuccessful: findCacheBustedView("/modals/PushSubscriptionSuccessful.html"),
+        errorPlayingAudioModal: findCacheBustedView("/modals/ErrorPlayingAudioModal.html")
     };
     App.constant("templatePaths", templatePaths);
     

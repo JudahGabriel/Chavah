@@ -1,0 +1,11 @@
+﻿<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" ng-click="vm.close()" aria-hidden="true">&times;</button>
+    <h3 class="modal-title"><i class="fa fa-exclamation-circle text-danger"></i> Error</h3>
+</div>
+<div class="modal-body">
+    <p>There was an error playing <strong>{{vm.songName}}</strong>. The issue might be your internet connection.</p>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="vm.trySongAgain()"><i class="fa fa-repeat"></i> Try again</button>
+    <button class="btn btn-primary" ng-click="vm.playDifferentSong()"><i class="fa fa-play"></i> Play a different song</button>
+</div>
