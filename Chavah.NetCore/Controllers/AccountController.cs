@@ -543,7 +543,12 @@ namespace BitShuva.Chavah.Controllers
                 }
             }
 
-            _emailSender.QueueSupportEmail(message, _emailOptions.SenderEmail);
+            var isMutedUser = await DbSession.Advanced.ExistsAsync("MutedEmails/" + message.Email);
+            if (!isMutedUser)
+            {
+                _emailSender.QueueSupportEmail(message, _emailOptions.SenderEmail);
+            }
+
             return message;
         }
 
