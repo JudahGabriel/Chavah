@@ -4,7 +4,7 @@
     "libraries": [
         {
             "provider": "cdnjs",
-            "library": "twitter-bootstrap@3.4.0",
+            "library": "twitter-bootstrap@3.4.1",
             "destination": "wwwroot/lib/bootstrap/",
             "files": [
                 "js/bootstrap.js"
@@ -28,7 +28,7 @@
         },
         {
             "provider": "cdnjs",
-            "library": "angular.js@1.7.7",
+            "library": "angular.js@1.7.8",
             "destination": "wwwroot/lib/angular/",
             "files": [
                 "angular-animate.js",
@@ -79,7 +79,7 @@
         },
         {
             "provider": "cdnjs",
-            "library": "lodash.js@4.17.11",
+            "library": "lodash.js@4.17.15",
             "destination": "wwwroot/lib/lodash/",
             "files": [
                 "lodash.js"

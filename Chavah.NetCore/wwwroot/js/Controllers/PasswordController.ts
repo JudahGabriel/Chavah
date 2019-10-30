@@ -58,7 +58,7 @@
                 signInModel.staySignedIn = this.staySignedIn;
 
                 this.accountApi.signIn(signInModel)
-                    .then(result => this.signInCompleted(result))
+                    .then(result => this.signInCompleted(result), error => this.signInErred(error))
                     .finally(() => this.isBusy = false);
             }
         }
@@ -83,6 +83,11 @@
                 this.passwordError = result.errorMessage || "Select a different password because the password you chose has appeared in a data breach";
                 this.$timeout(() => this.appNav.resetPwnedPassword(this.email), 4000);
             }
+        }
+
+        signInErred(error: any) {
+            this.showPasswordError = true;
+            this.passwordError = "There was a problem signing in. If the problem keeps happening, email us: chavah@messianicradio.com. Error details: " + (error && error.toString ? error.toString() : "[null]");
         }
 
         passwordChanged() {

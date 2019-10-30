@@ -122,7 +122,6 @@ namespace BitShuva.Chavah.Controllers
             }
 
             var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user).ConfigureAwait(false);
-
             if (!isEmailConfirmed)
             {
                 return Ok(new Models.Account.SignInResult
@@ -139,7 +138,7 @@ namespace BitShuva.Chavah.Controllers
 
             var result = new Models.Account.SignInResult
             {
-                Status = SignInStatusFromResult(signInResult),
+                Status = SignInStatusFromResult(signInResult, model.Email),
                 User = _mapper.Map<UserViewModel>(user)
             };
 
@@ -571,7 +570,7 @@ namespace BitShuva.Chavah.Controllers
             }
         }
 
-        private SignInStatus SignInStatusFromResult(Microsoft.AspNetCore.Identity.SignInResult result)
+        private SignInStatus SignInStatusFromResult(Microsoft.AspNetCore.Identity.SignInResult result, string email)
         {
             if (result.Succeeded)
             {
@@ -583,6 +582,12 @@ namespace BitShuva.Chavah.Controllers
                 return SignInStatus.LockedOut;
             }
 
+            if (result.IsNotAllowed)
+            {
+                logger.LogWarning("User {email} couldn't sign in because SignInResult = IsNotAllowed, {result}. Check that the user isn't locked out and has confirmed email.", email, result.ToString());
+                return SignInStatus.Failure;
+            }
+            
             return SignInStatus.Failure;
         }
     }

@@ -277,8 +277,10 @@
                 range.selectNodeContents(shareUrlInput);
 
                 const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
+                if (selection) {
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
 
                 shareUrlInput.setSelectionRange(0, 999999);
                 shareUrlInput.contentEditable = editable;
