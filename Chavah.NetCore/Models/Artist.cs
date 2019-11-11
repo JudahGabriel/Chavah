@@ -8,5 +8,6 @@ namespace BitShuva.Chavah.Models
         public string Name { get; set; }
         public List<string> Images { get; set; } = new List<string>();
         public string Bio { get; set; }
+        public List<Donation> Donations { get; set; } = new List<Donation>();
     }
 }
