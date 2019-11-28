@@ -212,14 +212,14 @@
         }
 
         playSongFromCurrentArtist() {
-            if (this.currentSong) {
-                this.audioPlayer.playSongFromArtist(this.currentSong.artist);
+            if (!!this.currentSong && !!this.currentSong.artistId) {
+                this.audioPlayer.playSongFromArtistId(this.currentSong.artistId);
             }
         }
 
         playSongFromCurrentAlbum() {
-            if (this.currentSong) {
-                this.audioPlayer.playSongFromAlbum(this.currentSong.album);
+            if (!!this.currentSong && !!this.currentSong.albumId) {
+                this.audioPlayer.playSongFromAlbumId(this.currentSong.albumId);
             }
         }
 

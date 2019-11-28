@@ -18,14 +18,14 @@ namespace BitShuva.Chavah.Controllers
     [Route("[controller]/[action]")]
     public class ActivitiesController : RavenController
     {
-        private readonly AppSettings _appOptions;
+        private readonly AppSettings appOptions;
 
         public ActivitiesController(
             IAsyncDocumentSession dbSession,
             ILogger<ActivitiesController> logger,
             IOptionsMonitor<AppSettings> appOptions) : base(dbSession, logger)
         {
-            _appOptions = appOptions.CurrentValue;
+            this.appOptions = appOptions.CurrentValue;
         }
 
         [HttpGet]
@@ -59,18 +59,18 @@ namespace BitShuva.Chavah.Controllers
                         syndicationId,
                         $"Today's top trending song is {song.Name} by {song.Artist} with +{likeCount} thumb-ups so far today. It's now ranked at {song.GetCommunityRankText()}.",
                         "",
-                        song.GetSongShareLink(_appOptions.DefaultUrl));
+                        song.GetSongShareLink(appOptions.DefaultUrl));
                     rssItems.Add(syndicationLink);
                 }
             }
 
             var feed = new SyndicationFeed(
-                $"{_appOptions.Name} Trending Songs",
-                $"Today's trending song on {_appOptions.Title}",
-                new Uri(_appOptions.DefaultUrl),
+                $"{appOptions.Name} Trending Songs",
+                $"Today's trending song on {appOptions.Title}",
+                new Uri(appOptions.DefaultUrl),
                 "TrendingSong",
                 rssItems,
-                language: _appOptions.Language);
+                language: appOptions.Language);
 
             return new RssActionResult(feed);
         }
@@ -101,12 +101,12 @@ namespace BitShuva.Chavah.Controllers
                 .Select(ActivityToRssItem);
 
             var feed = new SyndicationFeed(
-                $"Latest activity in the last hour on {_appOptions.Name}",
-                $"The latest activity over at {_appOptions?.Title}",
-                new Uri(_appOptions?.DefaultUrl),
+                $"Latest activity in the last hour on {appOptions.Name}",
+                $"The latest activity over at {appOptions.Title}",
+                new Uri(appOptions.DefaultUrl),
                 "ChavahActivities",
                 activitiesForThisHour,
-                _appOptions.Language);
+                appOptions.Language);
             return new RssActionResult(feed);
         }
 
@@ -122,12 +122,12 @@ namespace BitShuva.Chavah.Controllers
             var feedItems = recentActivities.Select(ActivityToRssItem);
 
             var feed = new SyndicationFeed(
-                $"Latest activity on {_appOptions.Name}",
-                $"The latest activity over at {_appOptions?.Title}",
-                new Uri(_appOptions?.DefaultUrl),
+                $"Latest activity on {appOptions.Name}",
+                $"The latest activity over at {appOptions.Title}",
+                new Uri(appOptions.DefaultUrl),
                 "ChavahActivities",
                 feedItems,
-                _appOptions.Language);
+                appOptions.Language);
 
             return new RssActionResult(feed);
         }
@@ -150,12 +150,12 @@ namespace BitShuva.Chavah.Controllers
                 link: activity.MoreInfoUri));
 
             var feed = new SyndicationFeed(
-                $"{_appOptions.Name} Recent Comments",
-                $"Recent comments on {_appOptions.Title}",
-                new Uri(_appOptions.DefaultUrl),
+                $"{appOptions.Name} Recent Comments",
+                $"Recent comments on {appOptions.Title}",
+                new Uri(appOptions.DefaultUrl),
                 "RecentComments",
                 rssItems,
-                language: _appOptions.Language);
+                language: appOptions.Language);
 
             return new RssActionResult(feed);
         }

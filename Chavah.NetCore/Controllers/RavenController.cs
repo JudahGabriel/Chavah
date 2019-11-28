@@ -20,7 +20,7 @@ namespace BitShuva.Chavah.Controllers
     public abstract class RavenController : Controller
     {
         protected readonly ILogger logger;
-        private  AppUser currentUser;
+        private AppUser? currentUser;
 
         protected RavenController(
             IAsyncDocumentSession dbSession,
@@ -74,14 +74,15 @@ namespace BitShuva.Chavah.Controllers
             var currentUser = await GetUser();
             if (currentUser == null)
             {
-                throw new UnauthorizedAccessException().WithData("userName", User.Identity.Name);
+                throw new UnauthorizedAccessException()
+                    .WithData("userName", User.Identity.Name ?? string.Empty);
             }
 
             return currentUser;
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected async Task<AppUser> GetUser()
+        protected async Task<AppUser?> GetUser()
         {
             if (currentUser != null)
             {
@@ -100,15 +101,15 @@ namespace BitShuva.Chavah.Controllers
         protected string GetUserIdOrThrow()
         {
             var userId = GetUserId();
-            if (!string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId))
             {
-                return userId;
+                throw new UnauthorizedAccessException();
             }
 
-            throw new UnauthorizedAccessException();
+            return userId!;
         }
 
-        protected string GetUserId()
+        protected string? GetUserId()
         {
             if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(User.Identity.Name))
             {
@@ -118,7 +119,7 @@ namespace BitShuva.Chavah.Controllers
             return null;
         }
 
-        private void HandleKnownExceptions(Exception error, ActionExecutingContext actionContext, string errorContext)
+        private void HandleKnownExceptions(Exception error, ActionExecutingContext? actionContext, string errorContext)
         {
             using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
             using (logger.BeginKeyValueScope("action", actionContext?.ActionDescriptor?.DisplayName))

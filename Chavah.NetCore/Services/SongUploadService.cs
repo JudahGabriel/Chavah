@@ -5,8 +5,6 @@ using BitShuva.Chavah.Models;
 using DalSoft.Hosting.BackgroundQueue;
 using Microsoft.Extensions.Logging;
 
-using Optional;
-
 using Raven.Client.Documents;
 
 namespace BitShuva.Chavah.Services
@@ -41,11 +39,11 @@ namespace BitShuva.Chavah.Services
 
         private async Task TryUploadMp3(SongUpload song, AlbumUpload album, int songNumber, string songId)
         {
-            var mp3Uri = Option.None<Uri>();
+            var mp3Uri = default(Uri);
             try
             {
                 var uri = await cdnManagerService.UploadMp3Async(song.Address, album.Artist, album.Name, songNumber, song.FileName);
-                mp3Uri = Option.Some(uri);
+                mp3Uri = uri;
             }
             catch (Exception error)
             {
@@ -53,21 +51,22 @@ namespace BitShuva.Chavah.Services
                 await TryDeleteSong(songId);
             }
 
-            mp3Uri.MatchSome(async uri => await TryUpdateSongUri(songId, uri));
+            if (mp3Uri != null)
+            {
+                await TryUpdateSongUri(songId, mp3Uri);
+            }
         }
 
         private async Task TryUpdateSongUri(string songId, Uri albumArtUri)
         {
             try
             {
-                using (var dbSession = db.OpenAsyncSession())
+                using var dbSession = db.OpenAsyncSession();
+                var song = await dbSession.LoadAsync<Song>(songId);
+                if (song != null)
                 {
-                    var song = await dbSession.LoadAsync<Song>(songId);
-                    if (song != null)
-                    {
-                        song.Uri = albumArtUri;
-                        await dbSession.SaveChangesAsync();
-                    }
+                    song.Uri = albumArtUri;
+                    await dbSession.SaveChangesAsync();
                 }
             }
             catch (Exception error)
@@ -78,17 +77,15 @@ namespace BitShuva.Chavah.Services
 
         private async Task TryDeleteSong(string songId)
         {
-            using (var dbSession = db.OpenAsyncSession())
+            using var dbSession = db.OpenAsyncSession();
+            try
             {
-                try
-                {
-                    dbSession.Delete(songId);
-                    await dbSession.SaveChangesAsync();
-                }
-                catch (Exception error)
-                {
-                    logger.LogError(error, "Tried to delete song since the MP3 failed to upload, but the song couldn't be deleted. {songId}", songId);
-                }
+                dbSession.Delete(songId);
+                await dbSession.SaveChangesAsync();
+            }
+            catch (Exception error)
+            {
+                logger.LogError(error, "Tried to delete song since the MP3 failed to upload, but the song couldn't be deleted. {songId}", songId);
             }
         }
     }

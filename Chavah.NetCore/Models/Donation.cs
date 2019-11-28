@@ -15,12 +15,12 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// The name of the donor.
         /// </summary>
-        public string DonorName { get; set; }
+        public string DonorName { get; set; } = string.Empty;
 
         /// <summary>
         /// The email of the donor.
         /// </summary>
-        public string DonorEmail { get; set; }
+        public string DonorEmail { get; set; } = string.Empty;
 
         /// <summary>
         /// The date the donation was made.

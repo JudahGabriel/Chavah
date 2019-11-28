@@ -20,8 +20,8 @@ namespace BitShuva.Chavah.Controllers
     [Route("api/[controller]/[action]")]
     public class SongRequestsController : RavenController
     {
-        private readonly AppSettings _appOptions;
-        private readonly TimeSpan _songRequestValidTime = TimeSpan.FromMinutes(20);
+        private readonly AppSettings appOptions;
+        private readonly TimeSpan songRequestValidTime = TimeSpan.FromMinutes(20);
 
         public SongRequestsController(
             IAsyncDocumentSession dbSession,
@@ -29,7 +29,7 @@ namespace BitShuva.Chavah.Controllers
             IOptionsMonitor<AppSettings> appOptions)
             : base(dbSession, logger)
         {
-            _appOptions = appOptions.CurrentValue;
+            this.appOptions = appOptions.CurrentValue;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<string> GetPending()
+        public async Task<string?> GetPending()
         {
             var userId = GetUserId();
             if (string.IsNullOrEmpty(userId))
@@ -49,7 +49,7 @@ namespace BitShuva.Chavah.Controllers
                 return null;
             }
 
-            var recent = DateTime.UtcNow.Subtract(_songRequestValidTime);
+            var recent = DateTime.UtcNow.Subtract(songRequestValidTime);
             var pendingSongReqs = await DbSession
                  .Query<SongRequest>()
                  .OrderByDescending(r => r.DateTime)
@@ -70,8 +70,8 @@ namespace BitShuva.Chavah.Controllers
             if (updatedSongRequest != null)
             {
                 var songLikeId = Like.GetLikeId(userId, updatedSongRequest.SongId);
-                var songLike = await DbSession.LoadOptionAsync<Like>(songLikeId);
-                var userDislikesSong = songLike.Exists(l => l.Status == LikeStatus.Dislike);
+                var songLike = await DbSession.LoadOptionalAsync<Like>(songLikeId);
+                var userDislikesSong = songLike?.Status == LikeStatus.Dislike;
                 if (!userDislikesSong)
                 {
                     return updatedSongRequest.SongId;
@@ -84,7 +84,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public Task<List<string>> GetRecentRequestedSongIds()
         {
-            var recent = DateTime.UtcNow.Subtract(_songRequestValidTime);
+            var recent = DateTime.UtcNow.Subtract(songRequestValidTime);
             return DbSession
                  .Query<SongRequest>()
                  .OrderByDescending(r => r.DateTime)
@@ -126,8 +126,8 @@ namespace BitShuva.Chavah.Controllers
                     {
                         DateTime = DateTime.UtcNow,
                         Title = $"{song.Artist} - {song.Name} was requested by a listener",
-                        Description = $"\"{song.Name}\" by {song.Artist} was requested by a listener on {_appOptions?.Title}.",
-                        MoreInfoUri = song.GetSongShareLink(_appOptions?.DefaultUrl),
+                        Description = $"\"{song.Name}\" by {song.Artist} was requested by a listener on {appOptions?.Title}.",
+                        MoreInfoUri = song.GetSongShareLink(appOptions!.DefaultUrl),
                         EntityId = song.Id,
                         Type = ActivityType.Request
                     };
@@ -147,7 +147,7 @@ namespace BitShuva.Chavah.Controllers
         public async Task<List<string>> MarkAsPlayed([FromBody] List<string> songIds)
         {
             var userId = GetUserIdOrThrow();
-            var recent = DateTime.UtcNow.Subtract(_songRequestValidTime);
+            var recent = DateTime.UtcNow.Subtract(songRequestValidTime);
             var recentSongRequests = await DbSession
                  .Query<SongRequest>()
                  .Where(r => r.DateTime >= recent)
@@ -188,7 +188,7 @@ namespace BitShuva.Chavah.Controllers
             return recentSongRequestsFromUser >= maxInHalfHour;
         }
 
-        private async Task<SongRequest> AddUserToSongRequestPlayedList(SongRequest req, string userId)
+        private async Task<SongRequest?> AddUserToSongRequestPlayedList(SongRequest req, string userId)
         {
             req.PlayedForUserIds.Add(userId);
             try

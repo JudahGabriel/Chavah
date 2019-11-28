@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
 
@@ -16,7 +16,7 @@ namespace BitShuva.Chavah.Controllers
     [Route("api/[controller]/[action]")]
     public class PushNotificationsController : RavenController
     {
-        private readonly IPushNotificationSender _pushSender;
+        private readonly IPushNotificationSender pushSender;
 
         public PushNotificationsController(
             IAsyncDocumentSession dbSession,
@@ -24,7 +24,7 @@ namespace BitShuva.Chavah.Controllers
             IPushNotificationSender pushSender)
             : base(dbSession, logger)
         {
-            _pushSender = pushSender;
+            this.pushSender = pushSender;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace BitShuva.Chavah.Controllers
                 ClickUrl = "https://blog.messianicradio.com/2019/01/new-feature-alert-me-of-new-music-on.html"
             };
 
-            _pushSender.QueueSendNotification(notification, new List<PushSubscription>(1) { subscription });
+            pushSender.QueueSendNotification(notification, new List<PushSubscription>(1) { subscription });
 
             return subscription;
         }
@@ -62,12 +62,12 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="subscription">The subscription to delete. This subscription's unique, machine-generated endpoint will be used to find the subscription to delete.</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<PushSubscription> Delete([FromBody]PushSubscription subscription)
+        public async Task<PushSubscription?> Delete([FromBody]PushSubscription subscription)
         {
             // The supplied PushSubscription is from the browser's PushSubscription type.
             // Thus, it has no ID. We generate an ID from the subscription's unique endpoint. Use that to delete it.
             var subscriptionId = PushSubscription.GetRavenIdFromEndpoint(subscription.Endpoint);
-            var existingSub = await DbSession.LoadAsync<PushSubscription>(subscriptionId);
+            var existingSub = await DbSession.LoadOptionalAsync<PushSubscription>(subscriptionId);
             if (existingSub != null)
             {
                 DbSession.Delete(existingSub);

@@ -118,6 +118,11 @@ namespace BitShuva.Chavah {
             this.playSongWhenFinishedLoading(task);
         }
 
+        playSongFromArtistId(artist: string) {
+            const task = this.songApi.getSongByArtistId(artist);
+            this.playSongWhenFinishedLoading(task);
+        }
+
         playSongFromAlbum(album: string) {
             const task = this.songApi.getSongByAlbum(album);
             this.playSongWhenFinishedLoading(task);

@@ -5,7 +5,7 @@
         /// <summary>
         /// The name of the artist, album, or other category.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// The number of likes for the name.
@@ -20,6 +20,6 @@
         /// <summary>
         /// The ID of the song this like/dislike applies to.
         /// </summary>
-        public string SongId { get; set; }
+        public string SongId { get; set; } = string.Empty;
     }
 }

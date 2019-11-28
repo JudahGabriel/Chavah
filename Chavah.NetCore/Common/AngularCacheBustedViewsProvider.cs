@@ -10,7 +10,7 @@ namespace BitShuva.Chavah.Common
 {
     public class AngularCacheBustedViews
     {
-        public IList<string> Views { get; set; }
+        public List<string> Views { get; set; } = new List<string>();
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ namespace BitShuva.Chavah.Common
 
         private static AngularCacheBustedViews CreateCacheBustedViewsInstance(IServiceProvider svcProvider, string viewsFolderRelativePath)
         {
-            var host = svcProvider.GetRequiredService<IHostingEnvironment>();
+            var host = svcProvider.GetRequiredService<IWebHostEnvironment>();
             var viewsFolder = Path.Combine(host.WebRootPath, viewsFolderRelativePath);
             return new AngularCacheBustedViews
             {
@@ -48,38 +48,36 @@ namespace BitShuva.Chavah.Common
 
         private static string GetCacheBustedRelativeUrl(string htmlFilePath, string viewsFolderRelativePath)
         {
-            using (var file = File.OpenRead(htmlFilePath))
-            using (var md5 = System.Security.Cryptography.MD5.Create())
+            using var file = File.OpenRead(htmlFilePath);
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            // default windows path detaction
+            var viewsFolder = '\\' + viewsFolderRelativePath + '\\';
+
+            if (OperatingSystem.IsLinux())
             {
-                // default windows path detaction
-                var viewsFolder = '\\' + viewsFolderRelativePath + '\\';
-
-                if (OperatingSystem.IsLinux())
-                {
-                    viewsFolder = $"/{viewsFolderRelativePath}/";
-                }
-
-                var viewFolderIndex = htmlFilePath.LastIndexOf(viewsFolder, StringComparison.InvariantCultureIgnoreCase);
-                if (viewFolderIndex == -1)
-                {
-                    var error = new InvalidOperationException("Couldn't find views inside html file path");
-                    error.Data.Add("views folder", viewsFolder);
-                    error.Data.Add("html file path", htmlFilePath);
-                    throw error;
-                }
-
-                // See if the view is in a subfolder.
-                var htmlFileName = Path.GetFileName(htmlFilePath);
-                var filePathRelativeToViewsFolder = htmlFilePath
-                    .Substring(viewFolderIndex + viewsFolder.Length)
-                    .Replace(htmlFileName, string.Empty, StringComparison.InvariantCultureIgnoreCase);
-
-                var fileContentHash = string.Join(string.Empty, md5.ComputeHash(file));
-                var fileNameWithHash = htmlFileName + "?v=" + fileContentHash;
-                return Path.Combine("/" + viewsFolderRelativePath, filePathRelativeToViewsFolder, fileNameWithHash)
-                    .Replace("\\", "/")
-                    .ToLowerInvariant();
+                viewsFolder = $"/{viewsFolderRelativePath}/";
             }
+
+            var viewFolderIndex = htmlFilePath.LastIndexOf(viewsFolder, StringComparison.InvariantCultureIgnoreCase);
+            if (viewFolderIndex == -1)
+            {
+                var error = new InvalidOperationException("Couldn't find views inside html file path");
+                error.Data.Add("views folder", viewsFolder);
+                error.Data.Add("html file path", htmlFilePath);
+                throw error;
+            }
+
+            // See if the view is in a subfolder.
+            var htmlFileName = Path.GetFileName(htmlFilePath);
+            var filePathRelativeToViewsFolder = htmlFilePath
+                .Substring(viewFolderIndex + viewsFolder.Length)
+                .Replace(htmlFileName, string.Empty, StringComparison.InvariantCultureIgnoreCase);
+
+            var fileContentHash = string.Join(string.Empty, md5.ComputeHash(file));
+            var fileNameWithHash = htmlFileName + "?v=" + fileContentHash;
+            return Path.Combine("/" + viewsFolderRelativePath, filePathRelativeToViewsFolder, fileNameWithHash)
+                .Replace("\\", "/")
+                .ToLowerInvariant();
         }
     }
 }

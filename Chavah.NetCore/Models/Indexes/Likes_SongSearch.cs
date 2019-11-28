@@ -36,12 +36,12 @@ namespace BitShuva.Chavah.Models.Indexes
         public class Result
         {
             public DateTime Date { get; set; }
-            public string UserId { get; set; }
-            public string SongId { get; set; }
-            public string Name { get; set; }
-            public string Artist { get; set; }
-            public string Album { get; set; }
-            public string HebrewName { get; set; }
+            public string UserId { get; set; } = string.Empty;
+            public string SongId { get; set; } = string.Empty;
+            public string Name { get; set; } = string.Empty;
+            public string Artist { get; set; } = string.Empty;
+            public string Album { get; set; } = string.Empty;
+            public string HebrewName { get; set; } = string.Empty;
         }
     }
 }

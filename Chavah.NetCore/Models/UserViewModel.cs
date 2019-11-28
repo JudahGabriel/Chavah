@@ -7,7 +7,6 @@ namespace BitShuva.Chavah.Models
 {
     public class UserViewModel
     {
-        #region AppUser.cs
         /// <summary>
         /// Gets the total number of songs played by this user.
         /// </summary>
@@ -51,18 +50,17 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// Gets the URL for the user's profile picture. Will be null if the user doesn't have a profile pic setup.
         /// </summary>
-        public Uri ProfilePicUrl { get; set; }
+        public Uri? ProfilePicUrl { get; set; } 
 
         /// <summary>
         /// The user's first name.
         /// </summary>
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
         /// <summary>
         /// The user's last name.
         /// </summary>
-        public string LastName { get; set; }
-        #endregion
+        public string LastName { get; set; } = string.Empty;
 
         /// <summary>
         /// Number of times sign in failed.
@@ -72,22 +70,22 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// The user's claims, for use in claims-based authentication.
         /// </summary>
-        public List<IdentityUserClaim> Claims { get; set; }
+        public List<IdentityUserClaim> Claims { get; set; } = new List<IdentityUserClaim>();
 
         /// <summary>
         /// The email of the user.
         /// </summary>
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         /// <summary>
         /// The ID of the user.
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// The user name. Usually the same as the email.
         /// </summary>
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         /// <summary>
         /// Whether the user has confirmed their email address.
@@ -117,11 +115,11 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// The phone number.
         /// </summary>
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         /// <summary>
         ///  The roles of the user.
         /// </summary>
-        public IList<string> Roles { get; set; }
+        public List<string> Roles { get; set; } = new List<string>();
     }
 }

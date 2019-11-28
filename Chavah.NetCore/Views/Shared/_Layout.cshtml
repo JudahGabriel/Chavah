@@ -4,7 +4,7 @@
 
 @{
 
-    var appOptions = snapshot.Value;
+    var appOptions = snapshot.Value!;
 }
 <!DOCTYPE html>
 <html lang="en-us">
@@ -59,38 +59,38 @@
     @* Twitter card. When a user shares a song, we show a full card containing album art and song info. *@
     <meta name="twitter:creator" content="&#64;messianicradio">
     <meta name="twitter:site" content="&#64;messianicradio">
-    @if (Model != null && Model.Song != null)
+    @if (Model != null && Model.Song != null && appOptions != null)
     {
         // Show a Twitter summary card with the song info.
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="@appOptions?.DefaultUrl@(Model.Song.GetSongShareLink(appOptions?.DefaultUrl))" />
+        <meta name="twitter:url" content="@appOptions.DefaultUrl@(Model.Song.GetSongShareLink(appOptions.DefaultUrl))" />
         <meta name="twitter:title" content="@Model.Song.Name by @Model.Song.Artist" />
         <meta name="twitter:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
         <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
 
         @*Facebook share info. See https://developers.facebook.com/docs/sharing/webmasters/*@
-        <meta property="og:url" content="@appOptions?.DefaultUrl@(Model.Song.GetSongShareLink(appOptions?.DefaultUrl))" />
+        <meta property="og:url" content="@appOptions.DefaultUrl@(Model.Song.GetSongShareLink(appOptions.DefaultUrl))" />
         <meta property="og:type" content="music.song" />
         <meta property="og:title" content="@Model.Song.Name by @Model.Song.Artist" />
         <meta property="og:description" content="Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music on the web" />
         @*We can't use Song.AlbumArtUri because that URL will be on a different domain, and Facebook restricts us to use only images on our domain. So we'll trick it with a redirect.*@
         <meta property="og:image" content="@appOptions?.DefaultUrl/api/albums/getAlbumArtBySongId?songId=@Model.Song.Id" />
     }
-    else
+    else if (appOptions != null)
     {
         // No song? Show a Twitter summary card for Chavah itself, rather than for a song.
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="@appOptions?.DefaultUrl" />
-        <meta name="twitter:title" content="@appOptions?.Title" />
+        <meta name="twitter:url" content="@appOptions.DefaultUrl" />
+        <meta name="twitter:title" content="@appOptions.Title" />
         <meta name="twitter:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
-        <meta name="twitter:image" content="@appOptions?.DefaultUrl/images/chavah512x512.png?v=1" />
+        <meta name="twitter:image" content="@appOptions.DefaultUrl/images/chavah512x512.png?v=1" />
 
         @*Facebook share info for Chavah itself, rather than a song. https://developers.facebook.com/docs/sharing/webmasters/*@
-        <meta property="og:url" content="@appOptions?.DefaultUrl" />
+        <meta property="og:url" content="@appOptions.DefaultUrl" />
         <meta property="og:type" content="music.radio_station" />
-        <meta property="og:title" content="@appOptions?.Title" />
+        <meta property="og:title" content="@appOptions.Title" />
         <meta property="og:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
-        <meta property="og:image" content="@appOptions?.DefaultUrl/images/chavah512x512.png?v=1" />
+        <meta property="og:image" content="@appOptions.DefaultUrl/images/chavah512x512.png?v=1" />
     }
 
     @*CSS for development*@
@@ -119,10 +119,13 @@
     <div class="splash" style="width: 100%; height: 100%; position: fixed; background-color: #333f58; left: 0; right: 0; top: 0; bottom: 0; z-index: 999;">
         <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
             <div style="text-align: center;">
-                <picture style="width: 120px; height: 120px;">
-                    <source srcset="@Model.CdnUrl/chavah-splash.webp?v=1" type="image/webp">
-                    <source srcset="@Model.CdnUrl/chavah-splash.png?v=1" type="image/png">
-                </picture>
+                @if (Model != null)
+                {
+                    <picture style="width: 120px; height: 120px;">
+                        <source srcset="@Model.CdnUrl/chavah-splash.webp?v=1" type="image/webp">
+                        <source srcset="@Model.CdnUrl/chavah-splash.png?v=1" type="image/png">
+                    </picture>
+                }
                 <br />
                 <h5 style="color: #e9dd9a;">Chavah Messianic Radio</h5>
             </div>

@@ -30,10 +30,10 @@ namespace BitShuva.Chavah.Models.Indexes
 
         public class Results
         {
-            public string Name { get; set; }
-            public string HebrewName { get; set; }
-            public string Artist { get; set; }
-            public string Album { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string HebrewName { get; set; } = string.Empty;
+            public string Artist { get; set; } = string.Empty;
+            public string Album { get; set; } = string.Empty;
         }
     }
 }

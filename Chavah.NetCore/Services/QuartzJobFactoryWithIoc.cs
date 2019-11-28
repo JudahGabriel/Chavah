@@ -24,7 +24,8 @@ namespace BitShuva.Chavah.Services
 
         public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
         {
-            return svcProvider.GetRequiredService(bundle.JobDetail.JobType) as IJob;
+            var job = (IJob)svcProvider.GetRequiredService(bundle.JobDetail.JobType) as IJob;
+            return job;
         }
 
         public void ReturnJob(IJob job)

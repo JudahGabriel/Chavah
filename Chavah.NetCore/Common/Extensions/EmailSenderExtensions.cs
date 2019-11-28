@@ -57,7 +57,10 @@ namespace BitShuva.Chavah.Common
         {
             var subject = "Welcome to Chavah! ❤";
             var body = emailSender.GetEmailTemplate("WelcomeToChavah.html");
-            body.MatchSome(bodyVal => emailSender.QueueSendEmail(recipient, subject, bodyVal));
+            if (body != null)
+            {
+                emailSender.QueueSendEmail(recipient, subject, body);
+            }
         }
 
         private static string GetAngularRouteEscapedCode(string input)

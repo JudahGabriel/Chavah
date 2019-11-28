@@ -107,7 +107,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        public async Task<Uri> GetProfilePicForEmailAddress(string email)
+        public async Task<Uri?> GetProfilePicForEmailAddress(string email)
         {
             var user = await DbSession.LoadAsync<AppUser>(AppUser.AppUserPrefix + email);
             if (user != null)

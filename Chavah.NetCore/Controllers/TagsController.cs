@@ -7,12 +7,9 @@ using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
-using Optional;
 
 using Raven.Client.Documents;
 using Raven.Client.Documents.Operations;
@@ -108,7 +105,7 @@ namespace BitShuva.Chavah.Controllers
                 { "oldTag", oldTag },
                 { "newTag", newTag }
             };
-            var patch = DbSession.Advanced.DocumentStore.PatchAll<Song>(patchScript, patchVariables.Some());
+            var patch = DbSession.Advanced.DocumentStore.PatchAll<Song>(patchScript, patchVariables);
             await PatchWithTimeout(patch, TimeSpan.FromSeconds(30)).ConfigureAwait(false);
             return newTag;
         }
@@ -141,7 +138,7 @@ namespace BitShuva.Chavah.Controllers
                 { "tag", tag }
             };
 
-            var patch = DbSession.Advanced.DocumentStore.PatchAll<Song>(patchScript, patchVariables.Some());
+            var patch = DbSession.Advanced.DocumentStore.PatchAll<Song>(patchScript, patchVariables);
             await PatchWithTimeout(patch, TimeSpan.FromSeconds(30)).ConfigureAwait(false);
         }
 

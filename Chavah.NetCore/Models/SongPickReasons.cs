@@ -2,11 +2,7 @@
 {
     public class SongPickReasons
     {
-        public SongPickReasons()
-        {
-        }
-
-        public string SongId { get; set; }
+        public string SongId { get; set; } = string.Empty;
         public LikeLevel Artist { get; set; }
         public LikeLevel Album { get; set; }
         public bool SongThumbedUp { get; set; }

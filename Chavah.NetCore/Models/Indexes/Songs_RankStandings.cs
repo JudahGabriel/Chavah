@@ -31,7 +31,7 @@ namespace BitShuva.Chavah.Models.Indexes
         public class Result
         {
             public CommunityRankStanding Standing { get; set; }
-            public List<string> SongIds { get; set; }
+            public List<string> SongIds { get; set; } = new List<string>();
         }
     }
 }

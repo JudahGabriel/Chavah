@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace BitShuva.Chavah
 {
@@ -10,13 +11,15 @@ namespace BitShuva.Chavah
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            return WebHost.CreateDefaultBuilder(args)
-                    .ConfigureAppConfiguration((hostingContext, configBuilder) =>
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.ConfigureAppConfiguration((hostingContext, configBuilder) =>
                     {
                         // based on environment Development = dev; Production = prod prefix in Azure Vault.
                         var envName = hostingContext.HostingEnvironment.EnvironmentName;
@@ -25,10 +28,11 @@ namespace BitShuva.Chavah
                         // helpful to see what was retrieved from all of the configuration providers.
                         if (hostingContext.HostingEnvironment.IsDevelopment())
                         {
-                            configuration.DebugConfigurations();
+                            //configuration.DebugConfigurations();
                         }
                     })
                     .UseStartup<Startup>();
+                });
         }
     }
 }

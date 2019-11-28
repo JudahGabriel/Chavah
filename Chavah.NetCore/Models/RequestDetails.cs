@@ -7,23 +7,17 @@ using BitShuva.Chavah.Common;
 
 using Newtonsoft.Json;
 
-using Optional;
-
 namespace BitShuva.Chavah.Models
 {
     public class RequestDetails
     {
-        public RequestDetails()
-        {
-        }
-
-        public static async Task<RequestDetails> FromHttpRequest(HttpRequestMessage request, Option<SessionToken> sessionToken)
+        public static async Task<RequestDetails> FromHttpRequest(HttpRequestMessage request, SessionToken? sessionToken)
         {
             var result = new RequestDetails
             {
                 Method = request.Method?.Method,
                 Uri = request.RequestUri?.ToString(),
-                UserId = sessionToken.FlatMap(t => t.UserId).ValueOrDefault(),
+                UserId = sessionToken?.UserId,
                 Headers = request.Headers != null ? JsonConvert.SerializeObject(request.Headers.ToDictionary(a => a.Key, a => string.Join(";", a.Value))) : string.Empty
             };
 
@@ -55,10 +49,10 @@ namespace BitShuva.Chavah.Models
             }
         }
 
-        public string Method { get; set; }
-        public string Uri { get; set; }
-        public string UserId { get; set; }
-        public string Content { get; set; }
-        public string Headers { get; set; }
+        public string? Method { get; set; }
+        public string? Uri { get; set; }
+        public string? UserId { get; set; }
+        public string? Content { get; set; }
+        public string? Headers { get; set; }
     }
 }

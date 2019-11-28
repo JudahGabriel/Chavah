@@ -4,98 +4,36 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.IO;
+using BitShuva.Chavah.Common;
 
 namespace BitShuva.Chavah.Models
 {
     public class Song
     {
-        public Song()
-        {
-            Tags = new List<string>();
-            Genres = new List<string>();
-        }
-
-        public string Name { get; set; }
-        public string HebrewName { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string HebrewName { get; set; } = string.Empty;
         public int Number { get; set; }
-        public string Album { get; set; }
-        public string Artist { get; set; }
-        public Uri AlbumArtUri { get; set; }
-        public string PurchaseUri { get; set; }
-        public Uri Uri { get; set; }
+        public string Album { get; set; } = string.Empty;
+        public string Artist { get; set; } = string.Empty;
+        public Uri AlbumArtUri { get; set; } = UriExtensions.Localhost;
+        public Uri Uri { get; set; } = UriExtensions.Localhost;
+        public Uri? PurchaseUri { get; set; }
         public LikeStatus SongLike { get; set; }
         public int CommunityRank { get; set; }
         public CommunityRankStanding CommunityRankStanding { get; set; }
-        public string Id { get; set; }
         public DateTime UploadDate { get; set; }
-        public List<string> Tags { get; set; }
-        public List<string> Genres { get; set; }
-        public string Lyrics { get; set; }
+        public List<string> Tags { get; set; } = new List<string>();
+        public List<string> Genres { get; set; } = new List<string>();
+        public string Lyrics { get; set; } = string.Empty;
         public int TotalPlays { get; set; }
-        public string AlbumId { get; set; }
-        public string ArtistId { get; set; }
+        public string AlbumId { get; set; } = string.Empty;
+        public string ArtistId { get; set; } = string.Empty;
         public int CommentCount { get; set; }
-        public AlbumColors AlbumColors { get; set; }
-        public SongPickReasons ReasonsPlayed { get; set; }
+        public AlbumColors AlbumColors { get; set; } = new AlbumColors();
+        public SongPickReasons? ReasonsPlayed { get; set; }
         public List<string> ContributingArtists { get; set; } = new List<string>();
         // Add a property here? It should probably be added to .ToDto()
-
-        public static Song FromFileName(string fileName)
-        {
-            Contract.Requires(fileName != null);
-            fileName = System.Uri.UnescapeDataString(fileName);
-
-            var song = new Song();
-            var fileNameWithouExtension = Path.GetFileNameWithoutExtension(fileName);
-            var indexOfLastDash = fileNameWithouExtension.LastIndexOf(" - ");
-            if (indexOfLastDash != -1)
-            {
-                song.Name = fileNameWithouExtension
-                    .Substring(indexOfLastDash)
-                    .Replace('_', ':')
-                    .Trim('-', ' ');
-            }
-
-            var indexOfFirstDash = fileNameWithouExtension.IndexOf(" - ");
-            if (indexOfFirstDash != -1)
-            {
-                song.Artist = fileNameWithouExtension
-                    .Substring(0, indexOfFirstDash)
-                    .Trim('-', ' ');
-            }
-            var dashCount = fileNameWithouExtension.Count(c => c == '-');
-            if (dashCount >= 2)
-            {
-                var indexOfSecondDash = fileNameWithouExtension.IndexOf(" - ", indexOfFirstDash + 2);
-                if (indexOfSecondDash != -1)
-                {
-                    song.Album = fileNameWithouExtension
-                        .Substring(indexOfFirstDash, indexOfSecondDash - indexOfFirstDash)
-                        .Trim('-', ' ');
-                }
-            }
-
-            var songNumberMatch = Regex.Match(fileNameWithouExtension, " - (\\d{2}) - ");
-            if (songNumberMatch.Success && songNumberMatch.Groups.Count == 2 && songNumberMatch.Groups[1].Success)
-            {
-                song.Number = int.Parse(songNumberMatch.Groups[1].Value);
-            }
-
-            if (string.IsNullOrWhiteSpace(song.Name))
-            {
-                song.Name = "Unknown";
-            }
-            if (string.IsNullOrWhiteSpace(song.Artist))
-            {
-                song.Artist = "Unknown Artist";
-            }
-            if (string.IsNullOrWhiteSpace(song.Album))
-            {
-                song.Album = "Unknown Album";
-            }
-
-            return song;
-        }
 
         /// <summary>
         /// Creates a new song object that's ready to be sent as a data transfer object over to the client.

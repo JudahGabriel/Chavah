@@ -5,9 +5,9 @@ namespace BitShuva.Chavah.Models
 {
     public class Comment
     {
-        public string UserId { get; set; }
-        public string UserDisplayName { get; set; }
-        public string Content { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public string UserDisplayName { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
         public DateTimeOffset Date { get; set; }
         public int FlagCount { get; set; }
         public DateTimeOffset? LastFlagDate { get; set; }
@@ -25,7 +25,7 @@ namespace BitShuva.Chavah.Models
             var userIdPrefixLength = AppUser.AppUserPrefix.Length;
             if (domainIndex > userIdPrefixLength)
             {
-                return user.Id.Substring(userIdPrefixLength, domainIndex - userIdPrefixLength);
+                return user.Id[userIdPrefixLength..domainIndex];
             }
 
             return user.Id;

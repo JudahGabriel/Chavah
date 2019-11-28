@@ -12,7 +12,7 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// The ID of the user who created the subscription. May be null.
         /// </summary>
-        public string AppUserId { get; set; }
+        public string? AppUserId { get; set; }
 
         /// <summary>
         /// The creation time of the subscription.
@@ -22,12 +22,12 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// The endpoint URL for the subscription. This property comes from the browser's PushSubscription type.
         /// </summary>
-        public string Endpoint { get; set; }
+        public string Endpoint { get; set; } = string.Empty;
 
         /// <summary>
         /// The dictionary containing the p256dh and auth properties. This property comes from the browser's PushSubscription type.
         /// </summary>
-        public IDictionary<string, string> Keys { get; set; }
+        public IDictionary<string, string> Keys { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// Gets the Raven ID given an HTML5 PushSubscription endpoint.

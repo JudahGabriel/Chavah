@@ -50,7 +50,7 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(string artist = null, string album = null, string song = null, bool embed = false)
+        public async Task<IActionResult> Index(string? artist = null, string? album = null, string? song = null, bool embed = false)
         {
             var user = await GetUser();
             var userVm = user != null ? _mapper.Map<UserViewModel>(user) : null;
@@ -65,36 +65,36 @@ namespace BitShuva.Chavah.Controllers
             return View("Index", homeViewModel);
         }
 
-        private Task<Song> GetSongFromQuery(string artist, string album, string songId)
+        private async Task<Song?> GetSongFromQuery(string? artist, string? album, string? songId)
         {
             if (!string.IsNullOrEmpty(songId))
             {
-                return _songService.GetSongByIdQueryAsync(songId);
+                return await _songService.GetSongByIdQueryAsync(songId);
             }
 
             // Both artist and album specified? Load one of those.
             if (!string.IsNullOrEmpty(artist)
                 && !string.IsNullOrEmpty(album))
             {
-                return _songService.GetMatchingSongAsync(s => s.Artist == artist && s.Album == album);
+                return await _songService.GetMatchingSongAsync(s => s.Artist == artist && s.Album == album);
             }
 
             if (!string.IsNullOrEmpty(artist))
             {
-                return _songService.GetSongByArtistAsync(artist);
+                return await _songService.GetSongByArtistAsync(artist);
             }
 
             if (!string.IsNullOrEmpty(album))
             {
-                return _songService.GetSongByAlbumAsync(album);
+                return await _songService.GetSongByAlbumAsync(album);
             }
 
-            return Task.FromResult<Song>(null);
+            return null;
         }
 
         [HttpGet]
         [Route("home/embed")]
-        public Task<IActionResult> Embed(string artist = null, string album = null, string song = null)
+        public Task<IActionResult> Embed(string? artist = null, string? album = null, string? song = null)
         {
             return Index(artist, album, song, true);
         }

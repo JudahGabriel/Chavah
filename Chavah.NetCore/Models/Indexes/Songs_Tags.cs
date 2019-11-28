@@ -9,11 +9,6 @@ namespace BitShuva.Chavah.Models.Indexes
     /// </summary>
     public class Songs_Tags : AbstractIndexCreationTask<Song, Songs_Tags.Result>
     {
-        public class Result
-        {
-            public string Name { get; set; }
-        }
-
         public Songs_Tags()
         {
             Map = songs => from song in songs
@@ -31,6 +26,11 @@ namespace BitShuva.Chavah.Models.Indexes
                                 };
 
             Index(r => r.Name, FieldIndexing.Search);
+        }
+
+        public class Result
+        {
+            public string Name { get; set; } = string.Empty;
         }
     }
 }

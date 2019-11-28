@@ -22,13 +22,13 @@ namespace BitShuva.Chavah.Models
             };
         }
 
-        public string Id { get; set; }
-        public string To { get; set; }
-        public string ReplyTo { get; set; }
-        public string CC { get; set; }
-        public string Bcc { get; set; }
-        public string Subject { get; set; }
-        public string Body { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string To { get; set; } = string.Empty;
+        public string? ReplyTo { get; set; }
+        public string? CC { get; set; }
+        public string? Bcc { get; set; }
+        public string Subject { get; set; } = string.Empty;
+        public string Body { get; set; } = string.Empty;
 
         /// <summary>
         /// The date the email was successfully sent.
@@ -43,7 +43,7 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// The last error message that occurred when sending the email.
         /// </summary>
-        public string SendingErrorMessage { get; set; }
+        public string? SendingErrorMessage { get; set; }
 
         /// <summary>
         /// The date the email was attempted to be sent again after a previous failure to send.

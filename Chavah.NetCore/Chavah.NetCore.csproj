@@ -1,215 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <UserSecretsId>c9b7e1c3-1564-4d7d-85ea-3455587a330d</UserSecretsId>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <AssemblyName>BitShuva.Chavah</AssemblyName>
     <RootNamespace>BitShuva.Chavah</RootNamespace>
-    <TypeScriptCompileBlocked>false</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json</RestoreSources>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <LangVersion>Latest</LangVersion>
-    <NoWarn>1701;1702;1591;IDE1006</NoWarn>
-    <BetCommnon>1.1.19</BetCommnon>
     <CodeAnalysisRuleSet>..\Chavah.ruleset</CodeAnalysisRuleSet>
+    <nullable>enable</nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
-    <PackageReference Include="BCrypt.Net-Next" Version="3.1.3" />
-    <PackageReference Include="Bet.AspNetCore" Version="1.1.22" />
-    <PackageReference Include="Bet.AspNetCore.HealthChecks" Version="1.1.22" />
-    <PackageReference Include="Bet.AspNetCore.Logging" Version="1.1.22" />
-    <PackageReference Include="Bet.Extensions" Version="1.1.22" />
-    <PackageReference Include="Bet.Extensions.AzureVault" Version="1.1.22" />
-    <PackageReference Include="Bet.Extensions.Logging" Version="1.1.22" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="BCrypt.Net-Next" Version="3.2.1" />
+    <PackageReference Include="Bet.Extensions.AzureVault" Version="2.0.2" />
+    <PackageReference Include="Bet.AspNetCore.HealthChecks" Version="2.0.2" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
     <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
-    <PackageReference Include="cloudscribe.Syndication.Web" Version="2.1.3" />
+    <PackageReference Include="cloudscribe.Syndication.Web" Version="3.0.1" />
     <PackageReference Include="CoreFtp" Version="1.4.0" />
-    <PackageReference Include="CronScheduler.AspNetCore" Version="1.0.12" />
     <PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="3.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.0.0" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.0.96" />
-    <PackageReference Include="Optional" Version="4.0.0" />
     <PackageReference Include="Pwned.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Quartz" Version="3.0.7" />
-    <PackageReference Include="RavenDB.Client" Version="4.2.4" />
-    <PackageReference Include="RavenDB.Identity" Version="6.1.0" />
-    <PackageReference Include="RavenDB.StructuredLogger" Version="4.2.1" />
+    <PackageReference Include="RavenDB.Client" Version="4.2.5" />
+    <PackageReference Include="RavenDB.Identity" Version="6.2.0.1" />
+    <PackageReference Include="RavenDB.StructuredLogger" Version="5.0.0" />
     <PackageReference Include="RavenMigrations" Version="4.1.7" />
-    <PackageReference Include="RavenDB.DependencyInjection" Version="3.0.0" />
-    <PackageReference Include="Sendgrid" Version="9.11.0" />
+    <PackageReference Include="RavenDB.DependencyInjection" Version="3.1.0" />
+    <PackageReference Include="Sendgrid" Version="9.12.0" />
     <PackageReference Include="SimpleSitemap" Version="3.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
-    <PackageReference Include="System.Interactive" Version="3.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
+    <PackageReference Include="System.Interactive" Version="4.0.0" />
     <PackageReference Include="WebPush" Version="1.0.11" />
-    <PackageReference Include="Polly" Version="7.1.0" />
+    <PackageReference Include="Polly" Version="7.2.0" />
   </ItemGroup>
-
-  <ItemGroup>
-
-    <Content Remove="Views\Partials\**" />
-    <Compile Remove="Views\Partials\**" />
-    <None Remove="Views\Partials\**" />
-    <EmbeddedResource Remove="Views\Partials\**" />
-
-    <Content Remove="wwwroot\js\Components\**" />
-    <Compile Remove="wwwroot\js\Components\**" />
-    <None Remove="wwwroot\js\Components\**" />
-    <EmbeddedResource Remove="wwwroot\js\Components\**" />
-
-    <Content Include="wwwroot\js\**\*.ts" />
-    <Content Remove="wwwroot\js\**\*.ts" />
-
-    <Content Remove="wwwroot\js\dist\**" />
-    <Compile Remove="wwwroot\js\dist\**" />
-    <None Remove="wwwroot\js\dist\**" />
-
-    <Content Remove="wwwroot\css\dist\**" />
-    <Compile Remove="wwwroot\css\dist\**" />
-    <Content Remove="wwwroot\css\**\*.less" />
-    <None Remove="wwwroot\css\dist\**" />
-
-    <None Include="wwwroot\css\**\*.less" />
-
-    <Content Remove="node_modules\**" />
-
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\js\App.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Common\AngularBindings.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Common\IAppRoute.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Common\ICropImageResult.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Common\ITemplatePaths.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Common\List.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Common\PagedList.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Common\RouteAccess.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Common\ToggleOption.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\AlbumsController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\ApproveSongEditsController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\ConfirmDeleteSongController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\ConfirmEmailController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\CreatePasswordController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\CropImageController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\DonateController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\EditAlbumController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\EditArtistController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\EditSongController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\EditSongsController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\ErrorPlayingAudioController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\FooterController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\ForgotPasswordController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\HeaderController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\LogEditorController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\MyLikesController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\NowPlayingController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\PasswordController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\ProfileController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\RegisterController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\RequestSongController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\ResetPasswordController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\ShareThanksController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\SignInController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\SongEditApprovedController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\SongListController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\SupportController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\TagEditorController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\TrendingController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Controllers\UploadAlbumController.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Directives\AutoExpandingTextArea.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Directives\BackgroundImage.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Directives\EnterHandler.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Directives\FileUploadChanged.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Directives\ImageCropper.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Directives\TriggerFocus.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\Album.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\Artist.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\AudioStatus.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\CommunityRankStanding.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\HeaderRoute.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\IAlbumSwatch.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\IAudioErrorInfo.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\LikeLevel.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\LogLevel.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\LogSort.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\ServerInterfaces.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\SignInStatus.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\Song.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\SongEditStatus.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\SongLike.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\SongPick.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\StructuredLog.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Models\User.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Polyfills\Array.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Polyfills\BeforeInstallPromptEvent.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Polyfills\MediaSession.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Polyfills\String.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\AccountService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\AdAnnouncerService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\AdminScriptsService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\AlbumApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\AppNavService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\ArtistApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\AudioPlayerService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\HttpApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\IOSMediaSessionService.ts" />
-	<TypeScriptCompile Include="wwwroot\js\Services\CommentThreadService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\LikeApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\LoadingProgressService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\LogService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\NavigatorMediaSessionService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\PushNotificationService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\PwaInstallService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\SharingService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\SongApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\SongBatchService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\SongEditService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\SongRequestService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\StationIdentifierService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\TagService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\UserApiService.ts" />
-    <TypeScriptCompile Include="wwwroot\js\Services\UwpNativeAudioService.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Models\**\*.cs">
-      <DependentUpon>%(Filename).d.ts</DependentUpon>
-    </None>
-    <None Update="ravencert.*.pfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Extensions\" />
-    <Folder Include="Options\" />
-  </ItemGroup>
-
-  <Target Name="PublishMinifiedDistributionFiles" AfterTargets="ComputeFilesToPublish">
-    <!-- Include the newly-built files in the publish output -->
-    <ItemGroup>
-      <DistFiles Include="wwwroot\css\dist\**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>%(DistFiles.Identity)</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </ResolvedFileToPublish>
-    </ItemGroup>
-    <ItemGroup>
-      <DistFiles Include="wwwroot\js\dist\**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>%(DistFiles.Identity)</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </ResolvedFileToPublish>
-    </ItemGroup>
-  </Target>
 
 </Project>

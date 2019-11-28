@@ -11,12 +11,15 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
-
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Extensions for Swagger API documentation.
+    /// </summary>
     public static class SwaggerExtensions
     {
         /// <summary>
@@ -29,7 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSwaggerGen(
                 options =>
                 {
-                    options.DescribeAllEnumsAsStrings();
+                    //options.DescribeAllEnumsAsStrings();
                     options.DescribeAllParametersInCamelCase();
                     // resolve the IApiVersionDescriptionProvider service
                     // note: that we have to build a temporary service provider here because one has not been created yet
@@ -76,23 +79,22 @@ namespace Microsoft.Extensions.DependencyInjection
             }
         }
 
-        private static Info CreateInfoForApiVersion(
+        private static OpenApiInfo CreateInfoForApiVersion(
             ApiVersionDescription description,
             AppSettings appOptions,
             EmailSettings emailOptions)
         {
-            var info = new Info()
+            var info = new OpenApiInfo()
             {
                 Title = $"{appOptions?.Name} API {description.ApiVersion}",
                 Version = description.ApiVersion.ToString(),
                 Description = $"{appOptions?.Title}",
-                Contact = new Contact()
+                Contact = new OpenApiContact()
                 {
                     Name = emailOptions?.SenderName,
                     Email = emailOptions?.SenderEmail
                 },
-                TermsOfService = "Nonprofit",
-                License = new License() { Name = "MIT", Url = "https://opensource.org/licenses/MIT" }
+                License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
             };
 
             if (description.IsDeprecated)
@@ -115,7 +117,7 @@ namespace Microsoft.Extensions.DependencyInjection
             /// </summary>
             /// <param name="operation">The operation to apply the filter to.</param>
             /// <param name="context">The current operation filter context.</param>
-            public void Apply(Operation operation, OperationFilterContext context)
+            public void Apply(OpenApiOperation operation, OperationFilterContext context)
             {
                 if (operation.Parameters == null)
                 {
@@ -124,7 +126,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/412
                 // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/pull/413
-                foreach (var parameter in operation.Parameters.OfType<NonBodyParameter>())
+                foreach (var parameter in operation.Parameters)
                 {
                     try
                     {
@@ -141,10 +143,10 @@ namespace Microsoft.Extensions.DependencyInjection
                             continue;
                         }
 
-                        if (parameter.Default == null)
-                        {
-                            parameter.Default = routeInfo.DefaultValue;
-                        }
+                        //if (parameter.Default == null)
+                        //{
+                        //    parameter.Default = routeInfo.DefaultValue;
+                        //}
 
                         parameter.Required |= !routeInfo.IsOptional;
                     }
