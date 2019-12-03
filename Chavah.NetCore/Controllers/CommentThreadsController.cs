@@ -82,8 +82,9 @@ namespace BitShuva.Chavah.Controllers
             // Store an activity for it.
             var commentActivity = new Activity
             {
+                Id = "Activities/",
                 DateTime = DateTimeOffset.UtcNow,
-                Title = $"{newComment.UserId} commented on {song.Name} by {song.Artist}",
+                Title = $"{newComment.UserDisplayName} commented on {song.Name} by {song.Artist}",
                 Description = newComment.Content,
                 MoreInfoUri = song.GetSongShareLink(appSettings.Value.DefaultUrl),
                 EntityId = song.Id,

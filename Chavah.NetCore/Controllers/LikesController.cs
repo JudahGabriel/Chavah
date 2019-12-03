@@ -123,6 +123,7 @@ namespace BitShuva.Chavah.Controllers
                     var songArtist = song.Artist;
                     var activity = new Activity
                     {
+                        Id = "Activities/",
                         DateTime = DateTime.UtcNow,
                         Title = $"{song.Artist} - {song.Name} was thumbed up ({songRankString}) on {appSettings?.Title}",
                         Description = $"\"{song.Name}\" by {songArtist} was thumbed up ({songRankString}) on {appSettings?.Title}.",

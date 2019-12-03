@@ -120,10 +120,6 @@ namespace BitShuva.Chavah.Controllers
             {
                 throw new ArgumentException("Album must have a name and artist.");
             }
-            if (album.Id?.Length == 0)
-            {
-                album.Id = string.Empty;
-            }
 
             // Ensure we're not saving a duplicate.
             var isCreatingNew = string.IsNullOrEmpty(album.Id);
@@ -136,6 +132,8 @@ namespace BitShuva.Chavah.Controllers
                     throw new ArgumentException($"Attempted to save duplicate album")
                         .WithData("existing album", existingAlbum);
                 }
+
+                album.Id = "Albums/";
             }
 
             await DbSession.StoreAsync(album);
@@ -171,7 +169,14 @@ namespace BitShuva.Chavah.Controllers
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()
-                .FirstOrDefaultAsync(a => a.Name == album.Name && a.Artist == album.Artist) ?? new Album();
+                .FirstOrNoneAsync(a => a.Name == album.Name && a.Artist == album.Artist);
+            if (existingAlbum == null)
+            {
+                existingAlbum = new Album
+                {
+                    Id = "Albums/"
+                };
+            }
 
             // Store the Artist as well.
             var existingArtist = await DbSession.Query<Artist>()
@@ -180,6 +185,7 @@ namespace BitShuva.Chavah.Controllers
             {
                 existingArtist = new Artist
                 {
+                    Id = "Artists/",
                     Bio = "",
                     Name = album.Artist
                 };
@@ -197,6 +203,7 @@ namespace BitShuva.Chavah.Controllers
 
             if (string.IsNullOrEmpty(existingAlbum.Id))
             {
+                existingAlbum.Id = "Albums/";
                 await DbSession.StoreAsync(existingAlbum);
             }
 
@@ -208,6 +215,7 @@ namespace BitShuva.Chavah.Controllers
                 var (english, hebrew) = albumSong.FileName.GetEnglishAndHebrew();
                 var song = new Song
                 {
+                    Id = "Songs/",
                     Album = album.Name,
                     Artist = album.Artist,
                     AlbumArtUri = albumArtUriCdn,

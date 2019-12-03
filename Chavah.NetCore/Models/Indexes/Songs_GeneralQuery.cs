@@ -22,7 +22,8 @@ namespace BitShuva.Chavah.Models.Indexes
                                     song.CommunityRankStanding,
                                     song.Name,
                                     song.Tags,
-                                    song.UploadDate
+                                    song.UploadDate,
+                                    song.ArtistId
                                 };
         }
     }

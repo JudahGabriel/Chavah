@@ -115,6 +115,7 @@ namespace BitShuva.Services
             using var dbSession = db.OpenAsyncSession();
             var email = new Email
             {
+                Id = "Emails",
                 To = recipient,
                 Subject = subject,
                 Body = body,
