@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Raven.Client.Documents.Indexes;
+using Raven.Client.Documents.Linq.Indexing;
 
 namespace BitShuva.Chavah.Models.Indexes
 {
@@ -16,15 +17,15 @@ namespace BitShuva.Chavah.Models.Indexes
                            where like.Status == LikeStatus.Like
                            let song = LoadDocument<Song>(like.SongId)
                            let album = LoadDocument<Album>(song.AlbumId)
-                           select new Result
+                           select new
                            {
-                               SongId = like.SongId,
-                               UserId = like.UserId,
-                               Date = like.Date,
-                               Name = song.Name,
-                               Artist = song.Artist,
-                               Album = song.Album,
-                               HebrewName = song.HebrewName
+                               Name = song.Name.Boost(2),
+                               HebrewName = song.HebrewName.Boost(2),
+                               like.SongId,
+                               like.UserId,
+                               like.Date,
+                               song.Artist,
+                               song.Album
                            };
 
             Index(r => r.Name, FieldIndexing.Search);

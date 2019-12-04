@@ -97,10 +97,10 @@ namespace BitShuva.Chavah.Controllers
             if (!string.IsNullOrEmpty(search))
             {
                 query = query
-                    .Search(s => s.Name, search + "*")
-                    .Search(s => s.HebrewName, search + "*")
-                    .Search(s => s.Album, search + "*")
-                    .Search(s => s.Artist, search + "*");
+                    .Search(s => s.Name, search)
+                    .Search(s => s.HebrewName, search)
+                    .Search(s => s.Album, search)
+                    .Search(s => s.Artist, search);
             }
 
             var likes = await query
@@ -191,9 +191,9 @@ namespace BitShuva.Chavah.Controllers
             stopWatch.Stop();
 
             var songsOrderedByWeight = table
-                .Select(s => (SongId: s.Key, s.Value.Weight, s.Value.ArtistMultiplier, s.Value.AlbumMultiplier, SongMultipler: s.Value.SongMultiplier, s.Value.TagMultiplier, RankMultiplier: s.Value.CommunityRankMultiplier))
+                .Select(s => (SongId: s.Key, s.Value.Weight, s.Value.ArtistMultiplier, s.Value.AlbumMultiplier, SongMultipler: s.Value.SongMultiplier, s.Value.TagMultiplier, RankMultiplier: s.Value.CommunityRankMultiplier, s.Value.AgeMultiplier))
                 .OrderByDescending(s => s.Weight)
-                .Select(s => $"Song ID {s.SongId}, Weight {s.Weight}, Artist multiplier: {s.ArtistMultiplier}, Album multipler: {s.AlbumMultiplier}, Song multiplier: {s.SongMultipler}, Tag multiplier {s.TagMultiplier}, Rank multiplier: {s.RankMultiplier}")
+                .Select(s => $"Song ID {s.SongId}, Weight {s.Weight}, Artist multiplier: {s.ArtistMultiplier}, Album multipler: {s.AlbumMultiplier}, Song multiplier: {s.SongMultipler}, Tag multiplier {s.TagMultiplier}, Rank multiplier: {s.RankMultiplier}, Age multiplier: {s.AgeMultiplier}")
                 .ToList();
 
             songsOrderedByWeight.Insert(0, $"Performance statistics: Total query time {tableTime + rankingTime + userPrefsTime}. Querying user prefs {userPrefsTime}, querying ranking {rankingTime}, building table {tableTime}");
@@ -545,7 +545,7 @@ namespace BitShuva.Chavah.Controllers
         {
             var existingSong = await DbSession
                 .Include<Song>(s => s.AlbumId)
-                .LoadRequiredAsync<Song>(song.Id);
+                .LoadRequiredAsync<Song>(song.Id!);
             DbSession.Delete(existingSong);
 
             // Delete all likes of this song.
@@ -597,7 +597,7 @@ namespace BitShuva.Chavah.Controllers
         private async Task<Song> GetSongDto(Song song, SongPick pickReason)
         {
             var user = await GetUser();
-            if (user != null)
+            if (user != null && song.Id != null)
             {
                 var songLikeId = Like.GetLikeId(user.Id, song.Id);
                 var songLike = await DbSession.LoadOptionalAsync<Like>(songLikeId);

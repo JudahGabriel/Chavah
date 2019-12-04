@@ -10,7 +10,7 @@ namespace BitShuva.Chavah.Models
 {
     public class Song
     {
-        public string Id { get; set; } = string.Empty;
+        public string? Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string HebrewName { get; set; } = string.Empty;
         public int Number { get; set; }
@@ -27,8 +27,8 @@ namespace BitShuva.Chavah.Models
         public List<string> Genres { get; set; } = new List<string>();
         public string Lyrics { get; set; } = string.Empty;
         public int TotalPlays { get; set; }
-        public string AlbumId { get; set; } = string.Empty;
-        public string ArtistId { get; set; } = string.Empty;
+        public string? AlbumId { get; set; }
+        public string? ArtistId { get; set; }
         public int CommentCount { get; set; }
         public AlbumColors AlbumColors { get; set; } = new AlbumColors();
         public SongPickReasons? ReasonsPlayed { get; set; }

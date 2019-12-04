@@ -306,7 +306,7 @@ namespace BitShuva.Chavah.Controllers
                     ApplicationUserId = user.Id,
                     Token = Guid.NewGuid().ToString()
                 };
-                await DbSession.StoreAsync(confirmToken).ConfigureAwait(false);
+                await DbSession.StoreAsync(confirmToken);
                 DbSession.SetRavenExpiration(confirmToken, DateTime.UtcNow.AddDays(14));
 
                 emailSender.QueueConfirmEmail(model.Email, confirmToken.Token, appOptions);
@@ -443,7 +443,7 @@ namespace BitShuva.Chavah.Controllers
                 Id = $"AccountTokens/Reset/{user.Email}",
                 Token = Guid.NewGuid().ToString()
             };
-            await DbSession.StoreAsync(passwordResetToken).ConfigureAwait(false);
+            await DbSession.StoreAsync(passwordResetToken);
             DbSession.SetRavenExpiration(passwordResetToken, DateTime.UtcNow.AddDays(14));
 
             emailSender.QueueResetPassword(email, passwordResetToken.Token, appOptions);

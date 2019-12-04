@@ -35,17 +35,15 @@ namespace BitShuva.Chavah.Services
         async Task IJob.Execute(IJobExecutionContext context)
         {
             // Find failed emails that are less than a week old.
-            using (var dbSession = docStore.OpenAsyncSession())
+            using var dbSession = docStore.OpenAsyncSession();
+            var weekAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(maxDaysOld));
+            var failedEmailOrNull = await dbSession.Query<Email>()
+                .Where(e => e.SendingErrorMessage != null && e.Created >= weekAgo && e.RetryCount < maxRetryCount)
+                .OrderBy(e => e.RetryCount)
+                .FirstOrDefaultAsync();
+            if (failedEmailOrNull != null && failedEmailOrNull.Id != null)
             {
-                var weekAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(maxDaysOld));
-                var failedEmailOrNull = await dbSession.Query<Email>()
-                    .Where(e => e.SendingErrorMessage != null && e.Created >= weekAgo && e.RetryCount < maxRetryCount)
-                    .OrderBy(e => e.RetryCount)
-                    .FirstOrDefaultAsync();
-                if (failedEmailOrNull != null)
-                {
-                    await emailSender.QueueRetryEmail(failedEmailOrNull.Id);
-                }
+                await emailSender.QueueRetryEmail(failedEmailOrNull.Id);
             }
         }
     }

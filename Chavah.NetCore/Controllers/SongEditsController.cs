@@ -57,9 +57,14 @@ namespace BitShuva.Chavah.Controllers
         public async Task<SongEdit> EditSong([FromBody] Song song)
         {
             var user = await GetUserOrThrow();
+            if (song.Id == null)
+            {
+                throw new ArgumentException("Song must have an ID");
+            }
+
             var existingSong = await DbSession.LoadRequiredAsync<Song>(song.Id);
 
-            var songEditId = GetSongEditId(existingSong.Id, user.Id);
+            var songEditId = GetSongEditId(existingSong.Id!, user.Id);
             var songEdit = new SongEdit(existingSong, song)
             {
                 Id = songEditId,
@@ -82,7 +87,18 @@ namespace BitShuva.Chavah.Controllers
                     var admins = await DbSession.Query<AppUser>()
                         .Where(u => u.Roles.Contains(AppUser.AdminRole))
                         .ToListAsync();
-                    admins.ForEach(a => a.AddNotification(Notification.SongEditsNeedApproval(appOptions.PushNotificationsImageUrl)));
+                    var editNeedsApprovalNotification = Notification.SongEditsNeedApproval(appOptions.PushNotificationsImageUrl);
+                    foreach (var admin in admins)
+                    {
+                        // If the admin already has a "song edits need approval" notification item, replace it with the unread one.
+                        var existing = admin.Notifications.FirstOrDefault(n => n.Title == editNeedsApprovalNotification.Title);
+                        if (existing != null)
+                        {
+                            admin.Notifications.Remove(existing);
+                        }
+                        
+                        admin.AddNotification(editNeedsApprovalNotification);
+                    }
                 }
             }
 

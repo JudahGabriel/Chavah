@@ -115,13 +115,13 @@ namespace BitShuva.Chavah.Common
         {
             if (id == null)
             {
-                throw new ArgumentNullException(nameof(id), "Tried to load required entity but passed in a null ID");
+                throw new ArgumentNullException(nameof(id), "Attempted load required entity but passed in a null ID");
             }
 
             var result = await session.LoadAsync<T>(id);
             if (result == null)
             {
-                throw new ArgumentException("Tried to load a entity, but it wasn't found in the database.").WithData("id", id);
+                throw new ArgumentException("Attempted to load a entity, but it wasn't found in the database.").WithData("id", id);
             }
 
             return result;

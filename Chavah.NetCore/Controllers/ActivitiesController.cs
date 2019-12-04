@@ -48,7 +48,7 @@ namespace BitShuva.Chavah.Controllers
 
             var rssItems = new List<SyndicationLinkItem>(1);
 
-            if (topThumbedUpSong != null)
+            if (topThumbedUpSong != null && topThumbedUpSong.Key != null)
             {
                 var song = await DbSession.LoadRequiredAsync<Song>(topThumbedUpSong.Key);
                 if (song != null)
@@ -144,7 +144,7 @@ namespace BitShuva.Chavah.Controllers
                 .ToListAsync();
 
             var rssItems = comments.Select(activity => new SyndicationLinkItem(
-                id: activity.Id,
+                id: activity.Id!,
                 title: activity.Title,
                 description: activity.Description,
                 link: activity.MoreInfoUri));
@@ -162,7 +162,7 @@ namespace BitShuva.Chavah.Controllers
 
         private static SyndicationLinkItem ActivityToRssItem(Activity activity)
         {
-            return new SyndicationLinkItem(activity.Id, activity.Title, activity.Description, activity.MoreInfoUri);
+            return new SyndicationLinkItem(activity.Id!, activity.Title, activity.Description, activity.MoreInfoUri);
         }
     }
 }

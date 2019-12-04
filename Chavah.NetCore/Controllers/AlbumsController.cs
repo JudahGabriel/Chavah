@@ -132,8 +132,6 @@ namespace BitShuva.Chavah.Controllers
                     throw new ArgumentException($"Attempted to save duplicate album")
                         .WithData("existing album", existingAlbum);
                 }
-
-                album.Id = "Albums/";
             }
 
             await DbSession.StoreAsync(album);
@@ -142,11 +140,13 @@ namespace BitShuva.Chavah.Controllers
             if (isCreatingNew)
             {
                 var songsForAlbum = await DbSession.Query<Song, Songs_GeneralQuery>()
-                    .Where(s => s.AlbumId == null)
+                    .Where(s => s.AlbumId == null || s.AlbumId == "")
                     .Where(album.SongMatchesAlbumNameAndArtistCriteria())
                     .Take(50)
                     .ToListAsync();
                 songsForAlbum.ForEach(s => s.AlbumId = album.Id ?? string.Empty);
+                album.SongCount = songsForAlbum.Count;
+                logger.LogInformation("Saving new album, found n songs that belonged to it.", songsForAlbum.Count);
             }
             else
             {
@@ -155,6 +155,7 @@ namespace BitShuva.Chavah.Controllers
                     .Where(s => s.AlbumId == album.Id)
                     .ToListAsync();
                 songsForAlbum.ForEach(s => s.UpdateAlbumInfo(album));
+                logger.LogInformation("Saving existing album, updated songs' album information.");
             }
 
             return album;
@@ -172,10 +173,7 @@ namespace BitShuva.Chavah.Controllers
                 .FirstOrNoneAsync(a => a.Name == album.Name && a.Artist == album.Artist);
             if (existingAlbum == null)
             {
-                existingAlbum = new Album
-                {
-                    Id = "Albums/"
-                };
+                existingAlbum = new Album();
             }
 
             // Store the Artist as well.
@@ -185,7 +183,6 @@ namespace BitShuva.Chavah.Controllers
             {
                 existingArtist = new Artist
                 {
-                    Id = "Artists/",
                     Bio = "",
                     Name = album.Artist
                 };
@@ -203,7 +200,6 @@ namespace BitShuva.Chavah.Controllers
 
             if (string.IsNullOrEmpty(existingAlbum.Id))
             {
-                existingAlbum.Id = "Albums/";
                 await DbSession.StoreAsync(existingAlbum);
             }
 
@@ -215,7 +211,6 @@ namespace BitShuva.Chavah.Controllers
                 var (english, hebrew) = albumSong.FileName.GetEnglishAndHebrew();
                 var song = new Song
                 {
-                    Id = "Songs/",
                     Album = album.Name,
                     Artist = album.Artist,
                     AlbumArtUri = albumArtUriCdn,
@@ -245,9 +240,9 @@ namespace BitShuva.Chavah.Controllers
             await DbSession.SaveChangesAsync();
 
             // Queue up the MP3s to upload to the CDN now that the songs are saved in the database.
-            mp3sToUpload.ForEach(mp3 => songUploadService.QueueMp3Upload(mp3.upload, album, mp3.song.Number, mp3.song.Id));
+            mp3sToUpload.ForEach(mp3 => songUploadService.QueueMp3Upload(mp3.upload, album, mp3.song.Number, mp3.song.Id!));
 
-            return existingAlbum.Id;
+            return existingAlbum.Id!;
         }
 
         [HttpGet]

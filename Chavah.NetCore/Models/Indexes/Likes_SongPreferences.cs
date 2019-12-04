@@ -28,7 +28,7 @@ namespace BitShuva.Chavah.Models.Indexes
                                         Name = song.Name,
                                         LikeCount = likeCount,
                                         DislikeCount = dislikeCount,
-                                        SongId = song.Id
+                                        SongId = song.Id!
                                     }
                                },
 
@@ -39,7 +39,7 @@ namespace BitShuva.Chavah.Models.Indexes
                                         Name = song.Artist,
                                         LikeCount = likeCount,
                                         DislikeCount = dislikeCount,
-                                        SongId = song.Id
+                                        SongId = song.Id!
                                     }
                                },
                                Albums = new LikeDislikeCount[]
@@ -49,7 +49,7 @@ namespace BitShuva.Chavah.Models.Indexes
                                         Name = song.Album,
                                         LikeCount = likeCount,
                                         DislikeCount = dislikeCount,
-                                        SongId = song.Id
+                                        SongId = song.Id!
                                     },
                                },
                                Tags = song.Tags.Select(t => new LikeDislikeCount
@@ -57,7 +57,7 @@ namespace BitShuva.Chavah.Models.Indexes
                                    Name = t,
                                    LikeCount = likeCount,
                                    DislikeCount = dislikeCount,
-                                   SongId = song.Id
+                                   SongId = song.Id!
                                }).ToList()
                            };
 

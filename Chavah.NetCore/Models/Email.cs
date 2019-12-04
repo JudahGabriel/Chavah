@@ -22,7 +22,7 @@ namespace BitShuva.Chavah.Models
             };
         }
 
-        public string Id { get; set; } = string.Empty;
+        public string? Id { get; set; }
         public string To { get; set; } = string.Empty;
         public string? ReplyTo { get; set; }
         public string? CC { get; set; }

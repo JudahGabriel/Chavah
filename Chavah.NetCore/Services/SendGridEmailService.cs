@@ -61,7 +61,7 @@ namespace BitShuva.Services
                 // Queue up the email sending on a different thread.
                 logger.LogInformation("Queueing up {emailId} for sending.", email.Id);
                 backgroundWorker.Enqueue(cancelToken => TrySendEmailWithTimeoutAndRetry(
-                    email.Id,
+                    email.Id!,
                     email.To,
                     email.Subject,
                     email.Body,
@@ -115,7 +115,6 @@ namespace BitShuva.Services
             using var dbSession = db.OpenAsyncSession();
             var email = new Email
             {
-                Id = "Emails",
                 To = recipient,
                 Subject = subject,
                 Body = body,

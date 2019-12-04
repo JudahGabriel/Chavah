@@ -7,15 +7,13 @@ namespace BitShuva.Chavah.Models.Migrations
     {
         public override void Up()
         {
-            using (var dbSession = DocumentStore.OpenSession())
+            using var dbSession = DocumentStore.OpenSession();
+            var id = "ThrowawayEmailDomains/1";
+            var existingDoc = dbSession.Load<ThrowawayEmailDomains>(id);
+            if (existingDoc == null)
             {
-                var id = "ThrowawayEmailDomains/1";
-                var existingDoc = dbSession.Load<ThrowawayEmailDomains>(id);
-                if (existingDoc == null)
-                {
-                    dbSession.Store(new ThrowawayEmailDomains(), id);
-                    dbSession.SaveChanges();
-                }
+                dbSession.Store(new ThrowawayEmailDomains(), id);
+                dbSession.SaveChanges();
             }
         }
     }

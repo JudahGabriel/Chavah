@@ -12,7 +12,7 @@ namespace BitShuva.Chavah.Models
 
         public SongEdit(Song existing, Song updated)
         {
-            SongId = updated.Id;
+            SongId = updated.Id!;
             NewArtist = updated.Artist;
             NewAlbum = updated.Album;
             NewName = updated.Name;
@@ -29,7 +29,7 @@ namespace BitShuva.Chavah.Models
             OldContributingArtists = existing.ContributingArtists;
         }
 
-        public string Id { get; set; } = string.Empty;
+        public string? Id { get; set; }
         public SongEditStatus Status { get; set; }
         public DateTime SubmitDate { get; set; } = DateTime.UtcNow;
         public string UserId { get; set; } = string.Empty;

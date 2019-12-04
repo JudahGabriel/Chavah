@@ -80,7 +80,7 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// The ID of the user.
         /// </summary>
-        public string Id { get; set; } = string.Empty;
+        public string? Id { get; set; }
 
         /// <summary>
         /// The user name. Usually the same as the email.

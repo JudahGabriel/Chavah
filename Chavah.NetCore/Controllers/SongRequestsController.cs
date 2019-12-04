@@ -112,7 +112,6 @@ namespace BitShuva.Chavah.Controllers
                     user.TotalSongRequests++;
                     var songRequest = new SongRequest
                     {
-                        Id = "SongRequests/",
                         DateTime = DateTime.UtcNow,
                         PlayedForUserIds = new List<string> { user.Id },
                         SongId = songId,
@@ -125,7 +124,6 @@ namespace BitShuva.Chavah.Controllers
                     // Store an activity for the song request.
                     var activity = new Activity
                     {
-                        Id = "Activities/",
                         DateTime = DateTime.UtcNow,
                         Title = $"{song.Artist} - {song.Name} was requested by a listener",
                         Description = $"\"{song.Name}\" by {song.Artist} was requested by a listener on {appOptions?.Title}.",

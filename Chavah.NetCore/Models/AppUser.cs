@@ -73,10 +73,15 @@ namespace BitShuva.Chavah.Models
 
         public void AddNotification(Notification notification)
         {
-            Notifications.Insert(0, notification);
-            if (Notifications.Count > MaxNotifications)
+            // If there's an existing notification with the same URL and title, skip it.
+            var hasNotification = Notifications.Any(n => n.Url == notification.Url && n.Title == notification.Title);
+            if (!hasNotification)
             {
-                Notifications.RemoveAt(MaxNotifications);
+                Notifications.Insert(0, notification);
+                if (Notifications.Count > MaxNotifications)
+                {
+                    Notifications.RemoveAt(MaxNotifications);
+                }
             }
         }
 

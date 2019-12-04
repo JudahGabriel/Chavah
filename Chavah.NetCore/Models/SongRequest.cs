@@ -5,7 +5,7 @@ namespace BitShuva.Chavah.Models
 {
     public class SongRequest
     {
-        public string Id { get; set; } = string.Empty;
+        public string? Id { get; set; }
         public string UserId { get; set; } = string.Empty;
         public string SongId { get; set; } = string.Empty;
         public DateTime DateTime { get; set; }

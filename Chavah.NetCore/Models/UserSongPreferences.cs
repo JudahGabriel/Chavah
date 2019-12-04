@@ -40,6 +40,11 @@ namespace BitShuva.Chavah.Models
         private const double TagVeryLikedMultiplier = 1.5;
         private const double TagFavoriteMultiplier = 2;
 
+        private const double AgeMultiplier4 = 4;
+        private const double AgeMultiplier3 = 3;
+        private const double AgeMultiplier2 = 2;
+        private const double AgeMultiplierNormal = 1;
+
         private static readonly Random _random = new Random();
         
         public string UserId { get; set; } = string.Empty;
@@ -118,9 +123,17 @@ namespace BitShuva.Chavah.Models
             foreach (var ranking in songsWithRanking)
             {
                 var rankingMultipler = GetWeightMultiplier(ranking.Standing);
-                foreach (var songId in ranking.SongIds)
+                var songIdsAndDates = ranking.SongIds.Zip(ranking.SongUploadDates);
+                foreach (var (songId, date) in songIdsAndDates)
                 {
-                    songWeights[songId] = SongWeight.Default().WithCommunityRankMultiplier(rankingMultipler);
+                    // Give it a weight based on its community rank.
+                    // Multiply that weight by the song's age (newer songs are played more often.)
+                    var ageMultiplier = GetAgeMultiplier(date);
+                    var rankAndAgeWeight = SongWeight.Default()
+                        .WithCommunityRankMultiplier(rankingMultipler)
+                        .WithAgeMultiplier(ageMultiplier);
+
+                    songWeights[songId] = rankAndAgeWeight;
                 }
             }
 
@@ -169,7 +182,7 @@ namespace BitShuva.Chavah.Models
                 }
             }
 
-            // Finally, adjust the weight based on whether we like the tags of the song or not.
+            // Adjust the weight based on whether we like the tags of the song or not.
             var tagLikeDislikeDifferences = CreateTagLikeDislikeDifferences(Tags);
             var songTags = Tags.GroupBy(t => t.SongId);
             var songsWithTagMultipliers = songTags.Select(tag => (SongId: tag.Key, TagsMultiplier: GetCumulativeTagMultiplier(tag, tagLikeDislikeDifferences)));
@@ -182,7 +195,7 @@ namespace BitShuva.Chavah.Models
             }
 
             return songWeights;
-        }
+        }        
 
         /// <summary>
         /// Creates a dictionary of tag name keys and like/dislike sum values. (Sum: a tag like = 1, a tag dislike = -1).
@@ -286,11 +299,11 @@ namespace BitShuva.Chavah.Models
 
             return likeDislikeDifference switch
             {
-                int i when (i >= favoriteDiff) => ArtistFavoriteMultiplier,
-                int i when (i >= veryLikedDiff) => ArtistVeryLikedMultiplier,
-                int i when (i >= likedDiff) => ArtistLikedMultiplier,
-                int i when (i <= veryDislikedDiff) => ArtistVeryDislikedMultiplier,
-                int i when (i <= dislikedDiff) => ArtistDislikedMultiplier,
+                var i when (i >= favoriteDiff) => ArtistFavoriteMultiplier,
+                var i when (i >= veryLikedDiff) => ArtistVeryLikedMultiplier,
+                var i when (i >= likedDiff) => ArtistLikedMultiplier,
+                var i when (i <= veryDislikedDiff) => ArtistVeryDislikedMultiplier,
+                var i when (i <= dislikedDiff) => ArtistDislikedMultiplier,
                 _ => 1,
             };
         }
@@ -320,6 +333,20 @@ namespace BitShuva.Chavah.Models
                 CommunityRankStanding.Great => GreatRankingMultipler,
                 CommunityRankStanding.Best => BestRankingMultipler,
                 _ => NormalRankingMultiplier,
+            };
+        }
+
+        private static double GetAgeMultiplier(DateTime date)
+        {
+            var lastWeek = DateTime.UtcNow.Subtract(TimeSpan.FromDays(7));
+            var lastMonth = DateTime.UtcNow.Subtract(TimeSpan.FromDays(31));
+            var lastYear = DateTime.UtcNow.Subtract(TimeSpan.FromDays(365));
+            return date switch
+            {
+                var d when (d >= lastWeek) => AgeMultiplier4,
+                var d when (d >= lastMonth) => AgeMultiplier3,
+                var d when (d >= lastYear) => AgeMultiplier2,
+                _ => AgeMultiplierNormal
             };
         }
     }

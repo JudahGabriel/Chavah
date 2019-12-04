@@ -11,7 +11,7 @@ namespace BitShuva.Chavah.Models
         public string Artist { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public Uri AlbumArtUri { get; set; } = UriExtensions.Localhost;
-        public string Id { get; set; } = string.Empty;
+        public string? Id { get; set; }
         public string BackgroundColor { get; set; } = string.Empty;
         public string ForegroundColor { get; set; } = string.Empty;
         public string MutedColor { get; set; } = string.Empty;
