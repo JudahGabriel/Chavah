@@ -43,13 +43,15 @@ namespace Chavah.Common
         {
             context.HttpContext.Response.ContentType = "application/rss+xml";
 
-            using var xmlWriter = XmlWriter.Create(context.HttpContext.Response.Body,
-                                   new XmlWriterSettings() { Async = true, Indent = true });
+            using var xmlWriter = XmlWriter.Create(
+                context.HttpContext.Response.Body,
+                new XmlWriterSettings() { Async = true, Indent = true });
             var writer = new RssFeedWriter(xmlWriter);
 
             await writer.WriteTitle(feed.Title);
             await writer.WriteDescription(feed.Description);
             await writer.Write(feed.Link);
+            await writer.WriteLastBuildDate(feed.LastUpdatedTime);
 
             var languageElement = new SyndicationContent("language")
             {
@@ -61,7 +63,9 @@ namespace Chavah.Common
             {
                 await writer.Write(item);
             }
-            await writer.WritePubDate(feed.LastUpdatedTime);
+
+            await xmlWriter.WriteEndElementAsync();
+            await xmlWriter.WriteEndElementAsync();
             await xmlWriter.FlushAsync();
         }
     }

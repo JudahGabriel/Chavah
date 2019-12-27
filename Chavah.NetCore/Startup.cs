@@ -11,8 +11,6 @@ using BitShuva.Chavah.Settings;
 using BitShuva.Chavah.Services;
 using BitShuva.Services;
 
-using cloudscribe.Syndication.Models.Rss;
-
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -63,7 +61,6 @@ namespace BitShuva.Chavah
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddTransient<IPushNotificationSender, PushNotificationSender>();
             services.AddTransient<ICdnManagerService, BunnyCdnManagerService>();
-            services.AddScoped<IChannelProvider, RssChannelProvider>();
             services.AddTransient<ISongService, SongService>();
             services.AddTransient<ISongUploadService, SongUploadService>();
             services.AddTransient<IAlbumService, AlbumService>();

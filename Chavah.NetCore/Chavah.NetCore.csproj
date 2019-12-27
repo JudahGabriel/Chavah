@@ -18,7 +18,6 @@
     <PackageReference Include="Bet.AspNetCore.HealthChecks" Version="2.0.2" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
     <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
-    <PackageReference Include="cloudscribe.Syndication.Web" Version="3.0.1" />
     <PackageReference Include="CoreFtp" Version="1.4.0" />
     <PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.0.0" />
@@ -36,6 +35,7 @@
     <PackageReference Include="SimpleSitemap" Version="3.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
     <PackageReference Include="System.Interactive" Version="4.0.0" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="4.7.0" />
     <PackageReference Include="WebPush" Version="1.0.11" />
     <PackageReference Include="Polly" Version="7.2.0" />
   </ItemGroup>
