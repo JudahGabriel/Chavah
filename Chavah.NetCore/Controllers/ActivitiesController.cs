@@ -135,8 +135,6 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCommentsFeed()
         {
-            var dayAgo = DateTimeOffset.UtcNow.Subtract(TimeSpan.FromDays(1));
-
             var comments = await DbSession.Query<Activity>()
                 .Where(a => a.Type == ActivityType.Comment)
                 .OrderByDescending(a => a.DateTime)
@@ -147,7 +145,10 @@ namespace BitShuva.Chavah.Controllers
                 id: activity.Id!,
                 title: activity.Title,
                 description: activity.Description,
-                link: activity.MoreInfoUri));
+                link: activity.MoreInfoUri)
+                {
+                    Published = activity.DateTime
+                });
 
             var feed = new SyndicationFeed(
                 $"{appOptions.Name} Recent Comments",
@@ -156,6 +157,11 @@ namespace BitShuva.Chavah.Controllers
                 "RecentComments",
                 rssItems,
                 language: appOptions.Language);
+            var mostRecentComment = comments.FirstOrDefault();
+            if (mostRecentComment != null)
+            {
+                feed.LastUpdatedTime = mostRecentComment.DateTime;
+            }
 
             return new RssActionResult(feed);
         }
