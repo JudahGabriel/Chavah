@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
+using Raven.StructuredLog;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -62,6 +63,40 @@ namespace BitShuva.Chavah.Controllers
         }
 
         /// <summary>
+        /// Unlikes or undislikes a song.
+        /// </summary>
+        /// <param name="songId"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost]
+        public async Task<int> SetAsUnranked(string songId)
+        {
+            var userId = GetUserIdOrThrow();
+            var likeId = BitShuva.Chavah.Models.Like.GetLikeId(userId, songId);
+            var existingLike = await DbSession
+                .Include<Like>(l => l.SongId)
+                .LoadOptionalAsync<Like>(likeId);
+            var song = await DbSession.LoadRequiredAsync<Song>(songId);
+            if (existingLike == null)
+            {
+                logger.LogWarning("{user} set {song} as unranked, however, the user didn't like or dislike the song.", userId, songId);
+                return song.CommunityRank;
+            }
+
+            var rankAdjustment = existingLike.Status switch
+            {
+                LikeStatus.Like => -1, // It's liked and we're undoing it? -1 to the rank.
+                LikeStatus.Dislike => 1, // It's disliked and we're undoing it? +1 to the rank.
+                _ => 0
+            };
+
+            song.CommunityRank += rankAdjustment;
+            await UpdateSongRankStanding(song);
+            DbSession.Delete(existingLike);
+            return song.CommunityRank;
+        }
+
+        /// <summary>
         /// Gets the total number of thumb-ups and thumb-downs for the specified song.
         /// </summary>
         /// <param name="songId"></param>
@@ -82,19 +117,19 @@ namespace BitShuva.Chavah.Controllers
 
         private async Task<int> UpdateLikeStatus(string songId, LikeStatus likeStatus)
         {
-            var user = await GetUserOrThrow();
+            var userId = GetUserIdOrThrow();
             var song = await DbSession.LoadAsync<Song>(songId);
             if (song == null)
             {
                 throw new InvalidOperationException("User attempted to update like status, but song wasn't found.")
-                    .WithData("User ID", user.Id)
+                    .WithData("User ID", userId)
                     .WithData("Song ID", songId);
             }
 
             var isReversal = false;
             var isNoChange = false;
 
-            var likeId = $"Likes/{user.Id}/{songId}";
+            var likeId = BitShuva.Chavah.Models.Like.GetLikeId(userId, songId);
             var existingLike = await DbSession.LoadAsync<Like>(likeId);
             if (existingLike != null)
             {
@@ -108,31 +143,14 @@ namespace BitShuva.Chavah.Controllers
                 {
                     Status = likeStatus,
                     SongId = songId,
-                    UserId = user.Id,
+                    UserId = userId,
                     Date = DateTime.UtcNow
                 };
                 await DbSession.StoreAsync(newLikeStatus, likeId);
 
                 if (likeStatus == LikeStatus.Like)
                 {
-                    var songRankString = song.CommunityRank switch
-                    {
-                        _ when song.CommunityRank > 0 => $"+{song.CommunityRank}",
-                        _ => song.CommunityRank.ToString()
-                    };
-                    var songArtist = song.Artist;
-                    var activity = new Activity
-                    {
-                        DateTime = DateTime.UtcNow,
-                        Title = $"{song.Artist} - {song.Name} was thumbed up ({songRankString}) on {appSettings?.Title}",
-                        Description = $"\"{song.Name}\" by {songArtist} was thumbed up ({songRankString}) on {appSettings?.Title}.",
-                        MoreInfoUri = song.GetSongShareLink(appSettings!.DefaultUrl),
-                        EntityId = song.Id,
-                        Type = ActivityType.Like
-                    };
-
-                    await DbSession.StoreAsync(activity);
-                    DbSession.SetRavenExpiration(activity, DateTime.UtcNow.AddDays(7));
+                    await StoreNewLikeActivity(song);
                 }
             }
 
@@ -140,7 +158,13 @@ namespace BitShuva.Chavah.Controllers
             var multiplier = isReversal ? 2 : isNoChange ? 0 : 1;
             var changePositiveOrNegative = likeStatus == LikeStatus.Like ? 1 : -1;
             song.CommunityRank += (multiplier * changePositiveOrNegative);
+            await UpdateSongRankStanding(song);
 
+            return song.CommunityRank;
+        }
+
+        private async Task<CommunityRankStanding> UpdateSongRankStanding(Song song)
+        {
             var communityRankStats = await DbSession
                 .Query<Song, Songs_AverageCommunityRank>()
                 .As<Songs_AverageCommunityRank.Results>()
@@ -156,8 +180,29 @@ namespace BitShuva.Chavah.Controllers
                 _ => CommunityRankStanding.Best
             };
             song.CommunityRankStanding = newStanding;
+            return newStanding;
+        }
 
-            return song.CommunityRank;
+        private async Task StoreNewLikeActivity(Song song)
+        {
+            var songRankString = song.CommunityRank switch
+            {
+                _ when song.CommunityRank > 0 => $"+{song.CommunityRank}",
+                _ => song.CommunityRank.ToString()
+            };
+            var songArtist = song.Artist;
+            var activity = new Activity
+            {
+                DateTime = DateTime.UtcNow,
+                Title = $"{song.Artist} - {song.Name} was thumbed up ({songRankString}) on {appSettings?.Title}",
+                Description = $"\"{song.Name}\" by {songArtist} was thumbed up ({songRankString}) on {appSettings?.Title}.",
+                MoreInfoUri = song.GetSongShareLink(appSettings!.DefaultUrl),
+                EntityId = song.Id,
+                Type = ActivityType.Like
+            };
+
+            await DbSession.StoreAsync(activity);
+            DbSession.SetRavenExpiration(activity, DateTime.UtcNow.AddDays(7));
         }
     }
 }
