@@ -19,7 +19,7 @@ namespace BitShuva.Chavah.Controllers
     [Authorize]
     public class SongEditsController : RavenController
     {
-        private readonly AppSettings _appOptions;
+        private readonly AppSettings appOptions;
 
         public SongEditsController(
             IAsyncDocumentSession dbSession,
@@ -27,7 +27,7 @@ namespace BitShuva.Chavah.Controllers
             ILogger<SongEditsController> logger)
             : base(dbSession, logger)
         {
-            _appOptions = appOptions.CurrentValue;
+            this.appOptions = appOptions.CurrentValue;
         }
 
         /// <summary>
@@ -41,22 +41,30 @@ namespace BitShuva.Chavah.Controllers
             var user = await GetUserOrThrow();
             var song = await DbSession.LoadRequiredAsync<Song>(songId);
             var songEditId = GetSongEditId(songId, user.Id);
-            var existingEdit = await DbSession.LoadOptionAsync<SongEdit>(songEditId);
+            var existingEdit = await DbSession.LoadOptionalAsync<SongEdit>(songEditId);
 
             // If the existing edit is pending, return that.
             // Otherwise, return a fresh song edit.
-            return existingEdit
-                .Filter(e => e.Status == SongEditStatus.Pending)
-                .ValueOr(() => new SongEdit(song, song));
+            if (existingEdit?.Status == SongEditStatus.Pending)
+            {
+                return existingEdit;
+            }
+
+            return new SongEdit(song, song);
         }
 
         [HttpPost]
         public async Task<SongEdit> EditSong([FromBody] Song song)
         {
             var user = await GetUserOrThrow();
+            if (song.Id == null)
+            {
+                throw new ArgumentException("Song must have an ID");
+            }
+
             var existingSong = await DbSession.LoadRequiredAsync<Song>(song.Id);
 
-            var songEditId = GetSongEditId(existingSong.Id, user.Id);
+            var songEditId = GetSongEditId(existingSong.Id!, user.Id);
             var songEdit = new SongEdit(existingSong, song)
             {
                 Id = songEditId,
@@ -79,7 +87,18 @@ namespace BitShuva.Chavah.Controllers
                     var admins = await DbSession.Query<AppUser>()
                         .Where(u => u.Roles.Contains(AppUser.AdminRole))
                         .ToListAsync();
-                    admins.ForEach(a => a.AddNotification(Notification.SongEditsNeedApproval(_appOptions.PushNotificationsImageUrl)));
+                    var editNeedsApprovalNotification = Notification.SongEditsNeedApproval(appOptions.PushNotificationsImageUrl);
+                    foreach (var admin in admins)
+                    {
+                        // If the admin already has a "song edits need approval" notification item, replace it with the unread one.
+                        var existing = admin.Notifications.FirstOrDefault(n => n.Title == editNeedsApprovalNotification.Title);
+                        if (existing != null)
+                        {
+                            admin.Notifications.Remove(existing);
+                        }
+                        
+                        admin.AddNotification(editNeedsApprovalNotification);
+                    }
                 }
             }
 
@@ -119,9 +138,9 @@ namespace BitShuva.Chavah.Controllers
 
         [HttpPost]
         [Authorize(Roles = AppUser.AdminRole)]
-        public async Task<SongEdit> Reject(string songEditId)
+        public async Task<SongEdit?> Reject(string songEditId)
         {
-            var existingEdit = await DbSession.LoadAsync<SongEdit>(songEditId);
+            var existingEdit = await DbSession.LoadOptionalAsync<SongEdit>(songEditId);
             if (existingEdit != null)
             {
                 existingEdit.Status = SongEditStatus.Rejected;

@@ -2,9 +2,9 @@
 {
     public class AlbumColors
     {
-        public string Background { get; set; }
-        public string Foreground { get; set; }
-        public string Muted { get; set; }
-        public string TextShadow { get; set; }
+        public string Background { get; set; } = string.Empty;
+        public string Foreground { get; set; } = string.Empty;
+        public string Muted { get; set; } = string.Empty;
+        public string TextShadow { get; set; } = string.Empty;
     }
 }

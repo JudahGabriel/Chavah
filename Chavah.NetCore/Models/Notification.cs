@@ -7,11 +7,11 @@ namespace BitShuva.Chavah.Models
     /// </summary>
     public class Notification
     {
-        public string Title { get; set; }
-        public string Url { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
         public bool IsUnread { get; set; }
-        public string SourceName { get; set; }
-        public string ImageUrl { get; set; }
+        public string SourceName { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;
 
         public static Notification Welcome(string chavahAuthorImageUrl)

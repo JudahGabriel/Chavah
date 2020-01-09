@@ -4,6 +4,6 @@ namespace BitShuva.Chavah.Models
 {
     public class ProfilePictureUpload
     {
-        public IFormFile Photo { get; set; }
+        public IFormFile? Photo { get; set; }
     }
 }

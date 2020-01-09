@@ -59,24 +59,29 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// Gets the URL for the user's profile picture. Will be null if the user doesn't have a profile pic setup.
         /// </summary>
-        public Uri ProfilePicUrl { get; set; }
+        public Uri? ProfilePicUrl { get; set; }
 
         /// <summary>
         /// The user's first name.
         /// </summary>
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
         /// <summary>
         /// The user's last name.
         /// </summary>
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
         public void AddNotification(Notification notification)
         {
-            Notifications.Insert(0, notification);
-            if (Notifications.Count > MaxNotifications)
+            // If there's an existing notification with the same URL and title, skip it.
+            var hasNotification = Notifications.Any(n => n.Url == notification.Url && n.Title == notification.Title);
+            if (!hasNotification)
             {
-                Notifications.RemoveAt(MaxNotifications);
+                Notifications.Insert(0, notification);
+                if (Notifications.Count > MaxNotifications)
+                {
+                    Notifications.RemoveAt(MaxNotifications);
+                }
             }
         }
 

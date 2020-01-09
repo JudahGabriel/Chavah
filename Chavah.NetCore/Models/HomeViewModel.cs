@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.Security.Cryptography.X509Certificates;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Settings;
 
@@ -13,42 +13,39 @@ namespace BitShuva.Chavah.Models
     /// </summary>
     public class HomeViewModel
     {
-        public HomeViewModel()
-        {
-#if DEBUG
-            Debug = true;
-#endif
-        }
-
         /// <summary>
         /// The currently signed in user, or null if there is no user signed in.
         /// </summary>
-        public UserViewModel User { get; set; }
+        public UserViewModel? User { get; set; }
 
         /// <summary>
         /// Gets the song initially requested via query string. This may be null if no song was requested.
         /// </summary>
-        public Song Song { get; set; }
+        public Song? Song { get; set; }
 
         /// <summary>
         /// Gets the text describing the song number on the album, e.g. "9th"
         /// </summary>
-        public string SongNth { get; set; }
+        public string? SongNth { get; set; }
 
         /// <summary>
-        /// Used for image descriptions on Index.cshtml
+        /// The image to use for social media network previews of a Chavah link.
         /// </summary>
-        public string DescriptiveImageUrl { get; set; }
+        public string? DescriptiveImageUrl { get; set; }
 
         /// <summary>
         /// Whether the app is running in debug mode.
         /// </summary>
-        public bool Debug { get; set; }
+#if DEBUG
+        public bool Debug { get; set; } = true;
+#else
+        public bool Debug { get; set; } 
+#endif
 
         /// <summary>
         /// The URL to redirect to. This may be null.
         /// </summary>
-        public string Redirect { get; set; }
+        public string? Redirect { get; set; }
 
         /// <summary>
         /// Whether the page is being loaded in an embedded iframe.
@@ -58,32 +55,32 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// The page title.
         /// </summary>
-        public string PageTitle { get; set; }
+        public string PageTitle { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the page description.
         /// </summary>
-        public string PageDescription { get; set; }
+        public string PageDescription { get; set; } = string.Empty;
 
         /// <summary>
         /// The list of cache-busted Angular views.
         /// </summary>
-        public IList<string> CacheBustedAngularViews { get; set; }
+        public List<string> CacheBustedAngularViews { get; set; } = new List<string>();
 
         /// <summary>
         /// The default URL of the page.
         /// </summary>
-        public string DefaultUrl { get; set; }
+        public string DefaultUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// The CDN URL.
         /// </summary>
-        public string CdnUrl { get; set; }
+        public string CdnUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// The sound effects list.
         /// </summary>
-        public string SoundEffects { get; set; }
+        public string SoundEffects { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets whether Chavah is down for maintenance.
@@ -93,17 +90,17 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// Gets the public key for Service Worker push notifications.
         /// </summary>
-        public string PushNotificationsPublicKey { get; set; }
+        public string PushNotificationsPublicKey { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the path to the service worker to use.
         /// </summary>
-        public string ServiceWorker { get; set; }
+        public string ServiceWorker { get; set; } = string.Empty;
 
         /// <summary>
         /// The API key used for FilePickr.
         /// </summary>
-        public string FilePickrKey { get; set; }
+        public string FilePickrKey { get; set; } = string.Empty;
 
         /// <summary>
         /// Converts the view model to a JSON object.
@@ -118,8 +115,8 @@ namespace BitShuva.Chavah.Models
         }
 
         public static HomeViewModel From(
-            UserViewModel user,
-            Song song,
+            UserViewModel? user,
+            Song? song,
             AppSettings appOptions,
             CdnSettings cdnOptions)
         {

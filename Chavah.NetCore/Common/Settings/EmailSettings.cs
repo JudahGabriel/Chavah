@@ -5,7 +5,7 @@
         /// <summary>
         /// Send Grid Api Key
         /// </summary>
-        public string SendGridApiKey { get; set; }
+        public string SendGridApiKey { get; set; } = string.Empty;
 
         /// <summary>
         /// Send emails. The Default is set to true.
@@ -15,12 +15,12 @@
         /// <summary>
         /// Name of the sender.
         /// </summary>
-        public string SenderName { get; set; }
+        public string SenderName { get; set; } = string.Empty;
 
         /// <summary>
         /// Email of the sender.
         /// </summary>
-        public string SenderEmail { get; set; }
+        public string SenderEmail { get; set; } = string.Empty;
 
         /// <summary>
         /// Wait for the retried to send failed emails.

@@ -40,7 +40,11 @@ namespace BitShuva.Chavah.Controllers
             var songEnumerator = await DbSession.Advanced.StreamAsync<Song>("songs/");
             while (await songEnumerator.MoveNextAsync())
             {
-                invalidSongUris.Add(songEnumerator.Current.Document.Uri?.ToString());
+                var songUri = songEnumerator.Current.Document.Uri?.ToString();
+                if (!string.IsNullOrEmpty(songUri))
+                {
+                    invalidSongUris.Add(songUri);
+                }
             }
 
             // Find all the artist directories in the music directory.
@@ -84,11 +88,8 @@ namespace BitShuva.Chavah.Controllers
                 return Redirect(DefaultProfilePic.ToString());
             }
 
-            var user = await DbSession.LoadOptionAsync<AppUser>(userId);
-            var profilePic = user
-                .Map(u => u.ProfilePicUrl)
-                .NotNull()
-                .ValueOr(() => DefaultProfilePic);
+            var user = await DbSession.LoadOptionalAsync<AppUser>(userId);
+            var profilePic = user?.ProfilePicUrl ?? DefaultProfilePic;
             return Redirect(profilePic.ToString());
         }
 

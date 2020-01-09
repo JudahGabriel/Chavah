@@ -8,9 +8,9 @@ namespace BitShuva.Chavah.Models
     public class BunnyCdnDirectoryListing
     {
         public Guid Guid { get; set; }
-        public string StorageZoneName { get; set; }
-        public string Path { get; set; }
-        public string ObjectName { get; set; }
+        public string? StorageZoneName { get; set; }
+        public string? Path { get; set; }
+        public string ObjectName { get; set; } = string.Empty;
         public long Length { get; set; }
         public DateTime LastChanged { get; set; }
         public bool IsDirectory { get; set; }

@@ -10,7 +10,7 @@ namespace BitShuva.Chavah.Models
     /// </summary>
     public class MutedEmail
     {
-        public string Id { get; set; }
-        public string Email { get; set; }
+        public string? Id { get; set; }
+        public string Email { get; set; } = string.Empty;
     }
 }

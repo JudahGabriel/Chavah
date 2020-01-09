@@ -23,6 +23,6 @@
         /// <summary>
         /// The ID of the user whose net like count is listed.
         /// </summary>
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
     }
 }

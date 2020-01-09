@@ -163,23 +163,23 @@ namespace BitShuva.Chavah.Controllers
         //    return imageUris;
         //}
 
-        private static string FindUnusedArtistImageFileName(string artist, int index, IList<string> allFileNames)
-        {
-            const int maxArtistImages = 10000;
-            var artistCdnSafe = FtpCdnManagerService.GetAlphaNumericEnglish(artist);
-            while (index < maxArtistImages)
-            {
-                var desiredFileName = $"{artistCdnSafe} {index}.jpg";
-                var isUnique = !allFileNames.Any(f => f.EndsWith(desiredFileName, StringComparison.InvariantCultureIgnoreCase));
-                if (isUnique)
-                {
-                    return desiredFileName;
-                }
+        //private static string FindUnusedArtistImageFileName(string artist, int index, IList<string> allFileNames)
+        //{
+        //    const int maxArtistImages = 10000;
+        //    var artistCdnSafe = FtpCdnManagerService.GetAlphaNumericEnglish(artist);
+        //    while (index < maxArtistImages)
+        //    {
+        //        var desiredFileName = $"{artistCdnSafe} {index}.jpg";
+        //        var isUnique = !allFileNames.Any(f => f.EndsWith(desiredFileName, StringComparison.InvariantCultureIgnoreCase));
+        //        if (isUnique)
+        //        {
+        //            return desiredFileName;
+        //        }
 
-                index++;
-            }
+        //        index++;
+        //    }
 
-            throw new InvalidOperationException("Programming bug. Couldn't find a valid artist image name.");
-        }
+        //    throw new InvalidOperationException("Programming bug. Couldn't find a valid artist image name.");
+        //}
     }
 }

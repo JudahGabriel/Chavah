@@ -212,14 +212,14 @@
         }
 
         playSongFromCurrentArtist() {
-            if (this.currentSong) {
-                this.audioPlayer.playSongFromArtist(this.currentSong.artist);
+            if (!!this.currentSong && !!this.currentSong.artistId) {
+                this.audioPlayer.playSongFromArtistId(this.currentSong.artistId);
             }
         }
 
         playSongFromCurrentAlbum() {
-            if (this.currentSong) {
-                this.audioPlayer.playSongFromAlbum(this.currentSong.album);
+            if (!!this.currentSong && !!this.currentSong.albumId) {
+                this.audioPlayer.playSongFromAlbumId(this.currentSong.albumId);
             }
         }
 
@@ -277,8 +277,10 @@
                 range.selectNodeContents(shareUrlInput);
 
                 const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
+                if (selection) {
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
 
                 shareUrlInput.setSelectionRange(0, 999999);
                 shareUrlInput.contentEditable = editable;

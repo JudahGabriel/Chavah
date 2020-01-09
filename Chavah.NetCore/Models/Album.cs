@@ -1,4 +1,5 @@
 ﻿using System;
+using BitShuva.Chavah.Common;
 
 namespace BitShuva.Chavah.Models
 {
@@ -7,14 +8,14 @@ namespace BitShuva.Chavah.Models
     /// </summary>
     public class Album
     {
-        public string Artist { get; set; }
-        public string Name { get; set; }
-        public Uri AlbumArtUri { get; set; }
-        public string Id { get; set; }
-        public string BackgroundColor { get; set; }
-        public string ForegroundColor { get; set; }
-        public string MutedColor { get; set; }
-        public string TextShadowColor { get; set; }
+        public string Artist { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public Uri AlbumArtUri { get; set; } = UriExtensions.Localhost;
+        public string? Id { get; set; }
+        public string BackgroundColor { get; set; } = string.Empty;
+        public string ForegroundColor { get; set; } = string.Empty;
+        public string MutedColor { get; set; } = string.Empty;
+        public string TextShadowColor { get; set; } = string.Empty;
         public bool IsVariousArtists { get; set; }
         public int SongCount { get; set; }
 

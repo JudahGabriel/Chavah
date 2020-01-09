@@ -40,21 +40,18 @@ namespace BitShuva.Chavah.Models
         private const double TagVeryLikedMultiplier = 1.5;
         private const double TagFavoriteMultiplier = 2;
 
+        private const double AgeMultiplier4 = 4;
+        private const double AgeMultiplier3 = 3;
+        private const double AgeMultiplier2 = 2;
+        private const double AgeMultiplierNormal = 1;
+
         private static readonly Random _random = new Random();
-
-        public UserSongPreferences()
-        {
-            Artists = new List<LikeDislikeCount>();
-            Albums = new List<LikeDislikeCount>();
-            Songs = new List<LikeDislikeCount>();
-            Tags = new List<LikeDislikeCount>();
-        }
-
-        public string UserId { get; set; }
-        public List<LikeDislikeCount> Artists { get; set; }
-        public List<LikeDislikeCount> Albums { get; set; }
-        public List<LikeDislikeCount> Songs { get; set; }
-        public List<LikeDislikeCount> Tags { get; set; }
+        
+        public string UserId { get; set; } = string.Empty;
+        public List<LikeDislikeCount> Artists { get; set; } = new List<LikeDislikeCount>();
+        public List<LikeDislikeCount> Albums { get; set; } = new List<LikeDislikeCount>();
+        public List<LikeDislikeCount> Songs { get; set; } = new List<LikeDislikeCount>();
+        public List<LikeDislikeCount> Tags { get; set; } = new List<LikeDislikeCount>();
 
         /// <summary>
         /// Picks a song based on the user's preferences, given a list of songs by community ranking.
@@ -126,9 +123,17 @@ namespace BitShuva.Chavah.Models
             foreach (var ranking in songsWithRanking)
             {
                 var rankingMultipler = GetWeightMultiplier(ranking.Standing);
-                foreach (var songId in ranking.SongIds)
+                var songIdsAndDates = ranking.SongIds.Zip(ranking.SongUploadDates);
+                foreach (var (songId, date) in songIdsAndDates)
                 {
-                    songWeights[songId] = SongWeight.Default().WithCommunityRankMultiplier(rankingMultipler);
+                    // Give it a weight based on its community rank.
+                    // Multiply that weight by the song's age (newer songs are played more often.)
+                    var ageMultiplier = GetAgeMultiplier(date);
+                    var rankAndAgeWeight = SongWeight.Default()
+                        .WithCommunityRankMultiplier(rankingMultipler)
+                        .WithAgeMultiplier(ageMultiplier);
+
+                    songWeights[songId] = rankAndAgeWeight;
                 }
             }
 
@@ -177,10 +182,10 @@ namespace BitShuva.Chavah.Models
                 }
             }
 
-            // Finally, adjust the weight based on whether we like the tags of the song or not.
+            // Adjust the weight based on whether we like the tags of the song or not.
             var tagLikeDislikeDifferences = CreateTagLikeDislikeDifferences(Tags);
             var songTags = Tags.GroupBy(t => t.SongId);
-            var songsWithTagMultipliers = songTags.Select(s => (SongId: s.Key, TagsMultiplier: GetCumulativeTagMultiplier(s.Key, s, tagLikeDislikeDifferences)));
+            var songsWithTagMultipliers = songTags.Select(tag => (SongId: tag.Key, TagsMultiplier: GetCumulativeTagMultiplier(tag, tagLikeDislikeDifferences)));
             foreach (var (SongId, TagsMultiplier) in songsWithTagMultipliers)
             {
                 if (songWeights.TryGetValue(SongId, out var existingWeight))
@@ -190,7 +195,7 @@ namespace BitShuva.Chavah.Models
             }
 
             return songWeights;
-        }
+        }        
 
         /// <summary>
         /// Creates a dictionary of tag name keys and like/dislike sum values. (Sum: a tag like = 1, a tag dislike = -1).
@@ -216,28 +221,28 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// Gets a song rank multiplier for a song given the multipliers for the tags for the song.
         /// </summary>
-        private static double GetCumulativeTagMultiplier(string songId, IEnumerable<LikeDislikeCount> songTagLikes, Dictionary<string, int> tagLikeDislikeDifferences)
+        private static double GetCumulativeTagMultiplier(IEnumerable<LikeDislikeCount> songTagLikes, Dictionary<string, int> tagLikeDislikeDifferences)
         {
             var songTagLikeDifferences = songTagLikes
                 .GroupBy(t => t.Name)
                 .Select(group => (Tag: group.Key, LikeDislikeDifference: tagLikeDislikeDifferences.GetValueOrNull(group.Key).GetValueOrDefault()));
 
-            double DifferenceToMultiplier(int difference)
+            static double DifferenceToMultiplier(int difference)
             {
                 const int veryDislikedDiff = -10; // Sum of likes and dislikes = -10? Consider the tag very disliked.
                 const int dislikedDiff = -5;
                 const int likedDiff = 5;
                 const int veryLikedDiff = 10;
                 const int favoriteDiff = 20;
-                switch (difference)
+                return difference switch
                 {
-                    case int i when (i >= favoriteDiff): return TagFavoriteMultiplier;
-                    case int i when (i >= veryLikedDiff): return TagVeryLikedMultiplier;
-                    case int i when (i >= likedDiff): return TagLikedMultiplier;
-                    case int i when (i <= veryDislikedDiff): return TagVeryDislikedMultiplier;
-                    case int i when (i <= dislikedDiff): return TagDislikedMultiplier;
-                    default: return 1; // The tag is neither liked nor disliked. Return a neutral multiplier.
-                }
+                    int i when (i >= favoriteDiff) => TagFavoriteMultiplier,
+                    int i when (i >= veryLikedDiff) => TagVeryLikedMultiplier,
+                    int i when (i >= likedDiff) => TagLikedMultiplier,
+                    int i when (i <= veryDislikedDiff) => TagVeryDislikedMultiplier,
+                    int i when (i <= dislikedDiff) => TagDislikedMultiplier,
+                    _ => 1, // The tag is neither liked nor disliked. Return a neutral multiplier.
+                };
             };
 
             var runningMultiplier = 1.0;
@@ -254,33 +259,13 @@ namespace BitShuva.Chavah.Models
 
         private static LikeLevel MultiplierToLikeLevel(double multiplier, double favoriteMultiplier, double loveMultiplier, double likeMultiplier)
         {
-            switch (multiplier)
+            return multiplier switch
             {
-                case double v when (v == favoriteMultiplier): return LikeLevel.Favorite;
-                case double v when (v == loveMultiplier): return LikeLevel.Love;
-                case double v when (v == likeMultiplier): return LikeLevel.Like;
-                default: return LikeLevel.NotSpecified;
-            }
-        }
-
-        private static double GetTagMultiplier(IGrouping<string, LikeDislikeCount> tag)
-        {
-            var likeDislikeDifference = tag.Sum(t => t.LikeCount - t.DislikeCount);
-            const int veryDislikedDiff = -5;
-            const int dislikedDiff = -2;
-            const int likedDiff = 2;
-            const int veryLikedDiff = 10;
-            const int favoriteDiff = 20;
-
-            switch (likeDislikeDifference)
-            {
-                case int i when (i >= favoriteDiff): return TagFavoriteMultiplier;
-                case int i when (i >= veryLikedDiff): return TagVeryLikedMultiplier;
-                case int i when (i >= likedDiff): return TagLikedMultiplier;
-                case int i when (i <= veryDislikedDiff): return TagVeryDislikedMultiplier;
-                case int i when (i <= dislikedDiff): return TagDislikedMultiplier;
-                default: return 1; // The tag is neither liked nor disliked. Return a neutral multiplier.
-            }
+                double v when (v == favoriteMultiplier) => LikeLevel.Favorite,
+                double v when (v == loveMultiplier) => LikeLevel.Love,
+                double v when (v == likeMultiplier) => LikeLevel.Like,
+                _ => LikeLevel.NotSpecified,
+            };
         }
 
         private static double GetAlbumMultiplier(IGrouping<string, LikeDislikeCount> album)
@@ -292,15 +277,15 @@ namespace BitShuva.Chavah.Models
             const int veryLikedDiff = 4;
             const int favoriteDiff = 10;
 
-            switch (likeDislikeDifference)
+            return likeDislikeDifference switch
             {
-                case int i when (i >= favoriteDiff): return AlbumFavoriteMultiplier;
-                case int i when (i >= veryLikedDiff): return AlbumVeryLikedMultiplier;
-                case int i when (i >= likedDiff): return AlbumLikedMultiplier;
-                case int i when (i <= veryDislikedDiff): return AlbumVeryDislikedMultiplier;
-                case int i when (i <= dislikedDiff): return AlbumDislikedMultiplier;
-                default: return 1;
-            }
+                int i when (i >= favoriteDiff) => AlbumFavoriteMultiplier,
+                int i when (i >= veryLikedDiff) => AlbumVeryLikedMultiplier,
+                int i when (i >= likedDiff) => AlbumLikedMultiplier,
+                int i when (i <= veryDislikedDiff) => AlbumVeryDislikedMultiplier,
+                int i when (i <= dislikedDiff) => AlbumDislikedMultiplier,
+                _ => 1,
+            };
         }
 
         private static double GetArtistMultiplier(IGrouping<string, LikeDislikeCount> artist)
@@ -312,15 +297,15 @@ namespace BitShuva.Chavah.Models
             const int veryLikedDiff = 5;
             const int favoriteDiff = 10;
 
-            switch (likeDislikeDifference)
+            return likeDislikeDifference switch
             {
-                case int i when (i >= favoriteDiff): return ArtistFavoriteMultiplier;
-                case int i when (i >= veryLikedDiff): return ArtistVeryLikedMultiplier;
-                case int i when (i >= likedDiff): return ArtistLikedMultiplier;
-                case int i when (i <= veryDislikedDiff): return ArtistVeryDislikedMultiplier;
-                case int i when (i <= dislikedDiff): return ArtistDislikedMultiplier;
-                default: return 1;
-            }
+                var i when (i >= favoriteDiff) => ArtistFavoriteMultiplier,
+                var i when (i >= veryLikedDiff) => ArtistVeryLikedMultiplier,
+                var i when (i >= likedDiff) => ArtistLikedMultiplier,
+                var i when (i <= veryDislikedDiff) => ArtistVeryDislikedMultiplier,
+                var i when (i <= dislikedDiff) => ArtistDislikedMultiplier,
+                _ => 1,
+            };
         }
 
         private static double GetSongLikeDislikeMultiplier(LikeDislikeCount songPref)
@@ -339,16 +324,30 @@ namespace BitShuva.Chavah.Models
 
         private static double GetWeightMultiplier(CommunityRankStanding ranking)
         {
-            switch (ranking)
+            return ranking switch
             {
-                case CommunityRankStanding.Normal: return NormalRankingMultiplier;
-                case CommunityRankStanding.VeryPoor: return VeryPoorRankingMultipler;
-                case CommunityRankStanding.Poor: return PoorRankingMultipler;
-                case CommunityRankStanding.Good: return GoodRankingMultipler;
-                case CommunityRankStanding.Great: return GreatRankingMultipler;
-                case CommunityRankStanding.Best: return BestRankingMultipler;
-                default: return NormalRankingMultiplier;
-            }
+                CommunityRankStanding.Normal => NormalRankingMultiplier,
+                CommunityRankStanding.VeryPoor => VeryPoorRankingMultipler,
+                CommunityRankStanding.Poor => PoorRankingMultipler,
+                CommunityRankStanding.Good => GoodRankingMultipler,
+                CommunityRankStanding.Great => GreatRankingMultipler,
+                CommunityRankStanding.Best => BestRankingMultipler,
+                _ => NormalRankingMultiplier,
+            };
+        }
+
+        private static double GetAgeMultiplier(DateTime date)
+        {
+            var lastWeek = DateTime.UtcNow.Subtract(TimeSpan.FromDays(7));
+            var lastMonth = DateTime.UtcNow.Subtract(TimeSpan.FromDays(31));
+            var lastYear = DateTime.UtcNow.Subtract(TimeSpan.FromDays(365));
+            return date switch
+            {
+                var d when (d >= lastWeek) => AgeMultiplier4,
+                var d when (d >= lastMonth) => AgeMultiplier3,
+                var d when (d >= lastYear) => AgeMultiplier2,
+                _ => AgeMultiplierNormal
+            };
         }
     }
 }

@@ -12,7 +12,7 @@ namespace BitShuva.Chavah.Models
 
         public SongEdit(Song existing, Song updated)
         {
-            SongId = updated.Id;
+            SongId = updated.Id!;
             NewArtist = updated.Artist;
             NewAlbum = updated.Album;
             NewName = updated.Name;
@@ -29,23 +29,23 @@ namespace BitShuva.Chavah.Models
             OldContributingArtists = existing.ContributingArtists;
         }
 
-        public string Id { get; set; }
+        public string? Id { get; set; }
         public SongEditStatus Status { get; set; }
         public DateTime SubmitDate { get; set; } = DateTime.UtcNow;
-        public string UserId { get; set; }
-        public string SongId { get; set; }
-        public string NewArtist { get; set; }
-        public string NewAlbum { get; set; }
-        public string NewName { get; set; }
-        public string NewHebrewName { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public string SongId { get; set; } = string.Empty;
+        public string NewArtist { get; set; } = string.Empty;
+        public string NewAlbum { get; set; } = string.Empty;
+        public string NewName { get; set; } = string.Empty;
+        public string NewHebrewName { get; set; } = string.Empty;
         public List<string> NewTags { get; set; } = new List<string>();
         public List<string> NewContributingArtists { get; set; } = new List<string>();
-        public string NewLyrics { get; set; }
-        public string OldArtist { get; set; }
-        public string OldAlbum { get; set; }
-        public string OldLyrics { get; set; }
-        public string OldName { get; set; }
-        public string OldHebrewName { get; set; }
+        public string NewLyrics { get; set; } = string.Empty;
+        public string OldArtist { get; set; } = string.Empty;
+        public string OldAlbum { get; set; } = string.Empty;
+        public string OldLyrics { get; set; } = string.Empty;
+        public string OldName { get; set; } = string.Empty;
+        public string OldHebrewName { get; set; } = string.Empty;
         public List<string> OldTags { get; set; } = new List<string>();
         public List<string> OldContributingArtists { get; set; } = new List<string>();
 

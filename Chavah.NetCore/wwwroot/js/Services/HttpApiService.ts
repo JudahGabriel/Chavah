@@ -4,7 +4,6 @@
         static $inject = [
             "loadingProgress",
             "appNav",
-            "localStorageService",
             "$http",
             "$q",
         ];
@@ -14,7 +13,6 @@
         constructor(
             private loadingProgress: LoadingProgressService,
             private appNav: AppNavService,
-            private localStorageService: ng.local.storage.ILocalStorageService,
             private $http: ng.IHttpService,
             private $q: ng.IQService) {
         }

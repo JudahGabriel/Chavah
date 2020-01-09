@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="failureStatus">The <see cref="HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
         /// <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
         /// <returns></returns>
-        public static IHealthChecksBuilder AddRavenDbCheck(this IHealthChecksBuilder builder, string name = "ravendb", HealthStatus? failureStatus = default, IEnumerable<string> tags = default)
+        public static IHealthChecksBuilder AddRavenDbCheck(this IHealthChecksBuilder builder, string name = "ravendb", HealthStatus? failureStatus = default, IEnumerable<string>? tags = default)
         {
             builder.Add(new HealthCheckRegistration(
                 name,

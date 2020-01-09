@@ -4,7 +4,7 @@
 
 @{
 
-    var appOptions = snapshot.Value;
+    var appOptions = snapshot.Value!;
 }
 <!DOCTYPE html>
 <html lang="en-us">
@@ -59,38 +59,38 @@
     @* Twitter card. When a user shares a song, we show a full card containing album art and song info. *@
     <meta name="twitter:creator" content="&#64;messianicradio">
     <meta name="twitter:site" content="&#64;messianicradio">
-    @if (Model != null && Model.Song != null)
+    @if (Model != null && Model.Song != null && appOptions != null)
     {
         // Show a Twitter summary card with the song info.
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="@appOptions?.DefaultUrl@(Model.Song.GetSongShareLink(appOptions?.DefaultUrl))" />
+        <meta name="twitter:url" content="@appOptions.DefaultUrl@(Model.Song.GetSongShareLink(appOptions.DefaultUrl))" />
         <meta name="twitter:title" content="@Model.Song.Name by @Model.Song.Artist" />
         <meta name="twitter:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
         <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
 
         @*Facebook share info. See https://developers.facebook.com/docs/sharing/webmasters/*@
-        <meta property="og:url" content="@appOptions?.DefaultUrl@(Model.Song.GetSongShareLink(appOptions?.DefaultUrl))" />
+        <meta property="og:url" content="@appOptions.DefaultUrl@(Model.Song.GetSongShareLink(appOptions.DefaultUrl))" />
         <meta property="og:type" content="music.song" />
         <meta property="og:title" content="@Model.Song.Name by @Model.Song.Artist" />
         <meta property="og:description" content="Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music on the web" />
         @*We can't use Song.AlbumArtUri because that URL will be on a different domain, and Facebook restricts us to use only images on our domain. So we'll trick it with a redirect.*@
         <meta property="og:image" content="@appOptions?.DefaultUrl/api/albums/getAlbumArtBySongId?songId=@Model.Song.Id" />
     }
-    else
+    else if (appOptions != null)
     {
         // No song? Show a Twitter summary card for Chavah itself, rather than for a song.
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="@appOptions?.DefaultUrl" />
-        <meta name="twitter:title" content="@appOptions?.Title" />
+        <meta name="twitter:url" content="@appOptions.DefaultUrl" />
+        <meta name="twitter:title" content="@appOptions.Title" />
         <meta name="twitter:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
-        <meta name="twitter:image" content="@appOptions?.DefaultUrl/images/chavah512x512.png?v=1" />
+        <meta name="twitter:image" content="@appOptions.DefaultUrl/images/chavah512x512.png?v=1" />
 
         @*Facebook share info for Chavah itself, rather than a song. https://developers.facebook.com/docs/sharing/webmasters/*@
-        <meta property="og:url" content="@appOptions?.DefaultUrl" />
+        <meta property="og:url" content="@appOptions.DefaultUrl" />
         <meta property="og:type" content="music.radio_station" />
-        <meta property="og:title" content="@appOptions?.Title" />
+        <meta property="og:title" content="@appOptions.Title" />
         <meta property="og:description" content="Music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots music on the web. Up vote your favorite songs, Chavah learns your musical preferences to play only the things you enjoy." />
-        <meta property="og:image" content="@appOptions?.DefaultUrl/images/chavah512x512.png?v=1" />
+        <meta property="og:image" content="@appOptions.DefaultUrl/images/chavah512x512.png?v=1" />
     }
 
     @*CSS for development*@
@@ -119,10 +119,13 @@
     <div class="splash" style="width: 100%; height: 100%; position: fixed; background-color: #333f58; left: 0; right: 0; top: 0; bottom: 0; z-index: 999;">
         <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
             <div style="text-align: center;">
-                <picture style="width: 120px; height: 120px;">
-                    <source srcset="@Model.CdnUrl/chavah-splash.webp?v=1" type="image/webp">
-                    <source srcset="@Model.CdnUrl/chavah-splash.png?v=1" type="image/png">
-                </picture>
+                @if (Model != null)
+                {
+                    <picture style="width: 120px; height: 120px;">
+                        <source srcset="@Model.CdnUrl/chavah-splash.webp?v=1" type="image/webp">
+                        <source srcset="@Model.CdnUrl/chavah-splash.png?v=1" type="image/png">
+                    </picture>
+                }
                 <br />
                 <h5 style="color: #e9dd9a;">Chavah Messianic Radio</h5>
             </div>
@@ -163,17 +166,17 @@
     <environment names="Test,Staging,Production">
         @*3rd party JS*@
         <script src="https://code.jquery.com/jquery-2.2.4.min.js" asp-fallback-src="~/lib/jquery/dist/jquery.min.js" asp-fallback-test="window.jQuery"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js" asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.min.js" asp-fallback-src="~/lib/angular/angular.js" asp-fallback-test="window.angular"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular-route.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular-animate.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js" asp-fallback-src="~/lib/angular/angular.js" asp-fallback-test="window.angular"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-route.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-animate.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.7.1/angular-local-storage.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" asp-fallback-src="~/lib/nprogress/nprogress.js" asp-fallback-test="window.NProgress"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js" asp-fallback-src="~/lib/moment/moment.js" asp-fallback-test="window.moment"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js" asp-fallback-src="~/lib/lodash/dist/lodash.js" asp-fallback-test="window._"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js" asp-fallback-src="~/lib/lodash/dist/lodash.js" asp-fallback-test="window._"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.lite.js" asp-fallback-src="~/lib/rxjs/dist/rx.all.min.js" asp-fallback-test="window.Rx && window.Rx.Observable"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tslib/1.9.3/tslib.js" asp-fallback-src="~/lib/tslib/tslib.js" asp-fallback-test="window.__asyncValues"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js" asp-fallback-src="~/lib/fastclick/lib/fastclick.js" asp-fallback-test="window.FastClick"></script>

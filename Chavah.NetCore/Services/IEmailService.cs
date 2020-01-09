@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
 
-using Optional;
-
 namespace BitShuva.Services
 {
     public interface IEmailService
@@ -14,7 +12,7 @@ namespace BitShuva.Services
         /// <param name="body"></param>
         /// <param name="replyTo">Who replies should be sent to. If null, will use Chavah's email adddress.</param>
         /// <returns>A task that stores the email in the database.</returns>
-        Task QueueSendEmail(string recipient, string subject, string body, string replyTo = null);
+        Task QueueSendEmail(string recipient, string subject, string body, string? replyTo = null);
 
         /// <summary>
         /// Sends an email that previously failed to send.
@@ -26,6 +24,6 @@ namespace BitShuva.Services
         /// <summary>
         /// Gets an email template from the file name.
         /// </summary>
-        Option<string> GetEmailTemplate(string fileName);
+        string? GetEmailTemplate(string fileName);
     }
 }

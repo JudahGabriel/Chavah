@@ -11,8 +11,6 @@ using BitShuva.Chavah.Settings;
 using BitShuva.Chavah.Services;
 using BitShuva.Services;
 
-using cloudscribe.Syndication.Models.Rss;
-
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +32,7 @@ using Raven.DependencyInjection;
 using Raven.Identity;
 using Raven.Migrations;
 using Raven.StructuredLog;
+using Microsoft.Extensions.Hosting;
 
 namespace BitShuva.Chavah
 {
@@ -47,7 +46,6 @@ namespace BitShuva.Chavah
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AppSettings>(Configuration.GetSection("App"));
@@ -57,14 +55,12 @@ namespace BitShuva.Chavah
             var hcBuilder = services.AddHealthChecks();
 
             hcBuilder.AddRavenDbCheck(tags: new string[] {"database"});
-
             hcBuilder.AddMemoryHealthCheck(tags: new string[] { "memory" });
 
             // Add application services.
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddTransient<IPushNotificationSender, PushNotificationSender>();
             services.AddTransient<ICdnManagerService, BunnyCdnManagerService>();
-            services.AddScoped<IChannelProvider, RssChannelProvider>();
             services.AddTransient<ISongService, SongService>();
             services.AddTransient<ISongUploadService, SongUploadService>();
             services.AddTransient<IAlbumService, AlbumService>();
@@ -75,7 +71,7 @@ namespace BitShuva.Chavah
             services.AddBackgroundQueueWithLogging(1, TimeSpan.FromSeconds(5));
             services.AddCacheBustedAngularViews("/views");
 
-            // Use our BCrypt for password hashing. Must be added before AddIdentity().
+            // Use BCrypt for password hashing. Must be added before AddIdentity().
             services.AddTransient<BCryptPasswordSettings>();
             services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher<AppUser>>();
 
@@ -103,16 +99,7 @@ namespace BitShuva.Chavah
             });
 
             services.AddVersionedApiExplorer();
-
-            services.AddMvc(c => c.Conventions.Add(new ApiExplorerIgnores()))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(options=>
-                {
-                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                    options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
-                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                });
-
+            services.AddControllersWithViews(c => c.Conventions.Add(new ApiExplorerIgnores()));
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddApiVersioning(o =>
             {
@@ -180,7 +167,7 @@ namespace BitShuva.Chavah
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
-            IHostingEnvironment env,
+            IWebHostEnvironment env,
             IApiVersionDescriptionProvider provider)
         {
             // Compression must be specified before .UseStaticFiles, otherwise static files won't be compressed. https://stackoverflow.com/questions/46832723/net-core-response-compression-middleware-for-static-files
@@ -209,14 +196,10 @@ namespace BitShuva.Chavah
             app.UseHealthyHealthCheck();
 
             app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseAuthentication();
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints => endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}"));
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>

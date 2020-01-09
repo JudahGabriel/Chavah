@@ -77,6 +77,15 @@
             return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
         }
 
+        getSongByArtistId(artistId: string): ng.IPromise<Song | null> {
+            const url = "/api/songs/getByArtistId/";
+            const args = {
+                artistId
+            };
+
+            return this.httpApi.query(url, args, SongApiService.songOrNullConverter);
+        }
+
         getSongMatches(searchText: string): ng.IPromise<Song[]> {
             let url = "/api/songs/search";
             const args = {

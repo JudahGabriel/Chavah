@@ -8,27 +8,27 @@
         /// <summary>
         /// The title text to show in the notification header.
         /// </summary>
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         /// <summary>
         /// The longer text to show in the body of the notification.
         /// </summary>
-        public string Body { get; set; }
+        public string Body { get; set; } = string.Empty;
 
         /// <summary>
         /// The image of the URL to show in the push notification. This is the predominant, large image shown in the alert. This is optional.
         /// </summary>
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         /// <summary>
-        /// The URL of the small image to show on the left side of the alert. If omitted,, the browser will use the 120x120 Chavah logo.
+        /// The URL of the small image to show on the left side of the alert. If omitted, the browser will use the 120x120 Chavah logo.
         /// </summary>
-        public string IconUrl { get; set; }
+        public string? IconUrl { get; set; }
 
         /// <summary>
         /// The URL to open if the user clicks the notification.
         /// </summary>
-        public string ClickUrl { get; set; }
+        public string? ClickUrl { get; set; }
 
         ///// <summary>
         ///// A dictionary of actions. These will appear as buttons in the notification. The key should be a title, the value should be a URL that will launch when the button is clicked.

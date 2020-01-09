@@ -16,8 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using Optional.Async;
-
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
@@ -27,9 +25,9 @@ namespace BitShuva.Chavah.Controllers
     [Route("api/[controller]/[action]")]
     public class AlbumsController : RavenController
     {
-        private readonly ICdnManagerService _cdnManagerService;
-        private readonly ISongUploadService _songUploadService;
-        private readonly AppSettings _appOptions;
+        private readonly ICdnManagerService cdnManagerService;
+        private readonly ISongUploadService songUploadService;
+        private readonly AppSettings appOptions;
 
         public AlbumsController(
             ICdnManagerService cdnManagerService,
@@ -39,10 +37,10 @@ namespace BitShuva.Chavah.Controllers
             IOptionsMonitor<AppSettings> options)
             : base(dbSession, logger)
         {
-            _cdnManagerService = cdnManagerService ?? throw new ArgumentNullException(nameof(cdnManagerService));
-            _songUploadService = songUploadService ?? throw new ArgumentNullException(nameof(songUploadService));
+            this.cdnManagerService = cdnManagerService ?? throw new ArgumentNullException(nameof(cdnManagerService));
+            this.songUploadService = songUploadService ?? throw new ArgumentNullException(nameof(songUploadService));
 
-            _appOptions = options.CurrentValue;
+            appOptions = options.CurrentValue;
         }
 
         /// <summary>
@@ -84,30 +82,25 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        public async Task<Album> GetByArtistAlbum(string artist, string album)
+        public async Task<Album?> GetByArtistAlbum(string artist, string album)
         {
             var matchingAlbum = await DbSession.Query<Album>()
                 .FirstOrNoneAsync(a => a.Name == album && a.Artist == artist);
-            if (!matchingAlbum.HasValue)
+            if (matchingAlbum == null)
             {
                 return await DbSession.Query<Album>()
                     .FirstOrDefaultAsync(a => a.IsVariousArtists && a.Name == album);
             }
 
-            return matchingAlbum.ValueOr(default(Album));
+            return matchingAlbum;
         }
 
         [HttpPost]
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<Album> ChangeArt(string albumId, string artUri)
         {
-            var album = await DbSession.LoadAsync<Album>(albumId);
-            if (album == null)
-            {
-                throw new ArgumentException("Couldn't find album with ID " + albumId);
-            }
-
-            var albumArtUri = await _cdnManagerService.UploadAlbumArtAsync(new Uri(artUri), album.Artist, album.Name, ".jpg");
+            var album = await DbSession.LoadRequiredAsync<Album>(albumId);
+            var albumArtUri = await cdnManagerService.UploadAlbumArtAsync(new Uri(artUri), album.Artist, album.Name, ".jpg");
             album.AlbumArtUri = albumArtUri;
 
             // Update the songs on this album.
@@ -127,19 +120,18 @@ namespace BitShuva.Chavah.Controllers
             {
                 throw new ArgumentException("Album must have a name and artist.");
             }
-            if (album.Id?.Length == 0)
-            {
-                album.Id = null;
-            }
 
-            // Are we trying to create a new album? If we already have an album for album name + artist combo, use that one.
+            // Ensure we're not saving a duplicate.
             var isCreatingNew = string.IsNullOrEmpty(album.Id);
             if (isCreatingNew)
             {
                 var existingAlbum = await DbSession.Query<Album>()
                     .FirstOrNoneAsync(a => a.Name == album.Name && a.Artist == album.Artist);
-                existingAlbum
-                    .MatchSome(a => throw new ArgumentException($"There's already an album for {a.Artist} - {a.Name}: {a.Id}"));
+                if (existingAlbum != null)
+                {
+                    throw new ArgumentException($"Attempted to save duplicate album")
+                        .WithData("existing album", existingAlbum);
+                }
             }
 
             await DbSession.StoreAsync(album);
@@ -148,11 +140,13 @@ namespace BitShuva.Chavah.Controllers
             if (isCreatingNew)
             {
                 var songsForAlbum = await DbSession.Query<Song, Songs_GeneralQuery>()
-                    .Where(s => s.AlbumId == null)
+                    .Where(s => s.AlbumId == null || s.AlbumId == "")
                     .Where(album.SongMatchesAlbumNameAndArtistCriteria())
                     .Take(50)
                     .ToListAsync();
-                songsForAlbum.ForEach(s => s.AlbumId = album.Id);
+                songsForAlbum.ForEach(s => s.AlbumId = album.Id ?? string.Empty);
+                album.SongCount = songsForAlbum.Count;
+                logger.LogInformation("Saving new album, found n songs that belonged to it.", songsForAlbum.Count);
             }
             else
             {
@@ -161,6 +155,7 @@ namespace BitShuva.Chavah.Controllers
                     .Where(s => s.AlbumId == album.Id)
                     .ToListAsync();
                 songsForAlbum.ForEach(s => s.UpdateAlbumInfo(album));
+                logger.LogInformation("Saving existing album, updated songs' album information.");
             }
 
             return album;
@@ -171,11 +166,15 @@ namespace BitShuva.Chavah.Controllers
         public async Task<string> Upload([FromBody] AlbumUpload album)
         {
             // Put the album art on the CDN.
-            var albumArtUriCdn = await _cdnManagerService.UploadAlbumArtAsync(new Uri(album.AlbumArtUri), album.Artist, album.Name, ".jpg");
+            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtAsync(album.AlbumArtUri, album.Artist, album.Name, ".jpg");
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()
-                .FirstOrDefaultAsync(a => a.Name == album.Name && a.Artist == album.Artist) ?? new Album();
+                .FirstOrNoneAsync(a => a.Name == album.Name && a.Artist == album.Artist);
+            if (existingAlbum == null)
+            {
+                existingAlbum = new Album();
+            }
 
             // Store the Artist as well.
             var existingArtist = await DbSession.Query<Artist>()
@@ -209,9 +208,7 @@ namespace BitShuva.Chavah.Controllers
             var mp3sToUpload = new List<(SongUpload upload, Song song)>(album.Songs.Count);
             foreach (var albumSong in album.Songs)
             {
-                //var songUriCdn = await CdnManager.UploadMp3ToCdn(albumSong.Address, album.Artist, album.Name, songNumber, albumSong.FileName);
                 var (english, hebrew) = albumSong.FileName.GetEnglishAndHebrew();
-
                 var song = new Song
                 {
                     Album = album.Name,
@@ -224,7 +221,6 @@ namespace BitShuva.Chavah.Controllers
                     Number = songNumber,
                     PurchaseUri = album.PurchaseUrl,
                     UploadDate = DateTime.UtcNow,
-                    Uri = null,
                     AlbumId = existingAlbum.Id,
                     ArtistId = existingArtist.Id,
                     AlbumColors = new AlbumColors
@@ -244,9 +240,9 @@ namespace BitShuva.Chavah.Controllers
             await DbSession.SaveChangesAsync();
 
             // Queue up the MP3s to upload to the CDN now that the songs are saved in the database.
-            mp3sToUpload.ForEach(mp3 => _songUploadService.QueueMp3Upload(mp3.upload, album, mp3.song.Number, mp3.song.Id));
+            mp3sToUpload.ForEach(mp3 => songUploadService.QueueMp3Upload(mp3.upload, album, mp3.song.Number, mp3.song.Id!));
 
-            return existingAlbum.Id;
+            return existingAlbum.Id!;
         }
 
         [HttpGet]
@@ -274,11 +270,9 @@ namespace BitShuva.Chavah.Controllers
                 throw new ArgumentNullException(nameof(imageUrl));
             }
 
-            using (var webClient = new WebClient())
-            {
-                var bytes = await webClient.DownloadDataTaskAsync(imageUrl);
-                return File(bytes, "image/jpeg");
-            }
+            using var webClient = new WebClient();
+            var bytes = await webClient.DownloadDataTaskAsync(imageUrl);
+            return File(bytes, "image/jpeg");
         }
 
         /// <summary>
@@ -305,55 +299,6 @@ namespace BitShuva.Chavah.Controllers
         }
 
         /// <summary>
-        /// Gets the HTTP address for the album art image for the album with the specified name and artist.
-        /// </summary>
-        /// <param name="artist"></param>
-        /// <param name="album"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("art/get")]
-        public async Task<HttpResponseMessage> GetAlbumArt(string artist, string album)
-        {
-            var redirectUri = default(Uri);
-            await DbSession.Query<Album>()
-                .FirstOrNoneAsync(a => a.Artist == artist && a.Name == album)
-                .ToAsyncOption()
-                .Map(a => a.AlbumArtUri)
-                .MatchSome(uri => redirectUri = uri);
-
-            if (redirectUri == null)
-            {
-                // We don't have an album for this. See if we have a matching song.
-                await DbSession.Query<Song, Songs_GeneralQuery>()
-                    .FirstOrNoneAsync(s => s.Album == album && s.Artist == artist)
-                    .ToAsyncOption()
-                    .Map(s => s.AlbumArtUri)
-                    .MatchSome(uri => redirectUri = uri);
-
-                if (redirectUri == null)
-                {
-                    // We can't find album art with this artist and album, nor any song with this album and artist.
-                    // See if we have an album by that name.
-                    await DbSession.Query<Album>()
-                        .FirstOrNoneAsync(a => a.Name == album)
-                        .ToAsyncOption()
-                        .Map(a => a.AlbumArtUri)
-                        .MatchSome(uri => redirectUri = uri);
-                }
-            }
-
-            if (redirectUri != null)
-            {
-                var response = new HttpResponseMessage(HttpStatusCode.Moved);
-                response.Headers.Location = redirectUri;
-                return response;
-            }
-
-            logger.LogWarning("Unable to find matching album art.", (artist, album));
-            return new HttpResponseMessage(HttpStatusCode.NotFound);
-        }
-
-        /// <summary>
         /// Gets the album art for a particular song. Used in the UI by Facebook song share.
         /// </summary>
         /// <param name="songId"></param>
@@ -374,7 +319,7 @@ namespace BitShuva.Chavah.Controllers
                 .Where(s => s.Artist == artist && s.Album == album)
                 .ToListAsync();
             return songs
-                .Select(s => $"{s.Artist} - {s.Album} - {s.Number} - {s.Name}: {_appOptions?.DefaultUrl}/?song={s.Id}")
+                .Select(s => $"{s.Artist} - {s.Album} - {s.Number} - {s.Name}: {appOptions?.DefaultUrl}/?song={s.Id}")
                 .ToList();
         }
 

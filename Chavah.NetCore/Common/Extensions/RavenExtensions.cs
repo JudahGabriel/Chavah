@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-using Optional;
 
 using Raven.Client.Documents;
 using Raven.Client.Documents.Operations;
@@ -54,28 +53,40 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<Option<T>> LoadOptionAsync<T>(this IAsyncDocumentSession session, string id)
+        public static async Task<T?> LoadOptionalAsync<T>(this IAsyncDocumentSession session, string id)
+            where T : class
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                return Option.None<T>();
+                return null;
             }
 
-            var result = await session.LoadAsync<T>(id);
-            return result.SomeNotNull();
+            return await session.LoadAsync<T>(id);
         }
 
         /// <summary>
-        /// Asynchronously loads multiple documents from Raven and stores it in an Option.
+        /// Loads a document from the synchronous document session as a nullable.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id">The ID of the document to load.</param>
+        public static T? LoadOptional<T>(this IDocumentSession session, string id)
+            where T : class
+        {
+            return session.Load<T>(id);
+        }
+
+        /// <summary>
+        /// Asynchronously loads multiple documents from Raven and stores it in a nullable.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="session"></param>
         /// <param name="ids">The IDs of the documents to load.</param>
         /// <returns></returns>
-        public static async Task<IEnumerable<Option<T>>> LoadOptionAsync<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
+        public static async Task<IEnumerable<T?>> LoadOptionalAsync<T>(this IAsyncDocumentSession session, IEnumerable<string> ids)
+            where T : class
         {
             var result = await session.LoadAsync<T>(ids);
-            return result.Values.Select(v => v.SomeNotNull());
+            return result.Values;
         }
 
         /// <summary>
@@ -104,13 +115,13 @@ namespace BitShuva.Chavah.Common
         {
             if (id == null)
             {
-                throw new ArgumentNullException(nameof(id), "Tried to load required entity but passed in a null ID");
+                throw new ArgumentNullException(nameof(id), "Attempted load required entity but passed in a null ID");
             }
 
             var result = await session.LoadAsync<T>(id);
             if (result == null)
             {
-                throw new ArgumentException("Tried to load a entity, but it wasn't found in the database.").WithData("id", id);
+                throw new ArgumentException("Attempted to load a entity, but it wasn't found in the database.").WithData("id", id);
             }
 
             return result;
@@ -250,39 +261,29 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<Option<T>> LoadOptionAsync<T>(this IAsyncLoaderWithInclude<T> session, string id)
+        public static async Task<T?> LoadOptionalAsync<T>(this IAsyncLoaderWithInclude<T> session, string id)
+            where T : class
         {
-            var result = await session.LoadAsync<T>(id);
-            return result.SomeNotNull();
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
+
+            return await session.LoadAsync<T>(id);
         }
 
         /// <summary>
-        /// Asynchronously loads multiple documents from Raven and returns them as Options.
+        /// Asynchronously loads multiple documents from Raven and returns them as optional values.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="session"></param>
         /// <param name="ids"></param>
         /// <returns></returns>
-        public static async Task<IEnumerable<Option<T>>> LoadOptionAsync<T>(this IAsyncLoaderWithInclude<T> session, IEnumerable<string> ids)
+        public static async Task<IEnumerable<T?>> LoadOptionalAsync<T>(this IAsyncLoaderWithInclude<T> session, IEnumerable<string> ids)
+            where T : class
         {
             var result = await session.LoadAsync<T>(ids);
-            return result.Values.Select(v => v.SomeNotNull());
-        }
-
-        /// <summary>
-        /// Loads a document from Raven and returns it as an Option.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="session"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public static Option<T> LoadOption<T>(this IDocumentSession session, string id)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return default(T).None();
-            }
-            return session.Load<T>(id).SomeNotNull();
+            return result.Values;
         }
 
         /// <summary>
@@ -292,13 +293,14 @@ namespace BitShuva.Chavah.Common
         /// <param name="lazyOps"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static Lazy<Task<Option<T>>> LoadOptionAsync<T>(this IAsyncLazySessionOperations lazyOps, string id)
+        public static Lazy<Task<T?>> LoadOptionAsync<T>(this IAsyncLazySessionOperations lazyOps, string id)
+            where T : class
         {
             var loadTask = lazyOps.LoadAsync<T>(id);
-            var optionTask = new Lazy<Task<Option<T>>>(() =>
+            var optionTask = new Lazy<Task<T?>>(() =>
             {
                 var result = loadTask.Value;
-                return result.ContinueWith(t => t.Result.SomeNotNull(), TaskContinuationOptions.OnlyOnRanToCompletion);
+                return result.ContinueWith(t => t.Result, TaskContinuationOptions.OnlyOnRanToCompletion) as Task<T?>;
             }, isThreadSafe: false);
 
             return optionTask;
@@ -327,25 +329,25 @@ namespace BitShuva.Chavah.Common
         /// <param name="expiry"></param>
         public static void SetRavenExpiration<T>(this IDocumentSession dbSession, T obj, DateTime expiry)
         {
-            dbSession.Advanced.GetMetadataFor(obj)["@expires"] = DateTime.UtcNow.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
+            dbSession.Advanced.GetMetadataFor(obj)["@expires"] = expiry.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         public static Operation PatchAll<T>(this IDocumentStore db, string jsPatchScript)
         {
-            return PatchAll(db, db.Conventions.GetCollectionName(typeof(T)), jsPatchScript, default(Dictionary<string, object>).None());
+            return PatchAll(db, db.Conventions.GetCollectionName(typeof(T)), jsPatchScript, null);
         }
 
-        public static Operation PatchAll<T>(this IDocumentStore db, string jsPatchScript, Option<Dictionary<string, object>> variables)
+        public static Operation PatchAll<T>(this IDocumentStore db, string jsPatchScript, Dictionary<string, object>? variables)
         {
             return PatchAll(db, db.Conventions.GetCollectionName(typeof(T)), jsPatchScript, variables);
         }
 
         public static Operation PatchAll(this IDocumentStore db, string collectionName, string jsPatchScript)
         {
-            return PatchAll(db, collectionName, jsPatchScript, default(Dictionary<string, object>).None());
+            return PatchAll(db, collectionName, jsPatchScript, null);
         }
 
-        public static Operation PatchAll(this IDocumentStore db, string collectionName, string jsPatchScript, Option<Dictionary<string, object>> variables)
+        public static Operation PatchAll(this IDocumentStore db, string collectionName, string jsPatchScript, Dictionary<string, object>? variables)
         {
             // Patch is in RQL. Example: "from AppUsers update { this.Foo = 123; }"
             var rqlPatch = new StringBuilder();
@@ -353,17 +355,18 @@ namespace BitShuva.Chavah.Common
             rqlPatch.AppendLine("update {");
 
             // For each variable in the dictionary, declare the variable in the RQL script.
-            variables
-                .Map(i => i.AsEnumerable())
-                .ValueOr(Enumerable.Empty<KeyValuePair<string, object>>())
-                .Select(kv =>
-                {
-                    var variableValue = kv.Value?.ToString();
-                    var escapedVariableValue = variableValue?.Replace("\"", "\\\""); // replace any quotes with escaped quotes. 'Hi I am a "JS" string' -> 'Hi I am a \"JS\" string'
-                    var escapedWithQuotes = kv.Value is string ? "\"" + escapedVariableValue + "\"" : escapedVariableValue; // string? Surround the value with quotes. foo -> "foo"
-                    return $"var {kv.Key} = {escapedWithQuotes};"; // The actual variable declaration, e.g. var foo = "123";
-                })
-                .ForEach(v => rqlPatch.AppendLine(v));
+            if (variables != null)
+            {
+                variables
+                    .Select(kv =>
+                    {
+                        var variableValue = kv.Value?.ToString();
+                        var escapedVariableValue = variableValue?.Replace("\"", "\\\""); // replace any quotes with escaped quotes. 'Hi I am a "JS" string' -> 'Hi I am a \"JS\" string'
+                        var escapedWithQuotes = kv.Value is string ? "\"" + escapedVariableValue + "\"" : escapedVariableValue; // string? Surround the value with quotes. foo -> "foo"
+                        return $"var {kv.Key} = {escapedWithQuotes};"; // The actual variable declaration, e.g. var foo = "123";
+                    })
+                    .ForEach(v => rqlPatch.AppendLine(v));
+            }
 
             rqlPatch.AppendLine(jsPatchScript);
             rqlPatch.Append('}');

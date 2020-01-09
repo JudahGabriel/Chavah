@@ -84,14 +84,14 @@
 
         get likeText(): string {
             if (this.likesCurrentSong) {
-                return "You have already liked this song. Chavah is playing it more often.";
+                return "You have already liked this song. Chavah is playing it more often. Tap to undo your like.";
             }
             return "Like this song. Chavah will play this song, and others like it, more often.";
         }
 
         get dislikeText(): string {
             if (this.dislikesCurrentSong) {
-                return "You have already disliked this song. Chavah is playing it less often.";
+                return "You have already disliked this song. Chavah is playing it less often. Tap to undo your dislike.";
             }
             return "Dislike this song. Chavah will play this song, and others like it, less often.";
         }
@@ -159,27 +159,45 @@
             }
         }
 
-        dislikeSong() {
+        thumbDownClicked() {
             if (this.ensureSignedIn()) {
-                let currentSong = this.audioPlayer.song.getValue();
-                if (currentSong && currentSong.songLike !== SongLike.Disliked) {
-                    currentSong.songLike = SongLike.Disliked;
-                    this.likeApi.dislikeSong(currentSong.id)
-                        .then(rank => currentSong!.communityRank = rank);
-                    this.songBatch.playNext();
+                const currentSong = this.audioPlayer.song.getValue();
+                if (currentSong) {
+                    // If we haven't disliked the song, dislike it.
+                    if (currentSong.songLike !== SongLike.Disliked) {
+                        currentSong.songLike = SongLike.Disliked;
+                        this.likeApi.dislikeSong(currentSong.id)
+                            .then(rank => currentSong!.communityRank = rank);
+                        this.songBatch.playNext();
+                    } else {
+                        // Otherwise, set as unranked.
+                        this.setSongAsUnranked(currentSong);
+                    }
                 }
             }
         }
 
-        likeSong() {
+        thumbUpClicked() {
             if (this.ensureSignedIn()) {
-                let currentSong = this.audioPlayer.song.getValue();
-                if (currentSong && currentSong.songLike !== SongLike.Liked) {
-                    currentSong.songLike = SongLike.Liked;
-                    this.likeApi.likeSong(currentSong.id)
-                        .then(rank => currentSong!.communityRank = rank);
+                const currentSong = this.audioPlayer.song.getValue();
+                if (currentSong) {
+                    // If we haven't liked the song, like it.
+                    if (currentSong.songLike !== SongLike.Liked) {
+                        currentSong.songLike = SongLike.Liked;
+                        this.likeApi.likeSong(currentSong.id)
+                            .then(rank => currentSong!.communityRank = rank);
+                    } else {
+                        this.setSongAsUnranked(currentSong);
+                    }
                 }
             }
+        }
+
+        setSongAsUnranked(song: Song) {
+            // Undo our existing like.
+            song.songLike = SongLike.Unranked;
+            this.likeApi.setSongAsUnranked(song.id)
+                .then(songRank => song.communityRank = songRank);
         }
 
         requestSong() {

@@ -16,9 +16,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using Optional;
-using Optional.Async;
-
 using Raven.Client.Documents;
 using Raven.StructuredLog;
 
@@ -31,40 +28,40 @@ namespace BitShuva.Services
     /// </summary>
     public class SendGridEmailService : IEmailService
     {
-        private readonly EmailSettings _emailOptions;
-        private readonly ILogger<SendGridEmailService> _logger;
-        private readonly IDocumentStore _db;
-        private readonly BackgroundQueue _backgroundWorker;
-        private readonly IHostingEnvironment _host;
+        private readonly EmailSettings emailOptions;
+        private readonly ILogger<SendGridEmailService> logger;
+        private readonly IDocumentStore db;
+        private readonly BackgroundQueue backgroundWorker;
+        private readonly IWebHostEnvironment host;
 
         public SendGridEmailService(
             BackgroundQueue queue,
             IDocumentStore db,
             IOptionsMonitor<EmailSettings> emailOptions,
             ILogger<SendGridEmailService> logger,
-            IHostingEnvironment host)
+            IWebHostEnvironment host)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _db = db ?? throw new ArgumentNullException(nameof(db));
-            _backgroundWorker = queue ?? throw new ArgumentNullException(nameof(queue));
-            _host = host ?? throw new ArgumentNullException(nameof(host));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.db = db ?? throw new ArgumentNullException(nameof(db));
+            backgroundWorker = queue ?? throw new ArgumentNullException(nameof(queue));
+            this.host = host ?? throw new ArgumentNullException(nameof(host));
 
-            _emailOptions = emailOptions.CurrentValue;
+            this.emailOptions = emailOptions.CurrentValue;
         }
 
-        public async Task QueueSendEmail(string recipient, string subject, string body, string replyTo = null)
+        public async Task QueueSendEmail(string recipient, string subject, string body, string? replyTo = null)
         {
             // Store the email on this thread.
             var email = await StoreEmail(recipient, subject, body, replyTo);
 
             // If we're not configured to send emails, punt.
-            var sendEmails = _emailOptions.SendEmails;
+            var sendEmails = emailOptions.SendEmails;
             if (sendEmails)
             {
                 // Queue up the email sending on a different thread.
-                _logger.LogInformation("Queueing up {emailId} for sending.", email.Id);
-                _backgroundWorker.Enqueue(cancelToken => TrySendEmailWithTimeoutAndRetry(
-                    email.Id,
+                logger.LogInformation("Queueing up {emailId} for sending.", email.Id);
+                backgroundWorker.Enqueue(cancelToken => TrySendEmailWithTimeoutAndRetry(
+                    email.Id!,
                     email.To,
                     email.Subject,
                     email.Body,
@@ -73,101 +70,93 @@ namespace BitShuva.Services
             }
             else
             {
-                _logger.LogInformation("Skipping sending {emailId} per configuration.", email.Id);
+                logger.LogInformation("Skipping sending {emailId} per configuration.", email.Id);
             }
         }
 
         public Task QueueRetryEmail(string emailId)
         {
-            _backgroundWorker.Enqueue(_ => RetryEmailWithTimeout(emailId));
+            backgroundWorker.Enqueue(_ => RetryEmailWithTimeout(emailId));
             return Task.CompletedTask;
         }
 
         private async Task RetryEmailWithTimeout(string emailId)
         {
-            using (var dbSession = _db.OpenAsyncSession())
-            {
-                var email = await dbSession.LoadRequiredAsync<Email>(emailId);
-                var retryError = await TrySendEmailWithTimeout(email.To, email.Subject, email.Body, email.ReplyTo);
+            using var dbSession = db.OpenAsyncSession();
+            var email = await dbSession.LoadRequiredAsync<Email>(emailId);
+            var retryError = await TrySendEmailWithTimeout(email.To, email.Subject, email.Body, email.ReplyTo);
 
-                email.RetryCount++;
-                email.LastRetryDate = DateTimeOffset.UtcNow;
-                email.SendingErrorMessage = retryError
-                    .Map(e => e.Message)
-                    .ValueOrDefault();
-                email.Sent = retryError.Match(error => new DateTimeOffset?(), () => DateTimeOffset.UtcNow);
-                await dbSession.SaveChangesAsync();
-            }
+            email.RetryCount++;
+            email.LastRetryDate = DateTimeOffset.UtcNow;
+            email.SendingErrorMessage = retryError?.Message;
+            email.Sent = retryError == null ? DateTimeOffset.UtcNow : new DateTimeOffset?();
+            await dbSession.SaveChangesAsync();
         }
 
-        private Task TrySendEmailWithTimeoutAndRetry(string emailId, string recipient, string subject, string body, string replyTo, CancellationToken cancelToken)
+        private async Task TrySendEmailWithTimeoutAndRetry(string emailId, string recipient, string subject, string body, string? replyTo, CancellationToken cancelToken)
         {
             if (!cancelToken.IsCancellationRequested)
             {
                 // Send the email with a timeout.
-                var error = TrySendEmailWithTimeout(recipient, subject, body, replyTo).ToAsyncOption();
-
-                // The error will be None if success. If failed, mark it as failed, which will get queued up for email retry later.
-                return error
-                    .Match(e => MarkEmailAsFailed(emailId, e), () => MarkEmailAsSucceeded(emailId));
+                var error = await TrySendEmailWithTimeout(recipient, subject, body, replyTo);
+                if (error != null)
+                {
+                    await MarkEmailAsFailed(emailId, error);
+                }
+                else
+                {
+                    await MarkEmailAsSucceeded(emailId);
+                }
             }
-
-            return Task.CompletedTask;
         }
 
-        private async Task<Email> StoreEmail(string recipient, string subject, string body, string replyTo)
+        private async Task<Email> StoreEmail(string recipient, string subject, string body, string? replyTo)
         {
-            using (var dbSession = _db.OpenAsyncSession())
+            using var dbSession = db.OpenAsyncSession();
+            var email = new Email
             {
-                var email = new Email
-                {
-                    To = recipient,
-                    Subject = subject,
-                    Body = body,
-                    ReplyTo = replyTo
-                };
-                await dbSession.StoreAsync(email);
+                To = recipient,
+                Subject = subject,
+                Body = body,
+                ReplyTo = replyTo
+            };
+            await dbSession.StoreAsync(email);
 
-                // Expire it in 2 months.
-                dbSession.SetRavenExpiration(email, DateTime.UtcNow.AddMonths(2));
+            // Expire it in 2 months.
+            dbSession.SetRavenExpiration(email, DateTime.UtcNow.AddMonths(2));
 
-                await dbSession.SaveChangesAsync();
-                return email;
-            }
+            await dbSession.SaveChangesAsync();
+            return email;
         }
 
         private async Task<Email> MarkEmailAsSucceeded(string emailId)
         {
-            using (var dbSession = _db.OpenAsyncSession())
-            {
-                var email = await dbSession.LoadRequiredAsync<Email>(emailId);
-                email.Sent = DateTimeOffset.UtcNow;
-                await dbSession.SaveChangesAsync();
-                return email;
-            }
+            using var dbSession = db.OpenAsyncSession();
+            var email = await dbSession.LoadRequiredAsync<Email>(emailId);
+            email.Sent = DateTimeOffset.UtcNow;
+            await dbSession.SaveChangesAsync();
+            return email;
         }
 
         private async Task<Email> MarkEmailAsFailed(string emailId, Exception error)
         {
-            using (var dbSession = _db.OpenAsyncSession())
-            {
-                var email = await dbSession.LoadRequiredAsync<Email>(emailId);
-                email.SendingErrorMessage = error.Message;
-                await dbSession.SaveChangesAsync();
-                return email;
-            }
+            using var dbSession = db.OpenAsyncSession();
+            var email = await dbSession.LoadRequiredAsync<Email>(emailId);
+            email.SendingErrorMessage = error.Message;
+            await dbSession.SaveChangesAsync();
+            return email;
         }
 
-        private async Task<Option<Exception>> TrySendEmailWithTimeout(string recipient, string subject, string body, string replyTo)
+        private async Task<Exception?> TrySendEmailWithTimeout(string recipient, string subject, string body, string? replyTo)
         {
             try
             {
-                var email = new MailMessage
+                using var email = new MailMessage
                 {
                     Subject = subject,
                     Body = body,
                     IsBodyHtml = true,
-                    From = new MailAddress(_emailOptions.SenderEmail, _emailOptions.SenderName)
+                    From = new MailAddress(emailOptions.SenderEmail, emailOptions.SenderName)
                 };
 
                 if (!string.IsNullOrEmpty(replyTo))
@@ -177,25 +166,25 @@ namespace BitShuva.Services
 
                 email.To.Add(recipient);
                 await SendEmailAsync(email);
-                _logger.LogInformation("Sent email notification from {sender} to {recipient} with {subject}, {body}, {replyto}", email.From?.Address, recipient, subject, body, email.ReplyToList?.ToString());
-                return Option.None<Exception>();
+                logger.LogInformation("Sent email notification from {sender} to {recipient} with {subject}, {body}, {replyto}", email.From?.Address, recipient, subject, body, email.ReplyToList?.ToString());
+                return null;
             }
             catch (Exception error)
             {
-                using (_logger.BeginKeyValueScope("emailSettings", _emailOptions))
-                using (_logger.BeginKeyValueScope("recipient", recipient))
-                using (_logger.BeginKeyValueScope("subject", subject))
+                using (logger.BeginKeyValueScope("emailSettings", emailOptions))
+                using (logger.BeginKeyValueScope("recipient", recipient))
+                using (logger.BeginKeyValueScope("subject", subject))
                 {
-                    _logger.LogError(error, "Failed to send email");
+                    logger.LogError(error, "Failed to send email");
                 }
 
-                return Option.Some(error);
+                return error;
             }
         }
 
         public async Task SendEmailAsync(MailMessage message)
         {
-            var client = new SendGrid.SendGridClient(_emailOptions.SendGridApiKey);
+            var client = new SendGrid.SendGridClient(emailOptions.SendGridApiKey);
             var from = new EmailAddress(message.From.Address, message.From.DisplayName);
             var subject = message.Subject;
             var to = message.To.Select(t => new EmailAddress(t.Address, t.DisplayName));
@@ -205,24 +194,24 @@ namespace BitShuva.Services
             await client.SendEmailAsync(mail);
         }
 
-        public Option<string> GetEmailTemplate(string fileName)
+        public string? GetEmailTemplate(string fileName)
         {
-            var templatePath = Path.Combine(_host.WebRootPath, Path.Combine("emails", fileName));
+            var templatePath = Path.Combine(host.WebRootPath, Path.Combine("emails", fileName));
             try
             {
                 if (File.Exists(templatePath))
                 {
-                    return Option.Some(File.ReadAllText(templatePath));
+                    return File.ReadAllText(templatePath);
                 }
 
-                _logger.LogError("Unable to find email template {templatePath}", templatePath);
+                logger.LogError("Unable to find email template {templatePath}", templatePath);
             }
             catch (Exception error)
             {
-                _logger.LogError(error, "Error loading email template {name}", fileName);
+                logger.LogError(error, "Error loading email template {name}", fileName);
             }
 
-            return Option.None<string>();
+            return null;
         }
     }
 }

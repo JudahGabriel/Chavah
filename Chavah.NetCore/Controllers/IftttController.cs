@@ -29,8 +29,8 @@ namespace BitShuva.Chavah.Controllers
     [Route("[controller]/[action]")]
     public class IftttController : RavenController
     {
-        private readonly AppSettings _appOptions;
-        private readonly IPushNotificationSender _pushNotifications;
+        private readonly AppSettings appOptions;
+        private readonly IPushNotificationSender pushNotifications;
 
         public IftttController(
             IOptionsMonitor<AppSettings> appOptions,
@@ -39,8 +39,8 @@ namespace BitShuva.Chavah.Controllers
             ILogger<IftttController> logger)
             : base(dbSession, logger)
         {
-            _appOptions = appOptions.CurrentValue;
-            _pushNotifications = pushNotifications;
+            this.appOptions = appOptions.CurrentValue;
+            this.pushNotifications = pushNotifications;
         }
 
         [HttpGet]
@@ -65,21 +65,21 @@ namespace BitShuva.Chavah.Controllers
             })
             .ToList();
 
-            feedItems.ForEach(i => i.AddLink(new SyndicationLink(new Uri($"{_appOptions.DefaultUrl}/?newUser={i.Published.ToUnixTimeSeconds().ToString()}"))));
+            feedItems.ForEach(i => i.AddLink(new SyndicationLink(new Uri($"{appOptions.DefaultUrl}/?newUser={i.Published.ToUnixTimeSeconds().ToString()}"))));
 
             var feed = new SyndicationFeed(
-                $"{_appOptions.Title} - New Users",
+                $"{appOptions.Title} - New Users",
                 "The most recent registered users at Chavah Messianic Radio",
-                new Uri(_appOptions.DefaultUrl),
-                _appOptions.Name,
+                new Uri(appOptions.DefaultUrl),
+                appOptions.Name,
                 feedItems,
-                _appOptions.Language);
+                appOptions.Language);
 
             return new RssActionResult(feed);
         }
 
         [HttpPost]
-        public IActionResult CreateNotification(string secretToken, string title, string imgUrl, string sourceName, string url)
+        public IActionResult CreateNotification(string secretToken, string title, string? imgUrl, string sourceName, string url)
         {
             AuthorizeKey(secretToken);
 
@@ -92,7 +92,7 @@ namespace BitShuva.Chavah.Controllers
             // If the image is the default "no image available" from IFTTT, use Chavah logo.
             if (string.Equals(imgUrl, "https://ifttt.com/images/no_image_card.png", StringComparison.InvariantCultureIgnoreCase))
             {
-                imgUrl = _appOptions.PushNotificationsImageUrl;
+                imgUrl = appOptions.PushNotificationsImageUrl;
             }
 
             logger.LogInformation("IFTTT CreateNotification called with {token}, {title}, {imgUrl}, {srcName}, {url}", secretToken, title, imgUrl, sourceName, url);
@@ -118,7 +118,7 @@ namespace BitShuva.Chavah.Controllers
                 Body = $"The latest from the {sourceName}",
                 ClickUrl = url
             };
-            _pushNotifications.QueueSendNotificationToAll(pushNotification);
+            pushNotifications.QueueSendNotificationToAll(pushNotification);
 
             return Json(notification);
         }
@@ -137,7 +137,7 @@ namespace BitShuva.Chavah.Controllers
 
         private void AuthorizeKey(string key)
         {
-            if (_appOptions.IftttKey != key)
+            if (appOptions.IftttKey != key)
             {
                 throw new UnauthorizedAccessException();
             }

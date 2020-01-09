@@ -8,16 +8,6 @@ namespace BitShuva.Chavah.Common
 {
     public static class DictionaryExtensions
     {
-        public static TValue GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
-        {
-            if (dictionary.TryGetValue(key, out var foundValue))
-            {
-                return foundValue;
-            }
-
-            return default;
-        }
-
         /// <summary>
         /// Gets a value out of a dictionary by the specified key. If the key doesn't exist, null will be returned.
         /// </summary>
@@ -26,7 +16,9 @@ namespace BitShuva.Chavah.Common
         /// <param name="dictionary"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static TValue? GetValueOrNull<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key) where TValue : struct
+        public static TValue? GetValueOrNull<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
+            where TKey : notnull
+            where TValue : struct
         {
             if (dictionary.TryGetValue(key, out var foundValue))
             {
@@ -37,6 +29,7 @@ namespace BitShuva.Chavah.Common
         }
 
         public static string ToKeyValuePairString<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
+            where TKey : notnull
         {
             var builder = new StringBuilder(dictionary.Count * 20);
             var isFirst = true;
@@ -49,7 +42,7 @@ namespace BitShuva.Chavah.Common
                 }
 
                 builder.Append('[');
-                builder.Append(pair.Key.ToString());
+                builder.Append(pair.Key?.ToString() ?? string.Empty);
                 builder.Append(',');
                 builder.Append(pair.Value?.ToString());
                 builder.Append(']');
@@ -64,6 +57,7 @@ namespace BitShuva.Chavah.Common
         }
 
         public static List<Tuple<TKey, TValue>> TryRemoveMultiple<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary, int maxRemove)
+            where TKey : notnull
         {
             var keys = dictionary.Keys.Take(maxRemove).ToList();
             var results = new List<Tuple<TKey, TValue>>();

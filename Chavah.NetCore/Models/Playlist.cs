@@ -4,14 +4,10 @@ namespace BitShuva.Chavah.Models
 {
     public class Playlist
     {
-        public Playlist()
-        {
-            SongIds = new List<string>();
-        }
 
-        public string Name { get; set; }
-        public List<string> SongIds { get; set; }
-        public string OwnerId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public List<string> SongIds { get; set; } = new List<string>();
+        public string OwnerId { get; set; } = string.Empty;
 
         public Playlist CloneForUser(string userId)
         {

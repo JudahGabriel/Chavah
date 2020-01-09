@@ -9,46 +9,64 @@ using Microsoft.SyndicationFeed.Rss;
 
 namespace Chavah.Common
 {
+    /// <summary>
+    /// A RSS feed <see cref="ActionResult"/>.
+    /// </summary>
     public class RssActionResult : ActionResult
     {
-        public SyndicationFeed Feed { get; set; }
+        private readonly SyndicationFeed feed;
 
+        /// <summary>
+        /// Creates a new feed action result.
+        /// </summary>
+        /// <param name="feed"></param>
         public RssActionResult(SyndicationFeed feed)
         {
-            Feed = feed;
+            this.feed = feed;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         public override void ExecuteResult(ActionContext context)
         {
             ExecuteResultAsync(context).GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public async override Task ExecuteResultAsync(ActionContext context)
         {
             context.HttpContext.Response.ContentType = "application/rss+xml";
 
-            using (var xmlWriter = XmlWriter.Create(context.HttpContext.Response.Body,
-                                   new XmlWriterSettings() { Async = true, Indent = true }))
+            using var xmlWriter = XmlWriter.Create(
+                context.HttpContext.Response.Body,
+                new XmlWriterSettings() { Async = true, Indent = true });
+            var writer = new RssFeedWriter(xmlWriter);
+
+            await writer.WriteTitle(feed.Title);
+            await writer.WriteDescription(feed.Description);
+            await writer.Write(feed.Link);
+            await writer.WriteLastBuildDate(feed.LastUpdatedTime);
+
+            var languageElement = new SyndicationContent("language")
             {
-                var writer = new RssFeedWriter(xmlWriter);
+                Value = feed.Language
+            };
+            await writer.Write(languageElement);
 
-                await writer.WriteTitle(Feed.Title);
-                await writer.WriteDescription(Feed.Description);
-                await writer.Write(Feed.Link);
-
-                var languageElement = new SyndicationContent("language")
-                {
-                    Value = Feed.Language
-                };
-                await writer.Write(languageElement);
-
-                foreach (var item in Feed.Items)
-                {
-                    await writer.Write(item);
-                }
-                await writer.WritePubDate(Feed.LastUpdatedTime);
-                await xmlWriter.FlushAsync();
+            foreach (var item in feed.Items)
+            {
+                await writer.Write(item);
             }
+
+            await xmlWriter.WriteEndElementAsync();
+            await xmlWriter.WriteEndElementAsync();
+            await xmlWriter.FlushAsync();
         }
     }
 }
