@@ -140,5 +140,16 @@ namespace BitShuva.Chavah.Controllers
 
             return user;
         }
+
+        [HttpGet]
+        [Authorize(Roles = AppUser.AdminRole)]
+        public Task<List<AppUser>> GetNewUsers(int skip = 0, int take = 20)
+        {
+            return DbSession.Query<AppUser>()
+                .OrderByDescending(u => u.RegistrationDate)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+        }
     }
 }

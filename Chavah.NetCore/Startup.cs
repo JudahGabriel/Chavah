@@ -113,7 +113,7 @@ namespace BitShuva.Chavah
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
 
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddApiVersioning(o =>
             {
                 o.ReportApiVersions = true;

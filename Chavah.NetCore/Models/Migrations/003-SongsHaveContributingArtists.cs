@@ -11,7 +11,7 @@ namespace BitShuva.Chavah.Models.Migrations
     {
         public override void Up()
         {
-            this.PatchCollection(@"
+            PatchCollection(@"
                 from Songs
                 update {
                     this.ContributingArtists = [];
