@@ -68,12 +68,16 @@
             return `https://wa.me/?text=${smsMessage}`;
         }
 
+        get canNativeShare(): boolean {
+            return !!navigator["share"];
+        }
+
         /**
          * Invokes the native share functionality for whichever platform we're on.
          * Currently implements the emerging Web Share API and the Windows Share API.
          * @param song
          */
-        nativeShareUrl(song: Song) {
+        nativeShare(song: Song) {
             if (navigator["share"]) {
                 this.tryShareWeb(song);
             } else if (window["Windows"]) {

@@ -32,6 +32,16 @@
             this.fetchNextChunk();
         }
 
+        /**
+         * Reloads the current chunk.
+         */
+        refresh() {
+            if (!this.isLoading) {
+                this.skip -= this.items.length;
+                this.fetchNextChunk();   
+            }
+        }
+
         fetchNextChunk() {
             if (!this.isLoading) {
                 this.isLoading = true;

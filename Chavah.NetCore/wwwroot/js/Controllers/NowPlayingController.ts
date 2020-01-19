@@ -295,7 +295,7 @@
 
         tryNativeShare() {
             if (this.currentSong) {
-                this.sharing.nativeShareUrl(this.currentSong);
+                this.sharing.nativeShare(this.currentSong);
             }
         }
 

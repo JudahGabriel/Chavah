@@ -14,6 +14,12 @@
     .search-box-container {
         max-width: 300px;
         margin-right: 15px;
+        float: right;
+
+        @media(max-width: @screen-xs-max) {
+            float: none;
+            max-width: none;
+        }
     }
 
     .songs-container {
@@ -41,6 +47,7 @@
 
             .share-links {
                 font-size: 2em;
+
                 a {
                     &:hover {
                         text-decoration: none;

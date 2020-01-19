@@ -1,0 +1,83 @@
+﻿@import "../variables.less";
+
+.song-deck {
+    .songs-container {
+        width: 100%;
+        perspective: 1000px;
+        perspective-origin: top;
+    }
+
+    .song-item {
+        padding: 10px;
+        display: inline-block;
+        margin: 15px -100px 0 0;
+        cursor: pointer;
+        box-shadow: 0 0 15px 0 @shadow-color;
+        transform: rotateY(15deg) skewY(-2deg);
+        transition: all 0.2s ease-in;
+        --box-reflect: below 18px -webkit-gradient( linear, left bottom, left top, from(rgba(255,255,255,0.25)), color-stop(0.3, transparent) );
+
+        &:hover {
+            margin: -35px -50px 0 0;
+            transform: rotateY(0deg);
+
+            .song-info .share-links {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: @screen-xs-max) {
+            margin: 15px -100px 0 0;
+        }
+
+        img {
+            max-width: 300px;
+            height: auto;
+            /* Phones use smaller images sizes */
+            @media(max-width: @screen-xs-max) {
+                max-width: 150px;
+            }
+        }
+
+        .song-info {
+            margin-top: 5px;
+            max-width: 300px;
+
+            .song-info-text {
+                display: inline-block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                width: 100%;
+            }
+
+            @media(max-width: @screen-xs-max) {
+                max-width: 150px;
+            }
+
+            .share-links {
+                font-size: 2em;
+                opacity: 0.1;
+                transition: all 0.2s ease-in;
+
+                a {
+                    &:hover {
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+
+        .share-links {
+            display: inline-block;
+
+            .dropup {
+                display: inline-block;
+
+                .dropdown-menu {
+                    margin-left: -45px;
+                }
+            }
+        }
+    }
+}

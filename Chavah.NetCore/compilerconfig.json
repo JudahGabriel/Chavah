@@ -98,5 +98,9 @@
   {
     "outputFile": "wwwroot/css/app/password.css",
     "inputFile": "wwwroot/css/app/password.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/songDeck.css",
+    "inputFile": "wwwroot/css/app/songDeck.less"
   }
 ]
