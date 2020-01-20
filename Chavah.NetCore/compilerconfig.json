@@ -102,5 +102,13 @@
   {
     "outputFile": "wwwroot/css/app/songDeck.css",
     "inputFile": "wwwroot/css/app/songDeck.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/popular.css",
+    "inputFile": "wwwroot/css/app/popular.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/recent.css",
+    "inputFile": "wwwroot/css/app/recent.less"
   }
 ]

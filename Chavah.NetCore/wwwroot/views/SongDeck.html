@@ -15,6 +15,12 @@
                     {{::song.album}}
                 </span>
                 <br />
+                <span class="song-info-text">
+                    <span class="text-muted" ng-style=":: { 'color': song.albumColors.muted }">Ranked</span>
+                    <span ng-show="song.communityRank > 0">+</span>
+                    <span>{{song.communityRank}} {{song.communityRankStandingText}}</span>
+                </span>
+                <br />
                 <div class="share-links">
                     <button class="btn-link" ng-click="vm.playSong(song)" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Play this song" tooltip-append-to-body="true">
                         <i class="fa fa-play"></i>
@@ -67,7 +73,7 @@
         <h4 ng-show="vm.songs.isLoading">
             <br />
             <i class="fa fa-circle-o-notch fa-spin"></i>
-            <span>Loading your liked songs...</span>
+            <span>Loading...</span>
         </h4>
 
         <h4 class="text-center" ng-show="vm.showLoadMore && vm.songs.isLoadedWithData">
@@ -75,7 +81,7 @@
             Showing {{vm.songs.items.length}} of {{vm.songs.itemsTotalCount}} songs
             <br />
             <br />
-            <button class="btn btn-default" ng-show="vm.songs.hasMoreItems" ng-click="vm.loadMoreSongs()">Show more</button>
+            <button class="btn btn-default" ng-show="vm.songs.hasMoreItems" ng-click="vm.songs.fetchNextChunk()">Show more</button>
         </h4>
     </div>
 </section>

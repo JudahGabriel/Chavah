@@ -2,24 +2,17 @@
     export class TrendingController {
         
         static $inject = [
-            "songApi",
-            "audioPlayer",
+            "songApi"
         ];
 
         songsList = new PagedList((skip, take) => this.songApi.getTrendingSongs(skip, take));
         
-        constructor(
-            private readonly songApi: SongApiService,
-            private readonly audioPlayer: AudioPlayerService) {
+        constructor(private readonly songApi: SongApiService) {
         }
 
         $onInit() {
             this.songsList.take = 25;
             this.songsList.fetchNextChunk();
-        }
-
-        playSong(song: Song) {
-            this.audioPlayer.playSongById(song.id);
         }
     }
 

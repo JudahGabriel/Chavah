@@ -1,7 +1,14 @@
 ﻿@import "../variables.less";
 
 .my-likes-page {
-    margin-top: 70px;
+    margin-top: @go-back-margin;
+    padding-left: 50px;
+    padding-right: 50px;
+
+    @media (max-width: @screen-xs-max) {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
 
     .page-title {
         margin-top: 5px;
@@ -45,14 +52,8 @@
             margin-top: 5px;
             max-width: 300px;
 
-            .share-links {
-                font-size: 2em;
-
-                a {
-                    &:hover {
-                        text-decoration: none;
-                    }
-                }
+            @media(max-width: @screen-xs-max) {
+                max-width: 150px;
             }
         }
     }
@@ -82,6 +83,14 @@
             height: 300px;
             box-shadow: 0 0 3px 1px gray;
             border-radius: 200px;
+        }
+    }
+
+    .albums-container {
+        .album-name {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
         }
     }
 }

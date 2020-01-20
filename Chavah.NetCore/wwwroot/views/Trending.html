@@ -1,5 +1,5 @@
 ﻿<div ng-include="Partials.goBack"></div>
 <section class="page trending-page" ng-controller="TrendingController as vm">
-    <h2>Trending <br /><small>Recently thumbed-up songs</small></h2>
+    <h2 class="page-title"><i class="fa fa-line-chart"></i> Trending <br /><small>Recently thumbed-up <i class="fa fa-thumbs-up"></i> songs</small></h2>
     <song-deck songs="vm.songsList" show-load-more="false"></song-deck>
 </section>

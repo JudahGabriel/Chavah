@@ -469,7 +469,28 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        public async Task<List<Song>> GetPopular(int count)
+        public async Task<PagedList<Song>> GetPopular(int skip, int take)
+        {
+            var songs = await DbSession.Query<Song, Songs_GeneralQuery>()
+                .Statistics(out var stats)
+                .OrderByDescending(s => s.CommunityRank)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+            var songDtos = songs
+                .Select(s => s.ToDto())
+                .ToList();
+            return new PagedList<Song>
+            {
+                Items = songDtos,
+                Skip = skip,
+                Take = take,
+                Total = stats.TotalResults
+            };
+        }
+
+        [HttpGet]
+        public async Task<List<Song>> GetRandomPopular(int count)
         {
             var randomSpotInTop70 = new Random().Next(0, 70);
             var songs = await DbSession.Query<Song, Songs_GeneralQuery>()

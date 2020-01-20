@@ -1,33 +1,48 @@
 ﻿@import "../variables.less";
 
 .song-deck {
+    margin-right: 75px;
+
+    @media (max-width: @screen-xs-max) {
+        margin-left: 10px;
+    }
+
     .songs-container {
         width: 100%;
-        perspective: 1000px;
+        perspective: 10000px;
         perspective-origin: top;
     }
 
     .song-item {
         padding: 10px;
         display: inline-block;
-        margin: 15px -100px 0 0;
+        margin: 15px -200px 0 0;
         cursor: pointer;
-        box-shadow: 0 0 15px 0 @shadow-color;
+        box-shadow: 0 10px 15px 0 @shadow-color;
         transform: rotateY(15deg) skewY(-2deg);
-        transition: all 0.2s ease-in;
+        transition: all 0.2s ease-out;
         --box-reflect: below 18px -webkit-gradient( linear, left bottom, left top, from(rgba(255,255,255,0.25)), color-stop(0.3, transparent) );
+        position: relative;
+        opacity: .9;
 
         &:hover {
-            margin: -35px -50px 0 0;
-            transform: rotateY(0deg);
+            transform: rotateY(0deg) scale(1.1) translate3d(5px, 0, 1px);
+            z-index: 2;
+            opacity: 1;
 
             .song-info .share-links {
                 opacity: 1;
             }
         }
 
+
         @media (max-width: @screen-xs-max) {
             margin: 15px -100px 0 0;
+
+            &:hover {
+                margin: 15px -50px 0 -50px;
+                left: 20px;
+            }
         }
 
         img {
