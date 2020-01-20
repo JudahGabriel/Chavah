@@ -107,7 +107,7 @@
             const args = {
                 count,
             };
-            return this.httpApi.query("/api/songs/getpopular", args, SongApiService.songListConverter);
+            return this.httpApi.query("/api/songs/getRandomPopular", args, SongApiService.songListConverter);
         }
         
         getPopular(skip: number, take: number): ng.IPromise<Server.PagedList<Song>> {
