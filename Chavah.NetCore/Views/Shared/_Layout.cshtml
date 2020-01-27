@@ -133,34 +133,34 @@
     </div>
 
     @*JS for dev*@
-    <environment names="Development">
-        @*3rd party JS*@
-        <script src="~/lib/jquery/jquery.js"></script>
-        <script src="~/lib/bootstrap/js//bootstrap.js"></script>
-        <script src="~/lib/angular/angular.js"></script>
-        <script src="~/lib/angular/angular-route.js"></script>
-        <script src="~/lib/angular/angular-animate.js"></script>
-        <script src="~/lib/angular-bootstrap/ui-bootstrap.js"></script>
-        <script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-        <script src="~/lib/angular-local-storage/angular-local-storage.js"></script>
-        <script src="~/lib//modernizr/modernizr.dev.js"></script>
-        <script src="~/lib/nprogress/nprogress.js"></script>
-        <script src="~/lib/moment/moment.js"></script>
-        <script src="~/lib/lodash/lodash.js"></script>
-        <script src="~/lib/rxjs/rx.lite.js"></script>
-        <script src="~/lib/tslib/tslib.min.js"></script>
-        <script src="~/lib/fastclick/fastclick.js"></script>
-        <script src="~/lib/tinycolor/tinycolor.js"></script>
+<environment names="Development">
+    @*3rd party JS*@
+    <script src="~/lib/jquery/jquery.js"></script>
+    <script src="~/lib/bootstrap/js//bootstrap.js"></script>
+    <script src="~/lib/angular/angular.js"></script>
+    <script src="~/lib/angular/angular-route.js"></script>
+    <script src="~/lib/angular/angular-animate.js"></script>
+    <script src="~/lib/angular-bootstrap/ui-bootstrap.js"></script>
+    <script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="~/lib/angular-local-storage/angular-local-storage.js"></script>
+    <script src="~/lib//modernizr/modernizr.dev.js"></script>
+    <script src="~/lib/nprogress/nprogress.js"></script>
+    <script src="~/lib/moment/moment.js"></script>
+    <script src="~/lib/lodash/lodash.js"></script>
+    <script src="~/lib/rxjs/rx.lite.js"></script>
+    <script src="~/lib/tslib/tslib.min.js"></script>
+    <script src="~/lib/fastclick/fastclick.js"></script>
+    <script src="~/lib/tinycolor/tinycolor.js"></script>
 
-        @*Chavah JS*@
-        <script asp-src-include="~/js/polyfills/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/common/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/models/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/directives/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/services/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/controllers/*.js" asp-append-version="true"></script>
-    </environment>
+    @*Chavah JS*@
+    <script asp-src-include="~/js/polyfills/*.js" asp-append-version="true"></script>
+    <script asp-src-include="~/js/common/*.js" asp-append-version="true"></script>
+    <script asp-src-include="~/js/models/*.js" asp-append-version="true"></script>
+    <script asp-src-include="~/js/*.js" asp-append-version="true"></script>
+    <script asp-src-include="~/js/directives/*.js" asp-append-version="true"></script>
+    <script asp-src-include="~/js/services/*.js" asp-append-version="true"></script>
+    <script asp-src-include="~/js/controllers/*.js" asp-append-version="true"></script>
+</environment>
 
     @*JS for production*@
     <environment names="Test,Staging,Production">
@@ -191,12 +191,7 @@
 
     @*Hanukkah partial*@
     @*@Html.Partial("Hanukkah")*@
-
-    @*TrackJS for diagnosing client-side errors*@
-    @*Commented out: we're no longer using TrackJS*@
-    @*<script type="text/javascript">window._trackJs = { token: '3f47a41e023149458b76ae8aa70bab84' };</script>
-        <script type="text/javascript" src="https://cdn.trackjs.com/releases/current/tracker.js"></script>*@
-
+    
     @*Google analytics*@
     <script>
         (function (i, s, o, g, r, a, m) {
@@ -220,17 +215,5 @@
             navigator.serviceWorker.register("/serviceworker");
         }
     </script>
-
-    @*Facebook connect*@
-    @*Commented out 11/8/17: we're not actually using this right now.*@
-    @*<script>
-                (function (d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) return;
-                    js = d.createElement(s); js.id = id;
-                    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=256833604430846";
-                    fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk'));
-        </script>*@
 </body>
 </html>

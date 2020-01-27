@@ -1,0 +1,87 @@
+﻿<section class="song-deck">
+    <div class="songs-container">
+        <div class="song-item" ng-repeat="song in vm.songs.items" ng-style="::{ 'background-color': song.albumColors.background }">
+            <img ng-src="{{::song.albumArtUri}}" alt="{{::song.album}} album art">
+            <div class="song-info" ng-style=":: { 'background-color': song.albumColors.background, 'color': song.albumColors.foreground }">
+                <span class="song-info-text">{{::song.name}}</span>
+                <br />
+                <span class="song-info-text">
+                    <span class="text-muted" ng-style=":: { 'color': song.albumColors.muted }">By</span>
+                    {{::song.artist}}
+                </span>
+                <br />
+                <span class="song-info-text">
+                    <span class="text-muted" ng-style=":: { 'color': song.albumColors.muted }">On</span>
+                    {{::song.album}}
+                </span>
+                <br />
+                <span class="song-info-text">
+                    <span class="text-muted" ng-style=":: { 'color': song.albumColors.muted }">Ranked</span>
+                    <span ng-show="song.communityRank > 0">+</span>
+                    <span>{{song.communityRank}} {{song.communityRankStandingText}}</span>
+                </span>
+                <br />
+                <div class="share-links">
+                    <button class="btn-link" ng-click="vm.playSong(song)" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Play this song" tooltip-append-to-body="true">
+                        <i class="fa fa-play"></i>
+                    </button>
+
+                    <!--Native share-->
+                    <button class="btn btn-link" ng-click="vm.sharing.nativeShare(song)" ng-if="::vm.canNativeShare" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Share this song" tooltip-append-to-body="true">
+                        <i class="fa fa-share"></i>
+                    </button>
+
+                    <!--Share button if we don't support native share-->
+                    <div class="dropup" ng-if="!vm.canNativeShare">
+                        <button class="btn btn-link dropdown-toggle" type="button" id="shareMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Share this song" tooltip-append-to-body="true" tooltip-placement="bottom">
+                            <i class="fa fa-share fa-2x"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="shareMenuButton">
+                            <li>
+                                <a ng-href="{{::vm.sharing.facebookShareUrl(song)}}" href="#" target="_blank" rel="noopener">
+                                    <i class="fa fa-facebook-official" style="color: rgb(59, 88, 152)"></i>
+                                    <span>Post song to Facebook</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a ng-href="{{::vm.sharing.twitterShareUrl(song)}}" href="#" target="_blank" rel="noopener">
+                                    <i class="fa fa-twitter" style="color: rgb(85, 172, 238)"></i>
+                                    <span>Tweet this song</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a ng-href="{{::vm.sharing.smsShareUrl(song)}}" href="#" target="_blank" rel="noopener">
+                                    <i class="fa fa-comment" style="color: white; background-color: #1cdd20;"></i>
+                                    <span>Send song via text</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a ng-href="{{::vm.sharing.whatsAppShareUrl(song)}}" href="#" target="_blank" rel="noopener">
+                                    <i class="fa fa-whatsapp" style="color: #1ebea5;"></i>
+                                    <span>Send song to WhatsApp</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <a ng-href="{{::song.url}}" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Get the link to this song" tooltip-append-to-body="true">
+                        <i class="fa fa-link"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <h4 ng-show="vm.songs.isLoading">
+            <br />
+            <i class="fa fa-circle-o-notch fa-spin"></i>
+            <span>Loading...</span>
+        </h4>
+
+        <h4 class="text-center" ng-show="vm.showLoadMore && vm.songs.isLoadedWithData">
+            <br />
+            Showing {{vm.songs.items.length}} of {{vm.songs.itemsTotalCount}} songs
+            <br />
+            <br />
+            <button class="btn btn-default" ng-show="vm.songs.hasMoreItems" ng-click="vm.songs.fetchNextChunk()">Show more</button>
+        </h4>
+    </div>
+</section>

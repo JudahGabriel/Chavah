@@ -3,7 +3,7 @@
         trending = new List<Song>(() => this.songApi.getTrendingSongs(0, 3).then(results => results.items), "trending", SongApiService.songConverter);
         likes = new List<Song>(() => this.songApi.getRandomLikedSongs(3), "mylikes", SongApiService.songConverter);
         recent = new List<Song>(() => this.getRecentPlays(), "recent", SongApiService.songConverter);
-        popular = new List<Song>(() => this.songApi.getPopularSongs(3), "popular", SongApiService.songConverter);
+        popular = new List<Song>(() => this.songApi.getRandomPopular(3), "popular", SongApiService.songConverter);
         songs: Song[] = [];
         isFetchingAlbums = false;
         currentSong: Song | null;
@@ -295,7 +295,7 @@
 
         tryNativeShare() {
             if (this.currentSong) {
-                this.sharing.nativeShareUrl(this.currentSong);
+                this.sharing.nativeShare(this.currentSong);
             }
         }
 

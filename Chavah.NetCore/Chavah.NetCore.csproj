@@ -12,6 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\Controllers\PopularController.ts" />
+    <Content Remove="wwwroot\js\Controllers\RecentController.ts" />
+    <Content Remove="wwwroot\js\Controllers\SongDeckController.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="3.2.1" />
     <PackageReference Include="Bet.Extensions.AzureVault" Version="2.0.2" />
@@ -38,6 +44,12 @@
     <PackageReference Include="System.ServiceModel.Syndication" Version="4.7.0" />
     <PackageReference Include="WebPush" Version="1.0.11" />
     <PackageReference Include="Polly" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\js\Controllers\PopularController.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Controllers\RecentController.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Controllers\SongDeckController.ts" />
   </ItemGroup>
 
 </Project>

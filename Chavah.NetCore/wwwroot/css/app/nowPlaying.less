@@ -43,7 +43,7 @@
 
         &:nth-child(1) {
             z-index: 5;
-            -webkit-box-reflect: below 18px -webkit-gradient( linear, left bottom, left top, from(rgba(255,255,255,0.25)), color-stop(0.3, transparent) );
+            --box-reflect: below 18px -webkit-gradient( linear, left bottom, left top, from(rgba(255,255,255,0.25)), color-stop(0.3, transparent) );
         }
 
         &:nth-child(2) {
@@ -161,6 +161,11 @@
         text-transform: lowercase;
         text-align: center;
         color: @text-color;
+        padding: 10px;
+
+        span {
+            transition: color 2s linear;
+        }
     }
 
     .expander {

@@ -63,7 +63,7 @@
                 .when("/trending", createRoute("/Trending.html"))
                 .when("/profile", createRoute("/Profile.html", RouteAccess.Authenticated))
                 .when("/popular", createRoute("/Popular.html"))
-                .when("/recent", createRoute("/RecentSongs.html"))
+                .when("/recent", createRoute("/Recent.html"))
                 .when("/mylikes", createRoute("/MyLikes.html", RouteAccess.Authenticated))
                 .when("/edit/songs/:id", createRoute("/EditSong.html", RouteAccess.Authenticated))
                 .when("/sharethanks/:artist?", createRoute("/ShareThanks.html"))

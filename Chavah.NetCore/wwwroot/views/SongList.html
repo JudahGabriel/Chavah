@@ -1,16 +1,16 @@
-﻿<div class="song-list">
+﻿<section class="song-list">
     <div class="song-item" ng-repeat="song in vm.songs.items track by song.id" ng-click="vm.playSong(song)">
-        <img ng-src="{{song.albumArtUri}}" alt="{{song.album}} album art">
-        <div class="song-info" 
-             ng-attr-title="{{song.name}} by {{song.artist}} on {{song.album}}" 
-             ng-style="{ 'background-color': song.albumColors.background || 'inherit', 'color': song.albumColors.foreground || 'inherit' }">
+        <img ng-src="{{song.albumArtUri}}" ng-attr-alt="{{song.album + ' album art'}}">
+        <div class="song-info"
+                ng-attr-title="{{song.name}} by {{song.artist}} on {{song.album}}"
+                ng-style="{ 'background-color': song.albumColors.background || 'inherit', 'color': song.albumColors.foreground || 'inherit' }">
             {{song.name}}
             <br />
-            <span class="text-muted">By</span>
+            <span class="text-muted" ng-style="{ 'color': song.albumColors.muted }">By</span>
             {{song.artist}}
             <br />
-            <span class="text-muted">On</span>
+            <span class="text-muted" ng-style="{ 'color': song.albumColors.muted }">On</span>
             {{song.album}}
         </div>
     </div>
-</div>
+</section>

@@ -102,12 +102,20 @@
             };
             return this.httpApi.query("/api/songs/getTrending", args, SongApiService.songPagedListConverter);
         }
-        
-        getPopularSongs(count: number): ng.IPromise<Song[]> {
+
+        getRandomPopular(count: number): ng.IPromise<Song[]> {
             const args = {
                 count,
             };
-            return this.httpApi.query("/api/songs/getpopular", args, SongApiService.songListConverter);
+            return this.httpApi.query("/api/songs/getRandomPopular", args, SongApiService.songListConverter);
+        }
+        
+        getPopular(skip: number, take: number): ng.IPromise<Server.PagedList<Song>> {
+            const args = {
+                skip,
+                take
+            };
+            return this.httpApi.query("/api/songs/getpopular", args, SongApiService.songPagedListConverter);
         }
 
         getRandomLikedSongs(count: number): ng.IPromise<Song[]> {

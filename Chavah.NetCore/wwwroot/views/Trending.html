@@ -1,30 +1,5 @@
 ﻿<div ng-include="Partials.goBack"></div>
 <section class="page trending-page" ng-controller="TrendingController as vm">
-    <div class="songs-container">
-        <div class="song-item" ng-repeat="song in vm.visibleSongs" ng-click="vm.playSong(song)" ng-style="{ 'background-color': song.albumColors.background }" uib-tooltip="Click to play this song" tooltip-append-to-body="true">
-            <img ng-src="{{song.albumArtUri}}" alt="{{song.album}} album art">
-            <div class="song-info"
-                 ng-attr-title="{{song.name}} by {{song.artist}} on {{song.album}}"
-                 ng-style="{ 'background-color': song.albumColors.background, 'color': song.albumColors.foreground }">
-                {{song.name}}
-                <br />
-                <span class="text-muted">By</span>
-                {{song.artist}}
-                <br />
-                <span class="text-muted">On</span>
-                {{song.album}}
-            </div>
-        </div>
-    </div>
-
-    <div class="scroller">
-        <div class="buttons-container">
-            <button class="btn btn-default" ng-click="vm.previous()" ng-disabled="!vm.canGoPrevious" uib-tooltip="Show previous trending song">
-                <i class="fa fa-caret-left"></i>
-            </button>
-            <button class="btn btn-default pull-right" ng-click="vm.next()" ng-disabled="!vm.canGoNext" uib-tooltip="Show next trending song">
-                <i class="fa fa-caret-right"></i>
-            </button>
-        </div>
-    </div>
+    <h2 class="page-title"><i class="fa fa-line-chart"></i> Trending <br /><small>Recently thumbed-up <i class="fa fa-thumbs-up"></i> songs</small></h2>
+    <song-deck songs="vm.songsList" show-load-more="false"></song-deck>
 </section>

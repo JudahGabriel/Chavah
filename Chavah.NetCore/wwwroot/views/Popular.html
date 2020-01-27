@@ -1,9 +1,5 @@
-﻿<section class="page popular-songs-page">
-    <h3>The Popular songs page is under construction. Thanks for your patience.</h3>
-    <h3>
-        <a href="#/nowplaying">
-            <i class="fa fa-arrow-left"></i>
-            Return to home
-        </a>
-    </h3>
+﻿<div ng-include="Partials.goBack"></div>
+<section class="page popular-page" ng-controller="PopularController as vm">
+    <h2><i class="fa fa-star" style="color: goldenrod;"></i> Popular <br /><small>Songs with the highest ranking on Chavah</small></h2>
+    <song-deck songs="vm.songsList" show-load-more="true"></song-deck>
 </section>

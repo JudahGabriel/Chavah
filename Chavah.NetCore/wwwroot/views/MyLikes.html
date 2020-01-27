@@ -9,7 +9,7 @@
         </li>
     </ul>
 
-    <div class="input-group search-box-container pull-right">
+    <div class="input-group search-box-container">
         <span class="input-group-addon" id="basic-addon1">
             <i class="fa fa-search"></i>
         </span>
@@ -19,58 +19,8 @@
     <div class="clearfix"></div>
 
     <!-- songs -->
-    <div class="songs-container" ng-if="vm.activeCategory === 'Songs'">
-        <div class="song-item" ng-repeat="song in vm.songs.items" ng-click="vm.playSong(song)" ng-style="{ 'background-color': song.albumColors.background }">
-            <img ng-src="{{::song.albumArtUri}}" alt="{{::song.album}} album art" uib-tooltip="Click to play this song" tooltip-append-to-body="true">
-            <div class="song-info"
-                 ng-style="{ 'background-color': song.albumColors.background, 'color': song.albumColors.foreground }">
-                {{::song.name}}
-                <br />
-                <span class="text-muted">By</span>
-                {{::song.artist}}
-                <br />
-                <span class="text-muted">On</span>
-                {{::song.album}}
-                <br />
-                <span class="share-links">
-                    <button class="btn-link" ng-click="vm.playSong(song)" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Play this song">
-                        <i class="fa fa-play"></i>
-                    </button>
-                    <a ng-href="{{::vm.getFacebookShareUrl(song)}}" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Share this song on Facebook">
-                        <i class="fa fa-facebook-official"></i>
-                    </a>
-                    <a ng-href="{{::vm.getTwitterShareUrl(song)}}" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Share this song on Twitter">
-                        <i class="fa fa-twitter"></i>
-                    </a>
-                    <a ng-href="{{::song.url}}" ng-style="{ 'color': song.albumColors.foreground }" uib-tooltip="Get the link to this song">
-                        <i class="fa fa-link"></i>
-                    </a>
-                </span>
-            </div>
-        </div>
-
-        <h4 ng-show="vm.songs.isLoading">
-            <br />
-            <i class="fa fa-circle-o-notch fa-spin"></i>
-            <span>Loading your liked songs...</span>
-        </h4>
-
-        <h4 ng-show="vm.songs.isLoadedAndEmpty">
-            <br />
-            <i class="fa fa-info-circle"></i>
-            <span ng-hide="vm.search">You haven't liked any songs yet. Click the <i class="fa fa-thumbs-up"></i> button to like a song.</span>
-            <span ng-show="vm.search">No songs matching your search.</span>
-        </h4>
-
-        <h4 class="text-center" ng-show="vm.songs.isLoadedWithData">
-            <br />
-            Showing {{vm.songs.items.length}} of {{vm.songs.itemsTotalCount}} liked songs
-            <br />
-            <br />
-            <button class="btn btn-default" ng-show="vm.songs.hasMoreItems" ng-click="vm.loadMoreSongs()">Show more</button>
-        </h4>
-    </div>
-
+    <song-deck songs="vm.songs" show-load-more="true" ng-if="vm.activeCategory === 'Songs'"></song-deck>
+    
     <!-- albums -->
     <div class="albums-container" ng-if="vm.activeCategory === 'Albums'">
         <div class="song-item" ng-repeat="album in vm.albums.items" ng-click="vm.playAlbum(album)" ng-style="{ 'background-color': album.backgroundColor }" uib-tooltip="Click to play a song from this album" tooltip-append-to-body="true">
@@ -78,16 +28,17 @@
             <div class="song-info"
                  ng-attr-title="{{album.name}}"
                  ng-style="{ 'background-color': album.backgroundColor, 'color': album.foregroundColor }">
-                <span class="text-muted">On</span>
-                {{album.name}}
+                <h3 class="album-name">
+                    {{album.name}}
+                    <span class="pull-right">
+                        <span ng-show="album.netLikeCount > 0">+</span>
+                        <span>{{album.netLikeCount}}</span>
+                    </span>
+                </h3>
 
                 <br />
-                <span class="text-muted">By</span>
+                <span class="text-muted" ng-style="{ 'color': album.mutedColor }">By</span>
                 {{album.artist}}
-
-                <h3 class="text-center">
-                    <span ng-show="album.netLikeCount > 0">+</span><span>{{album.netLikeCount}}</span>
-                </h3>
                 <p>
                     {{album.likeCount}} song<span ng-show="album.likeCount != 1">s</span> <i class="fa fa-thumbs-up"></i>
                 </p>
