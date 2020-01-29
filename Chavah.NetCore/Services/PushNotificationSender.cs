@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,6 +61,7 @@ namespace BitShuva.Chavah.Services
                 _emailOptions.SenderEmail,
                 _appOptions.PushNotificationsPublicKey,
                 _appOptions.PushNotificationsPrivateKey,
+                _db,
                 logger,
                 cancelToken));
         }
@@ -85,12 +87,21 @@ namespace BitShuva.Chavah.Services
                     _emailOptions.SenderEmail,
                     _appOptions.PushNotificationsPublicKey,
                     _appOptions.PushNotificationsPrivateKey,
+                    db,
                     logger,
                     cancelToken);
             });
         }
 
-        private static async Task SendNotificationToRecipients(IEnumerable<PushSubscription> recipients, PushNotification notification, string senderEmail, string publicKey, string privateKey, ILogger logger, CancellationToken cancelToken)
+        private static async Task SendNotificationToRecipients(
+            IEnumerable<PushSubscription> recipients,
+            PushNotification notification,
+            string senderEmail,
+            string publicKey,
+            string privateKey,
+            IDocumentStore db,
+            ILogger logger,
+            CancellationToken cancelToken)
         {
             // This is run in a background thread. We should not access or update any mutable state.
             var vapidDetails = new WebPush.VapidDetails($"mailto:{senderEmail}", publicKey, privateKey);
@@ -106,6 +117,10 @@ namespace BitShuva.Chavah.Services
                     await TrySendPushNotification(notification, subscription, vapidDetails, client, jsonSettings, logger);
                 }
             }
+
+            // TrySendPushNotification updates the error/success statuses on the PushNotification.
+            // Update those in bulk here.
+            BulkSavePushSubscriptions(recipients, db);
         }
 
         private static async Task TrySendPushNotification(PushNotification notification, PushSubscription recipient, WebPush.VapidDetails details, WebPush.WebPushClient client, JsonSerializerSettings serializerSettings, ILogger logger)
@@ -116,6 +131,8 @@ namespace BitShuva.Chavah.Services
                 var payload = JsonConvert.SerializeObject(notification, serializerSettings);
                 var subscription = new WebPush.PushSubscription(recipient.Endpoint, recipient.Keys["p256dh"], recipient.Keys["auth"]);
                 await client.SendNotificationAsync(subscription, payload, details);
+                recipient.SuccessfulNotificationCount++;
+                recipient.NotificationErrorMessage = null;
             }
             catch (Exception error)
             {
@@ -124,6 +141,13 @@ namespace BitShuva.Chavah.Services
                 using (logger.BeginKeyValueScope("publicKey", details.PrivateKey))
                 {
                     logger.LogError(error, "Error sending push notification");
+                }
+
+                recipient.NotificationErrorMessage = error.Message;
+                recipient.FailedNotificationCount++;
+                if (error is WebPush.WebPushException webPushError && webPushError.Message == "Subscription no longer valid")
+                {
+                    recipient.Unsubscribed = true;
                 }
             }
         }
@@ -141,11 +165,23 @@ namespace BitShuva.Chavah.Services
                 {
                     while (await enumerator.MoveNextAsync())
                     {
-                        list.Add(enumerator.Current.Document);
+                        if (!enumerator.Current.Document.Unsubscribed)
+                        {
+                            list.Add(enumerator.Current.Document);
+                        }
                     }
                 }
 
                 return list;
+            }
+        }
+
+        private static void BulkSavePushSubscriptions(IEnumerable<PushSubscription> subscriptions, IDocumentStore db)
+        {
+            using var bulkInsert = db.BulkInsert();
+            foreach (var subscription in subscriptions)
+            {
+                bulkInsert.Store(subscription, subscription.Id!);
             }
         }
     }
