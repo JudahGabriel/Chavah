@@ -28,6 +28,32 @@
       "url": "https://itunes.apple.com/us/app/chavah-messianic-radio/id1361894819"
     }
   ],
+  "shortcuts": [
+    {
+      "name": "My Likes",
+      "description": "My thumbed-up songs",
+      "url": "/#/mylikes",
+      "icons": []
+    },
+    {
+      "name": "Trending",
+      "description": "Songs recently thumbed-up songs by listeners",
+      "url": "/#/trending",
+      "icons": []
+    },
+    {
+      "name": "Recent",
+      "description": "Songs you recently listened to",
+      "url": "/#/trending",
+      "icons": []
+    },
+    {
+      "name": "Popular",
+      "description": "The highest ranked songs",
+      "url": "/#/popular",
+      "icons": []
+    }
+  ],
   "icons": [
     {
       "src": "/images/chavah16x16.png",
