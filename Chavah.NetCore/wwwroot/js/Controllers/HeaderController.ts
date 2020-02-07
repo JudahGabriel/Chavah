@@ -73,6 +73,8 @@
                 this.notifications.forEach(n => n.isUnread = false);
                 this.accountApi.clearNotifications();
             }
+
+            this.updateAppBadge(0);
         }
 
         signOut() {
@@ -84,6 +86,7 @@
             if (user) {
                 this.notifications = user.notifications;
                 this.profilePicUrl = user.profilePicUrl;
+                this.updateAppBadge(this.unreadNotificationCount);
             }
         }
 
@@ -110,6 +113,20 @@
             }
 
             this.loadPushNotificationState();
+        }
+
+        private updateAppBadge(count: number) {
+            // If available, utilize the new app badge proposed web standard.
+            // https://github.com/WICG/badging/blob/master/explainer.md
+            const navigatorWithBadgeSupport = navigator as any;
+            const supportsAppBadge = navigatorWithBadgeSupport.setAppBadge && navigatorWithBadgeSupport.clearAppBadge;
+            if (supportsAppBadge) {
+                if (count > 0) {
+                    navigatorWithBadgeSupport.setAppBadge(count);
+                } else {
+                    navigatorWithBadgeSupport.clearAppBadge();
+                }
+            }
         }
     }
 

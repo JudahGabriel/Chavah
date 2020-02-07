@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Services;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -28,7 +28,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         /// <summary>
-        /// Saves a new push notification in the database.
+        /// Saves a new push subscription in the database.
         /// </summary>
         /// <param name="subscription"></param>
         /// <returns></returns>
@@ -81,6 +81,26 @@ namespace BitShuva.Chavah.Controllers
 
             logger.LogWarning("Attempted to deleted push subscription {id}, but no such subscription was found", subscriptionId);
             return null;
+        }
+
+        [HttpPost]
+        //[Authorize(Roles = AppUser.AdminRole)]
+        public async Task<string> SendTestPush(string subscriptionId, string title, string body, string iconUrl, string imageUrl)
+        {
+            var subscription = await DbSession.LoadAsync<PushSubscription>(subscriptionId);
+            if (subscription == null)
+            {
+                return "Couldn't find subscription " + subscriptionId;
+            }
+            var testNotification = new PushNotification
+            {
+                Body = body,
+                IconUrl = iconUrl,
+                Title = title,
+                ImageUrl = imageUrl
+            };
+            pushSender.QueueSendNotification(testNotification, new List<PushSubscription>(1) { subscription });
+            return "Subscription sent!";
         }
     }
 }
