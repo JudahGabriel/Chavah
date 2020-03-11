@@ -164,7 +164,7 @@ namespace BitShuva.Chavah.Controllers
         /// These are created once per hour by IFTTT.
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
+        [HttpGet]
         public async Task<ActionResult> GetLyricTweets()
         {
             var lyricTweets = await DbSession.Query<Activity>()

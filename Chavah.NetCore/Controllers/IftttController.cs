@@ -176,7 +176,7 @@ namespace BitShuva.Chavah.Controllers
 
             // Lyrics section is too long
             // If the lyrics section is too long, take as many lines from it as we can.
-            var sectionLines = lyricsSection.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var sectionLines = lyricsSection.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var builder = new System.Text.StringBuilder(200);
             foreach (var line in sectionLines)
             {
@@ -207,9 +207,10 @@ namespace BitShuva.Chavah.Controllers
         /// <returns></returns>
         private string GetRandomLyricSection(Song song)
         {
+            var nonLyricWords = new[] { "translation", "transliteration", "verse", "chorus" };
             var lyricsSection = song.Lyrics
-                .Split(new[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries) // Grab the lyric section groups (e.g. chorus, verses, etc.) as separated by double new line
-                .Where(l => !l.Contains("Translation", StringComparison.OrdinalIgnoreCase) && !l.Contains("Transliteration", StringComparison.OrdinalIgnoreCase)) // Skip lines that say "translation" or "transliteration"
+                .Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries) // Grab the lyric section groups (e.g. chorus, verses, etc.) as separated by double new line
+                .Where(l => !nonLyricWords.Any(word => l.StartsWith(word, StringComparison.OrdinalIgnoreCase)))  // Skip lines that aren't actually lyrics "translation" or "transliteration"
                 .RandomElement();
             if (lyricsSection == null)
             {
