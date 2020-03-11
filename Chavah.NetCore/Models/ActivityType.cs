@@ -4,6 +4,7 @@
     {
         Like,
         Request,
-        Comment
+        Comment,
+        LyricTweet
     }
 }

@@ -123,6 +123,102 @@ namespace BitShuva.Chavah.Controllers
             return Json(notification);
         }
 
+        /// <summary>
+        /// A lyric tweet is an activity that contains lyrics to a song with a link to it.
+        /// These are created periodically by IFTTT.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<Activity> CreateLyricTweetActivity(string secretToken)
+        {
+            AuthorizeKey(secretToken);
+
+            var lyricTweet = await DbSession.Query<Activity>()
+                .Where(a => a.Type == ActivityType.LyricTweet)
+                .OrderByDescending(a => a.DateTime)
+                .FirstOrNoneAsync();
+
+            // If we have a lyric tweet from the last hour, don't create a new one.
+            if (lyricTweet != null && lyricTweet.DateTime > (DateTime.UtcNow.Subtract(TimeSpan.FromHours(1))))
+            {
+                return lyricTweet;
+            }
+
+            // Otherwise, create a new lyric tweet activity.
+            var songWithLyrics = await DbSession.Query<Song>()
+                .Customize(x => x.RandomOrdering())
+                .FirstAsync(s => !string.IsNullOrEmpty(s.Lyrics));
+            var lyricsSection = GetRandomLyricSection(songWithLyrics);
+            const int maxLyricsLength = 200; // 260 characters for a tweet, but we want to save room for the link to the song (roughly 40 chars).
+            var tweetActivityLyrics = GetLyricsFromSection(lyricsSection, maxLyricsLength);
+            var tweetActivity = new Activity
+            {
+                DateTime = DateTimeOffset.UtcNow,
+                EntityId = songWithLyrics.Id,
+                Description = tweetActivityLyrics,
+                MoreInfoUri = new Uri($"{appOptions.DefaultUrl}/?song={songWithLyrics.Id}"),
+                Title = songWithLyrics.Name,
+                Type = ActivityType.LyricTweet
+            };
+            await DbSession.StoreAsync(tweetActivity);
+            DbSession.SetRavenExpiration(tweetActivity, DateTime.UtcNow.AddDays(30));
+            await DbSession.SaveChangesAsync();
+            return tweetActivity;
+        }
+
+        private string GetLyricsFromSection(string lyricsSection, int maxLength)
+        {
+            // If the whole lyrics section fits, use it.
+            if (lyricsSection.Length <= maxLength)
+            {
+                return lyricsSection;
+            }
+
+            // Lyrics section is too long
+            // If the lyrics section is too long, take as many lines from it as we can.
+            var sectionLines = lyricsSection.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var builder = new System.Text.StringBuilder(200);
+            foreach (var line in sectionLines)
+            {
+                var newLength = builder.Length + line.Length;
+                if (newLength < maxLength)
+                {
+                    builder.AppendLine(line);
+                }
+                else
+                {
+                    if (builder.Length == 0)
+                    {
+                        // The first line is too long. Substring it.
+                        builder.AppendLine(line.Substring(0, 197).Trim() + "...");
+                    }
+
+                    break;
+                }
+            }
+
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// A lyrics section is a chorus or verse of a song, separated from the rest of the lyrics by a double new line.
+        /// </summary>
+        /// <param name="song"></param>
+        /// <returns></returns>
+        private string GetRandomLyricSection(Song song)
+        {
+            var lyricsSection = song.Lyrics
+                .Split(new[] { "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries) // Grab the lyric section groups (e.g. chorus, verses, etc.) as separated by double new line
+                .Where(l => !l.Contains("Translation", StringComparison.OrdinalIgnoreCase) && !l.Contains("Transliteration", StringComparison.OrdinalIgnoreCase)) // Skip lines that say "translation" or "transliteration"
+                .RandomElement();
+            if (lyricsSection == null)
+            {
+                return string.IsNullOrEmpty(song.Lyrics) ? string.Empty : song.Lyrics;
+            }
+
+            return lyricsSection;
+        }
+
         private void NotifyAllUsers(Notification notification)
         {
             var jsonNotification = JsonConvert.SerializeObject(notification);

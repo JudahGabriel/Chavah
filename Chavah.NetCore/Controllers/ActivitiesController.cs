@@ -141,14 +141,7 @@ namespace BitShuva.Chavah.Controllers
                 .Take(50)
                 .ToListAsync();
 
-            var rssItems = comments.Select(activity => new SyndicationLinkItem(
-                id: activity.Id!,
-                title: activity.Title,
-                description: activity.Description,
-                link: activity.MoreInfoUri)
-                {
-                    Published = activity.DateTime
-                });
+            var rssItems = comments.Select(ActivityToRssItem);
 
             var feed = new SyndicationFeed(
                 $"{appOptions.Name} Recent Comments",
@@ -166,9 +159,43 @@ namespace BitShuva.Chavah.Controllers
             return new RssActionResult(feed);
         }
 
+        /// <summary>
+        /// A lyric tweet is an activity that contains lyrics to a song with a link to it.
+        /// These are created once per hour by IFTTT.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> GetLyricTweets()
+        {
+            var lyricTweets = await DbSession.Query<Activity>()
+                .Where(a => a.Type == ActivityType.LyricTweet)
+                .OrderByDescending(a => a.DateTime)
+                .Take(10)
+                .ToListAsync();
+
+            var rssItems = lyricTweets.Select(ActivityToRssItem);
+            var feed = new SyndicationFeed(
+                $"{appOptions.Name} Lyric Tweets",
+                $"Recent lyric tweets on {appOptions.Title}",
+                new Uri(appOptions.DefaultUrl),
+                "LyricTweets",
+                rssItems,
+                language: appOptions.Language);
+            var mostRecentLyric = lyricTweets.FirstOrDefault();
+            if (mostRecentLyric != null)
+            {
+                feed.LastUpdatedTime = mostRecentLyric.DateTime;
+            }
+
+            return new RssActionResult(feed);
+        }
+
         private static SyndicationLinkItem ActivityToRssItem(Activity activity)
         {
-            return new SyndicationLinkItem(activity.Id!, activity.Title, activity.Description, activity.MoreInfoUri);
+            return new SyndicationLinkItem(activity.Id!, activity.Title, activity.Description, activity.MoreInfoUri)
+            {
+                LastUpdated = activity.DateTime
+            };
         }
     }
 }
