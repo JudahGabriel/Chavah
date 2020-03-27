@@ -61,6 +61,7 @@
 
         $onInit() {
             this.loadPushNotificationState();
+            this.updateAppBadge(this.unreadNotificationCount);
         }
 
         loadPushNotificationState() {

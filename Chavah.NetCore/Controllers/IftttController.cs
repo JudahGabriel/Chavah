@@ -207,7 +207,7 @@ namespace BitShuva.Chavah.Controllers
         /// <returns></returns>
         private string GetRandomLyricSection(Song song)
         {
-            var nonLyricWords = new[] { "translation", "transliteration", "verse", "chorus", "bridge" };
+            var nonLyricWords = new[] { "translation", "transliteration", "verse", "chorus", "bridge", "refrain" };
             var lyricsSection = song.Lyrics
                 .Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries) // Grab the lyric section groups (e.g. chorus, verses, etc.) as separated by double new line
                 .Where(l => !nonLyricWords.Any(word => l.StartsWith(word, StringComparison.OrdinalIgnoreCase) || l.StartsWith($"({word})", StringComparison.OrdinalIgnoreCase)))  // Skip lines that aren't actually lyrics "translation" or "transliteration"
