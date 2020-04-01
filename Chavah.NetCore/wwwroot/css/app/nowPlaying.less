@@ -130,6 +130,29 @@
             width: 100%;
             white-space: normal;
         }
+
+        .pause-overlay {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background-color: rgba(0, 0, 0, .70);
+            display: flex; 
+            justify-content: center;
+
+            &.not-paused {
+                display: none;
+            }
+
+            .fa-play {
+                align-self: center;
+                color: white;
+            }
+
+            @media (max-width: @screen-xs-max) {
+                width: @widthOnXs;
+                height: @widthOnXs;
+            }
+        }
     }
 
     .current-song-name {

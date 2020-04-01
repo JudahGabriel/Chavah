@@ -34,7 +34,10 @@
         <div class="col-sm-6 col-xs-12">
             <div class="songs-container">
                 <div class="song" data-ng-repeat="song in vm.songs track by song.clientId" data-ng-show="song.name" ng-style="{ 'background-color': song.albumColors.background, 'color': song.albumColors.foreground }" ng-click="vm.songClicked(song)">
-                    <img ng-src="{{song.albumArtUri}}" alt="Album art for {{song.artist}} - {{song.album}}">
+                    <div class="pause-overlay" ng-class="{ 'not-paused': !vm.isCurrentSongPaused }" uib-tooltip="Song is paused, tap to play" tooltip-placement="bottom" ng-click="vm.pauseOverlayClicked()">
+                        <i class="fa fa-play fa-4x"></i>
+                    </div>
+                    <img ng-src="{{song.albumArtUri}}" alt="Album art for {{song.artist}} - {{song.album}}" />
                     <div class="song-info" ng-style="{ 'text-shadow': '0 0 5px ' + song.albumColors.textShadow, 'background-color': song.albumColors.background }">
                         {{song.name}}
                         <br />
@@ -54,7 +57,7 @@
                 {{vm.currentSong.hebrewName}}
             </h1>
             <div class="text-center">
-                <button class="btn btn-link current-song-artist" ng-click="vm.playSongFromCurrentArtist()" uib-tooltip="Click to play another {{vm.currentSong.artist}} song" tooltip-placement="right" role="button">
+                <button class="btn btn-link current-song-artist" ng-click="vm.playSongFromCurrentArtist()" uib-tooltip="Tap to play another {{vm.currentSong.artist}} song" tooltip-placement="right" role="button">
                     <h4 class="text-center" ng-style="{ 'color': vm.currentSong.albumSwatchDarker }">
                         <span class="sr-only">Play another song from the artist</span>
                         {{vm.currentSong.artist}}
@@ -67,7 +70,7 @@
                 </h4>
             </div>
             <div class="text-center">
-                <button class="btn btn-link current-song-album" ng-click="vm.playSongFromCurrentAlbum()" uib-tooltip="Click to play another song from {{vm.currentSong.album}}" tooltip-placement="right" role="button">
+                <button class="btn btn-link current-song-album" ng-click="vm.playSongFromCurrentAlbum()" uib-tooltip="Tap to play another song from {{vm.currentSong.album}}" tooltip-placement="right" role="button">
                     <h4 class="text-center" ng-style="{ 'color': vm.currentSong.albumSwatchDarker }">
                         <span class="sr-only">Play another song from the album</span>
                         {{vm.currentSong.album}}
@@ -86,7 +89,7 @@
                             <i class="fa pull-right" ng-class="{ 'fa-angle-down': !vm.currentSong.isSongStatusExpanded, 'fa-angle-up': vm.currentSong.isSongStatusExpanded }"></i>
                         </h3>
                     </div>
-                    <div class="panel-collapse collapse" ng-class="{ in: vm.currentSong.isSongStatusExpanded }" role="tabpanel">
+                    <div class="panel-collapse collapse" ng-class="{ 'in': vm.currentSong.isSongStatusExpanded }" role="tabpanel">
                         <div class="panel-body" ng-style="{ 'color': vm.currentSong.albumColors.foreground, 'background-color': vm.currentSong.albumColors.background }">
                             {{vm.currentSong.name}} has been played {{vm.currentSong.totalPlays}} times. It appears as the {{vm.currentSong.nthSongText}} song on {{vm.currentSong.artist}}'s {{vm.currentSong.album}} album. It's {{vm.currentSong.communityRankText}} ranking puts it at {{vm.currentSong.communityRankStandingText}} standing of all the songs on Chavah. You can increase the rank by thumbing up this song. Songs with higher rank are more likely to play for everyone listening.
                         </div>
@@ -97,7 +100,7 @@
             <!--Song tags -->
             <div class="text-center">
                 <span class="sr-only">Song tags</span>
-                <h4 class="tag" role="button" ng-click="vm.playSongWithTag(tag)" ng-repeat="tag in vm.currentSong.tags" ng-style="{ 'background-color': vm.currentSong.albumColors.background, 'color': vm.currentSong.albumColors.foreground }" ng-attr-uib-tooltip="{{ 'Click to play another ' + tag + ' song' }}">
+                <h4 class="tag" role="button" ng-click="vm.playSongWithTag(tag)" ng-repeat="tag in vm.currentSong.tags" ng-style="{ 'background-color': vm.currentSong.albumColors.background, 'color': vm.currentSong.albumColors.foreground }" ng-attr-uib-tooltip="{{ 'Tap to play another ' + tag + ' song' }}">
                     <i class="fa fa-tag"></i> {{tag}}
                 </h4>
 

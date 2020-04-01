@@ -76,6 +76,10 @@
             return "#/donate";
         }
 
+        get isCurrentSongPaused(): boolean {
+            return !!this.currentSong && this.audioPlayer.status.getValue() === AudioStatus.Paused;
+        }
+
         get currentSongShareUrl(): string {
             if (this.currentSong) {
                 if (this.currentSong.isShowingEmbedCode) {
@@ -150,6 +154,12 @@
             }
 
             this.disposed.onNext(true);
+        }
+
+        pauseOverlayClicked() {
+            if (this.currentSong && this.audioPlayer.status.getValue() === AudioStatus.Paused) {
+                this.audioPlayer.resume();
+            }
         }
 
         getSongs(): Song[] {
