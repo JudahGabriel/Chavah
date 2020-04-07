@@ -134,10 +134,13 @@
 
     input[type=range] {
         position: absolute;
-        top: -30px;
-        -webkit-appearance: none;
+        top: -75px;
+        right: -35px;
+        transform: rotateZ('-90deg');
+        -webkit-appearance: none; // override the default appearance
         margin: @thumb-height/2 0;
         width: @track-width;
+        background-color: transparent;
 
         &:focus {
             outline: none;
@@ -171,40 +174,6 @@
 
         &::-moz-range-thumb {
             .thumb();
-        }
-
-        &::-ms-track {
-            .track();
-            background: transparent;
-            border-color: transparent;
-            border-width: @thumb-width 0;
-            color: transparent;
-        }
-
-        &::-ms-fill-lower {
-            background: darken(@track-color, @contrast);
-            border: @track-border-width solid @track-border-color;
-            border-radius: @track-radius*2;
-            .shadow(@track-shadow-size,@track-shadow-blur,@track-shadow-color);
-        }
-
-        &::-ms-fill-upper {
-            background: @track-color;
-            border: @track-border-width solid @track-border-color;
-            border-radius: @track-radius*2;
-            .shadow(@track-shadow-size,@track-shadow-blur,@track-shadow-color);
-        }
-
-        &::-ms-thumb {
-            .thumb();
-        }
-
-        &:focus::-ms-fill-lower {
-            background: @track-color;
-        }
-
-        &:focus::-ms-fill-upper {
-            background: lighten(@track-color, @contrast);
         }
     }
 }

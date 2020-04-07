@@ -272,8 +272,8 @@
             const isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
 
             // If we're a modern browser, we 
-            if (navigator["clipboard"]) {
-                navigator["clipboard"].writeText(shareUrlInput.value);
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(shareUrlInput.value);
             } else if (isiOSDevice) {
                 // Older versions of iOS have specific rules about copying text. https://stackoverflow.com/a/43001673/536
             

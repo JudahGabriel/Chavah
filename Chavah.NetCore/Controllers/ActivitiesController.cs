@@ -43,7 +43,7 @@ namespace BitShuva.Chavah.Controllers
                 .Where(a => !string.IsNullOrEmpty(a.EntityId))
                 .GroupBy(a => a.EntityId)
                 .OrderByDescending(a => a.Count())
-                .Where(a => a.Count() > 1)
+                .Where(a => a.Count() > 2)
                 .FirstOrDefault();
 
             var rssItems = new List<SyndicationLinkItem>(1);
