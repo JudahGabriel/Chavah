@@ -86,6 +86,13 @@
             }
         }
 
+        getRandomRecentlyRequestedSongs(count: number): ng.IPromise<Song[]> {
+            const args = {
+                count
+            };
+            return this.httpApi.query("/api/songRequests/getRandomRecentlyRequestedSongs", args, SongApiService.songListConverter);
+        }
+
         //removePendingSongRequest(songId: string) {
         //    this.pendingSongRequestIds = this.pendingSongRequestIds.filter(id => id !== songId);
         //}

@@ -168,6 +168,13 @@
             return this.httpApi.post("/api/songs/deleteSong", song);
         }
 
+        getRandomNewSongs(count: number): ng.IPromise<Song[]> {
+            const args = {
+                count
+            };
+            return this.httpApi.query("/api/songs/getRandomNewSongs", args, SongApiService.songListConverter);
+        }
+
         // tslint:disable-next-line:member-ordering
         public static songPagedListConverter(dto: Server.PagedList<Server.Song>): Server.PagedList<Song> {
             return {

@@ -4,6 +4,8 @@
         likes = new List<Song>(() => this.songApi.getRandomLikedSongs(3), "mylikes", SongApiService.songConverter);
         recent = new List<Song>(() => this.getRecentPlays(), "recent", SongApiService.songConverter);
         popular = new List<Song>(() => this.songApi.getRandomPopular(3), "popular", SongApiService.songConverter);
+        newSongs = new List<Song>(() => this.songApi.getRandomNewSongs(3), "newSongs", SongApiService.songConverter);
+        recentSongRequests = new List<Song>(() => this.songRequestApi.getRandomRecentlyRequestedSongs(3), "recentRequests", SongApiService.songConverter);
         songs: Song[] = [];
         isFetchingAlbums = false;
         currentSong: Song | null;
@@ -23,6 +25,7 @@
             "accountApi",
             "commentThreadApi",
             "sharing",
+            "songRequestApi",
             "$q"
         ];
 
@@ -35,6 +38,7 @@
             private readonly accountApi: AccountService,
             private readonly commentThreadApi: CommentThreadService,
             private readonly sharing: SharingService,
+            private readonly songRequestApi: SongRequestApiService,
             private readonly $q: ng.IQService) {
             
             this.audioPlayer.song

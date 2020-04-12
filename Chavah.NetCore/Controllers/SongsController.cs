@@ -607,6 +607,17 @@ namespace BitShuva.Chavah.Controllers
             }
         }
 
+        [HttpGet]
+        public Task<List<Song>> GetRandomNewSongs(int count)
+        {
+            var threeMonthsAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30 * 3));
+            return DbSession.Query<Song, Songs_GeneralQuery>()
+                .Customize(x => x.RandomOrdering())
+                .Where(x => x.UploadDate > threeMonthsAgo)
+                .Take(count)
+                .ToListAsync();
+        }
+
         private async Task<Song> PickRandomSong()
         {
             var song = await DbSession.Query<Song, Songs_GeneralQuery>()

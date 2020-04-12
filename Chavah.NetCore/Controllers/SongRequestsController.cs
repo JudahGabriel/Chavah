@@ -161,6 +161,25 @@ namespace BitShuva.Chavah.Controllers
             return songIds;
         }
 
+        /// <summary>
+        /// Gets recently requested songs.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<List<Song>> GetRandomRecentlyRequestedSongs(int count)
+        {
+            var dayAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(1));
+            var songIds = await DbSession.Query<SongRequest>()
+                .Customize(x => x.RandomOrdering())
+                .Include(r => r.SongId)
+                .Where(r => r.DateTime > dayAgo)
+                .Take(count)
+                .Select(r => r.SongId)
+                .ToListAsync();
+            return await DbSession.LoadWithoutNulls<Song>(songIds);
+        }
+
         private async Task<bool> HasSongBeenRequestedRecently(string songId)
         {
             var recent = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(120));

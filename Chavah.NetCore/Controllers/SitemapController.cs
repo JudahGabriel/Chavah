@@ -37,7 +37,7 @@ namespace BitShuva.Chavah.Controllers
             sitemapItems.AddRange(new[]
             {
                 new SitemapNode(new Uri("https://messianicradio.com"), navPageModifiedDate, SitemapFrequency.Monthly),
-                new SitemapNode(new Uri("https://messianicradio.com/#/trending"), navPageModifiedDate, SitemapFrequency.Daily),
+                new SitemapNode(new Uri("https://messianicradio.com/#/trending"), DateTime.Today, SitemapFrequency.Daily),
                 new SitemapNode(new Uri("https://messianicradio.com/#/support"), navPageModifiedDate, SitemapFrequency.Yearly),
                 new SitemapNode(new Uri("https://messianicradio.com/#/about"), navPageModifiedDate, SitemapFrequency.Yearly)
             });
@@ -50,8 +50,8 @@ namespace BitShuva.Chavah.Controllers
         private async Task<List<SitemapNode>> GetSongsAsSitemapItems()
         {
             // See how many songs we have so we can be more efficient about creating the big list.
-            await DbSession.Query<Song>().Statistics(out var songStats).Take(0).ToListAsync();
-            var songsList = new List<SitemapNode>(songStats.TotalResults + 10);
+            var songCount = await DbSession.Query<Song>().CountAsync();
+            var songsList = new List<SitemapNode>(songCount + 10);
 
             using (var songStream = await DbSession.Advanced.StreamAsync<Song>("songs/"))
             {
