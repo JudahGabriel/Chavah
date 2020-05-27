@@ -20,7 +20,8 @@
         $onInit() {
             // If we rehydrated some songs from cache, no need to fetch.
             if (this.songs.items.length === 0) {
-                this.fetchSongs();
+                // Delay the first fetch up to 5 seconds so as to give some random song item appearances.
+                setTimeout(() => this.fetchSongs(), Math.random() * 5000);
             }
 
             // Set up the recurring fetch.
@@ -28,7 +29,7 @@
                 this.refreshInterval = 60000;
             }
             if (this.refreshInterval !== -1) {
-                this.refreshHandle = setInterval(() => this.fetchSongs(), this.refreshInterval);
+                this.refreshHandle = setInterval(() => this.fetchSongs(), this.refreshInterval + (Math.random() * 3000));
             }
         }
 

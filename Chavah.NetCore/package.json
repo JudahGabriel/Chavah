@@ -43,7 +43,7 @@
     "@types/nprogress": "0.0.29",
     "@types/rx": "^4.1.1",
     "@types/tinycolor": "^1.1.27",
-    "@types/winrt-uwp": "^0.0.19",
+    "@types/winrt-uwp": "^0.0.21",
     "npx": "^10.2.0",
     "tslint": "^5.9.1",
     "typescript": "^3.0.1"

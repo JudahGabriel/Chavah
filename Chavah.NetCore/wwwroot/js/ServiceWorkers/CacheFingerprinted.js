@@ -8,7 +8,7 @@
             image: pushNotification.imageUrl, // The big image to show. In Chrome, this shows on the top of hte notification, unscaled and clipped to the window
             data: pushNotification.clickUrl,
             badge: '/images/chavah48x48.png',
-            //requireInteraction: true, Stays visible until the user dismisses. I feel this is a bad UX, so I've commented it out.
+            requireInteraction: true, 
             actions: [
                 {
                     action: 'read',

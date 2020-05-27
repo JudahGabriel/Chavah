@@ -1,4 +1,6 @@
 {
+  "lang": "en-US",
+  "dir": "ltr",
   "name": "Chavah Messianic Radio",
   "short_name": "Chavah",
   "description": "The very best Messianic Jewish and Hebrew Roots music on the web",
@@ -6,6 +8,8 @@
   "start_url": "/",
   "background_color": "#2f3d58",
   "theme_color": "#2f3d58",
+  "orientation": "any",
+  "iarc_rating_id": "06b9a5f7-2b69-4a87-8edc-3295438a6e41",
   "mjs_api_access": [
     {
       "match": "*",
@@ -13,7 +17,7 @@
       "access": "cordova"
     }
   ],
-  "prefer_related_applications": true,
+  "prefer_related_applications": false,
   "related_applications": [
     {
       "platform": "windows",
@@ -28,30 +32,57 @@
       "url": "https://itunes.apple.com/us/app/chavah-messianic-radio/id1361894819"
     }
   ],
+  "categories": [
+    "music",
+    "entertainment",
+    "religion",
+    "society"
+  ],
   "shortcuts": [
     {
       "name": "My Likes",
+      "short_name": "Likes",
       "description": "My thumbed-up songs",
       "url": "/#/mylikes",
-      "icons": []
+      "icons": [
+        {
+          "src": "/images/shortcut_mylikes.png",
+          "sizes": "128x128"
+        }
+      ]
     },
     {
       "name": "Trending",
       "description": "Songs recently thumbed-up songs by listeners",
       "url": "/#/trending",
-      "icons": []
+      "icons": [
+        {
+          "src": "/images/shortcut_trending.png",
+          "sizes": "128x128"
+        }
+      ]
     },
     {
       "name": "Recent",
       "description": "Songs you recently listened to",
       "url": "/#/recent",
-      "icons": []
+      "icons": [
+        {
+          "src": "/images/shortcut_recent.png",
+          "sizes": "128x128"
+        }
+      ]
     },
     {
       "name": "Popular",
       "description": "The highest ranked songs",
       "url": "/#/popular",
-      "icons": []
+      "icons": [
+        {
+          "src": "/images/shortcut_popular.png",
+          "sizes": "128x128"
+        }
+      ]
     }
   ],
   "icons": [
