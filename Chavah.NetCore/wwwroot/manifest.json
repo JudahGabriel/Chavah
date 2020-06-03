@@ -53,7 +53,7 @@
     },
     {
       "name": "Trending",
-      "description": "Songs recently thumbed-up songs by listeners",
+      "description": "Songs recently thumbed-up by listeners",
       "url": "/#/trending",
       "icons": [
         {
@@ -75,7 +75,7 @@
     },
     {
       "name": "Popular",
-      "description": "The highest ranked songs",
+      "description": "The highest ranked songs on Chavah",
       "url": "/#/popular",
       "icons": [
         {

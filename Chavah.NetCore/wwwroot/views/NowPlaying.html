@@ -15,31 +15,27 @@
                     </div>
                 </div>
                 <br />
-                <div class="row">
+                <div class="row" ng-show="vm.newSongs.items.length">
                     <div class="col-sm-12">
-                        <div ng-show="vm.newSongs.items.length">
-                            <h4 class="song-list-title">
-                                <span ng-style="{ 'color': vm.currentSong ? vm.currentSong.albumSwatchDarker : 'inherit' }">
-                                    <i class="fa fa-asterisk"></i> New music
-                                </span>                                
-                            </h4>
-                            <song-list songs="vm.newSongs"></song-list>
-                        </div>
+                        <h4 class="song-list-title">
+                            <span ng-style="{ 'color': vm.currentSong ? vm.currentSong.albumSwatchDarker : 'inherit' }">
+                                <i class="fa fa-asterisk"></i> New music
+                            </span>                                
+                        </h4>
+                        <song-list songs="vm.newSongs"></song-list>                        
                     </div>
                 </div>
                 <br />
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div ng-show="vm.likes.items.length">
-                            <h4 class="song-list-title">
-                                <a href="#/mylikes">
-                                    <span ng-style="{ 'color': vm.currentSong ? vm.currentSong.albumSwatchDarker : 'inherit' }">
-                                        <i class="fa fa-thumbs-up"></i> My likes
-                                    </span>
-                                </a>
-                            </h4>
-                            <song-list songs="vm.likes"></song-list>
-                        </div>
+                <div class="row" ng-show="vm.likes.items.length">
+                    <div class="col-sm-12">                        
+                        <h4 class="song-list-title">
+                            <a href="#/mylikes">
+                                <span ng-style="{ 'color': vm.currentSong ? vm.currentSong.albumSwatchDarker : 'inherit' }">
+                                    <i class="fa fa-thumbs-up"></i> My likes
+                                </span>
+                            </a>
+                        </h4>
+                        <song-list songs="vm.likes"></song-list>                        
                     </div>
                 </div>
             </div>
@@ -295,18 +291,16 @@
         </div>
         <div class="col-sm-3 hidden-xs">
             <div class="right-pane">
-                <div class="row">
+                <div class="row" ng-show="vm.recent.items.length > 0">
                     <div class="col-sm-12">
-                        <div ng-show="vm.recent.items.length > 0">
-                            <h4 class="song-list-title">
-                                <a href="#/recent">
-                                    <span ng-style="{ 'color': vm.currentSong ? vm.currentSong.albumSwatchDarker : 'inherit' }">
-                                        <i class="fa fa-step-backward"></i> Recent
-                                    </span>
-                                </a>
-                            </h4>
-                            <song-list songs="vm.recent" refresh-interval="-1"></song-list>
-                        </div>
+                        <h4 class="song-list-title">
+                            <a href="#/recent">
+                                <span ng-style="{ 'color': vm.currentSong ? vm.currentSong.albumSwatchDarker : 'inherit' }">
+                                    <i class="fa fa-step-backward"></i> Recent
+                                </span>
+                            </a>
+                        </h4>
+                        <song-list songs="vm.recent" refresh-interval="-1"></song-list>
                     </div>
                 </div>
                 <br />
@@ -323,18 +317,16 @@
                     </div>
                 </div>
                 <br />
-                <div class="row">
+                <div class="row" ng-show="vm.recentSongRequests.items.length > 0">
                     <div class="col-sm-12">
-                        <div ng-show="vm.recentSongRequests.items.length > 0">
-                            <h4 class="song-list-title">
+                        <h4 class="song-list-title">
                                 
-                                    <span ng-style="{ 'color': vm.currentSong ? vm.currentSong.albumSwatchDarker : 'inherit' }">
-                                        <i class="fa fa-comment"></i> Requests
-                                    </span>
+                                <span ng-style="{ 'color': vm.currentSong ? vm.currentSong.albumSwatchDarker : 'inherit' }">
+                                    <i class="fa fa-comment"></i> Requests
+                                </span>
                                 
-                            </h4>
-                            <song-list songs="vm.recentSongRequests" refresh-interval="120000"></song-list>
-                        </div>
+                        </h4>
+                        <song-list songs="vm.recentSongRequests" refresh-interval="120000"></song-list>
                     </div>
                 </div>
             </div>
