@@ -38,7 +38,6 @@
 
         $onInit() {
             this.loadPushNotificationState();
-            this.appNav.goBackUrl = "#/nowplaying";
         }
 
         async loadPushNotificationState() {

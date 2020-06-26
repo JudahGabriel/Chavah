@@ -10,11 +10,11 @@
                         <span class="hebrew" lang="he">חוה</span>
                     </a>
                 </div>
-                <div class="subtitle" ng-hide="vm.goBackUrl">
+                <div class="subtitle" ng-hide="vm.showGoBack">
                     {{vm.desc}}
                 </div>
-                <div ng-show="vm.goBackUrl" class="go-back ng-hide">
-                    <a class="btn btn-link" ng-href="{{vm.goBackUrl}}">
+                <div ng-show="vm.showGoBack" class="go-back ng-hide">
+                    <a class="btn btn-link" href="javascript:history.back()">
                         <i class="fa fa-arrow-circle-left"></i> Go back
                     </a>
                 </div>
@@ -146,5 +146,13 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="alert alert-info alert-dismissible donation-alert ng-hide" role="alert" ng-show="vm.showDonationBanner">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="vm.dismissDonationBanner()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Would you help us?</strong> Chavah is raising money for Messiah's musicians. 💗
+        <a href="https://blog.messianicradio.com/2020/06/announcing-messiahs-musicians-fund-we.html" class="alert-link" ng-attr-target="{{ vm.isOnIOS ? '_self' : '_blank' }}" rel="noopener">Learn more</a>
     </div>
 </header>

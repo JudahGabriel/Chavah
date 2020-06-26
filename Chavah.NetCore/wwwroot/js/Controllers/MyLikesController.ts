@@ -45,22 +45,18 @@
 
         $onInit() {
             this.songs.fetchNextChunk();
-            this.appNav.goBackUrl = "#/nowplaying";
         }
 
         playSong(song: Song) {
             this.audioPlayer.playSongById(song.id);
-            //this.appNav.nowPlaying();
         }
 
         playAlbum(album: Server.AlbumWithNetLikeCount) {
             this.audioPlayer.playSongFromAlbumId(album.id);
-            //this.appNav.nowPlaying();
         }
 
         playArtist(artist: Server.ArtistWithNetLikeCount) {
             this.audioPlayer.playSongFromArtist(artist.name);
-            //this.appNav.nowPlaying();
         }
 
         loadMoreSongs() {

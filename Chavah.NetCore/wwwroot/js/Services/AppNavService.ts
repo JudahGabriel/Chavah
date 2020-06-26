@@ -8,7 +8,6 @@
         ];
 
         readonly promptSignInUrl = "#/promptsignin";
-        public goBackUrl: string | null = null; // If null, no "go back" link will be show in app header.
 
         constructor(
             private templatePaths: ITemplatePaths,

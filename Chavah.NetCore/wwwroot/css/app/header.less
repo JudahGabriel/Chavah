@@ -198,4 +198,24 @@ header {
             }
         }
     }
+
+    .donation-alert {
+        background-color: @brand-background;
+        opacity: 0.9;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+        text-align: center;
+        white-space: normal;
+        transition: all linear 5s;
+
+        &.ng-hide {
+            opacity: 0;
+        }
+
+        a {
+            color: @text-color-light !important;
+        }
+    }
 }

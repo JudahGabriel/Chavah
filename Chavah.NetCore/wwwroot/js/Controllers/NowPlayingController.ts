@@ -150,9 +150,6 @@
             if (this.currentSong) {
                 this.currentSong.areCommentsExpanded = false;
             }
-
-            // Clear the "go back" URL.
-            this.appNav.goBackUrl = null;
         }
 
         $onDestroy() {

@@ -18,7 +18,6 @@
         $onInit() {
             this.songsList.take = 25;
             this.songsList.fetchNextChunk();
-            this.appNav.goBackUrl = "#/nowplaying";
         }
 
         getRecentSongsAsPagedList(skip: number, take: number): ng.IPromise<Server.PagedList<Song>> {

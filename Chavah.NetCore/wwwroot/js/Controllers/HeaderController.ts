@@ -4,14 +4,17 @@
         notifications: Server.Notification[];
         profilePicUrl: string | null = null;
         canSubscribeToPushNotifications = false;
+        showDonationBanner = false;
 
+        static readonly donationBannerLocalStorageKey = "hasDismissedDonationBanner";
         static $inject = [
             "homeViewModel",
             "accountApi",
             "appNav",
             "pwaInstall",
             "pushNotifications",
-            "audioPlayer"
+            "audioPlayer",
+            "$timeout"
         ];
 
         constructor(
@@ -20,7 +23,8 @@
             private readonly appNav: AppNavService,
             private readonly pwaInstall: PwaInstallService,
             private readonly pushNotifications: PushNotificationService,
-            private readonly audioPlayer: AudioPlayerService) {
+            private readonly audioPlayer: AudioPlayerService,
+            private readonly $timeout: ng.ITimeoutService) {
 
             this.accountApi.signedInState
                 .select(() => this.accountApi.currentUser)
@@ -62,18 +66,23 @@
         get isOnIOS(): boolean {
             // This is used to support the iOS app, which doesn't support links to new tabs in the iOS app.
             // Instead, we have to use regular links and the app will launch Safari to handle them.
-            // We can likely remove this code when we migrate from UIWebView to WKWebKit.
+            // We can likely remove this code when we migrate the iOS app from UIWebView to WKWebKit.
             var ua = navigator.userAgent.toLowerCase();
             return ua.includes("iphone") || ua.includes("ipad");
         }
 
-        get goBackUrl(): string | null {
-            return this.appNav.goBackUrl;
+        get showGoBack(): boolean {
+            // Show go back when we're not at the root (now playing).
+            return window.location.hash !== "#/";
         }
 
         $onInit() {
             this.loadPushNotificationState();
             this.updateAppBadge(this.unreadNotificationCount);
+
+            if (!this.hasDismissedDonationBanner()) {
+                this.$timeout(() => this.showDonationBanner = true, 3 * 60 * 1000); // 3 minutes
+            }
         }
 
         loadPushNotificationState() {
@@ -125,7 +134,6 @@
                 console.log("Push notification permission wasn't granted", permissionResult);
             }
 
-
             this.loadPushNotificationState();
         }
 
@@ -141,6 +149,14 @@
                     navigatorWithBadgeSupport.clearAppBadge();
                 }
             }
+        }
+
+        hasDismissedDonationBanner(): boolean {
+            return window.localStorage.getItem(HeaderController.donationBannerLocalStorageKey) === "true";
+        }
+
+        dismissDonationBanner() {
+            window.localStorage.setItem(HeaderController.donationBannerLocalStorageKey, "true");
         }
     }
 

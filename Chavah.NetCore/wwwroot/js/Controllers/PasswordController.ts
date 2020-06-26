@@ -38,7 +38,6 @@
         }
 
         $onInit() {
-            this.appNav.goBackUrl = "#/signin";
             // Fetch the profile picture for this user.
             this.userApi.getProfilePicForEmailAddress(this.email)
                 .then(results => this.profilePic = results);

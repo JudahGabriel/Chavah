@@ -16,7 +16,6 @@
         $onInit() {
             this.songsList.take = 25;
             this.songsList.fetchNextChunk();
-            this.appNav.goBackUrl = "#/nowplaying";
         }
     }
 
