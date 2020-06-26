@@ -17,13 +17,15 @@
             "songEditApi",
             "tagApi",
             "accountApi",
+            "appNav",
             "$routeParams",
         ];
 
         constructor(
-            private songEditApi: SongEditService,
-            private tagApi: TagService,
+            private readonly songEditApi: SongEditService,
+            private readonly tagApi: TagService,
             accountApi: AccountService,
+            private readonly appNav: AppNavService,
             $routeParams: ng.route.IRouteParamsService) {
             
             this.songId = "songs/" + $routeParams["id"];
@@ -35,6 +37,8 @@
                 this.songEditApi.getSongEdit(this.songId)
                     .then(result => this.songEditLoaded(result));
             }
+
+            this.appNav.goBackUrl = "#/nowplaying";
         }
 
         searchTags(search: string): ng.IPromise<string[]> {

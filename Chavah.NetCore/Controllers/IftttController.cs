@@ -65,7 +65,7 @@ namespace BitShuva.Chavah.Controllers
             })
             .ToList();
 
-            feedItems.ForEach(i => i.AddLink(new SyndicationLink(new Uri($"{appOptions.DefaultUrl}/?newUser={i.Published.ToUnixTimeSeconds().ToString()}"))));
+            feedItems.ForEach(i => i.AddLink(new SyndicationLink(new Uri($"{appOptions.DefaultUrl}/?newUser={i.Published.ToUnixTimeSeconds()}"))));
 
             var feed = new SyndicationFeed(
                 $"{appOptions.Title} - New Users",

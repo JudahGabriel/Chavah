@@ -45,6 +45,7 @@
 
         $onInit() {
             this.songs.fetchNextChunk();
+            this.appNav.goBackUrl = "#/nowplaying";
         }
 
         playSong(song: Song) {

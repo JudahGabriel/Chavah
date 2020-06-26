@@ -59,6 +59,18 @@
             return this.pwaInstall.canInstall;
         }
 
+        get isOnIOS(): boolean {
+            // This is used to support the iOS app, which doesn't support links to new tabs in the iOS app.
+            // Instead, we have to use regular links and the app will launch Safari to handle them.
+            // We can likely remove this code when we migrate from UIWebView to WKWebKit.
+            var ua = navigator.userAgent.toLowerCase();
+            return ua.includes("iphone") || ua.includes("ipad");
+        }
+
+        get goBackUrl(): string | null {
+            return this.appNav.goBackUrl;
+        }
+
         $onInit() {
             this.loadPushNotificationState();
             this.updateAppBadge(this.unreadNotificationCount);
@@ -112,6 +124,7 @@
             } else {
                 console.log("Push notification permission wasn't granted", permissionResult);
             }
+
 
             this.loadPushNotificationState();
         }

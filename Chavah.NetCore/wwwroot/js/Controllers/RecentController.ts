@@ -3,19 +3,22 @@
 
         static $inject = [
             "songApi",
-            "$q"
+            "$q",
+            "appNav"
         ];
 
         songsList = new PagedList((skip, take) => this.getRecentSongsAsPagedList(skip, take));
 
         constructor(
             private readonly songApi: SongApiService,
-            private readonly $q: ng.IQService) {
+            private readonly $q: ng.IQService,
+            private readonly appNav: AppNavService) {
         }
 
         $onInit() {
             this.songsList.take = 25;
             this.songsList.fetchNextChunk();
+            this.appNav.goBackUrl = "#/nowplaying";
         }
 
         getRecentSongsAsPagedList(skip: number, take: number): ng.IPromise<Server.PagedList<Song>> {

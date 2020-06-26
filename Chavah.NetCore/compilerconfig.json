@@ -32,10 +32,6 @@
     "inputFile": "wwwroot/css/app/footer.less"
   },
   {
-    "outputFile": "wwwroot/css/app/goBack.css",
-    "inputFile": "wwwroot/css/app/goBack.less"
-  },
-  {
     "outputFile": "wwwroot/css/app/header.css",
     "inputFile": "wwwroot/css/app/header.less"
   },

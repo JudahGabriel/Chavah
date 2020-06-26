@@ -54,7 +54,7 @@ namespace BitShuva.Chavah.Controllers
                 if (song != null)
                 {
                     var likeCount = topThumbedUpSong.Count();
-                    var syndicationId = $"{song.Id}-{likeCount.ToString()}";
+                    var syndicationId = $"{song.Id}-{likeCount}";
                     var syndicationLink = new SyndicationLinkItem(
                         syndicationId,
                         $"Today's top trending song is {song.Name} by {song.Artist} with +{likeCount} thumb-ups so far today. It's now ranked at {song.GetCommunityRankText()}.",

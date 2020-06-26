@@ -362,8 +362,8 @@ namespace BitShuva.Chavah.Controllers
 
             var regTokenId = $"AccountTokens/Confirm/{email.ToLowerInvariant()}";
             var regToken = await DbSession.LoadOptionalAsync<AccountToken>(regTokenId).ConfigureAwait(false);
-            var isSameCode = regToken != null ? string.Equals(regToken.Token, confirmCode, StringComparison.InvariantCultureIgnoreCase) : false;
-            var isSameUser = regToken != null ? string.Equals(regToken.ApplicationUserId, userId, StringComparison.InvariantCultureIgnoreCase) : false;
+            var isSameCode = regToken != null && string.Equals(regToken.Token, confirmCode, StringComparison.InvariantCultureIgnoreCase);
+            var isSameUser = regToken != null && string.Equals(regToken.ApplicationUserId, userId, StringComparison.InvariantCultureIgnoreCase);
             var isValidToken = isSameCode && isSameUser;
             var errorMessage = default(string);
             if (isValidToken)

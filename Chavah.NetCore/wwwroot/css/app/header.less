@@ -177,4 +177,25 @@ header {
             margin-right: 7px;
         }
     }
+
+    .go-back {
+        margin-top: -15px;
+
+        a {
+            color: @text-color-light;
+            font-size: 20px;
+            outline: none;
+            padding-left: 0;
+
+            &:hover, &:active, &:visited, &:focus {
+                color: darken(@text-color-light, 10%);
+                text-decoration: none;
+                outline: none;
+            }
+
+            @media(max-width: @screen-xs-max) {
+                margin-left: 15px;
+            }
+        }
+    }
 }

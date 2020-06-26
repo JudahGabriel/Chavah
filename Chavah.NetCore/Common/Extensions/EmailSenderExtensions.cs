@@ -45,7 +45,7 @@ namespace BitShuva.Chavah.Common
                 <p>You received the following message via Chavah's support page:</p>
                 <p>From: {message.Name}, {message.Email}
                     <br>User: {message.UserId}
-                    <br>Dated: {message.Date.ToString()}
+                    <br>Dated: {message.Date}
                     <br>User agent: {message.UserAgent}
                     <br>Message:
                 </p>

@@ -10,8 +10,13 @@
                         <span class="hebrew" lang="he">חוה</span>
                     </a>
                 </div>
-                <div class="subtitle">
-                    <span>{{vm.desc}}</span>
+                <div class="subtitle" ng-hide="vm.goBackUrl">
+                    {{vm.desc}}
+                </div>
+                <div ng-show="vm.goBackUrl" class="go-back ng-hide">
+                    <a class="btn btn-link" ng-href="{{vm.goBackUrl}}">
+                        <i class="fa fa-arrow-circle-left"></i> Go back
+                    </a>
                 </div>
             </div>
             <div class="col-xs-4 col-sm-4 col-lg-3">
@@ -23,9 +28,9 @@
                                 <span class="badge" ng-show="vm.unreadNotificationCount > 0">{{vm.unreadNotificationCount}}</span>
                             </h3>
                         </button>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu notifications">
                             <li ng-repeat="notification in vm.notifications" ng-class="{ unread: notification.isUnread }">
-                                <a href="#" ng-href="{{notification.url}}" target="_blank" rel="noopener">
+                                <a href="#" ng-href="{{notification.url}}" ng-attr-target="{{ vm.isOnIOS ? '_self' : '_blank' }}" rel="noopener">
                                     <img class="img-responsive source-img pull-left" ng-src="{{notification.imageUrl}}" ng-show="notification.imageUrl" />
                                     <span class="description">
                                         <strong>{{notification.title}}</strong>
@@ -101,7 +106,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="https://www.patreon.com/chavah" target="_blank">
+                                <a href="https://www.patreon.com/chavah" ng-attr-target="{{ vm.isOnIOS ? '_self' : '_blank' }}" rel="noopener">
                                     <i class="fa fa-money fa-fw"></i>
                                     Donate
                                 </a>

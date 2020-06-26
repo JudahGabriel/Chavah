@@ -156,24 +156,22 @@ namespace BitShuva.Chavah.Services
         // We anticipate well under 1000 with our current app usage. But if subscriptions grows too large, we may need to break this up.
         private async static Task<List<PushSubscription>> StreamSubscriptions(IDocumentStore db, int max = 20000)
         {
-            using (var dbSession = db.OpenAsyncSession())
+            using var dbSession = db.OpenAsyncSession();
+            var totalSubscriptionCount = await dbSession.Query<PushSubscription>().CountAsync();
+            var listSize = Math.Min(max, totalSubscriptionCount);
+            var list = new List<PushSubscription>(listSize);
+            using (var enumerator = await dbSession.Advanced.StreamAsync<PushSubscription>("PushSubscriptions/"))
             {
-                var totalSubscriptionCount = await dbSession.Query<PushSubscription>().CountAsync();
-                var listSize = Math.Min(max, totalSubscriptionCount);
-                var list = new List<PushSubscription>(listSize);
-                using (var enumerator = await dbSession.Advanced.StreamAsync<PushSubscription>("PushSubscriptions/"))
+                while (await enumerator.MoveNextAsync())
                 {
-                    while (await enumerator.MoveNextAsync())
+                    if (!enumerator.Current.Document.Unsubscribed)
                     {
-                        if (!enumerator.Current.Document.Unsubscribed)
-                        {
-                            list.Add(enumerator.Current.Document);
-                        }
+                        list.Add(enumerator.Current.Document);
                     }
                 }
-
-                return list;
             }
+
+            return list;
         }
 
         private static void BulkSavePushSubscriptions(IEnumerable<PushSubscription> subscriptions, IDocumentStore db)

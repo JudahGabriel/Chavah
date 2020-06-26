@@ -2,17 +2,21 @@
     export class TrendingController {
         
         static $inject = [
-            "songApi"
+            "songApi",
+            "appNav"
         ];
 
         songsList = new PagedList((skip, take) => this.songApi.getTrendingSongs(skip, take));
         
-        constructor(private readonly songApi: SongApiService) {
+        constructor(
+            private readonly songApi: SongApiService,
+            private readonly appNav: AppNavService) {
         }
 
         $onInit() {
             this.songsList.take = 25;
             this.songsList.fetchNextChunk();
+            this.appNav.goBackUrl = "#/nowplaying";
         }
     }
 

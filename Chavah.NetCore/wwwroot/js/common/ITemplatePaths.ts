@@ -8,7 +8,6 @@
         headerPartial: string;
         footerPartial: string;
         adminSidebar: string;
-        goBack: string;
         pushSubscriptionSuccessful: string;
         errorPlayingAudioModal: string;
     }

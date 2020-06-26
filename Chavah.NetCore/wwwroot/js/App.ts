@@ -42,7 +42,6 @@
         headerPartial: findCacheBustedView("/partials/Header.html"),
         footerPartial: findCacheBustedView("/partials/Footer.html"),
         adminSidebar: findCacheBustedView("/partials/AdminSidebar.html"),
-        goBack: findCacheBustedView("/partials/GoBack.html"),
         cropImageModal: findCacheBustedView("/modals/CropImageModal.html"),
         pushSubscriptionSuccessful: findCacheBustedView("/modals/PushSubscriptionSuccessful.html"),
         errorPlayingAudioModal: findCacheBustedView("/modals/ErrorPlayingAudioModal.html")
