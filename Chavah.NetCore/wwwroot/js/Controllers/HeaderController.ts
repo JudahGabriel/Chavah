@@ -81,7 +81,7 @@
             this.updateAppBadge(this.unreadNotificationCount);
 
             if (!this.hasDismissedDonationBanner()) {
-                this.$timeout(() => this.showDonationBanner = true, 3 * 60 * 1000); // 3 minutes
+                this.$timeout(() => this.showDonationBanner = true, 5 * 60 * 1000); // 5 minutes
             }
         }
 
