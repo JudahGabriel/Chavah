@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Lambda2Js;
+
 namespace BitShuva.Chavah.Common
 {
     public static class DictionaryExtensions
@@ -26,6 +28,20 @@ namespace BitShuva.Chavah.Common
             }
 
             return default;
+        }
+
+        public static TValue AddOrUpdate<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue initialValue, Func<TValue, TValue> existingValueUpdater)
+            where TKey : notnull
+        {
+            if (dictionary.TryGetValue(key, out var existing))
+            {
+                var newVal = existingValueUpdater(existing);
+                dictionary[key] = newVal;
+                return newVal;
+            }
+            
+            dictionary.Add(key, initialValue);
+            return initialValue;
         }
 
         public static string ToKeyValuePairString<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)

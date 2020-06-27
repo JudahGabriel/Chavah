@@ -15,7 +15,9 @@ using Microsoft.Extensions.Logging;
 
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Operations.Counters;
 using Raven.Client.Documents.Session;
+using Raven.StructuredLog;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -336,6 +338,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task SongCompleted(string songId)
         {
+            // Update the user's total plays.
             var user = await GetUser();
             if (user != null)
             {
@@ -344,10 +347,26 @@ namespace BitShuva.Chavah.Controllers
                 user.AddRecentSong(songId);
             }
 
+            // Update total plays on the song.
             var song = await DbSession.LoadAsync<Song>(songId);
             if (song != null)
             {
                 song.TotalPlays++;
+
+                // Record the monthly play count for the artist.
+                if (!string.IsNullOrEmpty(song.ArtistId))
+                {
+                    var artistCounters = DbSession.CountersFor(song.ArtistId);
+                    if (artistCounters != null)
+                    {
+                        artistCounters.Increment($"Plays-{DateTime.UtcNow.Year}-{DateTime.UtcNow.Month}");
+                        artistCounters.Delete($"Plays-{DateTime.UtcNow.Year - 1}-{DateTime.UtcNow.Month}"); // Delete artist counter from last year if it exists.
+                    }
+                }
+                else
+                {
+                    logger.LogWarning("{song} completed playing, but didn't have an artist ID", song.Id);
+                }
             }
         }
 
