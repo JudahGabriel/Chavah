@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace BitShuva.Chavah.Models
+{
+    /// <summary>
+    /// A record containing dispersement records for Messiah's Music Fund.
+    /// </summary>
+    /// <remarks>
+    /// See https://blog.messianicradio.com/2020/06/announcing-messiahs-musicians-fund-we.html
+    /// </remarks>
+    public class MessiahMusicFundRecord
+    {
+        /// <summary>
+        /// The ID of the artist.
+        /// </summary>
+        public string? ArtistId { get; set; }
+
+        /// <summary>
+        /// The name of the artist.
+        /// </summary>
+        public string? ArtistName { get; set; }
+
+        /// <summary>
+        /// The number of artist song plays for the time period.
+        /// </summary>
+        public long Plays { get; set; }
+
+        /// <summary>
+        /// What percent of the total plays on Chavah for the time period were plays from this artist.
+        /// </summary>
+        public double PlayPercentage { get; set; }
+
+        /// <summary>
+        /// The total money dispersement belonging to this artist for the time period.
+        /// </summary>
+        public decimal Dispersement { get; set; }
+    }
+}

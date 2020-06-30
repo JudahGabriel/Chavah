@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using Raven.Client.Documents;
+using Raven.Client.Documents.Queries;
 using Raven.Client.Documents.Session;
 
 namespace BitShuva.Chavah.Controllers
@@ -67,15 +68,8 @@ namespace BitShuva.Chavah.Controllers
         {
             var songsByArtist = await DbSession.Query<Song, Songs_GeneralQuery>()
                 .Where(s => s.Artist == artistName)
+                .Take(1000)
                 .ToListAsync();
-            if (songsByArtist.Count == 128)
-            {
-                var additionalSongs = await DbSession.Query<Song, Songs_GeneralQuery>()
-                    .Where(s => s.Artist == artistName)
-                    .Skip(128)
-                    .ToListAsync();
-                additionalSongs.ForEach(s => songsByArtist.Add(s));
-            }
 
             var orderedByRank = songsByArtist.OrderByDescending(s => s.CommunityRank);
             return new
@@ -115,6 +109,45 @@ namespace BitShuva.Chavah.Controllers
                 Take = take,
                 Total = stats.TotalResults
             };
+        }
+
+        /// <summary>
+        /// Calculates the donation distributions for artists on Chavah for the given time period, given the specified donations.
+        /// </summary>
+        /// <param name="year">The year of the time period to calculate donations for.</param>
+        /// <param name="month">The month number (1 through 12) of the time period to calculate donatiosn for.</param>
+        /// <param name="donations">The total amount of donations in dollars, e.g. 310.52</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IEnumerable<MessiahMusicFundRecord>> GetMessiahsMusicFundDistribution(int year, int month, decimal donations)
+        {
+            var playsCounterName = $"Plays-{year}-{month}";
+            var rawResults = await DbSession.Query<Artist>()
+                .Select(a => new MessiahMusicFundRecord
+                {
+                    ArtistId = a.Id,
+                    ArtistName = a.Name,
+                    Plays = RavenQuery.Counter(a, playsCounterName) ?? 0
+                }).ToListAsync();
+
+            var totalPlays = rawResults.Sum(a => a.Plays);
+            if (totalPlays == 0 || !rawResults.Any())
+            {
+                return new List<MessiahMusicFundRecord>();
+            }
+
+            // Counters are not queryable. We must do this query and ordering in memory.
+            return rawResults
+                .Where(a => a.Plays > 0)
+                .OrderByDescending(a => a.Plays)
+                .Select(a => new MessiahMusicFundRecord
+                {
+                    ArtistId = a.ArtistId,
+                    ArtistName = a.ArtistName,
+                    Plays = a.Plays,
+                    PlayPercentage = (a.Plays / (double)totalPlays),
+                    Dispersement = Math.Round((a.Plays / (decimal)totalPlays) * donations, 2)
+                });
         }
 
         //[Route("save")]
