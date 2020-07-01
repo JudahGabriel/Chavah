@@ -177,14 +177,22 @@ namespace BitShuva.Chavah.Controllers
             }
 
             // Store the Artist as well.
-            var existingArtist = await DbSession.Query<Artist>()
-                .FirstOrDefaultAsync(a => a.Name == album.Artist);
+            Artist? existingArtist = null;
+            if (album.Artist != "Various Artists")
+            {
+                // Grab the existing artist only if we're not the special case "Various Artists"
+                existingArtist = await DbSession.Query<Artist>()
+                    .FirstOrDefaultAsync(a => a.Name == album.Artist);
+            }
+
+            // Create the artist if necessary.
             if (existingArtist == null)
             {
                 existingArtist = new Artist
                 {
                     Bio = "",
-                    Name = album.Artist
+                    Name = album.Artist,
+                    Disambiguation = album.Artist == "Various Artists" ? album.Name : null
                 };
                 await DbSession.StoreAsync(existingArtist);
             }

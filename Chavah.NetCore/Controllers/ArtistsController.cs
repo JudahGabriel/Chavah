@@ -126,7 +126,7 @@ namespace BitShuva.Chavah.Controllers
                 .Select(a => new MessiahMusicFundRecord
                 {
                     ArtistId = a.Id,
-                    ArtistName = a.Name,
+                    ArtistName = !string.IsNullOrEmpty(a.Disambiguation) ? $"{a.Name} ({a.Disambiguation})" : a.Name,
                     Plays = RavenQuery.Counter(a, playsCounterName) ?? 0
                 }).ToListAsync();
 
