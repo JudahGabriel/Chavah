@@ -126,5 +126,27 @@ namespace BitShuva.Chavah.Controllers
         {
             return RedirectPermanent("/#/forgotpassword");
         }
+
+        /// <summary>
+        /// Digital asset links for use in Chavah Android app. See https://developers.google.com/digital-asset-links/v1/getting-started#quick-usage-example
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(".well-known/assetlinks.json")]
+        public JsonResult AssetLinks()
+        {
+            var assetLinks = new
+            {
+                relation = new[] { "delegate_permission/common.handle_all_urls" },
+                target = new
+                {
+                    @namespace = "android_app",
+                    package_name = "com.messianicradio",
+                    sha256_cert_fingerprints = new[] { "4B:C1:D7:C7:8D:74:21:56:8C:E0:13:00:12:35:19:94:4B:33:1E:3C:2B:E5:7A:04:04:FE:F9:3E:58:30:B0:F4" }
+                }
+            };
+
+            return Json(new[] { assetLinks });
+        }
     }
 }

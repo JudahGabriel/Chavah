@@ -105,7 +105,7 @@ namespace BitShuva.Chavah.Controllers
 
             // Update the songs on this album.
             var songsOnAlbum = await DbSession.Query<Song, Songs_GeneralQuery>()
-                .Where(s => s.Artist == album.Artist && s.Album == album.Name)
+                .Where(s => s.AlbumId == album.Id)
                 .ToListAsync();
             songsOnAlbum.ForEach(s => s.AlbumArtUri = albumArtUri);
 
