@@ -8,6 +8,7 @@
         stalledTimerHandle: number | null = null;
         audio: HTMLAudioElement | null = null;
         isShowingAudioError = false;
+        wakeLock: Object | null = null;
 
         static $inject = [
             "audioPlayer",
@@ -141,6 +142,22 @@
                 .debounce(2000)
                 .where(v => !!this.accountApi.currentUser && this.accountApi.currentUser.volume !== v)
                 .subscribe(val => this.saveVolumePreference(val));
+
+            this.tryAcquireWakeLock();
+        }
+
+        async tryAcquireWakeLock() {
+            // Wake lock will prevent the screen from turning off while Chavah is running.
+            // We do this because some devices, especially mobile devices, will suspend
+            // JS execution when the screen turns off, thus stopping Chavah from playing the next song.
+            if ('wakeLock' in navigator) {
+                const wakeLock: any = navigator["wakeLock"];
+                try {
+                    this.wakeLock = wakeLock.request("screen");
+                } catch (wakeLockError) {
+                    console.warn("Unable to acquire wake lock.", wakeLockError);
+                }
+            }
         }
 
         toggleVolumnShown() {
