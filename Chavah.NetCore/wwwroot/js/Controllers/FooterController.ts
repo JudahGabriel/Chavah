@@ -146,11 +146,23 @@
             this.tryAcquireWakeLock();
         }
 
+        // Wake lock will prevent the screen from turning off while Chavah is running.
+        // We do this because some devices, especially mobile devices, will suspend
+        // JS execution when the screen turns off, thus stopping Chavah from playing the next song.
         async tryAcquireWakeLock() {
-            // Wake lock will prevent the screen from turning off while Chavah is running.
-            // We do this because some devices, especially mobile devices, will suspend
-            // JS execution when the screen turns off, thus stopping Chavah from playing the next song.
             if ('wakeLock' in navigator) {
+                // If this is our first time acquiring the wake lock, listen for page visibility changed.
+                // Wake locks get released automatically when the page isn't in view.
+                // Reacquire it when the page is back in view.
+                const isFirstTime = !this.wakeLock;
+                if (isFirstTime) {
+                    document.addEventListener("visibilitychange", () => {
+                        if (this.wakeLock && document.visibilityState === "visible") {
+                            this.tryAcquireWakeLock();
+                        }
+                    });
+                }
+
                 const wakeLock: any = navigator["wakeLock"];
                 try {
                     this.wakeLock = wakeLock.request("screen");
