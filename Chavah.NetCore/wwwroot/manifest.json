@@ -211,6 +211,12 @@
       "sizes": "192x192"
     },
     {
+      "src": "/images/chavah-monochrome192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
       "src": "/images/chavah256x256.png",
       "sizes": "256x256"
     },
@@ -226,7 +232,13 @@
       "src": "/images/chavah512x512.png",
       "sizes": "512x512"
     },
-	{
+    {
+      "src": "/images/chavah-monochrome512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
       "src": "/images/chavah-monochrome512x512.svg",
       "sizes": "512x512",
       "type": "image/svg+xml",
