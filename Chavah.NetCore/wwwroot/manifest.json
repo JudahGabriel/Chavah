@@ -226,6 +226,12 @@
       "src": "/images/chavah512x512.png",
       "sizes": "512x512"
     },
+	{
+      "src": "/images/chavah-monochrome512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "monochrome"
+    },
     {
       "src": "/images/chavah640x960.png",
       "sizes": "640x960"
