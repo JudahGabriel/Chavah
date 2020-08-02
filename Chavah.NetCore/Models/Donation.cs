@@ -31,5 +31,18 @@ namespace BitShuva.Chavah.Models
         /// The date the donation was distributed to the artist. This will be null if the donation hasn't yet been distributed.
         /// </summary>
         public DateTime? DistributionDate { get; set; }
+
+        public static Donation CreateMessiahsMusicFundDonation(int year, int month, decimal donationAmount)
+        {
+            var date = new DateTimeOffset(year, month, 1, 0, 0, 0, TimeSpan.Zero);
+            return new Donation
+            {
+                Amount = (double)donationAmount,
+                Date = date.Date,
+                DistributionDate = null,
+                DonorEmail = "chavah@messianicradio.com",
+                DonorName = "Messiah's Music Fund"
+            };
+        }
     }
 }

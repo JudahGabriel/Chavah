@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualBasic;
 
 using Raven.Client.Documents;
+using Raven.Client.Documents.Linq.Indexing;
 using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
 using Raven.Client.Documents.Session.Loaders;
@@ -376,6 +379,25 @@ namespace BitShuva.Chavah.Common
                 Query = rqlPatch.ToString()
             });
             return db.Operations.Send(patch);
+        }
+
+        /// <summary>
+        /// Streams in a collection of items.
+        /// </summary>
+        /// <typeparam name="T">The type of item to stream.</typeparam>
+        /// <param name="dbSession">The document session.</param>
+        /// <returns>A stream of items.</returns>
+        public static async IAsyncEnumerable<T> Stream<T>(this IAsyncAdvancedSessionOperations dbSession)
+        {
+            var collectionName = dbSession.DocumentStore.Conventions.FindCollectionName(typeof(T));
+            var collectionPrefix = dbSession.DocumentStore.Conventions.TransformTypeCollectionNameToDocumentIdPrefix(collectionName);
+            var separator = dbSession.DocumentStore.Conventions.IdentityPartsSeparator;
+            var idPrefix = collectionPrefix + separator;
+            using var stream = await dbSession.StreamAsync<T>(idPrefix);
+            while (await stream.MoveNextAsync())
+            {
+                yield return stream.Current.Document;
+            }
         }
     }
 }

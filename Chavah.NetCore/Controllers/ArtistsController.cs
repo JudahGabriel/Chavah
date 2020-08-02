@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
 using BitShuva.Chavah.Services;
@@ -126,6 +127,7 @@ namespace BitShuva.Chavah.Controllers
                 .Select(a => new MessiahMusicFundRecord
                 {
                     ArtistId = a.Id,
+                    DonationRecipientId = a.DonationRecipientId,
                     ArtistName = !string.IsNullOrEmpty(a.Disambiguation) ? $"{a.Name} ({a.Disambiguation})" : a.Name,
                     Plays = RavenQuery.Counter(a, playsCounterName) ?? 0
                 }).ToListAsync();
@@ -144,75 +146,94 @@ namespace BitShuva.Chavah.Controllers
                 {
                     ArtistId = a.ArtistId,
                     ArtistName = a.ArtistName,
+                    DonationRecipientId = a.DonationRecipientId,
                     Plays = a.Plays,
                     PlayPercentage = (a.Plays / (double)totalPlays),
-                    Dispersement = Math.Round((a.Plays / (decimal)totalPlays) * donations, 2)
+                    Disbursement = Math.Round((a.Plays / (decimal)totalPlays) * donations, 2)
                 });
         }
 
-        //[Route("save")]
-        //[HttpPost]
-        //[Authorize(Roles = AppUser.AdminRole)]
-        //public async Task<Artist> Save(Artist artist)
-        //{
-        //    artist.Images = await this.EnsureArtistImagesOnCdn(artist.Name, artist.Images);
-        //    if (!string.IsNullOrEmpty(artist.Id))
-        //    {
-        //        var existingArtist = await DbSession.LoadAsync<Artist>(artist.Id);
-        //        existingArtist.Bio = artist.Bio;
-        //        existingArtist.Images = artist.Images;
-        //        existingArtist.Name = artist.Name;
-        //        return existingArtist;
-        //    }
-        //    else
-        //    {
-        //        await DbSession.StoreAsync(artist);
-        //        return artist;
-        //    }
-        //}
+        /// <summary>
+        /// Records Messiah's Music Fund disbursment donations to artists for the specified month and year.
+        /// This is idempotent; calling this multiple times for the same month and year will simply replace the existing Messiah's Music Fund disbursement for that month and year.
+        /// After this method is called, every artist will have a new donation in its .Donations.
+        /// </summary>
+        /// <param name="year">The year for which to record disbursement.</param>
+        /// <param name="month">The month for which to record disbursement.</param>
+        /// <param name="donations">The total amount of donations, in dollars, for the month.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task RecordMessiahsMusicFundMonthlyDisbursement(int year, int month, decimal donations)
+        {
+            // Get the expected disbursement records for each artist.
+            var disbursementRecords = await GetMessiahsMusicFundDistribution(year, month, donations);
 
-        //private async Task<List<string>> EnsureArtistImagesOnCdn(string artistName, IList<string> artistImages)
-        //{
-        //    // Go through each of the images and make sure they're on the CDN.
-        //    var cdnHost = cdnManagerService.FtpAddress.Host;
-        //    var imageUris = new List<string>();
-        //    for (var i = 0; i < artistImages.Count; i++)
-        //    {
-        //        var image = artistImages[i];
-        //        var isOnCdn = image.Contains(cdnManagerService.HttpAlbumArt.ToString(), StringComparison.InvariantCultureIgnoreCase);
-        //        if (!isOnCdn)
-        //        {
-        //            var oneBasedIndex = i + 1;
-        //            var fileName = FindUnusedArtistImageFileName(artistName, oneBasedIndex, artistImages);
-        //            var newUri = await cdnManagerService.UploadArtistImage(new Uri(image), fileName);
-        //            imageUris.Add(newUri.ToString());
-        //        }
-        //        else
-        //        {
-        //            imageUris.Add(image);
-        //        }
-        //    }
+            // Group those artists by DonationRecipientId. (Some artists share a disbursement target, e.g. "Ted Pearce" and "Ted Pearce & Cultural Xchange" both roll into the same target.
+            var donationsToMake = disbursementRecords
+                .GroupBy(r => r.DonationRecipientId ?? r.ArtistId)
+                .Select(r => new
+                {
+                    ArtistId = r.Key,
+                    Amount = r.Sum(a => a.Disbursement)
+                });
 
-        //    return imageUris;
-        //}
+            // Load the artists that we need to donate to.
+            var donorRecipientIds = donationsToMake
+                .Select(i => i.ArtistId ?? string.Empty);
+            var artists = await DbSession.LoadOptionalAsync<Artist>(donorRecipientIds);
+            foreach (var donation in donationsToMake)
+            {
+                // Find a matching artist.
+                var artist = artists.FirstOrDefault(a => a != null && a.Id == donation.ArtistId);
+                if (artist == null)
+                {
+                    logger.LogWarning("Recording Messiah's Music Fund Disbursement, unable to find artist with {id}", donation.ArtistId);
+                }
+                else
+                {
+                    // Record the Messiah's Music Fund donation for this month.
+                    var donationRecord = Donation.CreateMessiahsMusicFundDonation(year, month, donation.Amount);
 
-        //private static string FindUnusedArtistImageFileName(string artist, int index, IList<string> allFileNames)
-        //{
-        //    const int maxArtistImages = 10000;
-        //    var artistCdnSafe = FtpCdnManagerService.GetAlphaNumericEnglish(artist);
-        //    while (index < maxArtistImages)
-        //    {
-        //        var desiredFileName = $"{artistCdnSafe} {index}.jpg";
-        //        var isUnique = !allFileNames.Any(f => f.EndsWith(desiredFileName, StringComparison.InvariantCultureIgnoreCase));
-        //        if (isUnique)
-        //        {
-        //            return desiredFileName;
-        //        }
+                    // Remove any existing Messiah's Music Fund donation for this year/month/artist combo
+                    // as there should only be 1 monthly donation from Messiah's Music Fund for this artist.
+                    artist.Donations.RemoveAll(d => d.Date == donationRecord.Date && d.DonorName == donationRecord.DonorName);
+                    artist.Donations.Add(donationRecord);
+                }
+            }
+        }
 
-        //        index++;
-        //    }
+        /// <summary>
+        /// Sums up artist donations that haven't yet been disbursed and are greater than the specified minimum.
+        /// </summary>
+        /// <param name="minimum">The minimum amount in dollars to consider a donation due.</param>
+        /// <returns></returns>
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task<IEnumerable<DueDonation>> GetDueDonations(double minimum)
+        {
+            var dueDonations = new List<DueDonation>(100);
+            await foreach (var artist in DbSession.Advanced.Stream<Artist>())
+            {
+                // Sum the donations without a disbursement date.
+                var donationsNeedingDisbursement = artist.Donations
+                    .Where(d => d.DistributionDate == null)
+                    .ToList();
+                var donationAmount = donationsNeedingDisbursement
+                    .Sum(d => d.Amount);
+                if (donationAmount >= minimum)
+                {
+                    dueDonations.Add(new DueDonation
+                    {
+                        ArtistId = artist.Id!,
+                        Name = artist.GetNameWithDisambiguation(),
+                        Amount = Math.Round(donationAmount, 2),
+                        DonationUrl = artist.DonationUrl,
+                        Donations = donationsNeedingDisbursement
+                    });
+                }
+            }
 
-        //    throw new InvalidOperationException("Programming bug. Couldn't find a valid artist image name.");
-        //}
+            return dueDonations;
+        }
     }
 }

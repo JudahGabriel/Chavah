@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace BitShuva.Chavah.Models
 {
     /// <summary>
-    /// A record containing dispersement records for Messiah's Music Fund.
+    /// A record of Messiah's Music Fund disbursement for an artist.
     /// </summary>
     /// <remarks>
     /// See https://blog.messianicradio.com/2020/06/announcing-messiahs-musicians-fund-we.html
@@ -17,6 +17,12 @@ namespace BitShuva.Chavah.Models
         /// The ID of the artist.
         /// </summary>
         public string? ArtistId { get; set; }
+
+        /// <summary>
+        /// The ID of the artist who receives this artist's donations.
+        /// For example, the artist "Ted Pearce & Cultural Xchange" will have its donations sent to the artist "Ted Pearce".
+        /// </summary>
+        public string? DonationRecipientId { get; set; }
 
         /// <summary>
         /// The name of the artist.
@@ -34,8 +40,8 @@ namespace BitShuva.Chavah.Models
         public double PlayPercentage { get; set; }
 
         /// <summary>
-        /// The total money dispersement belonging to this artist for the time period.
+        /// The total money disbursement belonging to this artist for the time period.
         /// </summary>
-        public decimal Dispersement { get; set; }
+        public decimal Disbursement { get; set; }
     }
 }
