@@ -136,19 +136,7 @@ namespace BitShuva.Chavah.Controllers
 
             await DbSession.StoreAsync(album);
 
-            // If we're creating a new album, update the songs that belong to this album.
-            if (isCreatingNew)
-            {
-                var songsForAlbum = await DbSession.Query<Song, Songs_GeneralQuery>()
-                    .Where(s => s.AlbumId == null || s.AlbumId == "")
-                    .Where(album.SongMatchesAlbumNameAndArtistCriteria())
-                    .Take(50)
-                    .ToListAsync();
-                songsForAlbum.ForEach(s => s.AlbumId = album.Id ?? string.Empty);
-                album.SongCount = songsForAlbum.Count;
-                logger.LogInformation("Saving new album, found n songs that belonged to it.", songsForAlbum.Count);
-            }
-            else
+            if (!isCreatingNew)
             {
                 // Update the album information of all the songs on this album.
                 var songsForAlbum = await DbSession.Query<Song>()
@@ -203,6 +191,7 @@ namespace BitShuva.Chavah.Controllers
             existingAlbum.ForegroundColor = album.ForeColor;
             existingAlbum.MutedColor = album.MutedColor;
             existingAlbum.Name = album.Name;
+            existingAlbum.HebrewName = album.HebrewName;
             existingAlbum.TextShadowColor = album.TextShadowColor;
             existingAlbum.SongCount = album.Songs.Count + existingAlbum.SongCount;
 
@@ -220,6 +209,7 @@ namespace BitShuva.Chavah.Controllers
                 var song = new Song
                 {
                     Album = album.Name,
+                    AlbumHebrewName = album.HebrewName,
                     Artist = album.Artist,
                     AlbumArtUri = albumArtUriCdn,
                     CommunityRankStanding = CommunityRankStanding.Normal,

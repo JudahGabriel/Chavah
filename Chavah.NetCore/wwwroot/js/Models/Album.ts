@@ -2,6 +2,7 @@
     export class Album implements Server.Album {
         artist: string;
         name: string;
+        hebrewName: string | null;
         albumArtUri: string | null;
         id: string;
         backgroundColor: string;

@@ -77,10 +77,13 @@
                 </h4>
             </div>
             <div class="text-center">
-                <button class="btn btn-link current-song-album" ng-click="vm.playSongFromCurrentAlbum()" uib-tooltip="Tap to play another song from {{vm.currentSong.album}}" tooltip-placement="right" role="button">
-                    <h4 class="text-center" ng-style="{ 'color': vm.currentSong.albumSwatchDarker }">
+                <button class="btn btn-link current-song-album text-center" ng-click="vm.playSongFromCurrentAlbum()" uib-tooltip="Tap to play another song from {{vm.currentSong.album}}" tooltip-placement="right" role="button" ng-style="{ 'color': vm.currentSong.albumSwatchDarker }">
+                    <h4>
                         <span class="sr-only">Play another song from the album</span>
                         {{vm.currentSong.album}}
+                    </h4>
+                    <h4 lang="he" ng-show="vm.currentSong.albumHebrewName">
+                        {{vm.currentSong.albumHebrewName}}
                     </h4>
                 </button>
             </div>

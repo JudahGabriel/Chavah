@@ -12,6 +12,7 @@ namespace BitShuva.Chavah {
         ];
 
         albumName = "";
+        albumHebrewName: string | null = null;
         songs: FilepickerInkBlob[] = [];
         isUploading = false;
         albumArt: FilepickerInkBlob | null = null;
@@ -202,6 +203,7 @@ namespace BitShuva.Chavah {
                     genres: this.genre,
                     mutedColor: this.mutedColor,
                     name: this.albumName,
+                    hebrewName: this.albumHebrewName,
                     purchaseUrl: this.purchaseUrl,
                     songs: this.songs ? this.songs.map(UploadAlbumController.filePickerSongToAlbumSong) : [],
                     textShadowColor: this.textShadowColor,

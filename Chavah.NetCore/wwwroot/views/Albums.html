@@ -42,6 +42,9 @@
                                     <h3>
                                         <span ng-style="{ 'color': album.foregroundColor || 'inherit' }">
                                             {{album.name}}
+                                            <span ng-show="album.hebrewName">
+                                                {{album.hebrewName}}
+                                            </span>
                                         </span>
                                     </h3>
                                     <p>

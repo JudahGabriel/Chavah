@@ -3,6 +3,7 @@ namespace BitShuva.Chavah {
         name: string;
         hebrewName: string | null;
         album: string;
+        albumHebrewName: string | null;
         artist: string;
         artistId: string;
         artistImages: string[];

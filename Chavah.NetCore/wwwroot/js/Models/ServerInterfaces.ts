@@ -87,6 +87,7 @@
 
     export interface AlbumUpload {
         name: string,
+        hebrewName: string | null,
         artist: string,
         albumArtUri: string,
         songs: Server.SongUpload[],

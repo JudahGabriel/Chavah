@@ -15,6 +15,7 @@ namespace BitShuva.Chavah.Models
         public string HebrewName { get; set; } = string.Empty;
         public int Number { get; set; }
         public string Album { get; set; } = string.Empty;
+        public string? AlbumHebrewName { get; set; }
         public string Artist { get; set; } = string.Empty;
         public Uri AlbumArtUri { get; set; } = UriExtensions.Localhost;
         public Uri Uri { get; set; } = UriExtensions.Localhost;
@@ -57,6 +58,7 @@ namespace BitShuva.Chavah.Models
             return new Song
             {
                 Album = Album,
+                AlbumHebrewName = AlbumHebrewName,
                 Artist = Artist,
                 CommunityRank = CommunityRank,
                 CommunityRankStanding = CommunityRankStanding,
@@ -112,6 +114,7 @@ namespace BitShuva.Chavah.Models
         public void UpdateAlbumInfo(Album album)
         {
             Album = album.Name;
+            AlbumHebrewName = album.HebrewName;
             AlbumArtUri = album.AlbumArtUri;
             AlbumColors.Background = album.BackgroundColor;
             AlbumColors.Foreground = album.ForegroundColor;

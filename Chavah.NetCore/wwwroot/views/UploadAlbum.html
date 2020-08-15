@@ -17,6 +17,10 @@
                             <input class="form-control" placeholder="Album name" ng-model="vm.albumName">
                         </div>
                         <div class="form-group">
+                            <label>Album Hebrew name</label>
+                            <input class="form-control" placeholder="Album Hebrew name" ng-model="vm.albumHebrewName">
+                        </div>
+                        <div class="form-group">
                             <label>Album art</label>
                             <br ng-show="vm.albumArt" />
                             <img class="album-art" ng-show="vm.albumArt" ng-src="{{vm.albumArt.url}}" />
