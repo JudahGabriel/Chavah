@@ -1,11 +1,13 @@
 ﻿@import "../variables.less";
 
 .now-playing-page {
+    @currentSongAlbumArtSize: 350px;
+    @currentSongAlbumArtSizeXs: 250px;
 
     .songs-container {
         width: 50%;
         margin: auto;
-        height: 365px;
+        height: @currentSongAlbumArtSize + 65px;
         margin-top: 20px;
         display: flex;
         justify-content: center; // flex + justify-content makes the songs centered in the page.
@@ -23,7 +25,7 @@
     }
 
     .song {
-        min-width: 300px;
+        min-width: @currentSongAlbumArtSize;
         display: inline-block;
         background-color: white;
         padding: 5px;
@@ -34,28 +36,34 @@
         perspective: 50em;
         cursor: pointer;
 
-        @widthOnXs: 250px;
-
         @media (max-width: @screen-xs-max) {
             top: 20px;
-            min-width: @widthOnXs;
+            min-width: @currentSongAlbumArtSizeXs;
         }
 
         &:nth-child(1) {
             z-index: 5;
-            --box-reflect: below 18px -webkit-gradient( linear, left bottom, left top, from(rgba(255,255,255,0.25)), color-stop(0.3, transparent) );
+            -webkit-box-reflect: below 18px -webkit-gradient(linear, left bottom, left top, from(rgba(255,255,255,0.25)), color-stop(0.3, transparent) );
         }
 
         &:nth-child(2) {
             z-index: 4;
             transform: scale(.9) translateX(-50px) translateY(-5px) rotateZ(-10deg);
             opacity: .9;
+
+            &:hover {
+                transform: translateX(-120px) rotateZ(-4deg);
+            }
         }
 
         &:nth-child(3) {
             z-index: 3;
             transform: scale(.8) translateX(-100px) rotateZ(-15deg);
             opacity: .7;
+
+            &:hover {
+                transform: translateX(-150px) rotateZ(-10deg);
+            }
         }
 
         &:nth-child(4) {
@@ -66,6 +74,10 @@
             @media (max-width: 768px) {
                 display: none;
             }
+
+            &:hover {
+                transform: translateX(-200px) rotateZ(-17deg);
+            }
         }
 
         &:nth-child(5) {
@@ -75,6 +87,10 @@
             // On small screens and tablets in portrait mode, don't show this one.
             @media (max-width: 768px) {
                 display: none;
+            }
+
+            &:hover {
+                transform: translateX(-200px) rotateZ(-25deg);
             }
         }
 
@@ -94,8 +110,6 @@
         }
 
         &:hover:not(:first-child) {
-            margin-left: -150px;
-            transform: rotateZ(-5deg);
             opacity: 1;
 
             .song-info {
@@ -113,10 +127,10 @@
         }
 
         img {
-            width: 300px;
+            width: 350px;
 
             @media (max-width: @screen-xs-max) {
-                width: @widthOnXs;
+                width: @currentSongAlbumArtSizeXs;
             }
         }
 
@@ -133,10 +147,10 @@
 
         .pause-overlay {
             position: absolute;
-            width: 300px;
-            height: 300px;
+            width: @currentSongAlbumArtSize;
+            height: @currentSongAlbumArtSize;
             background-color: rgba(0, 0, 0, .60);
-            display: flex; 
+            display: flex;
             justify-content: center;
 
             &.not-paused {
@@ -149,8 +163,8 @@
             }
 
             @media (max-width: @screen-xs-max) {
-                width: @widthOnXs;
-                height: @widthOnXs;
+                width: @currentSongAlbumArtSizeXs;
+                height: @currentSongAlbumArtSizeXs;
             }
         }
     }
@@ -176,7 +190,7 @@
     .left-pane, .right-pane {
         padding: 20px;
 
-        >.row {
+        > .row {
             margin-bottom: 30px;
         }
     }

@@ -168,18 +168,16 @@ namespace BitShuva.Chavah.Controllers
         {
             // Get the expected disbursement records for each artist.
             var disbursementRecords = await GetMessiahsMusicFundDistribution(year, month, donations);
-
-            // Group those artists by DonationRecipientId. (Some artists share a disbursement target, e.g. "Ted Pearce" and "Ted Pearce & Cultural Xchange" both roll into the same target.
             var donationsToMake = disbursementRecords
-                .GroupBy(r => r.DonationRecipientId ?? r.ArtistId)
-                .Select(r => new
+                .Select(a => new
                 {
-                    ArtistId = r.Key,
-                    Amount = r.Sum(a => a.Disbursement)
-                });
+                    a.ArtistId,
+                    Amount = a.Disbursement
+                })
+                .ToList();
 
             // Load the artists that we need to donate to.
-            var donorRecipientIds = donationsToMake
+            var donorRecipientIds = disbursementRecords
                 .Select(i => i.ArtistId ?? string.Empty);
             var artists = await DbSession.LoadOptionalAsync<Artist>(donorRecipientIds);
             foreach (var donation in donationsToMake)
@@ -211,29 +209,31 @@ namespace BitShuva.Chavah.Controllers
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<IEnumerable<DueDonation>> GetDueDonations(double minimum)
         {
-            var dueDonations = new List<DueDonation>(100);
+            var artists = new List<Artist>(1000);
             await foreach (var artist in DbSession.Advanced.Stream<Artist>())
             {
-                // Sum the donations without a disbursement date.
-                var donationsNeedingDisbursement = artist.Donations
-                    .Where(d => d.DistributionDate == null)
-                    .ToList();
-                var donationAmount = donationsNeedingDisbursement
-                    .Sum(d => d.Amount);
-                if (donationAmount >= minimum)
-                {
-                    dueDonations.Add(new DueDonation
-                    {
-                        ArtistId = artist.Id!,
-                        Name = artist.GetNameWithDisambiguation(),
-                        Amount = Math.Round(donationAmount, 2),
-                        DonationUrl = artist.DonationUrl,
-                        Donations = donationsNeedingDisbursement
-                    });
-                }
+                artists.Add(artist);
             }
 
-            return dueDonations;
+            return artists
+                .GroupBy(a => a.DonationRecipientId ?? a.Id!) // Some donations for an artist go towards another artist. Group those together.
+                .Select(artistGroup => new // Create a new object containing the donation recipient and all the donations
+                {
+                    Artist = artistGroup.FirstOrDefault(a => a.Id == artistGroup.Key) ?? artistGroup.First(),
+                    Donations = artistGroup
+                        .SelectMany(a => a.Donations.Select(donation => DonationContext.FromDonation(donation, a.GetNameWithDisambiguation()))) // Combine all the donations for this artist group
+                        .Where(d => d.DistributionDate == null) // Get the ones we haven't yet distributed.
+                        .ToList()
+                })
+                .Select(a => new DueDonation
+                {
+                    Amount = Math.Round(a.Donations.Sum(d => d.Amount), 2),
+                    ArtistId = a.Artist.Id!,
+                    Donations = a.Donations,
+                    DonationUrl = a.Artist.DonationUrl,
+                    Name = a.Artist.Name
+                })
+                .Where(a => a.Amount >= minimum);
         }
     }
 }

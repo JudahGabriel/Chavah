@@ -29,6 +29,6 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// The list of donations needing disbursement.
         /// </summary>
-        public List<Donation> Donations { get; set; } = new List<Donation>();
+        public List<DonationContext> Donations { get; set; } = new List<DonationContext>();
     }
 }
