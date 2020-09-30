@@ -88,127 +88,198 @@
   "icons": [
     {
       "src": "/images/chavah16x16.png",
-      "sizes": "16x16"
+      "sizes": "16x16",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah20x20.png",
-      "sizes": "20x20"
+      "sizes": "20x20",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah24x24.png",
+      "sizes": "24x24",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah29x29.png",
-      "sizes": "29x29"
+      "sizes": "29x29",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah32x32.png",
-      "sizes": "32x32"
+      "sizes": "32x32",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah40x40.png",
-      "sizes": "40x40"
+      "sizes": "40x40",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah44x44.png",
-      "sizes": "44x44"
+      "sizes": "44x44",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah48x48.png",
-      "sizes": "48x48"
+      "sizes": "48x48",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah50x50.png",
-      "sizes": "50x50"
+      "sizes": "50x50",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah55x55.png",
+      "sizes": "55x55",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah57x57.png",
-      "sizes": "57x57"
+      "sizes": "57x57",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah58x58.png",
-      "sizes": "58x58"
+      "sizes": "58x58",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah60x60.png",
-      "sizes": "60x60"
+      "sizes": "60x60",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah63x63.png",
+      "sizes": "63x63",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah64x64.png",
-      "sizes": "64x64"
+      "sizes": "64x64",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah66x66.png",
+      "sizes": "66x66",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah71x71.png",
-      "sizes": "71x71"
+      "sizes": "71x71",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah72x72.png",
-      "sizes": "72x72"
+      "sizes": "72x72",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah75x75.png",
+      "sizes": "75x75",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah76x76.png",
-      "sizes": "76x76"
+      "sizes": "76x76",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah80x80.png",
-      "sizes": "80x80"
+      "sizes": "80x80",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah87x87.png",
-      "sizes": "87x87"
+      "sizes": "87x87",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah88x88.png",
+      "sizes": "88x88",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah89x89.png",
-      "sizes": "89x89"
+      "sizes": "89x89",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah96x96.png",
-      "sizes": "96x96"
+      "sizes": "96x96",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah100x100.png",
-      "sizes": "100x100"
+      "sizes": "100x100",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah107x107.png",
-      "sizes": "107x107"
+      "sizes": "107x107",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah114x114.png",
-      "sizes": "114x114"
+      "sizes": "114x114",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah120x120.png",
-      "sizes": "120x120"
+      "sizes": "120x120",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah128x128.png",
-      "sizes": "128x128"
+      "sizes": "128x128",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah142x142.png",
-      "sizes": "142x142"
+      "sizes": "142x142",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah144x144.png",
-      "sizes": "144x144"
+      "sizes": "144x144",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah150x150.png",
-      "sizes": "150x150"
+      "sizes": "150x150",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah152x152.png",
-      "sizes": "152x152"
+      "sizes": "152x152",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah167x167.png",
-      "sizes": "167x167"
+      "sizes": "167x167",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah176x176.png",
+      "sizes": "176x176",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah180x180.png",
-      "sizes": "180x180"
+      "sizes": "180x180",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah188x188.png",
+      "sizes": "188x188",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah192x192.png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah-monochrome192x192.png",
@@ -217,20 +288,69 @@
       "purpose": "monochrome"
     },
     {
+      "src": "/images/chavah200x200.png",
+      "sizes": "200x200",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah255x255.png",
+      "sizes": "255x255",
+      "purpose": "any"
+    },
+    {
       "src": "/images/chavah256x256.png",
-      "sizes": "256x256"
+      "sizes": "256x256",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah284x284.png",
-      "sizes": "284x284"
+      "sizes": "284x284",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah300x300.png",
+      "sizes": "300x300",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah310x150.png",
+      "sizes": "310x150",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah310x310.png",
+      "sizes": "310x310",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah320x480.png",
-      "sizes": "320x480"
+      "sizes": "320x480",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah388x188.png",
+      "sizes": "388x188",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah388x388.png",
+      "sizes": "388x388",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah465x225.png",
+      "sizes": "465x225",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah465x465.png",
+      "sizes": "465x465",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah512x512.png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah-monochrome512x512.png",
@@ -245,24 +365,54 @@
       "purpose": "monochrome"
     },
     {
+      "src": "/images/chavah600x600.png",
+      "sizes": "600x600",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah620x300.png",
+      "sizes": "620x300",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah620x620.png",
+      "sizes": "620x620",
+      "purpose": "any"
+    },
+    {
       "src": "/images/chavah640x960.png",
-      "sizes": "640x960"
+      "sizes": "640x960",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah640x1136.png",
-      "sizes": "640x1136"
+      "sizes": "640x1136",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah750x1334.png",
-      "sizes": "750x1334"
+      "sizes": "750x1334",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah768x1004.png",
-      "sizes": "768x1004"
+      "sizes": "768x1004",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah775x375.png",
+      "sizes": "775x375",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah768x1024.png",
-      "sizes": "768x1024"
+      "sizes": "768x1024",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah930x450.png",
+      "sizes": "930x450",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah-maskable1000x1000.png",
@@ -272,43 +422,73 @@
     },
     {
       "src": "/images/chavah1024x748.png",
-      "sizes": "1024x748"
+      "sizes": "1024x748",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah1024x768.png",
-      "sizes": "1024x768"
+      "sizes": "1024x768",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah1024x1024.png",
-      "sizes": "1024x1024"
+      "sizes": "1024x1024",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah1240x600.png",
+      "sizes": "1240x600",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah1240x1240.png",
+      "sizes": "1240x1240",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah1242x2208.png",
-      "sizes": "1242x2208"
+      "sizes": "1242x2208",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah1280x600.png",
+      "sizes": "1280x600",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah1334x750.png",
-      "sizes": "1334x750"
+      "sizes": "1334x750",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah1536x2008.png",
-      "sizes": "1536x2008"
+      "sizes": "1536x2008",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah1536x2048.png",
-      "sizes": "1536x2048"
+      "sizes": "1536x2048",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah2048x1496.png",
-      "sizes": "2048x1496"
+      "sizes": "2048x1496",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah2048x1536.png",
-      "sizes": "2048x1536"
+      "sizes": "2048x1536",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah2208x1242.png",
-      "sizes": "2208x1242"
+      "sizes": "2208x1242",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah2480x1200.png",
+      "sizes": "2480x1200",
+      "purpose": "any"
     }
   ]
 }

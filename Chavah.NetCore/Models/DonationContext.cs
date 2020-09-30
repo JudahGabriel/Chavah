@@ -14,12 +14,14 @@ namespace BitShuva.Chavah.Models
     public class DonationContext : Donation
     {
         public string? RecipientArtist { get; set; }
+        public string ArtistId { get; set; } = string.Empty;
 
-        public static DonationContext FromDonation(Donation donation, string? recipientArtist)
+        public static DonationContext FromDonation(Donation donation, string? recipientArtist, string artistId)
         {
             var donationContext = new DonationContext();
             donationContext.CopyPropsFrom(donation);
             donationContext.RecipientArtist = recipientArtist;
+            donationContext.ArtistId = artistId;
             return donationContext;
         }
     }

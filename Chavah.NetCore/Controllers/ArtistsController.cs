@@ -221,7 +221,7 @@ namespace BitShuva.Chavah.Controllers
                 {
                     Artist = artistGroup.FirstOrDefault(a => a.Id == artistGroup.Key) ?? artistGroup.First(),
                     Donations = artistGroup
-                        .SelectMany(a => a.Donations.Select(donation => DonationContext.FromDonation(donation, a.GetNameWithDisambiguation()))) // Combine all the donations for this artist group
+                        .SelectMany(a => a.Donations.Select(donation => DonationContext.FromDonation(donation, a.GetNameWithDisambiguation(), a.Id ?? string.Empty))) // Combine all the donations for this artist group
                         .Where(d => d.DistributionDate == null) // Get the ones we haven't yet distributed.
                         .ToList()
                 })
