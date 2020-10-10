@@ -215,35 +215,6 @@ namespace BitShuva.Chavah.Controllers
                 artists.Add(artist);
             }
 
-            //var grouped = artists
-            //    .GroupBy(a => a.DonationRecipientId ?? a.Id!)
-            //    .ToList();
-
-            //var proj1 = grouped
-            //    .Select(artistGroup => new // Create a new object containing the donation recipient and all the donations
-            //    {
-            //        Artist = artistGroup.FirstOrDefault(a => a.Id == artistGroup.Key) ?? artistGroup.First(),
-            //        Donations = artistGroup
-            //            .SelectMany(a => a.Donations.Select(donation => DonationContext.FromDonation(donation, a.GetNameWithDisambiguation(), a.Id ?? string.Empty))) // Combine all the donations for this artist group
-            //            .Where(d => d.DistributionDate == null) // Get the ones we haven't yet distributed.
-            //            .ToList()
-            //    })
-            //    .ToList();
-
-            //var proj2 = proj1
-            //    .Select(a => new DueDonation
-            //    {
-            //        Amount = Math.Round(a.Donations.Sum(d => d.Amount), 2),
-            //        ArtistId = a.Artist.Id!,
-            //        Donations = a.Donations,
-            //        DonationUrl = a.Artist.DonationUrl,
-            //        Name = a.Artist.Name
-            //    })
-            //    .ToList();
-            //var filtered = proj2.Where(a => a.Amount >= minimum).ToList();
-            //var ordered = filtered.OrderByDescending(a => a.Amount).ToList();
-            //return ordered;
-
             return artists
                 .GroupBy(a => a.DonationRecipientId?.ToLowerInvariant() ?? a.Id?.ToLowerInvariant() ?? "") // Some donations for an artist go towards another artist. Group those together.
                 .Select(artistGroup => new // Create a new object containing the donation recipient and all the donations

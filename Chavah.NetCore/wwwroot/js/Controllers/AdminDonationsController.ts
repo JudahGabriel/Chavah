@@ -22,7 +22,6 @@
         }
 
         markAsPaid(donation: Server.DueDonation) {
-            console.log("zanz marking as paid");
             this.artistApi.markDueDonationAsPaid(donation)
                 .then(() => this.dueDonations.remove(donation));
         }
