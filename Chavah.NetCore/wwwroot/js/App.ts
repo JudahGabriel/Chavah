@@ -17,7 +17,7 @@
     // Gets the relative path to a cache-busted angular view.
     // The view URL is appended a hash of the contents of the file. See AngularCacheBustedViewsProvider.cs
     function findCacheBustedView(viewName: string) {
-        let cacheBustedView = homeVm.cacheBustedAngularViews.find((v) => v.search(new RegExp(viewName, "i")) !== -1);
+        let cacheBustedView = homeVm.cacheBustedAngularViews.find(v => v.search(new RegExp(viewName, "i")) !== -1);
         if (!cacheBustedView) {
             throw new Error("Unable to find cache-busted Angular view " + viewName);
         }
@@ -98,7 +98,8 @@
                 .when("/admin/songedits", createRoute("/ApproveSongEdits.html", RouteAccess.Admin))
                 .when("/admin/tags", createRoute("/TagEditor.html", RouteAccess.Admin))
                 .when("/admin/logs", createRoute("/LogEditor.html", RouteAccess.Admin))
-                .when("/admin/songs", { redirectTo: "/admin" }) 
+                .when("/admin/songs", { redirectTo: "/admin" })
+                .when("/admin/donations", createRoute("/AdminDonations.html", RouteAccess.Admin))
 
                 .otherwise({
                     redirectTo: "/nowplaying",

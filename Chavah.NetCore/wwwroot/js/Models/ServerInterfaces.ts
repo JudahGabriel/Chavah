@@ -261,4 +261,25 @@
         flagCount: number;
         lastFlagDate: string | null;
     }
+
+    export interface Donation {
+        amount: number;
+        donorName: string;
+        donorEmail: string;
+        date: string;
+        distributionDate: string | null;
+    }
+
+    export interface DonationContext extends Donation {
+        recipientArtist: string | null;
+        artistId: string;
+    }
+
+    export interface DueDonation {
+        artistId: string;
+        name: string;
+        amount: number;
+        donationUrl: string;
+        donations: DonationContext[];
+    }
 }

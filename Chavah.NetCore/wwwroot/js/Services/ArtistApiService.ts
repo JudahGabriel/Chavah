@@ -35,6 +35,17 @@
             return this.httpApi.query("/api/artists/getLikedArtists", args);
         }
 
+        getDueDonations(minimum: number): ng.IPromise<Server.DueDonation[]> {
+            const args = {
+                minimum
+            };
+            return this.httpApi.query("/api/artists/getDueDonations", args);
+        }
+
+        markDueDonationAsPaid(donation: Server.DueDonation): ng.IPromise<Server.DueDonation> {
+            return this.httpApi.post("/api/artists/markDueDonationAsPaid", donation);
+        }
+
         // tslint:disable-next-line:member-ordering
         static artistSelector(serverObj: Server.Artist): Artist {
             return new Artist(serverObj);

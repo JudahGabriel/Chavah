@@ -215,11 +215,40 @@ namespace BitShuva.Chavah.Controllers
                 artists.Add(artist);
             }
 
+            //var grouped = artists
+            //    .GroupBy(a => a.DonationRecipientId ?? a.Id!)
+            //    .ToList();
+
+            //var proj1 = grouped
+            //    .Select(artistGroup => new // Create a new object containing the donation recipient and all the donations
+            //    {
+            //        Artist = artistGroup.FirstOrDefault(a => a.Id == artistGroup.Key) ?? artistGroup.First(),
+            //        Donations = artistGroup
+            //            .SelectMany(a => a.Donations.Select(donation => DonationContext.FromDonation(donation, a.GetNameWithDisambiguation(), a.Id ?? string.Empty))) // Combine all the donations for this artist group
+            //            .Where(d => d.DistributionDate == null) // Get the ones we haven't yet distributed.
+            //            .ToList()
+            //    })
+            //    .ToList();
+
+            //var proj2 = proj1
+            //    .Select(a => new DueDonation
+            //    {
+            //        Amount = Math.Round(a.Donations.Sum(d => d.Amount), 2),
+            //        ArtistId = a.Artist.Id!,
+            //        Donations = a.Donations,
+            //        DonationUrl = a.Artist.DonationUrl,
+            //        Name = a.Artist.Name
+            //    })
+            //    .ToList();
+            //var filtered = proj2.Where(a => a.Amount >= minimum).ToList();
+            //var ordered = filtered.OrderByDescending(a => a.Amount).ToList();
+            //return ordered;
+
             return artists
-                .GroupBy(a => a.DonationRecipientId ?? a.Id!) // Some donations for an artist go towards another artist. Group those together.
+                .GroupBy(a => a.DonationRecipientId?.ToLowerInvariant() ?? a.Id?.ToLowerInvariant() ?? "") // Some donations for an artist go towards another artist. Group those together.
                 .Select(artistGroup => new // Create a new object containing the donation recipient and all the donations
                 {
-                    Artist = artistGroup.FirstOrDefault(a => a.Id == artistGroup.Key) ?? artistGroup.First(),
+                    Artist = artistGroup.FirstOrDefault(a => string.Equals(a.Id, artistGroup.Key, StringComparison.OrdinalIgnoreCase)) ?? artistGroup.First(),
                     Donations = artistGroup
                         .SelectMany(a => a.Donations.Select(donation => DonationContext.FromDonation(donation, a.GetNameWithDisambiguation(), a.Id ?? string.Empty))) // Combine all the donations for this artist group
                         .Where(d => d.DistributionDate == null) // Get the ones we haven't yet distributed.
@@ -233,7 +262,34 @@ namespace BitShuva.Chavah.Controllers
                     DonationUrl = a.Artist.DonationUrl,
                     Name = a.Artist.Name
                 })
-                .Where(a => a.Amount >= minimum);
+                .Where(a => a.Amount >= minimum)
+                .OrderByDescending(a => a.Amount);
+        }
+
+        /// <summary>
+        /// Marks the donation as paid.
+        /// </summary>
+        /// <param name="donation"></param>
+        /// <returns></returns>
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task<DueDonation> MarkDueDonationAsPaid([FromBody]DueDonation dueDonation)
+        {
+            var unpaidDonations = dueDonation.Donations.Where(d => d.DistributionDate == null);
+            var artistIds = unpaidDonations
+                .Select(d => d.ArtistId)
+                .Distinct();
+            var artists = await DbSession.LoadWithoutNulls<Artist>(artistIds);
+            foreach (var donation in unpaidDonations)
+            {
+                donation.DistributionDate = DateTime.UtcNow;
+
+                // Save it in the database.
+                var artist = await DbSession.LoadRequiredAsync<Artist>(donation.ArtistId);
+                var matchingDonation = artist.Donations.Single(d => d.Date == donation.Date && d.Amount == donation.Amount && d.DonorName == donation.DonorName && d.DistributionDate == null);
+                matchingDonation.DistributionDate = donation.DistributionDate;
+            }
+
+            return dueDonation;
         }
     }
 }

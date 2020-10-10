@@ -33,6 +33,8 @@
     <link rel="icon" type="image/png" href="~/images/chavah64x64.png?v=1" sizes="64x64">
     <link rel="icon" type="image/png" href="~/images/chavah128x128.png?v=1" sizes="128x128">
     <link rel="icon" type="image/png" href="~/images/chavah256x256.png?v=1" sizes="256x256">
+    <link rel="icon" type="image/png" href="~/images/chavah512x512.png?v=1" sizes="512x512">
+
     <!--<![endif]-->
     @* Apple iOS shortcut *@
     <link rel="apple-touch-icon" href="~/images/chavah180x180.png?v=1" />
@@ -117,34 +119,34 @@
     </div>
 
     @*JS for dev*@
-<environment names="Development">
-    @*3rd party JS*@
-    <script src="~/lib/jquery/jquery.js"></script>
-    <script src="~/lib/bootstrap/js//bootstrap.js"></script>
-    <script src="~/lib/angular/angular.js"></script>
-    <script src="~/lib/angular/angular-route.js"></script>
-    <script src="~/lib/angular/angular-animate.js"></script>
-    <script src="~/lib/angular-bootstrap/ui-bootstrap.js"></script>
-    <script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="~/lib/angular-local-storage/angular-local-storage.js"></script>
-    <script src="~/lib//modernizr/modernizr.dev.js"></script>
-    <script src="~/lib/nprogress/nprogress.js"></script>
-    <script src="~/lib/moment/moment.js"></script>
-    <script src="~/lib/lodash/lodash.js"></script>
-    <script src="~/lib/rxjs/rx.lite.js"></script>
-    <script src="~/lib/tslib/tslib.min.js"></script>
-    <script src="~/lib/fastclick/fastclick.js"></script>
-    <script src="~/lib/tinycolor/tinycolor.js"></script>
+    <environment names="Development">
+        @*3rd party JS*@
+        <script src="~/lib/jquery/jquery.js"></script>
+        <script src="~/lib/bootstrap/js//bootstrap.js"></script>
+        <script src="~/lib/angular/angular.js"></script>
+        <script src="~/lib/angular/angular-route.js"></script>
+        <script src="~/lib/angular/angular-animate.js"></script>
+        <script src="~/lib/angular-bootstrap/ui-bootstrap.js"></script>
+        <script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script src="~/lib/angular-local-storage/angular-local-storage.js"></script>
+        <script src="~/lib//modernizr/modernizr.dev.js"></script>
+        <script src="~/lib/nprogress/nprogress.js"></script>
+        <script src="~/lib/moment/moment.js"></script>
+        <script src="~/lib/lodash/lodash.js"></script>
+        <script src="~/lib/rxjs/rx.lite.js"></script>
+        <script src="~/lib/tslib/tslib.min.js"></script>
+        <script src="~/lib/fastclick/fastclick.js"></script>
+        <script src="~/lib/tinycolor/tinycolor.js"></script>
 
-    @*Chavah JS*@
-    <script asp-src-include="~/js/polyfills/*.js" asp-append-version="true"></script>
-    <script asp-src-include="~/js/common/*.js" asp-append-version="true"></script>
-    <script asp-src-include="~/js/models/*.js" asp-append-version="true"></script>
-    <script asp-src-include="~/js/*.js" asp-append-version="true"></script>
-    <script asp-src-include="~/js/directives/*.js" asp-append-version="true"></script>
-    <script asp-src-include="~/js/services/*.js" asp-append-version="true"></script>
-    <script asp-src-include="~/js/controllers/*.js" asp-append-version="true"></script>
-</environment>
+        @*Chavah JS*@
+        <script asp-src-include="~/js/polyfills/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/common/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/models/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/directives/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/services/*.js" asp-append-version="true"></script>
+        <script asp-src-include="~/js/controllers/*.js" asp-append-version="true"></script>
+    </environment>
 
     @*JS for production*@
     <environment names="Test,Staging,Production">
