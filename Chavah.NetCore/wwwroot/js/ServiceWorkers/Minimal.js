@@ -1,4 +1,4 @@
-﻿self.addEventListener('fetch', function (event) { });
+self.addEventListener('fetch', function (event) { });
 
 self.addEventListener('push', function (event) {
     var pushNotification = event.data.json(); // this will be a Models.PushNotification
@@ -23,7 +23,6 @@ self.addEventListener('push', function (event) {
 
 self.onnotificationclick = function (event) {
     var url = event && event.notification ? event.notification.data : "";
-    console.log('On notification click: ', url);
     event.notification.close();
 
     if (url) {

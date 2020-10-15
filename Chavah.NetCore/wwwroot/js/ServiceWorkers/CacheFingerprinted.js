@@ -1,6 +1,232 @@
-﻿self.addEventListener('push', function (event) {
-    var pushNotification = event.data.json(); // this will be a Models.PushNotification
+// This service worker is cache-first with network fallback for:
+// - fingerprinted resources (e.g. foo.html?v=123ABC)
+// - app shell related CDN resources ()
 
+'use strict';
+
+const appShellCacheName = "AppShell";
+const mediaCacheName = "MediaResources";
+const offlinePageUrl = "/views/offline.html";
+let storageSpaceAvailable = megaBytesInBytes(250);
+
+/**
+* Initializes the caches.
+*
+* @returns {Promise<void>}
+*/
+async function initializeCaches() {
+    // Delete the old, obsolete cache if it exists.
+    await caches.delete("v1.0::CacheFingerprinted");
+
+    // Put the offline page into the cache.
+    const appShellCache = await caches.open(appShellCacheName);
+    appShellCache.add(offlinePageUrl);
+
+    // See how much space we have available.
+    if (navigator.storage && navigator.storage.estimate) {
+        const storageEstimate = await navigator.storage.estimate();
+        storageSpaceAvailable = storageEstimate.quota - storageEstimate.usage;
+    }
+}
+
+/**
+ * Adds the specified request/response pair to the cache.
+ * @param {string} cacheName The name of the cache to add the response to.
+ * @param {Request} request The request whose response to add to the cache.
+ * @param {Response} response The response to add to the cache.
+ * @returns {Promise<void>} 
+ */
+async function addToCache(cacheName, request, response) {
+    // If we're short on space, skip adding to the cache.
+    if (storageSpaceAvailable < megaBytesInBytes(20)) {
+        console.warn("Skipping adding resource to the cache because we're short on storage space", storageSpaceAvailable);
+        return;
+    }
+
+    const cache = await caches.open(cacheName);
+    const clonedResponse = tryCloneResponse(response, request.url);
+    const isCdn = isCdnUrl(request.url);
+    const isOnline = navigator.onLine;
+    if (!response.ok) {
+        // See if it's an opaque response from our CDN. If so, and we're online, assume it's successful and put it in the cache.
+        if (response.type == "opaque" && isCdn && isOnline) {
+            await cache.put(request, clonedResponse); // .put is required to storage opaque responses.
+        } else if (isOnline) {
+            console.warn("Attempted to add request to sw cache, but received non-OK response", request, response);
+        }
+    } else {
+        await cache.add(request, clonedResponse);
+    }
+
+    // If we added an MP3 or JPG to the cache, update the estimated available space.
+    const isMedia = isMediaUrl(request.url);
+    if (isMedia) {
+        const averageMp3Size = megaBytesInBytes(10);
+        const averageJpgSize = megaBytesInBytes(1);
+        const responseSizeEstimate = request.url.includes(".mp3") ? averageMp3Size : averageJpgSize;
+        storageSpaceAvailable -= responseSizeEstimate;
+    }
+}
+
+/**
+ * Attempts to clone the specified response. If failed, the original response is returned.
+ * @param {Request} request The response to clone
+ * @param {string} url The request URL
+ */
+function tryCloneResponse(response, url) {
+    try {
+        return response.clone();
+    } catch (cloneError) {
+        console.warn("Unable to clone response", response, request, cloneError);
+        return response;
+    }
+}
+
+/**
+ * Serves an "offline" notification. If the request is for an image, an "offline" SVG will be returned. Otherwise, the offline page will be served.
+ * @param {Request} request The request which triggered the offline result.
+ * @returns {Promise<Response>} The offline response.
+ */
+async function serveOfflinePageOrImage(request) {
+    const isImageRequest = request.headers.get("Accept")?.includes("image");
+    if (isImageRequest) {
+        return new Response('<svg role="img" aria-labelledby="offline-title" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"><title id="offline-title">Offline</title><g fill="none" fill-rule="evenodd"><path fill="#D8D8D8" d="M0 0h400v300H0z"/><text fill="#9B9B9B" font-family="Helvetica Neue,Arial,Helvetica,sans-serif" font-size="72" font-weight="bold"><tspan x="93" y="172">offline</tspan></text></g></svg>', {
+            headers: {
+                'Content-Type': 'image/svg+xml'
+            }
+        });
+    }
+
+    const appShellCache = await caches.open(appShellCacheName);
+    const offlinePageResponse = await appShellCache.match(offlinePageUrl);
+    if (offlinePageResponse == null) {
+        throw new Error("Couldn't find offline page in the cache.");
+    }
+
+    return offlinePageResponse;
+}
+
+/**
+ * Fetches a response from the network.
+ * @param {FetchEvent} event The fetch event.
+ * @returns {Promise<Response> | null}
+ */
+async function fetchFromNetwork(event) {
+    try {
+        return await fetch(event.request);
+    } catch (networkError) {
+        console.warn("Failed to make network request", event.request, networkError);
+        null;
+    }
+}
+
+/**
+ * Fetches from the network. If the fetch fails, the offline page will be served.
+ * @param {any} event
+ */
+async function fetchNetworkWithOfflineFallback(event) {
+    const networkResponse = await fetchFromNetwork(event);
+    if (networkResponse && (networkResponse.ok || networkResponse.type === "opaque")) {
+        return networkResponse;
+    }
+
+    return serveOfflinePageOrImage(event.request);
+}
+
+/**
+ * Fetches the request from the cache. If not found in the cache, it will be fetched from the network.
+ * @param {string} cacheName The name of the cache to find the request in.
+ * @param {FetchEvent} event The fetch event.
+ * @returns {Promise<Response>}
+ */
+async function fetchCacheFirst(cacheName, event) {
+    const targetCache = await caches.open(cacheName);
+    const cacheResponse = await targetCache.match(event.request);
+    if (cacheResponse) {
+        // We've got it in the cache. Serve it.
+        return cacheResponse;
+    }
+
+    // It's not in the cache. Fallback to the network and update the cache.
+    const networkResponse = await fetchFromNetwork(event);
+    if (networkResponse) {
+        await addToCache(cacheName, event.request, networkResponse);
+        return networkResponse;
+    }
+
+    // We couldn't find it in the cache and we couldn't fetch it from the network.
+    // Serve the offline image.
+    return serveOfflinePageOrImage(event.request);
+}
+
+/**
+ * Fetches from the network first. If failed, falls back to the cache. If both fail, serves the offline page.
+ * Adds network result to the cache.
+ * @param {string} cacheName The cache name
+ * @param {FetchEvent} event
+ */
+async function networkFirst(cacheName, event) {
+    try {
+        const networkResponse = await fetch(event.request);
+        if (networkResponse && (networkResponse.ok || networkResponse.type === "opaque")) {
+            await addToCache(cacheName, event.request, networkResponse);
+            return networkResponse;
+        }
+    } catch (networkError) {
+        console.warn("Error fetching from network in networkFirst fetch. Falling back to cache.", event.request, networkError);
+    }
+
+    // Get it from the cache.
+    const targetCache = await caches.open(cacheName);
+    const cacheResponse = await targetCache.match(event.request);
+    if (cacheResponse) {
+        return cacheResponse;
+    }
+
+    return await serveOfflinePageOrImage(event.request);
+}
+
+/**
+ * Initializes caches and performs other service worker installation logic.
+ * @param {ExtendableEvent} event
+ */
+function onInstall(event) {
+    event.waitUntil(self.skipWaiting()); // Activate worker immediately
+    event.waitUntil(initializeCaches());
+}
+
+/**
+ * Performs our service worker fetch logic: fetching fingerprinted and CDN resources from the cache first, then falling back to the network.
+ * @param {FetchEvent} event
+ */
+function onFetch(event) {
+    const request = event.request;
+    const isFingerprinted = request.url.match(/(\?|&)v=/ig);
+    const isCdn = isCdnUrl(request.url);
+    const isMediaResource = isMediaUrl(request.url);
+    const isHomePage = request.method === "GET" && (request.url === "/" || request.url.endsWith("/#") || request.url.endsWith("/#/"));
+    // Always fetch non-GET requests from the network
+    if (request.method !== "GET") {
+        event.respondWith(fetchNetworkWithOfflineFallback(event));
+    } else if (isHomePage) {
+        event.respondWith(networkFirst(appShellCacheName, event));
+    } else if (isMediaResource) {
+        // Cache first for media resources (our MP3s and album art)
+        event.respondWith(fetchCacheFirst(mediaCacheName, event));
+    } else if (isFingerprinted || isCdn) {
+        // Cache first our app shell: fingerprinted resources (our HTML, JS, CSS) and shell-related scripts (jQuery, Bootstrap, and others on various CDNs)
+        event.respondWith(fetchCacheFirst(appShellCacheName, event));        
+    } else {
+        event.respondWith(fetchNetworkWithOfflineFallback(event));
+    }
+}
+
+/**
+ * Handles the push notification event and displays a notification to the user.
+ * @param {PushEvent} event
+ */
+function onPush(event) {
+    const pushNotification = event.data?.json(); // this will be a Models.PushNotification
     event.waitUntil(
         self.registration.showNotification(pushNotification.title || 'Chavah Messianic Radio', {
             body: pushNotification.body,
@@ -8,7 +234,7 @@
             image: pushNotification.imageUrl, // The big image to show. In Chrome, this shows on the top of hte notification, unscaled and clipped to the window
             data: pushNotification.clickUrl,
             badge: '/images/chavah48x48.png',
-            requireInteraction: true, 
+            requireInteraction: true,
             actions: [
                 {
                     action: 'read',
@@ -17,121 +243,56 @@
             ]
         })
     );
-});
+}
 
-self.onnotificationclick = function (event) {
-    var url = event && event.notification ? event.notification.data : "";
+/**
+ * Performs the notification click logic.
+ * @param {Event} event
+ */
+function onNotificationClick(event) {
+    const url = event && event.notification ? event.notification.data : "";
     event.notification.close();
 
     if (url) {
-        event.waitUntil(clients.openWindow(url));
+        event.waitUntil(self.clients.openWindow(url));
     }
-};
+}
 
-(function () {
-    'use strict';
+/**
+ * Checks whether the resource is a media resource (MP3, JPG, etc) on our CDN.
+ * @param {string} url The URL to check.
+ * @returns {boolean}
+ */
+function isMediaUrl(url) {
+    return url && url.match(/b-cdn.net/ig);
+}
 
-    // Cache Fingerprinted caches all resources that have a fingerprint (that is, a ?v=123" query string) on them.
-    // Fingerprinted resources will bypass the network and be served from the cache.
+/**
+ * Checks whether the request is for a CDN resource.
+ * @param {string} url The URL to check.
+ * @returns {boolean}
+ */
+function isCdnUrl(url) {
+    return url && (url.match(/b-cdn.net/ig) ||
+        url.match(/cdnjs.cloudflare.com/ig) ||
+        url.match(/cdn.jsdelivr.net/ig) ||
+        url.match(/ajax.googleapis.com/ig) ||
+        url.match(/fonts.googleapis.com/ig) ||
+        url.match(/maxcdn.bootstrapcdn.com/ig) ||
+        url.match(/code.jquery.com/ig)) ||
+        url.match(/google-analytics.com/ig);
+}
 
-    // Update 'version' if you need to refresh the cache
-    var version = "v1.0::CacheFingerprinted";
-    var offlineUrl = "/views/offline.html";
+/**
+ * Converts megabytes into bytes.
+ * @param {number} mb
+ * @returns {number}
+ */
+function megaBytesInBytes(mb) {
+    return mb * 1048576;
+}
 
-    // Store core files in a cache (including a page to display when offline)
-    function updateStaticCache() {
-        return caches.open(version)
-            .then(function (cache) {
-                return cache.addAll([
-                    offlineUrl
-                ]);
-            });
-    }
-
-    function addToCache(request, response) {
-        if (!response.ok)
-            return;
-
-        var copy = response.clone();
-        caches.open(version)
-            .then(function (cache) {
-                cache.put(request, copy);
-            });
-    }
-
-    function serveOfflineImage(request) {
-        if (request.headers.get('Accept').indexOf('image') !== -1) {
-            return new Response('<svg role="img" aria-labelledby="offline-title" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"><title id="offline-title">Offline</title><g fill="none" fill-rule="evenodd"><path fill="#D8D8D8" d="M0 0h400v300H0z"/><text fill="#9B9B9B" font-family="Helvetica Neue,Arial,Helvetica,sans-serif" font-size="72" font-weight="bold"><tspan x="93" y="172">offline</tspan></text></g></svg>', { headers: { 'Content-Type': 'image/svg+xml' } });
-        }
-    }
-
-    self.addEventListener('install', function (event) {
-        event.waitUntil(updateStaticCache());
-    });
-
-    self.addEventListener('activate', function (event) {
-        event.waitUntil(
-            caches.keys()
-                .then(function (keys) {
-                    // Remove caches whose name is no longer valid
-                    return Promise.all(keys
-                        .filter(function (key) {
-                            return key.indexOf(version) !== 0;
-                        })
-                        .map(function (key) {
-                            return caches.delete(key);
-                        })
-                    );
-                })
-        );
-    });
-
-    self.addEventListener('fetch', function (event) {
-        var request = event.request;
-
-        // Always fetch non-GET requests from the network
-        if (request.method !== 'GET' || request.url.match(/\/browserLink/ig)) {
-            event.respondWith(
-                fetch(request)
-                    .catch(function () {
-                        return caches.match(offlineUrl);
-                    })
-            );
-            return;
-        }
-        
-        // cache first for fingerprinted resources
-        if (request.url.match(/(\?|&)v=/ig)) {
-            event.respondWith(
-                caches.match(request)
-                    .then(function (response) {
-                        return response || fetch(request)
-                            .then(function (response) {
-                                addToCache(request, response);
-                                return response || serveOfflineImage(request);
-                            })
-                            .catch(function () {
-                                return serveOfflineImage(request);
-                            });
-                    })
-            );
-
-            return;
-        }
-
-        // network first for non-fingerprinted resources
-        event.respondWith(
-            fetch(request)
-                .catch(function () {
-                    return caches.match(request)
-                        .then(function (response) {
-                            return response || serveOfflineImage(request);
-                        })
-                        .catch(function () {
-                            return serveOfflineImage(request);
-                        });
-                })
-        );
-    });
-
-})();
+self.addEventListener("install", e => onInstall(e));
+self.addEventListener("fetch", e => onFetch(e));
+self.addEventListener("push", e => onPush(e));
+self.addEventListener("notificationclick", e => onNotificationClick(e));

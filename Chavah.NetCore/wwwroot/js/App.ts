@@ -17,7 +17,7 @@
     // Gets the relative path to a cache-busted angular view.
     // The view URL is appended a hash of the contents of the file. See AngularCacheBustedViewsProvider.cs
     function findCacheBustedView(viewName: string) {
-        let cacheBustedView = homeVm.cacheBustedAngularViews.find(v => v.search(new RegExp(viewName, "i")) !== -1);
+        const cacheBustedView = homeVm.cacheBustedAngularViews.find(v => v.search(new RegExp(viewName, "i")) !== -1);
         if (!cacheBustedView) {
             throw new Error("Unable to find cache-busted Angular view " + viewName);
         }
@@ -27,7 +27,7 @@
     export const FindAppView = findCacheBustedView;
 
     function createRoute(templateUrl: string, access = RouteAccess.Anonymous): AppRoute {
-        let cacheBustedView = findCacheBustedView(templateUrl);
+        const cacheBustedView = findCacheBustedView(templateUrl);
         return {
             templateUrl: cacheBustedView,
             access,

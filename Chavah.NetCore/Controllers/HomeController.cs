@@ -142,7 +142,11 @@ namespace BitShuva.Chavah.Controllers
                 {
                     @namespace = "android_app",
                     package_name = "com.messianicradio",
-                    sha256_cert_fingerprints = new[] { "4B:C1:D7:C7:8D:74:21:56:8C:E0:13:00:12:35:19:94:4B:33:1E:3C:2B:E5:7A:04:04:FE:F9:3E:58:30:B0:F4" }
+                    sha256_cert_fingerprints = new[]
+                    {
+                        "4B:C1:D7:C7:8D:74:21:56:8C:E0:13:00:12:35:19:94:4B:33:1E:3C:2B:E5:7A:04:04:FE:F9:3E:58:30:B0:F4",
+                        "62:BF:25:D6:5B:C9:E8:2F:CE:3B:BB:77:F7:F0:D1:DF:E9:BB:53:11:68:E9:22:31:01:AE:B4:ED:5F:86:7B:FD"
+                    }
                 }
             };
 
