@@ -38,6 +38,11 @@
     "religion",
     "society"
   ],
+  "url_handlers": [
+    {
+      "origin": "messianicradio.com"
+    }
+  ],
   "shortcuts": [
     {
       "name": "My Likes",

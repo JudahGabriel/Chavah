@@ -279,8 +279,7 @@ function isCdnUrl(url) {
         url.match(/ajax.googleapis.com/ig) ||
         url.match(/fonts.googleapis.com/ig) ||
         url.match(/maxcdn.bootstrapcdn.com/ig) ||
-        url.match(/code.jquery.com/ig)) ||
-        url.match(/google-analytics.com/ig);
+        url.match(/code.jquery.com/ig));
 }
 
 /**
