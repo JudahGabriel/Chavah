@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\js\Controllers\AdminDonationsController.ts" />
+    <Content Remove="wwwroot\js\Controllers\AdminUsersController.ts" />
     <Content Remove="wwwroot\js\Controllers\PopularController.ts" />
     <Content Remove="wwwroot\js\Controllers\RecentController.ts" />
     <Content Remove="wwwroot\js\Controllers\SongDeckController.ts" />
@@ -49,6 +50,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="wwwroot\js\Controllers\AdminDonationsController.ts" />
+    <TypeScriptCompile Include="wwwroot\js\Controllers\AdminUsersController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\PopularController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\RecentController.ts" />
     <TypeScriptCompile Include="wwwroot\js\Controllers\SongDeckController.ts" />

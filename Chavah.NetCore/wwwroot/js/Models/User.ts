@@ -1,5 +1,5 @@
 ﻿namespace BitShuva.Chavah {
-    export class User implements Server.IUserViewModel {
+    export class User implements Server.User {
         totalPlays: number;
         registrationDate: string;
         lastSeen: string;
@@ -29,7 +29,7 @@
             admin: "admin"
         };
 
-        constructor(serverObj: Server.IUserViewModel) {
+        constructor(serverObj: Server.User) {
             angular.merge(this, serverObj);
         }
 
@@ -48,7 +48,7 @@
             return this.email.substring(0, this.email.indexOf('@'));
         }
 
-        updateFrom(other: Server.IUserViewModel) {
+        updateFrom(other: Server.User) {
             angular.merge(this, other);
         }
     }

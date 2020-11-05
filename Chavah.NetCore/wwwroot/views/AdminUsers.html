@@ -1,0 +1,17 @@
+﻿<section class="admin-page" ng-controller="AdminUsersController as vm">
+    <div class="row">
+        <div class="col-xs-12 col-sm-offset-1 col-sm-10">
+            <div class="row">
+                <div class="col-xs-12 col-sm-3">
+                    <div ng-include="Partials.adminSidebar" ng-init="adminPage = 'users'"></div>
+                </div>
+
+                <div class="col-sm-9">
+                    <div style="width: 940px; height: 780px; background-color: white; padding: 20px;">
+                        <div id="adminUsersChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

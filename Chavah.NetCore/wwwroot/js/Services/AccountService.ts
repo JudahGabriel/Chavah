@@ -12,7 +12,7 @@
 
         constructor(
             private readonly httpApi: HttpApiService,
-            initialUser: Server.IUserViewModel | null) {
+            initialUser: Server.User | null) {
             
             this.signedInState = new Rx.BehaviorSubject<boolean>(!!initialUser);
             this.currentUser = initialUser ? new User(initialUser) : null;
@@ -40,11 +40,11 @@
            return this.httpApi.post(`${this.apiUri}/register`, registerModel);
         }
 
-        getUserWithEmail(email: string | null): ng.IPromise<Server.IUserViewModel | null> {
+        getUserWithEmail(email: string | null): ng.IPromise<Server.User | null> {
             const args = {
                 email,
             };
-            return this.httpApi.query<Server.IUserViewModel | null>(`${this.apiUri}/getUserWithEmail`, args);
+            return this.httpApi.query<Server.User | null>(`${this.apiUri}/getUserWithEmail`, args);
         }
 
         createPassword(email: string, password: string): ng.IPromise<any> {

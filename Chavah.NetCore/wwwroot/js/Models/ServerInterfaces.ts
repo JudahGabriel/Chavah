@@ -183,13 +183,13 @@
         pageDescription: string;
         descriptiveImageUrl: string;
         song: Song | null;
-        user: IUserViewModel | null;
+        user: User | null;
         isDownForMaintenance: boolean;
         pushNotificationsPublicKey: string;
         filePickrKey: string
     };
 
-    export interface IUserViewModel {
+    export interface User {
         totalPlays: number;
         registrationDate: string;
         lastSeen: string;

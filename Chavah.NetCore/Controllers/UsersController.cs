@@ -42,7 +42,7 @@ namespace BitShuva.Chavah.Controllers
             var loggedInUsers = await DbSession.Query<AppUser>()
                 .Where(u => u.LastSeen >= recent)
                 .Select(u => u.Email)
-                .ToListAsync().ConfigureAwait(false);
+                .ToListAsync();
 
             return new RecentUserSummary
             {
@@ -127,7 +127,7 @@ namespace BitShuva.Chavah.Controllers
         [Authorize]
         public async Task<AppUser> UpdateProfile([FromBody]AppUser updatedUser)
         {
-            var user = await GetUserOrThrow().ConfigureAwait(false);
+            var user = await GetUserOrThrow();
             var isUpdatingSelf = string.Equals(user.Email, updatedUser.Email, StringComparison.InvariantCultureIgnoreCase);
             if (!isUpdatingSelf)
             {
@@ -143,13 +143,18 @@ namespace BitShuva.Chavah.Controllers
 
         [HttpGet]
         [Authorize(Roles = AppUser.AdminRole)]
-        public Task<List<AppUser>> GetNewUsers(int skip = 0, int take = 20)
+        public async Task<PagedList<AppUser>> GetRegistrations(DateTime fromDate)
         {
-            return DbSession.Query<AppUser>()
-                .OrderByDescending(u => u.RegistrationDate)
-                .Skip(skip)
-                .Take(take)
+            var totalUsersCount = await DbSession.Query<AppUser>().CountAsync();
+            var users = await DbSession.Query<AppUser>()
+                .Where(u => u.RegistrationDate > fromDate)
+                .OrderBy(u => u.RegistrationDate)
                 .ToListAsync();
+            return new PagedList<AppUser>
+            {
+                Items = users,
+                Total = totalUsersCount
+            };
         }
     }
 }

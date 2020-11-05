@@ -13,7 +13,7 @@
         hasLoaded = false;
         tagsInput: string = "";
 
-        user: Server.IUserViewModel | null = null;
+        user: Server.User | null = null;
 
         constructor(
             private songEditApi: SongEditService,

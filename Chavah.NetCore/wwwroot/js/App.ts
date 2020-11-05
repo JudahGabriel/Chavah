@@ -100,6 +100,7 @@
                 .when("/admin/logs", createRoute("/LogEditor.html", RouteAccess.Admin))
                 .when("/admin/songs", { redirectTo: "/admin" })
                 .when("/admin/donations", createRoute("/AdminDonations.html", RouteAccess.Admin))
+                .when("/admin/users", createRoute("/AdminUsers.html", RouteAccess.Admin))
 
                 .otherwise({
                     redirectTo: "/nowplaying",

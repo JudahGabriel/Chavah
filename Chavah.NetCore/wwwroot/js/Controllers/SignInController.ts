@@ -40,7 +40,7 @@
             }
         }
 
-        userFetched(user: Server.IUserViewModel | null) {
+        userFetched(user: Server.User | null) {
             if (user == null) {
                 // If we didn't find a user, that means we need to redirect to the register account 
                 // to create a new user.

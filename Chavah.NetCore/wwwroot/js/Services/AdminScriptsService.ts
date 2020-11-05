@@ -10,7 +10,7 @@
             if (!this.hasInstalled) {
                 this.hasInstalled = true;
 
-                let adminScripts = [
+                const adminScripts = [
                     "https://api.filepicker.io/v1/filepicker.js",
                     "https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/1.0.0/Vibrant.min.js"
                 ];
@@ -21,6 +21,22 @@
                     document.body.appendChild(script);
                 });
             }
+        }
+
+        installScript(url: string, scriptAlreadyLoadedCheck: () => boolean): Promise<void> {
+            return new Promise((resolve, reject) => {
+                if (scriptAlreadyLoadedCheck()) {
+                    resolve();
+                }
+
+                const script = document.createElement("script");
+                script.type = "text/javascript";
+                script.async = true;
+                script.src = url;
+                script.onload = () => resolve();
+                script.onerror = (error) => reject(error);
+                document.body.appendChild(script);
+            });
         }
     }
 

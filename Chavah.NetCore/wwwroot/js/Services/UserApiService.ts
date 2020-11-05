@@ -6,7 +6,7 @@
         constructor(private httpApi: HttpApiService) {
         }
 
-        updateProfile(user: Server.IUserViewModel): ng.IPromise<Server.IUserViewModel> {
+        updateProfile(user: Server.User): ng.IPromise<Server.User> {
             return this.httpApi.post("/api/users/updateProfile", user);
         }
         
@@ -30,6 +30,13 @@
                 v: "1.0"
             };
             return this.httpApi.query("/api/users/getProfilePicForEmailAddress", args);
+        }
+
+        getRegistrations(fromDate: string): ng.IPromise<Server.PagedList<Server.User>> {
+            const args = {
+                fromDate
+            };
+            return this.httpApi.query("/api/users/getRegistrations", args);
         }
     }
 

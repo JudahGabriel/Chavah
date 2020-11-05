@@ -206,18 +206,23 @@ function onFetch(event) {
     const isMediaResource = isMediaUrl(request.url);
     const isHomePage = request.method === "GET" && (request.url === "/" || request.url.endsWith("/#") || request.url.endsWith("/#/"));
     // Always fetch non-GET requests from the network
-    if (request.method !== "GET") {
-        event.respondWith(fetchNetworkWithOfflineFallback(event));
-    } else if (isHomePage) {
-        event.respondWith(networkFirst(appShellCacheName, event));
-    } else if (isMediaResource) {
-        // Cache first for media resources (our MP3s and album art)
-        event.respondWith(fetchCacheFirst(mediaCacheName, event));
-    } else if (isFingerprinted || isCdn) {
-        // Cache first our app shell: fingerprinted resources (our HTML, JS, CSS) and shell-related scripts (jQuery, Bootstrap, and others on various CDNs)
-        event.respondWith(fetchCacheFirst(appShellCacheName, event));        
-    } else {
-        event.respondWith(fetchNetworkWithOfflineFallback(event));
+    try {
+        if (request.method !== "GET") {
+            event.respondWith(fetchNetworkWithOfflineFallback(event));
+        } else if (isHomePage) {
+            event.respondWith(networkFirst(appShellCacheName, event));
+        } else if (isMediaResource) {
+            // Cache first for media resources (our MP3s and album art)
+            event.respondWith(fetchCacheFirst(mediaCacheName, event));
+        } else if (isFingerprinted || isCdn) {
+            // Cache first our app shell: fingerprinted resources (our HTML, JS, CSS) and shell-related scripts (jQuery, Bootstrap, and others on various CDNs)
+            event.respondWith(fetchCacheFirst(appShellCacheName, event));
+        } else {
+            event.respondWith(fetchNetworkWithOfflineFallback(event));
+        }
+    } catch (fetchError) {
+        console.error("Error fetching via service worker. Falling back to plain fetch.", fetchError, request);
+        event.responseWith(fetch(request));
     }
 }
 
