@@ -7,6 +7,14 @@
                 </div>
 
                 <div class="col-sm-9">
+                    <div class="btn-group" role="group" aria-label="New user registrations timeframe">
+                        <button type="button" class="btn btn-default" ng-repeat="timeframe in vm.timeframes" ng-click="vm.changeTimeframe(timeframe)" ng-class="{ active: timeframe === vm.activeTimeframe }">
+                            {{timeframe.title}}
+                        </button>
+                    </div>
+                    <br />
+                    <br />
+
                     <div style="width: 940px; height: 780px; background-color: white; padding: 20px;">
                         <div id="adminUsersChart"></div>
                     </div>
