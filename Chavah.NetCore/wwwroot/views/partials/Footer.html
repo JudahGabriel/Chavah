@@ -10,7 +10,7 @@
         <div class="pull-left">
             <div class="audio-status"></div>
         </div>
-        <button class="btn btn-link btn-lg" ng-class="{ 'active': vm.dislikesCurrentSong }" uib-tooltip="{{vm.dislikeText}}" ng-click="vm.thumbDownClicked()">
+        <button class="btn btn-link btn-lg" ng-class="{ 'active': vm.dislikesCurrentSong }" uib-tooltip="{{vm.dislikeText}}" ng-click="vm.thumbDownClicked()" ng-disabled="vm.isThumbingUpOrDown">
             <i class="fa fa-thumbs-down"></i>
         </button>
         <button class="btn btn-link btn-lg" uib-tooltip="Got a song request? Chavah will play whatever tune's on your mind." ng-click="vm.requestSong()">
@@ -22,7 +22,7 @@
         <button class="btn btn-link btn-lg" ng-click="vm.playNextSong()" uib-tooltip="Skip this song, play something else">
             <i class="fa fa-fast-forward"></i>
         </button>
-        <button class="btn btn-link btn-lg" ng-class="{ 'active': vm.likesCurrentSong }" uib-tooltip="{{vm.likeText}}" ng-click="vm.thumbUpClicked()">
+        <button class="btn btn-link btn-lg" ng-class="{ 'active': vm.likesCurrentSong }" uib-tooltip="{{vm.likeText}}" ng-click="vm.thumbUpClicked()" ng-disabled="vm.isThumbingUpOrDown">
             <i class="fa fa-thumbs-up"></i>
         </button>
         <div class="pull-right volume-and-track-time">

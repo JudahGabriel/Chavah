@@ -9,6 +9,7 @@
         audio: HTMLAudioElement | null = null;
         isShowingAudioError = false;
         wakeLock: Object | null = null;
+        isThumbingUpOrDown = false;
 
         static $inject = [
             "audioPlayer",
@@ -194,9 +195,7 @@
                 if (currentSong) {
                     // If we haven't disliked the song, dislike it.
                     if (currentSong.songLike !== SongLike.Disliked) {
-                        currentSong.songLike = SongLike.Disliked;
-                        this.likeApi.dislikeSong(currentSong.id)
-                            .then(rank => currentSong!.communityRank = rank);
+                        this.dislikeSong(currentSong);
                         this.songBatch.playNext();
                     } else {
                         // Otherwise, set as unranked.
@@ -212,9 +211,7 @@
                 if (currentSong) {
                     // If we haven't liked the song, like it.
                     if (currentSong.songLike !== SongLike.Liked) {
-                        currentSong.songLike = SongLike.Liked;
-                        this.likeApi.likeSong(currentSong.id)
-                            .then(rank => currentSong!.communityRank = rank);
+                        this.likeSong(currentSong);
                     } else {
                         this.setSongAsUnranked(currentSong);
                     }
@@ -222,11 +219,29 @@
             }
         }
 
-        setSongAsUnranked(song: Song) {
+        setSongAsUnranked(song: Song): ng.IPromise<number> {
             // Undo our existing like.
             song.songLike = SongLike.Unranked;
-            this.likeApi.setSongAsUnranked(song.id)
-                .then(songRank => song.communityRank = songRank);
+            this.isThumbingUpOrDown = true;
+            return this.likeApi.setSongAsUnranked(song.id)
+                .then(songRank => song.communityRank = songRank)
+                .finally(() => this.isThumbingUpOrDown = false);
+        }
+
+        likeSong(song: Song) {
+            song.songLike = SongLike.Liked;
+            this.isThumbingUpOrDown = true;
+            this.likeApi.likeSong(song.id)
+                .then(rank => song.communityRank = rank)
+                .finally(() => this.isThumbingUpOrDown = false);
+        }
+
+        dislikeSong(song: Song) {
+            song.songLike = SongLike.Disliked;
+            this.isThumbingUpOrDown = true;
+            this.likeApi.dislikeSong(song.id)
+                .then(rank => song.communityRank = rank)
+                .finally(() => this.isThumbingUpOrDown = false);
         }
 
         requestSong() {

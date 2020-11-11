@@ -108,6 +108,13 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
+        [Route("give")]
+        public IActionResult Give()
+        {
+            return Redirect("https://blog.messianicradio.com/2020/06/announcing-messiahs-musicians-fund-we.html");
+        }
+
+        [HttpGet]
         public IActionResult ActivityFeed()
         {
             return RedirectToActionPermanent("ActivityFeed", "Activities");

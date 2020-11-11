@@ -1,0 +1,2101 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BitShuva.Chavah</name>
+    </assembly>
+    <members>
+        <member name="T:BitShuva.Chavah.Common.AngularCacheBustedViewsProvider">
+            <summary>
+            Extends the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> to provide a <see cref="T:BitShuva.Chavah.Common.AngularCacheBustedViews"/> singleton,
+            which contains the the relative paths to HTML files in the specified views folder with cache busted query params.
+            For example, "/views/foo.html?v=5321
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.AngularCacheBustedViewsProvider.AddCacheBustedAngularViews(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String)">
+            <summary>
+            Adds a <see cref="T:BitShuva.Chavah.Common.AngularCacheBustedViews"/> singleton instance to the dependency injector.
+            </summary>
+            <param name="svc"></param>
+            <param name="viewsFolderRelativePath">The folder containing the angular views relative to the /wwwroot folder.</param>
+            <returns></returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Common.BCryptPasswordHasher`1">
+            <summary>
+            A drop-in replacement for the standard Identity hasher to be backwards compatible with existing bcrypt hashes
+            New passwords will be hashed with Identity V3
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Common.BackgroundQueueWithLoggingProvider">
+            <summary>
+            Extends <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> to add a <see cref="T:DalSoft.Hosting.BackgroundQueue.BackgroundQueue"/> that logs background tasks using an <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.BackgroundQueueWithLoggingProvider.AddBackgroundQueueWithLogging(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Int32,System.TimeSpan)">
+            <summary>
+            Adds a <see cref="T:DalSoft.Hosting.BackgroundQueue.BackgroundQueue"/> that logs exceptions to an <see cref="T:Microsoft.Extensions.Logging.ILogger"/> instance.
+            </summary>
+            <param name="svc"></param>
+            <param name="maxOccurrenceCount">The max number of concurrent tasks.</param>
+            <param name="waitBeforePickingUpTask">Wait time before picking up a new task. Should be 1 second or more.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.DictionaryExtensions.GetValueOrNull``2(System.Collections.Generic.Dictionary{``0,``1},``0)">
+            <summary>
+            Gets a value out of a dictionary by the specified key. If the key doesn't exist, null will be returned.
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <param name="dictionary"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Common.ExceptionExtensions">
+            <summary>
+            Exception extension utilities.
+            </summary>
+            <remarks>
+            Based on https://stackoverflow.com/a/34001508/536
+            </remarks>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.ExceptionExtensions.WithData(System.Exception,System.String,System.Object)">
+            <summary>
+            Adds key/value info to the exception's <see cref="P:System.Exception.Data"/> dictionary.
+            </summary>
+            <param name="error"></param>
+            <param name="key"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.Extensions.StatusOrNone(BitShuva.Chavah.Models.Like)">
+            <summary>
+            Converts a Like database object into a SongLike enum.
+            This is an extension method; if the Like object is null,
+            this will return SongLike.None.
+            </summary>
+            <param name="like"></param>
+            <returns>
+            If the Like object is null, it returns SongLike.None.
+            Otherwise, it returns the Like.LikeStatus converted to a SongLike enum.
+            </returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.Extensions.ToNumberWord(System.Int32)">
+            <summary>
+            Converts 1 to "1st", 2 to "2nd", etc.
+            </summary>
+            <param name="number"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.QuartzAppBuilderExtensions.UseQuartzForEmailRetry(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Uses Quartz.NET to schedule retry of failed emails.
+            </summary>
+            <param name="app"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.AddChavahRavenDbDocStore(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Add Chavah Raven Db instance with SSL Certificate loaded from Azure Vault.
+            </summary>
+            <param name="services"></param>
+            <param name="configuration"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadOptionalAsync``1(Raven.Client.Documents.Session.IAsyncDocumentSession,System.String)">
+            <summary>
+            Asynchronously loads a document from Raven and stores it in an Option.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="session"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadOptional``1(Raven.Client.Documents.Session.IDocumentSession,System.String)">
+            <summary>
+            Loads a document from the synchronous document session as a nullable.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="id">The ID of the document to load.</param>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadOptionalAsync``1(Raven.Client.Documents.Session.IAsyncDocumentSession,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Asynchronously loads multiple documents from Raven and stores it in a nullable.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="session"></param>
+            <param name="ids">The IDs of the documents to load.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadWithoutNulls``1(Raven.Client.Documents.Session.IAsyncDocumentSession,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Asynchronously loads a multiple from Raven and returns the ones that aren't null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="session"></param>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadRequiredAsync``1(Raven.Client.Documents.Session.IAsyncDocumentSession,System.String)">
+            <summary>
+            Loads a document from the session and throws if it's null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="session"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadRequiredAsync``1(Raven.Client.Documents.Session.Operations.Lazy.IAsyncLazySessionOperations,System.String)">
+            <summary>
+            Lazily loads a document from the session. When the value is accessed, an exception will be thrown if the document is null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sessionOps"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadRequiredAsync``2(Raven.Client.Documents.Session.IAsyncDocumentSession,System.String,System.Func{``1})">
+            <summary>
+            Loads a document from the session and throws the specified exception if null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TException"></typeparam>
+            <param name="session"></param>
+            <param name="id"></param>
+            <param name="thrower"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadWithoutNulls``1(Raven.Client.Documents.Session.Loaders.IAsyncLoaderWithInclude{``0},System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Loads a document from the session and throws if it's null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="session"></param>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadRequiredAsync``1(Raven.Client.Documents.Session.Loaders.IAsyncLoaderWithInclude{``0},System.String)">
+            <summary>
+            Loads a document from the session and throws if it's null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="session"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadRequiredAsync``2(Raven.Client.Documents.Session.Loaders.IAsyncLoaderWithInclude{``0},System.String,System.Func{``1})">
+            <summary>
+            Loads a document from the session and throws the specified exception if null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TException"></typeparam>
+            <param name="session"></param>
+            <param name="id"></param>
+            <param name="thrower"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadOptionalAsync``1(Raven.Client.Documents.Session.Loaders.IAsyncLoaderWithInclude{``0},System.String)">
+            <summary>
+            Asynchronously loads a document from Raven and stores it in an Option.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="session"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadOptionalAsync``1(Raven.Client.Documents.Session.Loaders.IAsyncLoaderWithInclude{``0},System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Asynchronously loads multiple documents from Raven and returns them as optional values.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="session"></param>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.LoadOptionAsync``1(Raven.Client.Documents.Session.Operations.Lazy.IAsyncLazySessionOperations,System.String)">
+            <summary>
+            Lazily loads an entity from the Raven. The result is wrapped as an optional value.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="lazyOps"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.SetRavenExpiration``1(Raven.Client.Documents.Session.IAsyncDocumentSession,``0,System.DateTime)">
+            <summary>
+            Sets the Raven document expiration for this object. The document will be deleted from the database after the specified date.
+            Note: This specified object must be .Store()'d in the database before calling this method.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="dbSession"></param>
+            <param name="obj"></param>
+            <param name="expiry"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.SetRavenExpiration``1(Raven.Client.Documents.Session.IDocumentSession,``0,System.DateTime)">
+            <summary>
+            Sets the Raven document expiration for this object. The document will be deleted from the database after the specified date.
+            Note: This specified object must be .Store()'d in the database before calling this method.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="dbSession"></param>
+            <param name="obj"></param>
+            <param name="expiry"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.RavenExtensions.Stream``1(Raven.Client.Documents.Session.IAsyncAdvancedSessionOperations)">
+            <summary>
+            Streams in a collection of items.
+            </summary>
+            <typeparam name="T">The type of item to stream.</typeparam>
+            <param name="dbSession">The document session.</param>
+            <returns>A stream of items.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.StringExtensions.ToEnum``1(System.String)">
+            <summary>
+            Converts the string enum name into an enum constant. If it can't be converted, null will be returned.
+            </summary>
+            <typeparam name="TEnum"></typeparam>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.StringExtensions.Capitalize(System.String)">
+            <summary>
+            Changes the string to lower case with an upper case first letter.
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.StringExtensions.Contains(System.Collections.Generic.IEnumerable{System.String},System.String,System.StringComparison)">
+            <summary>
+            Checks whether any of the strings contain the specified value.
+            </summary>
+            <param name="input"></param>
+            <param name="value"></param>
+            <param name="comparison"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.StringExtensions.ContainsAny(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.StringComparison)">
+            <summary>
+            Checks whether any of the strings contains any of the specified values.
+            </summary>
+            <param name="inputs"></param>
+            <param name="values"></param>
+            <param name="comparison"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.StringExtensions.IndexWhere(System.String,System.Func{System.Char,System.Boolean})">
+            <summary>
+            Finds the index of the character matching the specified predicate.
+            </summary>
+            <param name="input"></param>
+            <param name="predicate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.StringExtensions.GetEnglishAndHebrew(System.String)">
+            <summary>
+            Takes a string that starts with English but may end in Hebrew.
+            Input: "Adonai Li אדוני לי"
+            Output: (english: Adonai Li, hebrew: אדוני לי)
+            </summary>
+            <param name="input">The input, which may contain English and Hebrew letters.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.StringExtensions.GetDeterministicHashCode(System.String)">
+            <summary>
+            Gets a deterministic hash code. Since string.GetHashCode is not deterministic, returning different results in different app contexts, this offers a deterministic alternative.
+            </summary>
+            <param name="text"></param>
+            <returns></returns>
+            <remarks>
+            Based on https://stackoverflow.com/a/5155015/536
+            </remarks>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.StringExtensions.GetDeterministicHashCode(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Gets a deterministic hash code. Since string.GetHashCode is not deterministic, returning different results in different app contexts, this offers a deterministic alternative.
+            </summary>
+            <param name="lines"></param>
+            <returns></returns>
+            <remarks>
+            Based on https://stackoverflow.com/a/5155015/536
+            </remarks>
+        </member>
+        <member name="M:BitShuva.Chavah.Common.UriExtensions.Combine(System.Uri,System.String[])">
+            <summary>
+            Combines a URI with multiple paths or file names.
+            </summary>
+            <param name="uri">The URI.</param>
+            <param name="paths">The paths to combine onto the URI.</param>
+            <returns>A new URI containing the root and paths appended to it.</returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Common.SyndicationLinkItem">
+            <summary>
+            Syndication item that is initialized with a link.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Common.TempFileStream">
+            <summary>
+            A temporary file with an open stream. When disposed, the stream is closed and the file is deleted.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.AppSettings.Name">
+            <summary>
+            Name of the application instance.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.AppSettings.Title">
+            <summary>
+            Title of the application instance
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.AppSettings.Description">
+            <summary>
+            Description of the application instance.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.AppSettings.Version">
+            <summary>
+            Version of the application instance.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.AppSettings.DefaultUrl">
+            <summary>
+            Default Url for the application Instance.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.AppSettings.GoogleAnalytics">
+            <summary>
+            Google Analytics ID.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.AppSettings.Language">
+            <summary>
+            The default language is English.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.AppSettings.ServiceWorker">
+            <summary>
+            Specify what service work file to use. The Default is Minimal.js.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.AppSettings.AuthorImageUrl">
+            <summary>
+            Used for push notifications.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.FtpHost">
+            <summary>
+            The root host directory for CDNs that use FTP to transfer files.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.FtpUserName">
+            <summary>
+            The user name for CDNs that use FTP to transfer files.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.FtpPassword">
+            <summary>
+            The password for CDNs that use FTP to transfer files.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.FtpWorkingDirectory">
+            <summary>
+            The FTP working directory for CDNs that use FTP to transfer files.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.MusicDirectory">
+            <summary>
+            The name of the directory containing the MP3 audio files.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.AlbumArtDirectory">
+            <summary>
+            The name of the directory containing album art.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.ArtistImagesDirectory">
+            <summary>
+            The name of the directory containing artist images.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.ProfilePicsDirectory">
+            <summary>
+            The name of the directory containing user profile pictures.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.HttpPath">
+            <summary>
+            The root HTTP path for media stored on the CDN.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.SoundEffects">
+            <summary>
+            The name of the directory storing sound effects.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.ApiKey">
+            <summary>
+            The API key used for authenticating with the CDN.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.CdnSettings.StorageZone">
+            <summary>
+            The name of the storage zone into which the CDN stores media.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.EmailSettings.SendGridApiKey">
+            <summary>
+            Send Grid Api Key
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.EmailSettings.SendEmails">
+            <summary>
+            Send emails. The Default is set to true.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.EmailSettings.SenderName">
+            <summary>
+            Name of the sender.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.EmailSettings.SenderEmail">
+            <summary>
+            Email of the sender.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Settings.EmailSettings.RetryFailedEmailTimeInMinutes">
+            <summary>
+            Wait for the retried to send failed emails.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AccountController.SignIn(BitShuva.Chavah.Models.Account.SignInModel)">
+            <summary>
+            User SignIn.
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AccountController.SignOut">
+            <summary>
+            SingOut from the app.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AccountController.CreatePassword(System.String,System.String)">
+            <summary>
+            This is used for migrating old users into the new system. The old users were imported without passwords.
+            When such a user signs in, we prompt them to create a password.
+            </summary>
+            <param name="email"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AccountController.GetUserWithEmail(System.String)">
+            <summary>
+            Return User View Model.
+            </summary>
+            <param name="email"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AccountController.ClearNotifications">
+            <summary>
+            Clear Notifications for the authorized user.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AccountController.Register(BitShuva.Chavah.Models.Account.RegisterModel)">
+            <summary>
+            Register a new user.
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AccountController.ConfirmEmail(System.String,System.String)">
+            <summary>
+            Confirms a user's email.
+            </summary>
+            <param name="email"></param>
+            <param name="confirmCode"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AccountController.SendResetPasswordEmail(System.String)">
+            <summary>
+            Begins the password reset process by generating a password reset token and sending the user an email with the link to reset the password.
+            </summary>
+            <param name="email"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AccountController.ResetPassword(System.String,System.String,System.String)">
+            <summary>
+            Resets the user's password using the email and password reset code.
+            </summary>
+            <param name="email"></param>
+            <param name="passwordResetCode"></param>
+            <param name="newPassword"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AccountController.SendSupportMessage(BitShuva.Chavah.Models.SupportMessage)">
+            <summary>
+            Send direct message to the support.
+            </summary>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.ActivitiesController.GetActivityFeedForHour(System.Int32)">
+            <summary>
+            Fetches the activity feed for the last hour, but returns at most N items, starting oldest first.
+            This creates a smaller subset of activity feed, suitable for tweeting.
+            (Otherwise, we were tweeting hundreds of likes per day; not sustainable.)
+            </summary>
+            <param name="take"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.ActivitiesController.GetLyricTweets">
+            <summary>
+            A lyric tweet is an activity that contains lyrics to a song with a link to it.
+            These are created once per hour by IFTTT.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AlbumsController.Get(System.String)">
+            <summary>
+            Gets the album with the specified ID.
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AlbumsController.ImageOnDomain(System.String)">
+            <summary>
+            Streams an image from another domain through our domain.
+            Needed for client-side canvas rendering of images on other domains (e.g. on our media CDN.)
+            For example, when upload a new album, we use this URL to draw an image to a canvas in order to extract prominent colors from the album art.
+            </summary>
+            <param name="imageUrl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AlbumsController.GetAlbumArt(System.String,System.String,System.String)">
+            <summary>
+            Find album art with the specified artist and album name.
+            </summary>
+            <param name="songId">The ID of the song we're checking for.</param>
+            <param name="artist">The artist name.</param>
+            <param name="album">The album.</param>
+            <returns>An Album-like object containing the ID of the song.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.AlbumsController.GetArtForSong(System.String)">
+            <summary>
+            Gets the album art for a particular song. Used in the UI by Facebook song share.
+            </summary>
+            <param name="songId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.ArtistsController.GetMessiahsMusicFundDistribution(System.Int32,System.Int32,System.Decimal)">
+            <summary>
+            Calculates the donation distributions for artists on Chavah for the given time period, given the specified donations.
+            </summary>
+            <param name="year">The year of the time period to calculate donations for.</param>
+            <param name="month">The month number (1 through 12) of the time period to calculate donatiosn for.</param>
+            <param name="donations">The total amount of donations in dollars, e.g. 310.52</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.ArtistsController.RecordMessiahsMusicFundMonthlyDisbursement(System.Int32,System.Int32,System.Decimal)">
+            <summary>
+            Records Messiah's Music Fund disbursment donations to artists for the specified month and year.
+            This is idempotent; calling this multiple times for the same month and year will simply replace the existing Messiah's Music Fund disbursement for that month and year.
+            After this method is called, every artist will have a new donation in its .Donations.
+            </summary>
+            <param name="year">The year for which to record disbursement.</param>
+            <param name="month">The month for which to record disbursement.</param>
+            <param name="donations">The total amount of donations, in dollars, for the month.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.ArtistsController.GetDueDonations(System.Double)">
+            <summary>
+            Sums up artist donations that haven't yet been disbursed and are greater than the specified minimum.
+            </summary>
+            <param name="minimum">The minimum amount in dollars to consider a donation due.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.ArtistsController.MarkDueDonationAsPaid(BitShuva.Chavah.Models.DueDonation)">
+            <summary>
+            Marks the donation as paid.
+            </summary>
+            <param name="donation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.CdnController.GetStationId">
+            <summary>
+            Redirects to a random station identifier MP3 on the CDN.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.CdnController.GetUserProfile(System.String)">
+            <summary>
+            Redirects to the profile picture of the user with the specified ID. If it doesn't exist, 
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.HomeController.Index(System.String,System.String,System.String,System.Boolean)">
+            <summary>
+            Urls like "https://messianicradio.com?song=songs/32" need to load the server-rendered Razor
+            page with info about that song.
+            This is used for social media sites like Facebook and Twitter which show images, title,
+            and description from the loaded page before any JS is executed.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.HomeController.ChangePassword">
+            <summary>
+            Implements the upcoming web standard that helps password managers change a user's password.
+            </summary>
+            <remarks>
+            https://github.com/WICG/change-password-url/blob/gh-pages/explainer.md
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.HomeController.AssetLinks">
+            <summary>
+            Digital asset links for use in Chavah Android app. See https://developers.google.com/digital-asset-links/v1/getting-started#quick-usage-example
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Controllers.IftttController">
+            <summary>
+            Controller called by If This Then That (https://ifttt.com)
+            to trigger Chavah notifications when external events (e.g. Chavah blog posts) occur.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.IftttController.CreateLyricTweetActivity(System.String)">
+            <summary>
+            A lyric tweet is an activity that contains lyrics to a song with a link to it.
+            These are created periodically by IFTTT.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.IftttController.GetRandomLyricSection(BitShuva.Chavah.Models.Song)">
+            <summary>
+            A lyrics section is a chorus or verse of a song, separated from the rest of the lyrics by a double new line.
+            </summary>
+            <param name="song"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Controllers.LikesController">
+            <summary>
+            Controller for actions on the <see cref="T:BitShuva.Chavah.Models.Like"/> model.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.LikesController.#ctor(Raven.Client.Documents.Session.IAsyncDocumentSession,Microsoft.Extensions.Logging.ILogger{BitShuva.Chavah.Controllers.LikesController},Microsoft.Extensions.Options.IOptionsMonitor{BitShuva.Chavah.Settings.AppSettings})">
+            <summary>
+            Creates a new LikesController.
+            </summary>
+            <param name="dbSession"></param>
+            <param name="logger"></param>
+            <param name="appOptions"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.LikesController.Like(System.String)">
+            <summary>
+            Thumbs-up the specified song for the current user.
+            </summary>
+            <param name="songId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.LikesController.Dislike(System.String)">
+            <summary>
+            Thumbs-down the specified song for the current user.
+            </summary>
+            <param name="songId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.LikesController.SetAsUnranked(System.String)">
+            <summary>
+            Unlikes or undislikes a song.
+            </summary>
+            <param name="songId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.LikesController.GetUpDownVotes(System.String)">
+            <summary>
+            Gets the total number of thumb-ups and thumb-downs for the specified song.
+            </summary>
+            <param name="songId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.LikesController.RecalculateSongRank(System.String)">
+            <summary>
+            Resets the song rank based on the likes and unlikes for the song.
+            Warning: older versions of Chavah didn't track Like objects, so calling this function for a particular song can wipe out old likes for a song.
+            </summary>
+            <param name="songId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.PushNotificationsController.Store(BitShuva.Chavah.Models.PushSubscription)">
+            <summary>
+            Saves a new push subscription in the database.
+            </summary>
+            <param name="subscription"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.PushNotificationsController.Delete(BitShuva.Chavah.Models.PushSubscription)">
+            <summary>
+            Deletes a push subscription that has the unique endpoint specified in <see cref="P:BitShuva.Chavah.Models.PushSubscription.Endpoint"/>.
+            </summary>
+            <param name="subscription">The subscription to delete. This subscription's unique, machine-generated endpoint will be used to find the subscription to delete.</param>
+            <returns></returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Controllers.RavenController">
+            <summary>
+            Controller that saves changes on the RavenDB document session.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Controllers.RavenController.DbSession">
+            <summary>
+            Gets the RavenDB document session created for the current request.
+            Changes will be saved automatically when the action finishes executing without error.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.RavenController.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary>
+            Executes the action. If no error occurred, any changes made in the RavenDB document session will be saved.
+            </summary>
+            <param name="context"></param>
+            <param name="next"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.SongEditsController.Get(System.String)">
+            <summary>
+            Gets a song edit for the current user. If the user hasn't edited this song before, a new one will be created.
+            </summary>
+            <param name="songId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.SongRequestsController.GetPending">
+            <summary>
+            Finds a pending song request for the current user.
+            A song request is considered pending if:
+            1. It was recently requested
+            2. The user hasn't played it yet
+            3. The user doesn't dislike the requested song.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.SongRequestsController.MarkAsPlayed(System.Collections.Generic.List{System.String})">
+            <summary>
+            Marks songs played for the current user.
+            </summary>
+            <param name="songIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.SongRequestsController.GetRandomRecentlyRequestedSongs(System.Int32)">
+            <summary>
+            Gets recently requested songs.
+            </summary>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.SongsController.GetPrefsDebug(System.String)">
+            <summary>
+            Used for debugging: generates a user's song preferences table as a list of strings. Includes performance measurements.
+            </summary>
+            <param name="email"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.SongsController.ChooseSong">
+            <summary>
+            Called when the user asks for the next song.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.SongsController.GetSongsAdmin(System.Int32,System.Int32,System.String)">
+            <summary>
+            Gets a paged list of all songs for display in the admin UI.
+            </summary>
+            <param name="skip"></param>
+            <param name="take"></param>
+            <param name="search"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.StreamController.TuneInV4">
+            <summary>
+            Returns an M3U file. Used for streaming services such as TuneIn radio.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.StreamController.TuneInV3">
+            <summary>
+            Returns a PLS file format for streaming playlists, used for stations like TuneIn Radio.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.StreamController.ShabbatMusic">
+            <summary>
+            Returns an M3U file. Used for streaming services such as TuneIn radio.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.TagsController.GetAll">
+            <summary>
+            Get all songs tags. Limited to 1000 records.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.TagsController.SearchTags(System.String)">
+            <summary>
+            Search tags in the database
+            </summary>
+            <param name="search"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.TagsController.Rename(System.String,System.String)">
+            <summary>
+            Rename existing songs and tag.
+            </summary>
+            <param name="oldTag"></param>
+            <param name="newTag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.TagsController.Delete(System.String)">
+            <summary>
+            Delete existing tag.
+            </summary>
+            <param name="tag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.TestController.Get">
+            <summary>
+            https://localhost:44372/api/test
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.UsersController.SaveVolume(System.Double)">
+            <summary>
+            Set volume for the logged in user.
+            </summary>
+            <param name="volume"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.UsersController.UploadProfilePicture(BitShuva.Chavah.Models.ProfilePictureUpload)">
+            <summary>
+            Upload User Profile picture.
+            </summary>
+            <param name="upload"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.UsersController.UpdateProfile(BitShuva.Chavah.Models.AppUser)">
+            <summary>
+            Update User Profile.
+            </summary>
+            <param name="updatedUser"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Album">
+            <summary>
+            An album for which album art has been uploaded.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.AlbumWithNetLikeCount">
+            <summary>
+            A user's view of an album, containing the album data as well as the number of liked and disliked songs on the album.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AlbumWithNetLikeCount.NetLikeCount">
+            <summary>
+            Net count of liked songs on this album. If 3 songs on the album are thumbed up, and 1 is thumbed down, that's a net of 3 - 1 = 2.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AlbumWithNetLikeCount.LikeCount">
+            <summary>
+            The total number of songs on this album liked by the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AlbumWithNetLikeCount.DislikeCount">
+            <summary>
+            The total number of songs on this album disliked by the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AlbumWithNetLikeCount.UserId">
+            <summary>
+            The ID of the user whose net like count is listed.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.AppUser">
+            <summary>
+            A user registered with Chavah.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.TotalPlays">
+            <summary>
+            Gets the total number of songs played by this user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.RegistrationDate">
+            <summary>
+            Gets the date the user registered.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.LastSeen">
+            <summary>
+            Gets the last time we saw this user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.TotalSongRequests">
+            <summary>
+            Gets the total number of song requests made by this user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.RequiresPasswordReset">
+            <summary>
+            Whether this user requires a password reset.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.RecentSongIds">
+            <summary>
+            Gets the IDs of the most recent songs played by the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.Notifications">
+            <summary>
+            Gets the list of notifications for the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.Volume">
+            <summary>
+            The last set volume, from 0 (muted) to 1 (full volume).
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.ProfilePicUrl">
+            <summary>
+            Gets the URL for the user's profile picture. Will be null if the user doesn't have a profile pic setup.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.FirstName">
+            <summary>
+            The user's first name.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.AppUser.LastName">
+            <summary>
+            The user's last name.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Artist.Disambiguation">
+            <summary>
+            Optional disambiguation that distinguishes between 2 same-named artists.
+            For example, if 2 artists have the same name, the disambiguation might be album name.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Artist.DonationRecipientId">
+            <summary>
+            The ID of the artist who should receive this artist's donations.
+            For example, a disbanded artist group may have their donations rolled up into the donations for the leader of the group.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Artist.DonationUrl">
+            <summary>
+            The URI where donations can be distributed to the artist.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.Artist.GetNameWithDisambiguation">
+            <summary>
+            Gets the name of the artist including any disambiguation.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.ArtistWithNetLikeCount">
+            <summary>
+            A user's view of an artist, containing the artist data as well as the number of songs by this artist liked and disliked by the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.ArtistWithNetLikeCount.NetLikeCount">
+            <summary>
+            Net count of liked songs on for this artist. If 3 songs on the album are thumbed up, and 1 is thumbed down, that's a net of 3 - 1 = 2.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.ArtistWithNetLikeCount.LikeCount">
+            <summary>
+            The total number of songs by this artist liked by the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.ArtistWithNetLikeCount.DislikeCount">
+            <summary>
+            The total number of songs by this artist disliked by the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.ArtistWithNetLikeCount.UserId">
+            <summary>
+            The ID of the user whose net like count is listed.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.CommunityRankStanding">
+            <summary>
+            Defines how well a song is ranked among its peers.
+            </summary>
+        </member>
+        <member name="F:BitShuva.Chavah.Models.CommunityRankStanding.Normal">
+            <summary>
+            The song's community rank is average.
+            </summary>
+        </member>
+        <member name="F:BitShuva.Chavah.Models.CommunityRankStanding.VeryPoor">
+            <summary>
+            The song's community rank is very poor, much lower than average.
+            </summary>
+        </member>
+        <member name="F:BitShuva.Chavah.Models.CommunityRankStanding.Poor">
+            <summary>
+            The song's community rank is poor, lower than average.
+            </summary>
+        </member>
+        <member name="F:BitShuva.Chavah.Models.CommunityRankStanding.Good">
+            <summary>
+            The song's community rank is good, better than average.
+            </summary>
+        </member>
+        <member name="F:BitShuva.Chavah.Models.CommunityRankStanding.Great">
+            <summary>
+            The song's community rank is very good, much better than average.
+            </summary>
+        </member>
+        <member name="F:BitShuva.Chavah.Models.CommunityRankStanding.Best">
+            <summary>
+            The song's community rank is exteremly good, one of the top songs on the station.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Donation">
+            <summary>
+            A donation to an artist made through the Chavah app.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Donation.Amount">
+            <summary>
+            The donated dollar amount in USD.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Donation.DonorName">
+            <summary>
+            The name of the donor.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Donation.DonorEmail">
+            <summary>
+            The email of the donor.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Donation.Date">
+            <summary>
+            The date the donation was made.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Donation.DistributionDate">
+            <summary>
+            The date the donation was distributed to the artist. This will be null if the donation hasn't yet been distributed.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.DonationContext">
+            <summary>
+            A donation with related artist information. Some artists have their donations go to other artists via <see cref="P:BitShuva.Chavah.Models.Artist.DonationRecipientId"/>. For example, Jamie Hilsden has his donations go to his band, Miqedem.
+            This models that context: a donation with context about who the donation was originally for (e.g. Jamie Hilsden).
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.DueDonation">
+            <summary>
+            A record of donations due to an artist.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.DueDonation.ArtistId">
+            <summary>
+            The ID of the artist.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.DueDonation.Name">
+            <summary>
+            The artist's name.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.DueDonation.Amount">
+            <summary>
+            The amount in dollars due the artist.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.DueDonation.DonationUrl">
+            <summary>
+            The URL where donations can be disbursed.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.DueDonation.Donations">
+            <summary>
+            The list of donations needing disbursement.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Email">
+            <summary>
+            An outgoing email. Stored in the database to be sent at a later time.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Email.Sent">
+            <summary>
+            The date the email was successfully sent.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Email.Created">
+            <summary>
+            When the email was created.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Email.SendingErrorMessage">
+            <summary>
+            The last error message that occurred when sending the email.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Email.LastRetryDate">
+            <summary>
+            The date the email was attempted to be sent again after a previous failure to send.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.Email.RetryCount">
+            <summary>
+            The number of times the email has been retried.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.HomeViewModel">
+            <summary>
+            View model for the home page.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.User">
+            <summary>
+            The currently signed in user, or null if there is no user signed in.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.Song">
+            <summary>
+            Gets the song initially requested via query string. This may be null if no song was requested.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.SongNth">
+            <summary>
+            Gets the text describing the song number on the album, e.g. "9th"
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.DescriptiveImageUrl">
+            <summary>
+            The image to use for social media network previews of a Chavah link.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.Debug">
+            <summary>
+            Whether the app is running in debug mode.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.Redirect">
+            <summary>
+            The URL to redirect to. This may be null.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.Embed">
+            <summary>
+            Whether the page is being loaded in an embedded iframe.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.PageTitle">
+            <summary>
+            The page title.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.PageDescription">
+            <summary>
+            Gets the page description.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.CacheBustedAngularViews">
+            <summary>
+            The list of cache-busted Angular views.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.DefaultUrl">
+            <summary>
+            The default URL of the page.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.CdnUrl">
+            <summary>
+            The CDN URL.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.SoundEffects">
+            <summary>
+            The sound effects list.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.IsDownForMaintenance">
+            <summary>
+            Gets whether Chavah is down for maintenance.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.PushNotificationsPublicKey">
+            <summary>
+            Gets the public key for Service Worker push notifications.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.ServiceWorker">
+            <summary>
+            Gets the path to the service worker to use.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.HomeViewModel.FilePickrKey">
+            <summary>
+            The API key used for FilePickr.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.HomeViewModel.ToJson">
+            <summary>
+            Converts the view model to a JSON object.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Indexes.Likes_ByAlbum">
+            <summary>
+            Raven index for searching a user's liked albums.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Indexes.Likes_ByArtist">
+            <summary>
+            Raven index for searching a user's liked artists.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Indexes.Likes_SongPreferences">
+            <summary>
+            RavenDB index that creates a UserSongPreference objects containing the per-user like/dislikes for songs, artists, albums, and tags.
+            Used by our song picking algorithm to intelligently choose a song based on a user's thumb-ups and -downs.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Indexes.Likes_SongSearch">
+            <summary>
+            Raven index for searching through a user's likes. Used from the /mylikes page.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Indexes.Songs_GeneralQuery">
+            <summary>
+            RavenDB index that indexes the fields we query songs on.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Indexes.Songs_RankStandings">
+            <summary>
+            RavenDB index that groups songs by CommunityRankStanding.
+            Used for generating the list of songs from which our song picker algorithm chooses a song based on user preferences.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Indexes.Songs_Tags">
+            <summary>
+            RavenDB index that gets all the unique tags from all songs.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.LikeDislikeCount.Name">
+            <summary>
+            The name of the artist, album, or other category.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.LikeDislikeCount.LikeCount">
+            <summary>
+            The number of likes for the name.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.LikeDislikeCount.DislikeCount">
+            <summary>
+            The number of dislikes for the name.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.LikeDislikeCount.SongId">
+            <summary>
+            The ID of the song this like/dislike applies to.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.MessiahMusicFundRecord">
+            <summary>
+            A record of Messiah's Music Fund disbursement for an artist.
+            </summary>
+            <remarks>
+            See https://blog.messianicradio.com/2020/06/announcing-messiahs-musicians-fund-we.html
+            </remarks>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.MessiahMusicFundRecord.ArtistId">
+            <summary>
+            The ID of the artist.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:BitShuva.Chavah.Models.MessiahMusicFundRecord.DonationRecipientId" -->
+        <member name="P:BitShuva.Chavah.Models.MessiahMusicFundRecord.ArtistName">
+            <summary>
+            The name of the artist.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.MessiahMusicFundRecord.Plays">
+            <summary>
+            The number of artist song plays for the time period.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.MessiahMusicFundRecord.PlayPercentage">
+            <summary>
+            What percent of the total plays on Chavah for the time period were plays from this artist.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.MessiahMusicFundRecord.Disbursement">
+            <summary>
+            The total money disbursement belonging to this artist for the time period.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Migrations.SongsHaveAlbumColors">
+            <summary>
+            In this migration, we've denormalized album colors into the song.
+            This is needed because nearly every context where we display a song in the UI, we want to also display the album colors for that song.
+            Previously, album colors were stored only on Album. Now they're also stored on all songs in an album.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Migrations.ArtistsHaveDonationRollup">
+            <summary>
+            Adds Artist.DonationRecipientId and Artist.DonationUrl.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.MutedEmail">
+            <summary>
+            An email that is muted; users who contact Chavah via this email won't have their emails actually sent to Chavah.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.Notification">
+            <summary>
+            This is a notification that shows up in the user's "unread" alerts menu.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.PushNotification">
+            <summary>
+            An HTML5 push notification. This is serialized to JSON and sent to the service worker, which unpacks it and shows the notification.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushNotification.Title">
+            <summary>
+            The title text to show in the notification header.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushNotification.Body">
+            <summary>
+            The longer text to show in the body of the notification.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushNotification.ImageUrl">
+            <summary>
+            The image of the URL to show in the push notification. This is the predominant, large image shown in the alert. This is optional.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushNotification.IconUrl">
+            <summary>
+            The URL of the small image to show on the left side of the alert. If omitted, the browser will use the 120x120 Chavah logo.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushNotification.ClickUrl">
+            <summary>
+            The URL to open if the user clicks the notification.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.PushSubscription">
+            <summary>
+            An HTML5 service worker push subscription.
+            </summary>
+            https://www.tpeczek.com/2017/12/push-notifications-and-aspnet-core-part.html
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushSubscription.Id">
+            <summary>
+            The ID of the push subscription.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushSubscription.AppUserId">
+            <summary>
+            The ID of the user who created the subscription. May be null.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushSubscription.CreateDate">
+            <summary>
+            The creation time of the subscription.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushSubscription.Endpoint">
+            <summary>
+            The endpoint URL for the subscription. This property comes from the browser's PushSubscription type.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushSubscription.Keys">
+            <summary>
+            The dictionary containing the p256dh and auth properties. This property comes from the browser's PushSubscription type.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushSubscription.NotificationErrorMessage">
+            <summary>
+            Gets the last error that occurred while sending a notification to this subscription.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushSubscription.SuccessfulNotificationCount">
+            <summary>
+            Gets the number of notifications successfully sent to this subscription.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushSubscription.FailedNotificationCount">
+            <summary>
+            Gets the number of notifications that failed to send to this subscription.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.PushSubscription.Unsubscribed">
+            <summary>
+            Gets whether the push notification has been unsubscribed.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.PushSubscription.GetRavenIdFromEndpoint(System.String)">
+            <summary>
+            Gets the Raven ID given an HTML5 PushSubscription endpoint.
+            </summary>
+            <param name="endpoint">The unique, machine-generated endpoint.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.Song.ToDto(BitShuva.Chavah.Models.LikeStatus,BitShuva.Chavah.Models.SongPick)">
+            <summary>
+            Creates a new song object that's ready to be sent as a data transfer object over to the client.
+            </summary>
+            <param name="likeStatus">The like status for the song.</param>
+            <param name="playedReason"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.Song.ToDto(BitShuva.Chavah.Models.LikeStatus,BitShuva.Chavah.Models.SongPickReasons)">
+            <summary>
+            Creates a new song object that's ready to be sent as a data transfer object over to the client.
+            </summary>
+            <param name="likeStatus">The like status for the song.</param>
+            <param name="pickReasons"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.Song.ToDto">
+            <summary>
+            Creates a new song object that's ready to be sent as a data transfer object over to the client.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.Song.UpdateAlbumInfo(BitShuva.Chavah.Models.Album)">
+            <summary>
+            Updates the denormalized album data from the specified album.
+            </summary>
+            <param name="album"></param>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.SongPickReasons.SoleReason">
+            <summary>
+            Used when the user requests a particular song, artist, album, or tag.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.SongWeight">
+            <summary>
+            Represents a song weight, indicating its likelihood of being chosen as a song pick.
+            See UserSongPreferences for song picking algorithm details.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.SongWeight.Weight">
+            <summary>
+            Computes the song weight using the current multiplier values.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.ThrowawayEmailDomains">
+            <summary>
+            Contains a list of email domains used for throwaway/temporary email accounts.
+            </summary>
+            <remarks>
+            List of domains fetched from https://github.com/martenson/disposable-email-domains/blob/master/disposable_email_blocklist.conf
+            </remarks>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.UserSongPreferences">
+            <summary>
+            Contains information about a user's song preferences, based on songs, artists, albums, and tags.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.UserSongPreferences.PickSong(System.Collections.Generic.IList{BitShuva.Chavah.Models.Indexes.Songs_RankStandings.Result})">
+            <summary>
+            Picks a song based on the user's preferences, given a list of songs by community ranking.
+            </summary>
+            <param name="songsWithRanking">Songs grouped by community rank standing.</param>
+            <returns></returns>
+            <remarks>
+            <para>
+            Based off of the song weights algorithm described here:
+            http://stackoverflow.com/questions/3345788/algorithm-for-picking-thumbed-up-items/3345838#3345838
+            </para>
+            <para>
+            The song weights algorithm is loosely based on the more general Multiplicative Weight Update Algorithm (MWUA), described here:
+            https://jeremykun.com/2017/02/27/the-reasonable-effectiveness-of-the-multiplicative-weights-update-algorithm/
+            </para>
+            </remarks>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.UserSongPreferences.BuildSongWeightsTable(System.Collections.Generic.IList{BitShuva.Chavah.Models.Indexes.Songs_RankStandings.Result})">
+             <summary>
+             Builds a dictionary containing Song ID keys and weight values.
+             The weight values are determined by song popularity, song like, artist like, album like, and tag like.
+             </summary>
+             <param name="songsWithRanking">Songs grouped by community rank standing.</param>
+             <returns></returns>
+             <remarks>
+             Based off of the song weights algorithm described here:
+             http://stackoverflow.com/questions/3345788/algorithm-for-picking-thumbed-up-items/3345838#3345838
+            
+             The song weights algorithm is loosely based on the more general Multiplicative Weight Update Algorithm (MWUA), described here:
+             https://jeremykun.com/2017/02/27/the-reasonable-effectiveness-of-the-multiplicative-weights-update-algorithm/
+             </remarks>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.UserSongPreferences.CreateTagLikeDislikeDifferences(System.Collections.Generic.List{BitShuva.Chavah.Models.LikeDislikeCount})">
+             <summary>
+             Creates a dictionary of tag name keys and like/dislike sum values. (Sum: a tag like = 1, a tag dislike = -1).
+             </summary>
+             <remarks>
+             For example, given the following tags:
+                { Tag: "worship", LikeDislikeCount: 1, SongId: "songs/777" } // user liked song/777 which is tagged "worship"
+                { Tag: "worship", LikeDislikeCount: -1, SongId: "songs/666" } // user disliked song/666, which is tagged "worship"
+                { Tag: "male vocal", LikeDislikeCount: 1, SongId: "songs/444" } // user liked song/444, which is taggged "male vocal"
+            
+             The output will be a dictionary containing these pairs:
+                 { Key: "worship", Value: 0 } // 0 because 1 + -1 = 0
+                 { Key: "male vocal", Value: 1 }
+             </remarks>
+             <param name="tags">All tag like/dislikes.</param>
+             <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.UserSongPreferences.GetCumulativeTagMultiplier(System.Collections.Generic.IEnumerable{BitShuva.Chavah.Models.LikeDislikeCount},System.Collections.Generic.Dictionary{System.String,System.Int32})">
+            <summary>
+            Gets a song rank multiplier for a song given the multipliers for the tags for the song.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.TotalPlays">
+            <summary>
+            Gets the total number of songs played by this user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.RegistrationDate">
+            <summary>
+            Gets the date the user registered.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.LastSeen">
+            <summary>
+            Gets the last time we saw this user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.TotalSongRequests">
+            <summary>
+            Gets the total number of song requests made by this user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.RequiresPasswordReset">
+            <summary>
+            Whether this user requires a password reset.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.RecentSongIds">
+            <summary>
+            Gets the IDs of the most recent songs played by the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.Notifications">
+            <summary>
+            Gets the list of notifications for the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.Volume">
+            <summary>
+            The last set volume, from 0 (muted) to 1 (full volume).
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.ProfilePicUrl">
+            <summary>
+            Gets the URL for the user's profile picture. Will be null if the user doesn't have a profile pic setup.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.FirstName">
+            <summary>
+            The user's first name.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.LastName">
+            <summary>
+            The user's last name.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.AccessFailedCount">
+            <summary>
+            Number of times sign in failed.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.Claims">
+            <summary>
+            The user's claims, for use in claims-based authentication.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.Email">
+            <summary>
+            The email of the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.Id">
+            <summary>
+            The ID of the user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.UserName">
+            <summary>
+            The user name. Usually the same as the email.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.EmailConfirmed">
+            <summary>
+            Whether the user has confirmed their email address.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.IsPhoneNumberConfirmed">
+            <summary>
+            Whether the user has confirmed their phone.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.LockoutEnabled">
+            <summary>
+            Whether the user is locked out.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.LockoutEndDate">
+            <summary>
+            Whether the user is locked out.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.TwoFactorEnabled">
+            <summary>
+            Whether 2-factor authentication is enabled.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.PhoneNumber">
+            <summary>
+            The phone number.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.UserViewModel.Roles">
+            <summary>
+             The roles of the user.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Services.BunnyCdnHttpClient">
+            <summary>
+            An HTTP client configured for POSTing files to BunnyCDN.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Services.BunnyCdnManagerService">
+            <summary>
+            CDN service that uploads media to BunnyCDN.
+            </summary>
+            <remarks>bunnycdn.com</remarks>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.DeleteSongAsync(BitShuva.Chavah.Models.Song)">
+            <summary>
+            Deletes a song's MP3 from the CDN.
+            </summary>
+            <param name="song"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.DeleteProfilePicAsync(BitShuva.Chavah.Models.AppUser)">
+            <summary>
+            Deletes the user's profile picture from the CDN.
+            </summary>
+            <param name="user">The user whose profile picture will be deleted.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.UploadAlbumArtAsync(System.Uri,System.String,System.String,System.String)">
+            <summary>
+            Uploads album art to BunnyCDN.
+            </summary>
+            <param name="source">The URL where the album art can be downloaded.</param>
+            <param name="album">The name of the album.</param>
+            <param name="artist">The name of the album's artist.</param>
+            <param name="fileExtension">The file extension to use.</param>
+            <returns>The URL to the uploaded album art on the CDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.UploadArtistImageAsync(System.Uri,System.String)">
+            <summary>
+            Uploads artist image to the CDN.
+            </summary>
+            <param name="source">The URL to an existing image. This will be copied to the CDN.</param>
+            <param name="fileName">The destination file name of the CDN.</param>
+            <returns>The URL to the uploaded artist image on the CDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.UploadMp3Async(System.Uri,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            Uploads the MP3 of a song to BunnyCDN.
+            </summary>
+            <param name="source">The URL where the MP3 resides. This will be copied to the CDN.</param>
+            <param name="artist">The name of the artist of the song being uploaded.</param>
+            <param name="album">The album of the song being uploaded.</param>
+            <param name="songNumber">The number of the song on the album.</param>
+            <param name="songName">The name of the song being uploaded.</param>
+            <returns>The URL to the song MP3 on the CDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.UploadProfilePicAsync(System.IO.Stream,System.String)">
+            <summary>
+            Uploads a user's profile picture to BunnyCDN.
+            </summary>
+            <param name="source">The stream containing the image bytes.</param>
+            <param name="contentType">The content type of the image. Should be "image/png" or "image/jpg".</param>
+            <returns>The URL of the uploaded profile picture on the CDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.GetFiles(System.String)">
+            <summary>
+            Gets the files in the specified directory.
+            </summary>
+            <param name="directory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.GetDirectories(System.String)">
+            <summary>
+            Gets the directories in the specified directory.
+            </summary>
+            <param name="directory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.DownloadTempFileLocally(System.Uri)">
+            <summary>
+            Downloads a file from HTTP to a local file on disk on the web server.
+            </summary>
+            <param name="httpUrl">The URL of the file to download.</param>
+            <returns>A TempFileStream containing the file path and opened stream to the file.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.GetDirectoryListings(System.String)">
+            <summary>
+            Gets a directory listing (files and directories) for the specified <paramref name="cdnPath"/>.
+            </summary>
+            <remarks>
+            See https://bunnycdnstorage.docs.apiary.io/#reference/0/storagezonenamepath/get
+            </remarks>
+            <param name="cdnPath">The directory ("foo") or directory path ("foo/bar") to get the directory listing for.</param>
+            <returns>The directory listings.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.UploadMedia(System.Uri,System.String,System.String)">
+            <summary>
+            Uploads media by first downloading from the specified <paramref name="source"/> and them uploading to BunnyCDN in the specified directory.
+            </summary>
+            <param name="source">The URI where the source media can be downloaded from.</param>
+            <param name="directory">The directory inside BunnyCDN where the file will be uploaded to.</param>
+            <param name="fileName">The name of the file to create in BunnyCDN.</param>
+            <returns>An HTTP URI pointing to the new file in BunnyCDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.UploadMedia(System.IO.Stream,System.String,System.String)">
+            <summary>
+            Uploads the source stream to BunnyCDN.
+            </summary>
+            <param name="source">The stream containing the data to upload.</param>
+            <param name="directory">The directory in BunnyCDN to upload to.</param>
+            <param name="fileName">The name of the file to create in BunnyCDN.</param>
+            <returns>An HTTP URI pointing to the new file in BunnyCDN.</returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Services.EmailRetryJob">
+            <summary>
+            Quartz.NET scheduling job that retries any emails that failed to send.
+            Initialized by <see cref="T:BitShuva.Chavah.Common.QuartzAppBuilderExtensions"/>.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Services.FtpCdnManagerService">
+            <summary>
+            CDN manager that uploads media to our CDN via FTP. 
+            </summary>
+            <remarks>As of 5/15/19, this is no longer in use. We now use BunnyCdnManager instead.</remarks>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.UploadMp3Async(System.Uri,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            Uploads the song to the CDN.
+            </summary>
+            <param name="source">The temporary HTTP address of the file. This is supplied by FilePickr. The file will be downloaded from here and moved to the CDN.</param>
+            <param name="artist"></param>
+            <param name="album"></param>
+            <param name="songNumber"></param>
+            <param name="songName"></param>
+            <returns>The HTTP URI to the MP3 file on the CDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.UploadAlbumArtAsync(System.Uri,System.String,System.String,System.String)">
+            <summary>
+            Uploads the song's album art to the CDN.
+            </summary>
+            <param name="source">The temporary HTTP address where the album art can be downloaded.</param>
+            <param name="album">The name of the album.</param>
+            <param name="artist">The name of the album's artist.</param>
+            <param name="fileExtension">The desired file extension for the file on the CDN.</param>
+            <returns>A task that represents the async operation.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.UploadArtistImageAsync(System.Uri,System.String)">
+            <summary>
+            Uploads an image to the /[station]/artistimages folder on the CDN.
+            </summary>
+            <param name="tempHttpPath">The temporary HTTP path where the image currently resides. This file will be donwloaded and moved to the CDN.</param>
+            <param name="fileName"></param>
+            <returns>The new HTTP URI to the image on the CDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.UploadProfilePicAsync(System.IO.Stream,System.String)">
+            <summary>
+            Uploads a profile picture.
+            </summary>
+            <param name="imageStream"></param>
+            <param name="contentType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.GetFiles(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="directory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.GetDirectories(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="directory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.UploadAlbumArt(System.String,System.String,System.String,System.String)">
+            <summary>
+            Uploads the song's local file representation to the CDN.
+            </summary>
+            <param name="artist"></param>
+            <param name="album"></param>
+            <param name="filePath">The fully qualified path to a local file.</param>
+            <param name="fileExtension">The desired file extension for the file on the CDN.</param>
+            <returns>The HTTP URI to the file on the CDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.UploadAlbumArt(System.String,System.String)">
+            <summary>
+            Uploads a local file to the album art directory on the CDN.
+            </summary>
+            <param name="destinationFileName">The file name, including extension, for the file. This will be the name of the file placed in the CDN.</param>
+            <param name="sourceFilePath">The path to the contents of the file.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.DownloadFileLocally(System.Uri)">
+            <summary>
+            Downloads a file from HTTP to a local file on disk on the web server.
+            </summary>
+            <param name="httpUrl">The URL of the file to download.</param>
+            <returns>A task containing the downloaded file name..</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.DeleteSongAsync(BitShuva.Chavah.Models.Song)">
+            <summary>
+            Deletes the song's MP3 file on the CDN.
+            </summary>
+            <param name="song"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.DeleteProfilePicAsync(BitShuva.Chavah.Models.AppUser)">
+            <summary>
+            Deletes a profile picture.
+            </summary>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Services.ICdnManagerService">
+            <summary>
+            Manages uploading and deleting media from a content delivery network (CDN).
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.ICdnManagerService.UploadAlbumArtAsync(System.Uri,System.String,System.String,System.String)">
+            <summary>
+            Uploads album cover image to the CDN.
+            </summary>
+            <param name="source">The URL where the album art can be downloaded.</param>
+            <param name="artist">The namer of the album's artist.</param>
+            <param name="album">The name of the album.</param>
+            <param name="fileExtension">The file extension to use for the file on the CDN.</param>
+            <returns>The URL to the uploaded album art on the CDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.ICdnManagerService.UploadArtistImageAsync(System.Uri,System.String)">
+            <summary>
+            Uploads an artist image to the CDN.
+            </summary>
+            <param name="source">Where the artist image can be downloaded from.</param>
+            <param name="fileName">The file name to upload to the CDN.</param>
+            <returns>The URL of the artist image on the CDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.ICdnManagerService.UploadMp3Async(System.Uri,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            Uploads an MP3 to the CDN.
+            </summary>
+            <param name="source">The URL where the MP3 can be fetched.</param>
+            <param name="artist">The artist of the song being uploaded.</param>
+            <param name="album">The album of the song being uploaded.</param>
+            <param name="songNumber">The number of the song on the album.</param>
+            <param name="songName">The name of the song.</param>
+            <returns>The URL of the uploaded song.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.ICdnManagerService.UploadProfilePicAsync(System.IO.Stream,System.String)">
+            <summary>
+            Uploads a profile picture to the CDN.
+            </summary>
+            <param name="imageStream">The stream containing the image data.</param>
+            <param name="contentType">The content type of the image. If null or empty, we assume it's a JPG.</param>
+            <returns>The HTTP URI to the uploaded image.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.ICdnManagerService.DeleteProfilePicAsync(BitShuva.Chavah.Models.AppUser)">
+            <summary>
+            Deletes the user's profile picture from the CDN.
+            </summary>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.ICdnManagerService.DeleteSongAsync(BitShuva.Chavah.Models.Song)">
+            <summary>
+            Deletes an MP3 from the CDN.
+            </summary>
+            <param name="song">The song who's MP3 will be deleted.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.ICdnManagerService.GetFiles(System.String)">
+            <summary>
+            Gets the files in a directory on the CDN.
+            </summary>
+            <param name="directory">The parent directory. Use / or an empty string to specify the root.</param>
+            <returns>A list of files.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.ICdnManagerService.GetDirectories(System.String)">
+            <summary>
+            Gets the subdirectories of the specified directory on the CDN.
+            </summary>
+            <param name="directory">The parent directory. Use / or an empty string to specify the root.</param>
+            <returns>A list of directories.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.IPushNotificationSender.QueueSendNotification(BitShuva.Chavah.Models.PushNotification,System.Collections.Generic.List{BitShuva.Chavah.Models.PushSubscription})">
+            <summary>
+            Queues a notification to be sent to the specified recipients.
+            </summary>
+            <param name="notification"></param>
+            <param name="recipients"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.IPushNotificationSender.QueueSendNotificationToAll(BitShuva.Chavah.Models.PushNotification)">
+            <summary>
+            Queues a notification to be sent to all push notification subscribers.
+            </summary>
+            <param name="notification"></param>
+        </member>
+        <member name="T:BitShuva.Chavah.Services.PushNotificationSender">
+            <summary>
+            Sends push notifications down to the browser.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.PushNotificationSender.QueueSendNotification(BitShuva.Chavah.Models.PushNotification,System.Collections.Generic.List{BitShuva.Chavah.Models.PushSubscription})">
+            <summary>
+            Enqueues a push notification to be sent to the specified recipients in the background.
+            </summary>
+            <param name="notification">The message to send.</param>
+            <param name="recipients">The recipients of the message.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.PushNotificationSender.QueueSendNotificationToAll(BitShuva.Chavah.Models.PushNotification)">
+            <summary>
+            Enqueues a push notification to be sent to all subscribers.
+            </summary>
+            <param name="notification">The notification.</param>
+            <returns></returns>
+        </member>
+        <member name="T:BitShuva.Chavah.Services.QuartzJobFactoryWithIoC">
+            <summary>
+            Quartz.net job factory that creates jobs using the ASP.NET Core dependency injection container.
+            </summary>
+            <remarks>
+            Courtesy of https://stackoverflow.com/a/42199955/536
+            </remarks>
+        </member>
+        <member name="T:BitShuva.Chavah.Services.SongUploadService">
+            <summary>
+            Uploads an MP3 in the background, and when finished, updates the song.
+            If the MP3 fails to upload, the Song is deleted from the database.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Services.IEmailService.QueueSendEmail(System.String,System.String,System.String,System.String)">
+            <summary>
+            Stores it in the database and queues it up for sending.
+            </summary>
+            <param name="recipient">The email address of the recipient. For multiple recipients, separate with a comma.</param>
+            <param name="subject"></param>
+            <param name="body"></param>
+            <param name="replyTo">Who replies should be sent to. If null, will use Chavah's email adddress.</param>
+            <returns>A task that stores the email in the database.</returns>
+        </member>
+        <member name="M:BitShuva.Services.IEmailService.QueueRetryEmail(System.String)">
+            <summary>
+            Sends an email that previously failed to send.
+            </summary>
+            <param name="emailId">The ID of the email to retry.</param>
+            <returns>A task that queues up the email in the outgoing email queue.</returns>
+        </member>
+        <member name="M:BitShuva.Services.IEmailService.GetEmailTemplate(System.String)">
+            <summary>
+            Gets an email template from the file name.
+            </summary>
+        </member>
+        <member name="T:BitShuva.Services.SendGridEmailService">
+            <summary>
+            Puts emails into the sending queue and stores them in the database.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HealthCheckBuilderExtensions.AddRavenDbCheck(Microsoft.Extensions.DependencyInjection.IHealthChecksBuilder,System.String,System.Nullable{Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus},System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Add a HealthCheck for RavenDb.
+            </summary>
+            <param name="builder">The <see cref="T:Microsoft.Extensions.DependencyInjection.IHealthChecksBuilder"/>.</param>
+            <param name="name">The name of the HealthCheck.</param>
+            <param name="failureStatus">The <see cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus"/>The type should be reported when the health check fails. Optional. If <see langword="null"/> then</param>
+            <param name="tags">A list of tags that can be used to filter sets of health checks. Optional.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.SwaggerExtensions">
+            <summary>
+            Extensions for Swagger API documentation.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerExtensions.AddCustomAddSwagger(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Add this functionality after services.Mvc
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.SwaggerExtensions.SwaggerDefaultValues">
+            <summary>
+            Represents the Swagger/Swashbuckle operation filter used to document the implicit API version parameter.
+            </summary>
+            <remarks>This <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IOperationFilter"/> is only required due to bugs in the <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator"/>.
+            Once they are fixed and published, this class can be removed.</remarks>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.SwaggerExtensions.SwaggerDefaultValues.Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+            <summary>
+            Applies the filter to the specified operation using the given context.
+            </summary>
+            <param name="operation">The operation to apply the filter to.</param>
+            <param name="context">The current operation filter context.</param>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.ApiExplorerIgnores">
+            <summary>
+            https://github.com/MarkPieszak/aspnetcore-angular2-universal/issues/656#issuecomment-397927589
+            </summary>
+        </member>
+        <member name="T:Microsoft.Extensions.HealthChecks.RavenDbHealthCheck">
+            <summary>
+            HealthCheck for RavenDb
+            </summary>
+        </member>
+        <member name="T:Chavah.Common.RssActionResult">
+            <summary>
+            A RSS feed <see cref="T:Microsoft.AspNetCore.Mvc.ActionResult"/>.
+            </summary>
+        </member>
+        <member name="M:Chavah.Common.RssActionResult.#ctor(BitShuva.Chavah.Models.Rss.SyndicationFeed)">
+            <summary>
+            Creates a new feed action result.
+            </summary>
+            <param name="feed"></param>
+        </member>
+        <member name="M:Chavah.Common.RssActionResult.ExecuteResult(Microsoft.AspNetCore.Mvc.ActionContext)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:Chavah.Common.RssActionResult.ExecuteResultAsync(Microsoft.AspNetCore.Mvc.ActionContext)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

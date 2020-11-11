@@ -26,10 +26,10 @@ namespace BitShuva.Chavah.Controllers
             return Redirect($"{_options?.HttpPath}{_options?.MusicDirectory}/Micha'el%20Eliyahu%20BenDavid/Micha_el%20Eliyahu%20BenDavid%20-%20Kol%20Yonah%20-%2010%20-%20Rejoice%20in%20Yah.mp3");
         }
 
-        [Route("/give")]
-        public IActionResult Give()
-        {
-            return Redirect("https://blog.messianicradio.com/2020/06/announcing-messiahs-musicians-fund-we.html");
-        }
+        //[Route("/give")]
+        //public IActionResult Give()
+        //{
+        //    return Redirect("https://blog.messianicradio.com/2020/06/announcing-messiahs-musicians-fund-we.html");
+        //}
     }
 }

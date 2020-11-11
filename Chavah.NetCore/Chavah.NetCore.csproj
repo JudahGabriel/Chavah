@@ -11,6 +11,10 @@
     <nullable>enable</nullable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\Dev\Chavah\Chavah.NetCore\BitShuva.Chavah.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Remove="wwwroot\js\Controllers\AdminDonationsController.ts" />
     <Content Remove="wwwroot\js\Controllers\AdminUsersController.ts" />

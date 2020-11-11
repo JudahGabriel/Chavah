@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using BitShuva.Chavah.Common;
@@ -79,7 +81,7 @@ namespace BitShuva.Chavah.Controllers
             var song = await DbSession.LoadRequiredAsync<Song>(songId);
             if (existingLike == null)
             {
-                logger.LogWarning("{user} set {song} as unranked, however, the user didn't like or dislike the song.", userId, songId);
+                logger.LogWarning("{user} set {song} as unranked, however, the user didn't like or dislike the song. No Like with ID {likeId}", userId, songId, likeId);
                 return song.CommunityRank;
             }
 
@@ -92,7 +94,8 @@ namespace BitShuva.Chavah.Controllers
 
             song.CommunityRank += rankAdjustment;
             await UpdateSongRankStanding(song);
-            DbSession.Delete(existingLike);
+            existingLike.Status = LikeStatus.None;
+            await DbSession.SaveChangesAsync();
             return song.CommunityRank;
         }
 
@@ -115,6 +118,39 @@ namespace BitShuva.Chavah.Controllers
             };
         }
 
+        /// <summary>
+        /// Resets the song rank based on the likes and unlikes for the song.
+        /// Warning: older versions of Chavah didn't track Like objects, so calling this function for a particular song can wipe out old likes for a song.
+        /// </summary>
+        /// <param name="songId"></param>
+        /// <returns></returns>
+        [Authorize(Roles = AppUser.AdminRole)]
+        [HttpPost]
+        public async Task<object> RecalculateSongRank(string songId)
+        {
+            var likes = await DbSession.Query<Like>()
+                .Where(l => l.SongId == songId)
+                .Include(l => l.SongId)
+                .ToListAsync();
+            var song = await DbSession.LoadRequiredAsync<Song>(songId);
+            var newSongRank = likes.Sum(like => like.Status switch
+                {
+                    LikeStatus.Like => 1,
+                    LikeStatus.Dislike => -1,
+                    _ => 0
+                });
+            var oldSongRank = song.CommunityRank;
+            song.CommunityRank = newSongRank;
+            return new
+            {
+                song.Id,
+                song.Name,
+                song.Artist,
+                OldRank = oldSongRank,
+                NewRank = newSongRank
+            };
+        }
+
         private async Task<int> UpdateLikeStatus(string songId, LikeStatus likeStatus)
         {
             var userId = GetUserIdOrThrow();
@@ -133,7 +169,8 @@ namespace BitShuva.Chavah.Controllers
             var existingLike = await DbSession.LoadAsync<Like>(likeId);
             if (existingLike != null)
             {
-                isReversal = existingLike.Status != likeStatus;
+                isReversal = (existingLike.Status == LikeStatus.Like && likeStatus == LikeStatus.Dislike) ||
+                    (existingLike.Status == LikeStatus.Dislike && likeStatus == LikeStatus.Like);
                 isNoChange = existingLike.Status == likeStatus;
                 existingLike.Status = likeStatus;
             }
