@@ -126,7 +126,7 @@ async function fetchFromNetwork(event) {
  */
 async function fetchNetworkWithOfflineFallback(event) {
     const networkResponse = await fetchFromNetwork(event);
-    if (networkResponse && (networkResponse.ok || networkResponse.type === "opaque")) {
+    if (networkResponse && (networkResponse.ok || networkResponse.type === "opaque" || networkResponse.type === "opaqueredirect")) {
         return networkResponse;
     }
 
