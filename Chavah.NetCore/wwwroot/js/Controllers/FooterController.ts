@@ -166,7 +166,7 @@
 
                 const wakeLock: any = navigator["wakeLock"];
                 try {
-                    this.wakeLock = wakeLock.request("screen");
+                    this.wakeLock = await wakeLock.request("screen");
                 } catch (wakeLockError) {
                     console.warn("Unable to acquire wake lock.", wakeLockError);
                 }

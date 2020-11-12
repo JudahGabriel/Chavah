@@ -48,14 +48,14 @@ async function setupPeriodicSync() {
         return;
     }
 
-    const registration = await navigator.serviceWorker.ready;
-    if (!registration.periodicSync) {
+    if (!self.registration || !self.registration.periodicSync) {
         console.warn("Periodic background sync couldn't be registered due to service worker registration missing the periodicSync member.");
         return;
     }
 
     // Do we already have periodic sync? Punt.
-    if (registration.periodicSync.getTags().includes(unreadCountBackgroundSync)) {
+    const syncTags = await registration.periodicSync.getTags();
+    if (syncTags.includes(unreadCountBackgroundSync)) {
         console.info("Periodic background sync already setup.");
         return;
     }
