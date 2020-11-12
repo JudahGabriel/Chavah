@@ -869,6 +869,14 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:BitShuva.Chavah.Controllers.UsersController.#ctor(BitShuva.Chavah.Services.ICdnManagerService,Raven.Client.Documents.Session.IAsyncDocumentSession,Microsoft.Extensions.Logging.ILogger{BitShuva.Chavah.Controllers.UsersController})">
+            <summary>
+            Creates a new instance.
+            </summary>
+            <param name="cdnManager"></param>
+            <param name="dbSession"></param>
+            <param name="logger"></param>
+        </member>
         <member name="M:BitShuva.Chavah.Controllers.UsersController.SaveVolume(System.Double)">
             <summary>
             Set volume for the logged in user.
@@ -883,12 +891,32 @@
             <param name="upload"></param>
             <returns></returns>
         </member>
+        <member name="M:BitShuva.Chavah.Controllers.UsersController.GetProfilePicForEmailAddress(System.String)">
+            <summary>
+            Gets the profile picture for the user with the specified email address.
+            </summary>
+            <param name="email"></param>
+            <returns></returns>
+        </member>
         <member name="M:BitShuva.Chavah.Controllers.UsersController.UpdateProfile(BitShuva.Chavah.Models.AppUser)">
             <summary>
             Update User Profile.
             </summary>
             <param name="updatedUser"></param>
             <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.UsersController.GetRegistrations(System.DateTime)">
+            <summary>
+            Gets the user registrations from the specified date until now.
+            </summary>
+            <param name="fromDate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Controllers.UsersController.GetUnreadNotificationsCount">
+            <summary>
+            Gets the unread notification count for the current user. If no user is logged in, 0 is returned.
+            </summary>
+            <returns>The number of unread notifications for the current user, or zero if the user is not signed in.</returns>
         </member>
         <member name="T:BitShuva.Chavah.Models.Album">
             <summary>

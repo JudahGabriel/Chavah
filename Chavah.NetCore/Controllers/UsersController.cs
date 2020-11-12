@@ -21,10 +21,15 @@ namespace BitShuva.Chavah.Controllers
     public class UsersController : RavenController
     {
         private readonly ICdnManagerService cdnManager;
-        private static readonly DateTime startTime = DateTime.UtcNow;
 
-        public const int maxProfilePictureSizeInBytes = 10_000_000;
+        private const int maxProfilePictureSizeInBytes = 10_000_000;
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="cdnManager"></param>
+        /// <param name="dbSession"></param>
+        /// <param name="logger"></param>
         public UsersController(
             ICdnManagerService cdnManager,
             IAsyncDocumentSession dbSession,
@@ -32,27 +37,6 @@ namespace BitShuva.Chavah.Controllers
             : base(dbSession, logger)
         {
             this.cdnManager = cdnManager;
-        }
-
-        [HttpGet]
-        [Authorize(Roles = AppUser.AdminRole)]
-        public async Task<RecentUserSummary> GetRecent(int minutes)
-        {
-            var recent = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(minutes));
-            var loggedInUsers = await DbSession.Query<AppUser>()
-                .Where(u => u.LastSeen >= recent)
-                .Select(u => u.Email)
-                .ToListAsync();
-
-            return new RecentUserSummary
-            {
-                Summary = $"{loggedInUsers.Count} logged in",
-                LoggedIn = loggedInUsers,
-                Anonymous = new List<string>(),
-                Cookieless = new List<string>(),
-                TotalSinceBeginning = loggedInUsers.Count,
-                BeginningTime = DateTime.UtcNow.Subtract(startTime)
-            };
         }
 
         /// <summary>
@@ -106,6 +90,11 @@ namespace BitShuva.Chavah.Controllers
             return user.ProfilePicUrl;
         }
 
+        /// <summary>
+        /// Gets the profile picture for the user with the specified email address.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<Uri?> GetProfilePicForEmailAddress(string email)
         {
@@ -141,6 +130,11 @@ namespace BitShuva.Chavah.Controllers
             return user;
         }
 
+        /// <summary>
+        /// Gets the user registrations from the specified date until now.
+        /// </summary>
+        /// <param name="fromDate"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<PagedList<AppUser>> GetRegistrations(DateTime fromDate)
@@ -155,6 +149,17 @@ namespace BitShuva.Chavah.Controllers
                 Items = users,
                 Total = totalUsersCount
             };
+        }
+
+        /// <summary>
+        /// Gets the unread notification count for the current user. If no user is logged in, 0 is returned.
+        /// </summary>
+        /// <returns>The number of unread notifications for the current user, or zero if the user is not signed in.</returns>
+        [HttpGet]
+        public async Task<int> GetUnreadNotificationsCount()
+        {
+            var user = await GetUser();
+            return user?.Notifications.Count(n => n.IsUnread) ?? 0;
         }
     }
 }

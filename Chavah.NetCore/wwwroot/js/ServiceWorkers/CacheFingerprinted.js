@@ -7,6 +7,7 @@
 const appShellCacheName = "AppShell";
 const mediaCacheName = "MediaResources";
 const offlinePageUrl = "/views/offline.html";
+const unreadCountBackgroundSync = "unread-count-sync";
 let storageSpaceAvailable = megaBytesInBytes(250);
 
 /**
@@ -26,6 +27,47 @@ async function initializeCaches() {
     if (navigator.storage && navigator.storage.estimate) {
         const storageEstimate = await navigator.storage.estimate();
         storageSpaceAvailable = storageEstimate.quota - storageEstimate.usage;
+    }
+}
+
+/**
+ * Initializes periodic background sync where supported. Chavah uses periodic sync to periodically fetch unread notification count.
+ * @returns {Promise<void>}
+ */
+async function setupPeriodicSync() {
+    // Only do this if badging and permissions are supported.
+    if (!navigator.setAppBadge || !navigator.permissions || !navigator.permissions.query) {
+        console.warn("Unable to register periodic background sync because of missing functionality in navigator.");
+        return;
+    }
+    
+    // Ask the browser if we're able to do this. (Must be an installed PWA, for example.)
+    const status = await navigator.permissions.query({ name: "periodic-background-sync" });
+    if (status.state !== "granted") {
+        console.warn("Periodic background sync couldn't be registered due to status", status.state);
+        return;
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+    if (!registration.periodicSync) {
+        console.warn("Periodic background sync couldn't be registered due to service worker registration missing the periodicSync member.");
+        return;
+    }
+
+    // Do we already have periodic sync? Punt.
+    if (registration.periodicSync.getTags().includes(unreadCountBackgroundSync)) {
+        console.info("Periodic background sync already setup.");
+        return;
+    }
+
+    try {
+        const oneDayInMs = 24 * 60 * 60 * 1000;
+        await registration.periodicSync.register(unreadCountBackgroundSync, {
+            minInterval: oneDayInMs
+        });
+        console.info("Successfully registered periodic background sync.");
+    } catch (periodicSyncError) {
+        console.warn("Error registering periodic background sync", periodicSyncError);
     }
 }
 
@@ -193,6 +235,10 @@ async function networkFirst(cacheName, event) {
 function onInstall(event) {
     event.waitUntil(self.skipWaiting()); // Activate worker immediately
     event.waitUntil(initializeCaches());
+
+    // After 30 seconds, setup periodic sync.
+    // This is work that doesn't need to be done up-front, hence the timeout.
+    setTimeout(() => setupPeriodicSync(), 30000);
 }
 
 /**
@@ -278,6 +324,29 @@ function onNotificationClick(event) {
 }
 
 /**
+ * Fetches the unread count for the user.
+ * @param {PeriodicSyncEvent} event
+ */
+async function onPeriodicSync(event) {
+    console.info("Periodic background sync triggered", event);
+    if (event.tag === unreadCountBackgroundSync) {
+        try {
+            const unreadCountResult = await fetch("/api/users/getUnreadNotificationsCount");
+            if (!unreadCountResult.ok) {
+                console.warn("Periodic sync of unread notification count failed", unreadCountResult);
+                return;
+            }
+
+            const unreadCountText = await unreadCountResult.text();
+            navigator.setAppBadge(parseInt(unreadCountText));
+            console.info("Successfully fetched unread count via periodic sync", unreadCountText);
+        } catch (fetchError) {
+            console.warn("Unable to fetch unread count in periodic sync due to error", fetchError);
+        }
+    }
+}
+
+/**
  * Checks whether the resource is a media resource (MP3, JPG, etc) on our CDN.
  * @param {string} url The URL to check.
  * @returns {boolean}
@@ -314,3 +383,4 @@ self.addEventListener("install", e => onInstall(e));
 self.addEventListener("fetch", e => onFetch(e));
 self.addEventListener("push", e => onPushNotificationReceived(e));
 self.addEventListener("notificationclick", e => onNotificationClick(e));
+self.addEventListener("periodicsync", e => onPeriodicSync(e));
