@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Settings;
 
@@ -114,7 +116,16 @@ namespace BitShuva.Chavah.Services
             {
                 if (!cancelToken.IsCancellationRequested)
                 {
-                    await TrySendPushNotification(notification, subscription, vapidDetails, client, jsonSettings, logger);
+                    // Clone the notification so that we can send a unique notification with user-specific unread count.
+                    var notificationClone = notification.Clone();
+                    using (var session = db.OpenAsyncSession())
+                    {
+                        var user = await session.LoadOptionalAsync<AppUser>(subscription.AppUserId);
+                        var existingUnreadCount = user?.Notifications.Count(n => n.IsUnread) ?? 0;
+                        notificationClone.UnreadCount = existingUnreadCount + 1; // +1 because this is a new notification
+                    }
+
+                    await TrySendPushNotification(notificationClone, subscription, vapidDetails, client, jsonSettings, logger);
                 }
             }
 

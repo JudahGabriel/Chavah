@@ -1,4 +1,6 @@
-﻿namespace BitShuva.Chavah.Models
+﻿using System;
+
+namespace BitShuva.Chavah.Models
 {
     /// <summary>
     /// An HTML5 push notification. This is serialized to JSON and sent to the service worker, which unpacks it and shows the notification.
@@ -29,6 +31,20 @@
         /// The URL to open if the user clicks the notification.
         /// </summary>
         public string? ClickUrl { get; set; }
+
+        /// <summary>
+        /// Gets the unread count app badge to set for the user. If zero, no unread count will be shown.
+        /// </summary>
+        public int UnreadCount { get; set; }
+
+        /// <summary>
+        /// Creates a clone of the PushNotification.
+        /// </summary>
+        /// <returns></returns>
+        public PushNotification Clone()
+        {
+            return (PushNotification)MemberwiseClone();
+        }
 
         ///// <summary>
         ///// A dictionary of actions. These will appear as buttons in the notification. The key should be a title, the value should be a URL that will launch when the button is clicked.

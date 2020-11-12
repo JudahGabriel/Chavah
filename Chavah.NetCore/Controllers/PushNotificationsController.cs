@@ -83,8 +83,17 @@ namespace BitShuva.Chavah.Controllers
             return null;
         }
 
+        /// <summary>
+        /// Sends test push notificaiton.
+        /// </summary>
+        /// <param name="subscriptionId"></param>
+        /// <param name="title"></param>
+        /// <param name="body"></param>
+        /// <param name="iconUrl"></param>
+        /// <param name="imageUrl"></param>
+        /// <returns></returns>
         [HttpPost]
-        //[Authorize(Roles = AppUser.AdminRole)]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task<string> SendTestPush(string subscriptionId, string title, string body, string iconUrl, string imageUrl)
         {
             var subscription = await DbSession.LoadAsync<PushSubscription>(subscriptionId);

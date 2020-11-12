@@ -108,7 +108,7 @@ namespace BitShuva.Chavah.Controllers
                 Url = url
             };
 
-            NotifyAllUsers(notification);
+            AddNotificationToAllUsers(notification);
 
             // Send out HTML5 push notifications.
             var pushNotification = new PushNotification
@@ -220,7 +220,7 @@ namespace BitShuva.Chavah.Controllers
             return lyricsSection;
         }
 
-        private void NotifyAllUsers(Notification notification)
+        private void AddNotificationToAllUsers(Notification notification)
         {
             var jsonNotification = JsonConvert.SerializeObject(notification);
             var patchScript = @"

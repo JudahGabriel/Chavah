@@ -56,7 +56,7 @@ namespace BitShuva.Chavah.Common
         /// <param name="session"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static async Task<T?> LoadOptionalAsync<T>(this IAsyncDocumentSession session, string id)
+        public static async Task<T?> LoadOptionalAsync<T>(this IAsyncDocumentSession session, string? id)
             where T : class
         {
             if (string.IsNullOrWhiteSpace(id))

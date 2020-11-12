@@ -230,8 +230,17 @@ function onFetch(event) {
  * Handles the push notification event and displays a notification to the user.
  * @param {PushEvent} event
  */
-function onPush(event) {
-    const pushNotification = event.data?.json(); // this will be a Models.PushNotification
+function onPushNotificationReceived(event) {
+
+    let pushNotification;
+    try {
+        pushNotification = event.data.json(); // this will be a Models.PushNotification
+    } catch (jsonError) {
+        console.warn("Received push notification, but event.data.json() threw an error.", jsonError);
+        return;
+    }
+
+    // Show the notification to the user.
     event.waitUntil(
         self.registration.showNotification(pushNotification.title || 'Chavah Messianic Radio', {
             body: pushNotification.body,
@@ -248,6 +257,11 @@ function onPush(event) {
             ]
         })
     );
+
+    // Update the app badge.
+    if (pushNotification.unreadCount && navigator.setAppBadge) {
+        navigator.setAppBadge(pushNotification.unreadCount);
+    }
 }
 
 /**
@@ -298,5 +312,5 @@ function megaBytesInBytes(mb) {
 
 self.addEventListener("install", e => onInstall(e));
 self.addEventListener("fetch", e => onFetch(e));
-self.addEventListener("push", e => onPush(e));
+self.addEventListener("push", e => onPushNotificationReceived(e));
 self.addEventListener("notificationclick", e => onNotificationClick(e));
