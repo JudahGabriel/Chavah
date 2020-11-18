@@ -184,6 +184,11 @@ namespace BitShuva.Services
 
         public async Task SendEmailAsync(MailMessage message)
         {
+            if (message.From is null)
+            {
+                throw new ArgumentException("mail message had null .From property", nameof(message));
+            }
+
             var client = new SendGrid.SendGridClient(emailOptions.SendGridApiKey);
             var from = new EmailAddress(message.From.Address, message.From.DisplayName);
             var subject = message.Subject;

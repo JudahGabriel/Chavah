@@ -48,7 +48,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserInfo()
         {
-            var user = await session.LoadAsync<AppUser>($"AppUsers/{User.Identity.Name}");
+            var user = await session.LoadAsync<AppUser>($"AppUsers/{User.Identity?.Name}");
 
             return Ok(user);
         }

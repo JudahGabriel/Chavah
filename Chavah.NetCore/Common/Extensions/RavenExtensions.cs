@@ -393,10 +393,17 @@ namespace BitShuva.Chavah.Common
             var collectionPrefix = dbSession.DocumentStore.Conventions.TransformTypeCollectionNameToDocumentIdPrefix(collectionName);
             var separator = dbSession.DocumentStore.Conventions.IdentityPartsSeparator;
             var idPrefix = collectionPrefix + separator;
-            using var stream = await dbSession.StreamAsync<T>(idPrefix);
-            while (await stream.MoveNextAsync())
+            var stream = await dbSession.StreamAsync<T>(idPrefix);
+            try
             {
-                yield return stream.Current.Document;
+                while (await stream.MoveNextAsync())
+                {
+                    yield return stream.Current.Document;
+                }
+            }
+            finally
+            {
+                await stream.DisposeAsync();
             }
         }
     }

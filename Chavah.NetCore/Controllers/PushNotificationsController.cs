@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
@@ -109,6 +110,7 @@ namespace BitShuva.Chavah.Controllers
                 ImageUrl = imageUrl
             };
             pushSender.QueueSendNotification(testNotification, new List<PushSubscription>(1) { subscription });
+
             return "Subscription sent!";
         }
     }

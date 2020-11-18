@@ -53,7 +53,9 @@ namespace BitShuva.Chavah.Controllers
             var songCount = await DbSession.Query<Song>().CountAsync();
             var songsList = new List<SitemapNode>(songCount + 10);
 
-            using (var songStream = await DbSession.Advanced.StreamAsync<Song>("songs/"))
+
+            var songStream = await DbSession.Advanced.StreamAsync<Song>("songs/");
+            try
             {
                 while (await songStream.MoveNextAsync())
                 {
@@ -62,6 +64,10 @@ namespace BitShuva.Chavah.Controllers
                     var sitemapNode = new SitemapNode(url, lastModified, SitemapFrequency.Monthly);
                     songsList.Add(sitemapNode);
                 }
+            }
+            finally
+            {
+                await songStream.DisposeAsync();
             }
 
             return songsList;

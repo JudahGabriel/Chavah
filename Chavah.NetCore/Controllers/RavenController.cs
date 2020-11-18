@@ -75,7 +75,7 @@ namespace BitShuva.Chavah.Controllers
             if (currentUser == null)
             {
                 throw new UnauthorizedAccessException()
-                    .WithData("userName", User.Identity.Name ?? string.Empty);
+                    .WithData("userName", User.Identity?.Name ?? string.Empty);
             }
 
             return currentUser;
@@ -89,7 +89,7 @@ namespace BitShuva.Chavah.Controllers
                 return currentUser;
             }
 
-            var email = User.Identity.Name;
+            var email = User.Identity?.Name;
             if (!string.IsNullOrEmpty(email))
             {
                 currentUser = await DbSession.LoadAsync<AppUser>("AppUsers/" + email);
@@ -111,9 +111,9 @@ namespace BitShuva.Chavah.Controllers
 
         protected string? GetUserId()
         {
-            if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(User.Identity.Name))
+            if (User.Identity?.IsAuthenticated == true && !string.IsNullOrEmpty(User.Identity?.Name))
             {
-                return AppUser.AppUserPrefix + User.Identity.Name;
+                return $"{AppUser.AppUserPrefix}{User.Identity.Name}";
             }
 
             return null;

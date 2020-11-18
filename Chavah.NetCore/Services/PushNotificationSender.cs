@@ -171,7 +171,8 @@ namespace BitShuva.Chavah.Services
             var totalSubscriptionCount = await dbSession.Query<PushSubscription>().CountAsync();
             var listSize = Math.Min(max, totalSubscriptionCount);
             var list = new List<PushSubscription>(listSize);
-            using (var enumerator = await dbSession.Advanced.StreamAsync<PushSubscription>("PushSubscriptions/"))
+            var enumerator = await dbSession.Advanced.StreamAsync<PushSubscription>("PushSubscriptions/");
+            try
             {
                 while (await enumerator.MoveNextAsync())
                 {
@@ -180,6 +181,10 @@ namespace BitShuva.Chavah.Services
                         list.Add(enumerator.Current.Document);
                     }
                 }
+            }
+            finally
+            {
+                await enumerator.DisposeAsync();
             }
 
             return list;

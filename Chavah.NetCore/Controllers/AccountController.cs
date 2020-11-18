@@ -156,7 +156,7 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task SignOut()
+        public new async Task SignOut()
         {
             await signInManager.SignOutAsync().ConfigureAwait(false);
         }
@@ -530,7 +530,7 @@ namespace BitShuva.Chavah.Controllers
         [HttpPost]
         public async Task<SupportMessage> SendSupportMessage([FromBody]SupportMessage message)
         {
-            if (!string.IsNullOrEmpty(User.Identity.Name))
+            if (!string.IsNullOrEmpty(User.Identity?.Name))
             {
                 message.UserId = $"AppUsers/{User.Identity.Name}";
             }
@@ -548,7 +548,7 @@ namespace BitShuva.Chavah.Controllers
                 {
                     // Update their name.
                     var nameParts = message.Name.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    user.FirstName = nameParts.FirstOrDefault();
+                    user.FirstName = nameParts.FirstOrDefault() ?? string.Empty;
                     user.LastName = string.Join(' ', nameParts.Skip(1));
                 }
             }

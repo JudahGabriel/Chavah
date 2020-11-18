@@ -75,19 +75,22 @@ namespace BitShuva.Chavah
             services.AddTransient<BCryptPasswordSettings>();
             services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher<AppUser>>();
 
-            // Add RavenDB and identity.
+            // Add RavenDB document store, session, and migrations.
             services
                 .AddChavahRavenDbDocStore(Configuration)       // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession()   // Create a RavenDB IAsyncDocumentSession for each request.
                 .AddRavenDbMigrations()     // Use RavenDB migrations
-                .AddRavenDbIdentity<AppUser>(c => // Use Raven for users and roles.
-                {
-                    c.Password.RequireNonAlphanumeric = false;
-                    c.Password.RequireUppercase = false;
-                    c.Password.RequiredLength = 6;
-                });
+                .AddRavenStructuredLogger(); // Use RavenDB for logging
 
-            services.AddLogging(logger => logger.AddRavenStructuredLogger());
+            // Add Raven Identity
+            services
+                .AddIdentity<AppUser, Raven.Identity.IdentityRole>(options =>
+                {
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequiredLength = 6;
+                })
+                .AddRavenDbIdentityStores<AppUser>(); // Use Raven for users and roles.
 
             services.InstallIndexes();
             services.AddMemoryCache();
@@ -216,7 +219,7 @@ namespace BitShuva.Chavah
             app.UseQuartzForEmailRetry();
 
             // Run pending Raven migrations.
-            var migrationService = app.ApplicationServices.GetService<MigrationRunner>();
+            var migrationService = app.ApplicationServices.GetRequiredService<MigrationRunner>();
             migrationService.Run();
         }
     }

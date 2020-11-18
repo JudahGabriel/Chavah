@@ -34,7 +34,7 @@ async function initializeCaches() {
  * Initializes periodic background sync where supported. Chavah uses periodic sync to periodically fetch unread notification count.
  * @returns {Promise<void>}
  */
-async function setupPeriodicSync() {
+async function setupPeriodicSync(registration) {
     // Only do this if badging and permissions are supported.
     if (!navigator.setAppBadge || !navigator.permissions || !navigator.permissions.query) {
         console.warn("Unable to register periodic background sync because of missing functionality in navigator.");
@@ -48,7 +48,7 @@ async function setupPeriodicSync() {
         return;
     }
 
-    if (!self.registration || !self.registration.periodicSync) {
+    if (!registration || !registration.periodicSync) {
         console.warn("Periodic background sync couldn't be registered due to service worker registration missing the periodicSync member.");
         return;
     }
@@ -238,7 +238,7 @@ function onInstall(event) {
 
     // After 30 seconds, setup periodic sync.
     // This is work that doesn't need to be done up-front, hence the timeout.
-    setTimeout(() => setupPeriodicSync(), 30000);
+    setTimeout(() => setupPeriodicSync(self.registration), 30000);
 }
 
 /**
@@ -251,6 +251,7 @@ function onFetch(event) {
     const isCdn = isCdnUrl(request.url);
     const isMediaResource = isMediaUrl(request.url);
     const isHomePage = request.method === "GET" && (request.url === "/" || request.url.endsWith("/#") || request.url.endsWith("/#/"));
+    const isApiCall = request.url.includes("messianicradio.com/api/");
     // Always fetch non-GET requests from the network
     try {
         if (request.method !== "GET") {
@@ -263,7 +264,11 @@ function onFetch(event) {
         } else if (isFingerprinted || isCdn) {
             // Cache first our app shell: fingerprinted resources (our HTML, JS, CSS) and shell-related scripts (jQuery, Bootstrap, and others on various CDNs)
             event.respondWith(fetchCacheFirst(appShellCacheName, event));
-        } else {
+        } else if (isApiCall) {
+            // For calling the API, always go to the network and don't fallback to an offline page. Doesn't make sense to serve an offline page for an API call. Can hide real errors.
+            event.responseWith(fetchFromNetwork(event));
+        }
+        else {
             event.respondWith(fetchNetworkWithOfflineFallback(event));
         }
     } catch (fetchError) {
