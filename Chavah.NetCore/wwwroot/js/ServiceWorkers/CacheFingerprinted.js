@@ -266,7 +266,7 @@ function onFetch(event) {
             event.respondWith(fetchCacheFirst(appShellCacheName, event));
         } else if (isApiCall) {
             // For calling the API, always go to the network and don't fallback to an offline page. Doesn't make sense to serve an offline page for an API call. Can hide real errors.
-            event.responseWith(fetchFromNetwork(event));
+            event.respondWith(fetchFromNetwork(event));
         }
         else {
             event.respondWith(fetchNetworkWithOfflineFallback(event));

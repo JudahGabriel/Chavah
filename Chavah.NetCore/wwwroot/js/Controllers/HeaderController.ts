@@ -60,7 +60,9 @@
         }
 
         get canInstallPwa(): boolean {
-            return this.pwaInstall.canInstall;
+            const isInstalled = window.matchMedia && (window.matchMedia("(display-mode: minimal-ui)").matches || window.matchMedia("(display-mode: standalone)").matches);
+            const hasHideInstallationQueryUrl = window.location.search && window.location.search.includes("hideInstall");
+            return !isInstalled && !hasHideInstallationQueryUrl && this.pwaInstall.canInstall;
         }
 
         get isOnIOS(): boolean {
