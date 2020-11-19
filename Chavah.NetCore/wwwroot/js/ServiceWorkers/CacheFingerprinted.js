@@ -89,10 +89,11 @@ async function addToCache(cacheName, request, response) {
     const clonedResponse = tryCloneResponse(response, request.url);
     const isCdn = isCdnUrl(request.url);
     const isOnline = navigator.onLine;
+    const isPartialResponse = response.status === 206 || response.status === 416; // See https://github.com/w3c/ServiceWorker/issues/937
     if (!response.ok) {
         // See if it's an opaque response from our CDN. If so, and we're online, assume it's successful and put it in the cache.
-        if (response.type == "opaque" && isCdn && isOnline) {
-            await cache.put(request, clonedResponse); // .put is required to storage opaque responses.
+        if (response.type == "opaque" && isCdn && isOnline && response.status !== 206 && !isPartialResponse) {
+            await tryPutCache(cache, request, clonedResponse); // .put is required to storage opaque responses.
         } else if (isOnline) {
             console.warn("Attempted to add request to sw cache, but received non-OK response", request, response);
         }
@@ -107,6 +108,20 @@ async function addToCache(cacheName, request, response) {
         const averageJpgSize = megaBytesInBytes(1);
         const responseSizeEstimate = request.url.includes(".mp3") ? averageMp3Size : averageJpgSize;
         storageSpaceAvailable -= responseSizeEstimate;
+    }
+}
+
+/**
+ * Tries to put the specified request and response into the specified cache. Upon failure, we log a warning.
+ * @param {Cache} The cache to update.
+ * @param {Request} request The request whose response to add to the cache.
+ * @param {Response} response The response to add to the cache.
+ */
+async function tryPutCache(cache, request, response) {
+    try {
+        await cache.put(request, response); // .put is required to storage opaque responses.
+    } catch (cacheError) {
+        console.warn("Attempted to put response into the cache, but an error occured.", request, response, cacheError);
     }
 }
 
