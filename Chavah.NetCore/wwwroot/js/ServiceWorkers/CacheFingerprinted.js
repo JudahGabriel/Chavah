@@ -92,7 +92,7 @@ async function addToCache(cacheName, request, response) {
     const isPartialResponse = response.status === 206 || response.status === 416; // See https://github.com/w3c/ServiceWorker/issues/937
     if (!response.ok) {
         // See if it's an opaque response from our CDN. If so, and we're online, assume it's successful and put it in the cache.
-        if (response.type == "opaque" && isCdn && isOnline && response.status !== 206 && !isPartialResponse) {
+        if (response.type == "opaque" && isCdn && isOnline && !isPartialResponse) {
             await tryPutCache(cache, request, clonedResponse); // .put is required to storage opaque responses.
         } else if (isOnline) {
             console.warn("Attempted to add request to sw cache, but received non-OK response", request, response);
