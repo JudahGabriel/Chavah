@@ -121,8 +121,8 @@ namespace BitShuva.Chavah.Controllers
 
         private void HandleKnownExceptions(Exception error, ActionExecutingContext? actionContext, string errorContext)
         {
-            using (logger.BeginKeyValueScope("user", User?.Identity?.Name))
-            using (logger.BeginKeyValueScope("action", actionContext?.ActionDescriptor?.DisplayName))
+            using (logger.BeginKeyValueScope("user", User?.Identity?.Name ?? string.Empty))
+            using (logger.BeginKeyValueScope("action", actionContext?.ActionDescriptor?.DisplayName ?? string.Empty))
             using (logger.BeginKeyValueScope("errorContext", errorContext))
             {
                 if (error is UnauthorizedAccessException)

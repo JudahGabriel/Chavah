@@ -46,6 +46,15 @@
             return this.httpApi.post("/api/artists/markDueDonationAsPaid", donation);
         }
 
+        recordMessiahsMusicFundMonthlyDisbursement(year: number, month: number, donationDollars: number): ng.IPromise<void> {
+            const args = {
+                year: year,
+                month: month,
+                donations: donationDollars
+            };
+            return this.httpApi.postUriEncoded("/api/artists/RecordMessiahsMusicFundMonthlyDisbursement", args);
+        }
+
         // tslint:disable-next-line:member-ordering
         static artistSelector(serverObj: Server.Artist): Artist {
             return new Artist(serverObj);

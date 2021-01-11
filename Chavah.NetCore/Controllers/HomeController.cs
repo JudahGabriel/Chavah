@@ -159,5 +159,21 @@ namespace BitShuva.Chavah.Controllers
 
             return Json(new[] { assetLinks });
         }
+
+        /// <summary>
+        /// Provides URI handling and navigator.getInstalledRelatedApps() support for our Windows app. See https://web.dev/get-installed-related-apps/#tell-your-windows-app-about-your-website
+        /// </summary>
+        [HttpGet]
+        [Route(".well-known/windows-app-web-link")]
+        public JsonResult WindowsAppWebLink()
+        {
+            var appLink = new
+            {
+                packageFamilyName = "42541BitShuva.ChavahMessianicRadio_y3m7a4hh6j3hy",
+                paths = new string[] { "*" }
+            };
+
+            return Json(new[] { appLink });
+        }
     }
 }

@@ -22,7 +22,7 @@
         }
 
         $onInit() {
-            const loadChartsTask = this.loadGoogleCharts()
+            this.loadGoogleCharts()
                 .then(() => this.changeTimeframe(this.timeframes[0]));
         }
 

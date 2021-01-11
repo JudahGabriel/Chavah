@@ -7,25 +7,59 @@
                 </div>
 
                 <div class="col-sm-9">
-                    <h4>Donations yet to be distributed to artists, ${{vm.minimum}} minimum</h4>
-                    <!--Due donations-->
-                    <div>
-                        <div class="panel panel-primary" ng-repeat="due in vm.dueDonations.items">
-                            <div class="panel-heading clearfix">
-                                <button class="pull-right btn btn-default btn-sm" ng-click="vm.markAsPaid(due)">Mark as paid</button>
-                                <h3 class="panel-title">
-                                    {{due.name}} - ${{due.amount.toFixed(2)}}
-                                </h3>
-                            </div>
-                            <div class="panel-body">
-                                <a href="{{due.donationUrl}}">{{due.donationUrl}}</a>
-                                <ul>
-                                    <li ng-repeat="donation in due.donations">
-                                        ${{donation.amount.toFixed(2)}} to {{donation.recipientArtist}} on {{vm.friendlyDate(donation.date)}} by {{donation.donorName}}, {{donation.donorEmail}}
-                                    </li>
-                                </ul>
+                    <ul class="nav nav-tabs">
+                        <li role="presentation" ng-click="vm.currentTab = 'pending'" ng-class="{ active: vm.currentTab === 'pending' }"><a href="javascript:void(0)">Pending disbursements</a></li>
+                        <li role="presentation" ng-click="vm.currentTab = 'new'" ng-class="{ active: vm.currentTab === 'new' }"><a href="javascript:void(0)">New disbursement</a></li>
+                    </ul>
+
+                    <div ng-show="vm.currentTab === 'pending'">
+                        <h4>Disbursements yet to be distributed to artists, ${{vm.minimum}} minimum</h4>
+                        <!--Due donations-->
+                        <div>
+                            <div class="panel panel-primary" ng-repeat="due in vm.dueDonations.items">
+                                <div class="panel-heading clearfix">
+                                    <button class="pull-right btn btn-default btn-sm" ng-click="vm.markAsPaid(due)">Mark as paid</button>
+                                    <h3 class="panel-title">
+                                        {{due.name}} - ${{due.amount.toFixed(2)}}
+                                    </h3>
+                                </div>
+                                <div class="panel-body">
+                                    <a href="{{due.donationUrl}}">{{due.donationUrl}}</a>
+                                    <ul>
+                                        <li ng-repeat="donation in due.donations">
+                                            ${{donation.amount.toFixed(2)}} to {{donation.recipientArtist}} on {{vm.friendlyDate(donation.date)}} by {{donation.donorName}}, {{donation.donorEmail}}
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div ng-show="vm.currentTab === 'new'">
+                        <h4>Distribute a month's donations from Messiah's Music Fund</h4>
+                        <p>The amount donated to each artist will be based total songs played in the month</p>
+                        <form class="form">
+                            <div class="form-group">
+                                <label for="monthInput">Month</label>
+                                <input class="form-control" id="monthInput" type="month" name="monthInput" ng-model="vm.donationDisbursementMonth">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">Donations</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    <input type="number" min="0" step="1" id="donationAmount" placeholder="500" class="form-control" ng-model="vm.donationAmount">
+                                </div>
+                            </div>
+                            <button ng-hide="vm.hasDisbursedSuccessfully" type="submit" class="btn btn-default" ng-disabled="!vm.canDisburse" ng-click="vm.disburseDonations()">
+                                {{vm.disburseDonationButtonText}}
+                            </button>
+                            <p class="text-success" ng-show="vm.hasDisbursedSuccessfully">
+                                <i class="fa fa-check-circle-o"></i> Disbursement distributed successfully
+                            </p>
+                            <p class="text-success" ng-show="vm.hasDisbursedSuccessfully">
+                                <i class="fa fa-check-circle-o"></i> Disbursement distributed successfully
+                            </p>
+                        </form>
                     </div>
                 </div>
             </div>

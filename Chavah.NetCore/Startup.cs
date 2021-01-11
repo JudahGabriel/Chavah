@@ -71,16 +71,16 @@ namespace BitShuva.Chavah
             services.AddBackgroundQueueWithLogging(1, TimeSpan.FromSeconds(5));
             services.AddCacheBustedAngularViews("/views");
 
-            // Use BCrypt for password hashing. Must be added before AddIdentity().
-            services.AddTransient<BCryptPasswordSettings>();
-            services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher<AppUser>>();
-
             // Add RavenDB document store, session, and migrations.
             services
                 .AddChavahRavenDbDocStore(Configuration)       // Create a RavenDB DocumentStore singleton.
                 .AddRavenDbAsyncSession()   // Create a RavenDB IAsyncDocumentSession for each request.
                 .AddRavenDbMigrations()     // Use RavenDB migrations
                 .AddRavenStructuredLogger(); // Use RavenDB for logging
+
+            // Use BCrypt for password hashing. Must be added before AddIdentity().
+            services.AddTransient<BCryptPasswordSettings>();
+            services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher<AppUser>>();
 
             // Add Raven Identity
             services
@@ -90,6 +90,7 @@ namespace BitShuva.Chavah
                     options.Password.RequireUppercase = false;
                     options.Password.RequiredLength = 6;
                 })
+                .AddDefaultTokenProviders()
                 .AddRavenDbIdentityStores<AppUser>(); // Use Raven for users and roles.
 
             services.InstallIndexes();

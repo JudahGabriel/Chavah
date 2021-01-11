@@ -17,11 +17,12 @@
       "access": "cordova"
     }
   ],
-  "prefer_related_applications": false,
+  "prefer_related_applications": true,
   "related_applications": [
     {
       "platform": "windows",
-      "url": "https://www.microsoft.com/en-us/store/p/chavah/9nhkjb6lpptv"
+      "url": "https://www.microsoft.com/en-us/store/p/chavah/9nhkjb6lpptv",
+      "id": "42541BitShuva.ChavahMessianicRadio_y3m7a4hh6j3hy!App"
     },
     {
       "platform": "play",
@@ -30,6 +31,10 @@
     {
       "platform": "itunes",
       "url": "https://itunes.apple.com/us/app/chavah-messianic-radio/id1361894819"
+    },
+    {
+      "platform": "webapp",
+      "url": "https://messianicradio.com/manifest.json"
     }
   ],
   "categories": [
