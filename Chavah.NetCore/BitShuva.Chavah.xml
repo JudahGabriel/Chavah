@@ -651,6 +651,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:BitShuva.Chavah.Controllers.HomeController.WindowsAppWebLink">
+            <summary>
+            Provides URI handling and navigator.getInstalledRelatedApps() support for our Windows app. See https://web.dev/get-installed-related-apps/#tell-your-windows-app-about-your-website
+            </summary>
+        </member>
         <member name="T:BitShuva.Chavah.Controllers.IftttController">
             <summary>
             Controller called by If This Then That (https://ifttt.com)
