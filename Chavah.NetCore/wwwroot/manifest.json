@@ -117,8 +117,18 @@
       "purpose": "any"
     },
     {
+      "src": "/images/chavah30x30.png",
+      "sizes": "30x30",
+      "purpose": "any"
+    },
+    {
       "src": "/images/chavah32x32.png",
       "sizes": "32x32",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/chavah36x36.png",
+      "sizes": "36x36",
       "purpose": "any"
     },
     {
