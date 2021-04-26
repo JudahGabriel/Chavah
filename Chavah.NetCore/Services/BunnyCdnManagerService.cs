@@ -48,6 +48,16 @@ namespace BitShuva.Chavah.Services
         }
 
         /// <summary>
+        /// Deletes the temporary file residing on BunnyCDN at the specified address.
+        /// </summary>
+        /// <param name="tempFileName">The temporary file name.</param>
+        /// <returns></returns>
+        public async Task DeleteTempFileAsync(string tempFileName)
+        {
+            await DeleteMedia("temp", tempFileName);
+        }
+
+        /// <summary>
         /// Deletes the user's profile picture from the CDN.
         /// </summary>
         /// <param name="user">The user whose profile picture will be deleted.</param>
@@ -106,6 +116,18 @@ namespace BitShuva.Chavah.Services
             var directory = $"{settings.Value.MusicDirectory}/{artistDirectory}";
             var fileName = GetCdnSafeSongFileName(artist, album, songNumber, songName);
             return UploadMedia(source, directory, fileName);
+        }
+
+        /// <summary>
+        /// Uploads a temp file to BunnyCDN.
+        /// </summary>
+        /// <param name="source">The source stream of the MP3.</param>
+        /// <param name="fileName">The name of the temp file.</param>
+        /// <returns>The URL to the song MP3 on the CDN.</returns>
+        /// <returns></returns>
+        public Task<Uri> UploadTempFileAsync(Stream source, string fileName)
+        {
+            return UploadMedia(source, "temp", fileName);
         }
 
         /// <summary>
@@ -262,7 +284,6 @@ namespace BitShuva.Chavah.Services
             return await UploadMedia(sourceFile.Stream, directory, fileName);
         }
 
-
         /// <summary>
         /// Uploads the source stream to BunnyCDN.
         /// </summary>
@@ -270,7 +291,7 @@ namespace BitShuva.Chavah.Services
         /// <param name="directory">The directory in BunnyCDN to upload to.</param>
         /// <param name="fileName">The name of the file to create in BunnyCDN.</param>
         /// <returns>An HTTP URI pointing to the new file in BunnyCDN.</returns>
-        private async Task<Uri> UploadMedia(Stream source, string directory, string fileName)
+        public async Task<Uri> UploadMedia(Stream source, string directory, string fileName)
         {
             var url = $"{settings.Value.StorageZone}/{directory}/{fileName}";
 
@@ -326,6 +347,6 @@ namespace BitShuva.Chavah.Services
             }
         }
 
-        private Uri HttpHost => new Uri(settings.Value.HttpPath);
+        private Uri HttpHost => new(settings.Value.HttpPath);
     }
 }

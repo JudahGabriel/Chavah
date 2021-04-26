@@ -56,7 +56,7 @@ namespace BitShuva.Chavah.Controllers
             var user = await GetUser();
             if (user == null)
             {
-                return new Song[0];
+                return Array.Empty<Song>();
             }
 
             var likedSongIds = await DbSession
@@ -645,7 +645,7 @@ namespace BitShuva.Chavah.Controllers
         private async Task<Song> GetSongDto(Song song, SongPick pickReason)
         {
             var user = await GetUser();
-            if (user != null && song.Id != null)
+            if (user?.Id != null && song.Id != null)
             {
                 var songLikeId = Like.GetLikeId(user.Id, song.Id);
                 var songLike = await DbSession.LoadOptionalAsync<Like>(songLikeId);

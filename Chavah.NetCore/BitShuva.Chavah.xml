@@ -1545,6 +1545,21 @@
             Computes the song weight using the current multiplier values.
             </summary>
         </member>
+        <member name="P:BitShuva.Chavah.Models.TempFile.Url">
+            <summary>
+            The URL where the media file has been uploaded.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.TempFile.Name">
+            <summary>
+            The name of the media file.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.TempFile.Id">
+            <summary>
+            The ID of the temp file. CDN providers use this ID to find the temp file.
+            </summary>
+        </member>
         <member name="T:BitShuva.Chavah.Models.ThrowawayEmailDomains">
             <summary>
             Contains a list of email domains used for throwaway/temporary email accounts.
@@ -1745,6 +1760,13 @@
             <param name="song"></param>
             <returns></returns>
         </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.DeleteTempFileAsync(System.String)">
+            <summary>
+            Deletes the temporary file residing on BunnyCDN at the specified address.
+            </summary>
+            <param name="tempFileName">The temporary file name.</param>
+            <returns></returns>
+        </member>
         <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.DeleteProfilePicAsync(BitShuva.Chavah.Models.AppUser)">
             <summary>
             Deletes the user's profile picture from the CDN.
@@ -1780,6 +1802,15 @@
             <param name="songNumber">The number of the song on the album.</param>
             <param name="songName">The name of the song being uploaded.</param>
             <returns>The URL to the song MP3 on the CDN.</returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.UploadTempFileAsync(System.IO.Stream,System.String)">
+            <summary>
+            Uploads a temp file to BunnyCDN.
+            </summary>
+            <param name="source">The source stream of the MP3.</param>
+            <param name="fileName">The name of the temp file.</param>
+            <returns>The URL to the song MP3 on the CDN.</returns>
+            <returns></returns>
         </member>
         <member name="M:BitShuva.Chavah.Services.BunnyCdnManagerService.UploadProfilePicAsync(System.IO.Stream,System.String)">
             <summary>
@@ -1861,6 +1892,14 @@
             <param name="songName"></param>
             <returns>The HTTP URI to the MP3 file on the CDN.</returns>
         </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.UploadTempFileAsync(System.IO.Stream,System.String)">
+            <summary>
+            Uploads a temporary file.
+            </summary>
+            <param name="source">The temporary HTTP address of the file. This is supplied by FilePickr. The file will be downloaded from here and moved to the CDN.</param>
+            <param name="fileName">The temporary file name.</param>
+            <returns>The HTTP URI to the MP3 file on the CDN.</returns>
+        </member>
         <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.UploadAlbumArtAsync(System.Uri,System.String,System.String,System.String)">
             <summary>
             Uploads the song's album art to the CDN.
@@ -1926,11 +1965,25 @@
             <param name="httpUrl">The URL of the file to download.</param>
             <returns>A task containing the downloaded file name..</returns>
         </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.DownloadFileLocally(System.IO.Stream)">
+            <summary>
+            Downloads a file from HTTP to a local file on disk on the web server.
+            </summary>
+            <param name="inputStream">The stream of the file to download.</param>
+            <returns>A task containing the downloaded file name..</returns>
+        </member>
         <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.DeleteSongAsync(BitShuva.Chavah.Models.Song)">
             <summary>
             Deletes the song's MP3 file on the CDN.
             </summary>
             <param name="song"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.DeleteTempFileAsync(System.String)">
+            <summary>
+            Deletes the temporary file from the CDN.
+            </summary>
+            <param name="fileName">The name of the temp file to delete.</param>
+            <returns></returns>
         </member>
         <member name="M:BitShuva.Chavah.Services.FtpCdnManagerService.DeleteProfilePicAsync(BitShuva.Chavah.Models.AppUser)">
             <summary>
@@ -1973,6 +2026,14 @@
             <param name="songName">The name of the song.</param>
             <returns>The URL of the uploaded song.</returns>
         </member>
+        <member name="M:BitShuva.Chavah.Services.ICdnManagerService.UploadTempFileAsync(System.IO.Stream,System.String)">
+            <summary>
+            Uploads an temporary file to the CDN.
+            </summary>
+            <param name="source">The stream of the source MP3 file.</param>
+            <param name="tempFileName">The temporary file name.</param>
+            <returns>A URI pointing to the song on the CDN.</returns>
+        </member>
         <member name="M:BitShuva.Chavah.Services.ICdnManagerService.UploadProfilePicAsync(System.IO.Stream,System.String)">
             <summary>
             Uploads a profile picture to the CDN.
@@ -1993,6 +2054,13 @@
             Deletes an MP3 from the CDN.
             </summary>
             <param name="song">The song who's MP3 will be deleted.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.ICdnManagerService.DeleteTempFileAsync(System.String)">
+            <summary>
+            Deletes a temporary file from the CDN asynchronously.
+            </summary>
+            <param name="tempFileId">The temporary file name.</param>
             <returns></returns>
         </member>
         <member name="M:BitShuva.Chavah.Services.ICdnManagerService.GetFiles(System.String)">
@@ -2052,9 +2120,11 @@
         </member>
         <member name="T:BitShuva.Chavah.Services.SongUploadService">
             <summary>
-            Uploads an MP3 in the background, and when finished, updates the song.
-            If the MP3 fails to upload, the Song is deleted from the database.
+            Takes a song uploaded as a temporary media file and renames it to its final file name.
             </summary>
+            <remarks>
+            Our CDN doesn't support renaming, so we actually upload a copy of the temporary media file to the CDN using the correct, desired file name, and after its successful, we delete the temporary file.
+            </remarks>
         </member>
         <member name="M:BitShuva.Services.IEmailService.QueueSendEmail(System.String,System.String,System.String,System.String)">
             <summary>

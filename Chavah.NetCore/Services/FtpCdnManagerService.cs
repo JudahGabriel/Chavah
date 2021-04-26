@@ -37,7 +37,7 @@ namespace BitShuva.Chavah.Services
             this.options = options.CurrentValue;
         }
 
-        private Uri HttpHost => new Uri(options.HttpPath);
+        private Uri HttpHost => new(options.HttpPath);
         private Uri HttpMusic => HttpHost.Combine(options.MusicDirectory);
         private Uri HttpAlbumArt => HttpHost.Combine(options.AlbumArtDirectory);
         private Uri HttpProfilePics => HttpHost.Combine(options.ProfilePicsDirectory);
@@ -85,6 +85,42 @@ namespace BitShuva.Chavah.Services
             {
                 var errorMessage = "Unable to upload MP3 to CDN. {songInfo}";
                 logger.LogError(errorMessage, error, (artist, album, songName));
+                throw;
+            }
+            finally
+            {
+                if (!string.IsNullOrEmpty(tempDownloadedFile))
+                {
+                    File.Delete(tempDownloadedFile);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Uploads a temporary file.
+        /// </summary>
+        /// <param name="source">The temporary HTTP address of the file. This is supplied by FilePickr. The file will be downloaded from here and moved to the CDN.</param>
+        /// <param name="fileName">The temporary file name.</param>
+        /// <returns>The HTTP URI to the MP3 file on the CDN.</returns>
+        public async Task<Uri> UploadTempFileAsync(Stream source, string fileName)
+        {
+            var tempDownloadedFile = default(string);
+            try
+            {
+                tempDownloadedFile = await DownloadFileLocally(source);
+                using var ftpConnection = await CreateFtpConnection();
+                await ftpConnection.ChangeWorkingDirectoryAsync("temp");
+                using (var destinationStream = await ftpConnection.OpenFileWriteStreamAsync(fileName))
+                using (var sourceStream = File.OpenRead(tempDownloadedFile))
+                {
+                    await sourceStream.CopyToAsync(destinationStream);
+                }
+
+                return HttpHost.Combine("temp", fileName);
+            }
+            catch (Exception error)
+            {
+                logger.LogError(error, "Unable to upload temp file to CDN. {fileName}", fileName);
                 throw;
             }
             finally
@@ -246,6 +282,25 @@ namespace BitShuva.Chavah.Services
         }
 
         /// <summary>
+        /// Downloads a file from HTTP to a local file on disk on the web server.
+        /// </summary>
+        /// <param name="inputStream">The stream of the file to download.</param>
+        /// <returns>A task containing the downloaded file name..</returns>
+        private async Task<string> DownloadFileLocally(Stream inputStream)
+        {
+            var appData = Path.Combine(hosting.ContentRootPath, "App_Data");
+            if (!Directory.Exists(appData))
+            {
+                Directory.CreateDirectory(appData);
+            }
+
+            var tempFilePath = Path.Combine(appData, Path.GetRandomFileName());
+            using var tempFile = File.Create(tempFilePath);
+            await inputStream.CopyToAsync(tempFile);
+            return tempFilePath;
+        }
+
+        /// <summary>
         /// Deletes the song's MP3 file on the CDN.
         /// </summary>
         /// <param name="song"></param>
@@ -260,6 +315,18 @@ namespace BitShuva.Chavah.Services
             await connection.ChangeWorkingDirectoryAsync(artistFolder);
 
             await connection.DeleteFileAsync(songFileName);
+        }
+
+        /// <summary>
+        /// Deletes the temporary file from the CDN.
+        /// </summary>
+        /// <param name="fileName">The name of the temp file to delete.</param>
+        /// <returns></returns>
+        public async Task DeleteTempFileAsync(string fileName)
+        {
+            using var connection = await CreateFtpConnection();
+            await connection.ChangeWorkingDirectoryAsync("temp");
+            await connection.DeleteFileAsync(fileName);
         }
 
         /// <summary>

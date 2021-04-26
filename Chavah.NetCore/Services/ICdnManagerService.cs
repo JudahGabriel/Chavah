@@ -42,6 +42,14 @@ namespace BitShuva.Chavah.Services
         Task<Uri> UploadMp3Async(Uri source, string artist, string album, int songNumber, string songName);
 
         /// <summary>
+        /// Uploads an temporary file to the CDN.
+        /// </summary>
+        /// <param name="source">The stream of the source MP3 file.</param>
+        /// <param name="tempFileName">The temporary file name.</param>
+        /// <returns>A URI pointing to the song on the CDN.</returns>
+        Task<Uri> UploadTempFileAsync(Stream source, string tempFileName);
+
+        /// <summary>
         /// Uploads a profile picture to the CDN.
         /// </summary>
         /// <param name="imageStream">The stream containing the image data.</param>
@@ -62,6 +70,13 @@ namespace BitShuva.Chavah.Services
         /// <param name="song">The song who's MP3 will be deleted.</param>
         /// <returns></returns>
         Task DeleteSongAsync(Song song);
+
+        /// <summary>
+        /// Deletes a temporary file from the CDN asynchronously.
+        /// </summary>
+        /// <param name="tempFileId">The temporary file name.</param>
+        /// <returns></returns>
+        Task DeleteTempFileAsync(string tempFileId);
 
         /// <summary>
         /// Gets the files in a directory on the CDN.

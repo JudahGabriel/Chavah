@@ -66,7 +66,7 @@ namespace BitShuva.Chavah.Controllers
         {
             if (upload.Photo == null)
             {
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(upload));
             }
             if (upload.Photo.Length > maxProfilePictureSizeInBytes)
             {

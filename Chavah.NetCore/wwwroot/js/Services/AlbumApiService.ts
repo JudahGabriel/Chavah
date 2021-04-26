@@ -18,6 +18,16 @@
             return this.httpApi.post("/api/albums/upload", album);
         }
 
+        /**
+         * Uploads a media file, such as a song, for an album.
+         * @param file The media file to upload.
+         */
+        uploadTempFile(file: File): ng.IPromise<Server.TempFile> {
+            const form = new FormData();
+            form.set("file", file);
+            return this.httpApi.postFormData("/api/albums/uploadTempFile", form);
+        }
+
         changeArt(albumId: string, artUri: string) {
             const args = {
                 albumId,

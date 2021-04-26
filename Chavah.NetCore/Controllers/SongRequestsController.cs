@@ -105,7 +105,7 @@ namespace BitShuva.Chavah.Controllers
                 var requestExpiration = DateTime.UtcNow.AddDays(10);
                 var hasSongBeenRecentlyRequested = await HasSongBeenRequestedRecently(songId);
                 var hasManyRequestForArtist = await HasManyPendingSongRequestForArtist(song.Artist);
-                var hasManySongRequestsFromUser = await HasManyRecentSongRequestsFromUser(user.Id);
+                var hasManySongRequestsFromUser = await HasManyRecentSongRequestsFromUser(user.Id!);
                 var isPoorlyRated = song.CommunityRankStanding == CommunityRankStanding.VeryPoor;
                 if (!hasSongBeenRecentlyRequested && !hasManyRequestForArtist && !hasManySongRequestsFromUser && !isPoorlyRated)
                 {
@@ -113,11 +113,11 @@ namespace BitShuva.Chavah.Controllers
                     var songRequest = new SongRequest
                     {
                         DateTime = DateTime.UtcNow,
-                        PlayedForUserIds = new List<string> { user.Id },
+                        PlayedForUserIds = new List<string> { user.Id! },
                         SongId = songId,
                         Artist = song.Artist,
                         Name = song.Name,
-                        UserId = user.Id
+                        UserId = user.Id!
                     };
                     await DbSession.StoreAsync(songRequest);
                     DbSession.SetRavenExpiration(songRequest, requestExpiration);

@@ -21,7 +21,7 @@ namespace BitShuva.Chavah.Models
             }
 
             // "AppUsers/yochanansheqel@gmail.com" -> "yochanansheqel"
-            var domainIndex = user.Id.LastIndexOf('@');
+            var domainIndex = user.Id!.LastIndexOf('@');
             var userIdPrefixLength = AppUser.AppUserPrefix.Length;
             if (domainIndex > userIdPrefixLength)
             {

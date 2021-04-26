@@ -43,7 +43,7 @@ namespace BitShuva.Chavah.Controllers
             return new CommentThread
             {
                 Id = id,
-                SongId = id.Substring("CommentThreads/".Length)
+                SongId = id["CommentThreads/".Length..]
             };
         }
 
@@ -73,7 +73,7 @@ namespace BitShuva.Chavah.Controllers
             {
                 Content = commentInfo.Content,
                 Date = DateTimeOffset.UtcNow,
-                UserId = user.Id,
+                UserId = user.Id!,
                 UserDisplayName = Comment.GetUserDisplayName(user)
             };
             commentThread.Comments.Add(newComment);

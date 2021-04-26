@@ -270,7 +270,9 @@ function onFetch(event) {
     // Always fetch non-GET requests from the network
     try {
         if (request.method !== "GET") {
-            event.respondWith(fetchNetworkWithOfflineFallback(event));
+            // COMMENTED OUT: If we're offline and a POST fails, it should really fail. So let's just use fetchFromNetwork.
+            //event.respondWith(fetchNetworkWithOfflineFallback(event));
+            event.respondWith(fetchFromNetwork(event));
         } else if (isHomePage) {
             event.respondWith(networkFirst(appShellCacheName, event));
         } else if (isMediaResource) {
@@ -282,13 +284,12 @@ function onFetch(event) {
         } else if (isApiCall) {
             // For calling the API, always go to the network and don't fallback to an offline page. Doesn't make sense to serve an offline page for an API call. Can hide real errors.
             event.respondWith(fetchFromNetwork(event));
-        }
-        else {
+        } else {
             event.respondWith(fetchNetworkWithOfflineFallback(event));
         }
     } catch (fetchError) {
-        console.error("Error fetching via service worker. Falling back to plain fetch.", fetchError, request);
-        event.responseWith(fetch(request));
+        console.error("Error fetching via service worker.", fetchError, request);
+        //event.respondWith(fetch(request));
     }
 }
 

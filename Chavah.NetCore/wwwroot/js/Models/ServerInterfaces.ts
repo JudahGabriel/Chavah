@@ -58,9 +58,10 @@
         take: number;
     }
 
-    export interface SongUpload {
-        address: string;
-        fileName: string;
+    export interface TempFile {
+        url: string;
+        name: string;
+        id: string;
     }
 
     export interface SongEdit {
@@ -86,17 +87,17 @@
     }
 
     export interface AlbumUpload {
-        name: string,
-        hebrewName: string | null,
-        artist: string,
-        albumArtUri: string,
-        songs: Server.SongUpload[],
-        purchaseUrl: string,
-        genres: string,
-        foreColor: string,
-        backColor: string,
-        mutedColor: string,
-        textShadowColor: string
+        name: string;
+        hebrewName: string | null;
+        artist: string;
+        albumArt: Server.TempFile;
+        songs: Server.TempFile[];
+        purchaseUrl: string;
+        genres: string;
+        foreColor: string;
+        backColor: string;
+        mutedColor: string;
+        textShadowColor: string;
     }
 
     export interface Album {

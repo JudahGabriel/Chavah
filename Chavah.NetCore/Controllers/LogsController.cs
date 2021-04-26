@@ -67,6 +67,7 @@ namespace BitShuva.Chavah.Controllers
         {
             var log = await DbSession.LoadRequiredAsync<StructuredLog>(id);
             DbSession.Delete(log);
+            await DbSession.SaveChangesAsync();
         }
     }
 }

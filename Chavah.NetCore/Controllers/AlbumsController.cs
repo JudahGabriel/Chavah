@@ -19,6 +19,7 @@ using Microsoft.Extensions.Options;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
+using Microsoft.AspNetCore.Http;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -37,8 +38,8 @@ namespace BitShuva.Chavah.Controllers
             IOptionsMonitor<AppSettings> options)
             : base(dbSession, logger)
         {
-            this.cdnManagerService = cdnManagerService ?? throw new ArgumentNullException(nameof(cdnManagerService));
-            this.songUploadService = songUploadService ?? throw new ArgumentNullException(nameof(songUploadService));
+            this.cdnManagerService = cdnManagerService;
+            this.songUploadService = songUploadService;
 
             appOptions = options.CurrentValue;
         }
@@ -151,10 +152,51 @@ namespace BitShuva.Chavah.Controllers
 
         [HttpPost]
         [Authorize(Roles = AppUser.AdminRole)]
+        public async Task<TempFile> UploadTempFile([FromForm] IFormFile file)
+        {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+
+            // See if we have an MP3.
+            var contentType = file.ContentType;
+            var isMp3 = new[] { "audio/mpeg", "audio/mp3", "audio/mpeg3" }.Any(mp3MimeType => string.Equals(mp3MimeType, contentType, StringComparison.InvariantCultureIgnoreCase));
+            var isJpg = new[] { "image/jpeg", "image/jpg" }.Any(jpgMimeType => string.Equals(jpgMimeType, contentType, StringComparison.InvariantCultureIgnoreCase));
+            var isPng = string.Equals("image/png", contentType, StringComparison.InvariantCultureIgnoreCase);
+            if (!isMp3 && !isJpg && !isPng)
+            {
+                throw new ArgumentOutOfRangeException(nameof(file), contentType, "Wrong file format. Music files must be in MP3 format. Album art must be in JPG or PNG format.");
+            }
+
+            // Make sure it's a reasonable size before we fetch it.
+            var maxSize = isMp3 ? 50000000 : 10000000;
+            if (file.Length >= maxSize)
+            {
+                throw new ArgumentOutOfRangeException(nameof(file), file.Length, $"Too large. Max size is {maxSize} bytes");
+            }
+
+            // OK, we're cool to upload it to our CDN.
+            using var mediaFileStream = file.OpenReadStream();
+            var fileExtension = isMp3 ? ".mp3" : isPng ? ".png" : ".jpg";
+            var fileName = Guid.NewGuid().ToString() + fileExtension;
+            var tempFileUri = await cdnManagerService.UploadTempFileAsync(mediaFileStream, fileName);
+            return new TempFile
+            {
+                Url = tempFileUri,
+                Name = fileName,
+                Id = fileName
+            };
+        }
+
+        [HttpPost]
+        [Authorize(Roles = AppUser.AdminRole)]
         public async Task<string> Upload([FromBody] AlbumUpload album)
         {
-            // Put the album art on the CDN.
-            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtAsync(album.AlbumArtUri, album.Artist, album.Name, ".jpg");
+            // Put the album art on the CDN with the correct file name containing the album name, artist name, etc.
+            // Then Delete the temporary album art file.
+            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtAsync(album.AlbumArt.Url, album.Artist, album.Name, System.IO.Path.GetExtension(album.AlbumArt.Id));
+            await cdnManagerService.DeleteTempFileAsync(album.AlbumArt.Id);
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()
@@ -202,10 +244,10 @@ namespace BitShuva.Chavah.Controllers
 
             // Store the songs in the DB.
             var songNumber = 1;
-            var mp3sToUpload = new List<(SongUpload upload, Song song)>(album.Songs.Count);
-            foreach (var albumSong in album.Songs)
+            var songsWithTempFiles = new Dictionary<Song, TempFile>(album.Songs.Count);
+            foreach (var tempFile in album.Songs)
             {
-                var (english, hebrew) = albumSong.FileName.GetEnglishAndHebrew();
+                var (english, hebrew) = tempFile.Name.GetEnglishAndHebrew();
                 var song = new Song
                 {
                     Album = album.Name,
@@ -227,18 +269,23 @@ namespace BitShuva.Chavah.Controllers
                         Foreground = existingAlbum.ForegroundColor,
                         Muted = existingAlbum.MutedColor,
                         TextShadow = existingAlbum.TextShadowColor
-                    }
+                    },
+                    Uri = tempFile.Url
                 };
                 await DbSession.StoreAsync(song);
 
-                mp3sToUpload.Add((albumSong, song));
+                songsWithTempFiles.Add(song, tempFile);
                 songNumber++;
             }
 
             await DbSession.SaveChangesAsync();
 
-            // Queue up the MP3s to upload to the CDN now that the songs are saved in the database.
-            mp3sToUpload.ForEach(mp3 => songUploadService.QueueMp3Upload(mp3.upload, album, mp3.song.Number, mp3.song.Id!));
+            // Now that the songs are saved in the database, migrate their URIs from temp file to
+            // a final file name that includes song, artist, album, etc.
+            foreach (var (song, tempFile) in songsWithTempFiles)
+            {
+                songUploadService.MoveSongUriFromTemporaryToFinal(tempFile, album, song.Number, song.Id!);
+            }
 
             return existingAlbum.Id!;
         }

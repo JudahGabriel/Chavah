@@ -11,7 +11,7 @@
                 this.hasInstalled = true;
 
                 const adminScripts = [
-                    "https://api.filepicker.io/v1/filepicker.js",
+                    //"https://api.filepicker.io/v1/filepicker.js",
                     "https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/1.0.0/Vibrant.min.js"
                 ];
                 adminScripts.forEach(s => {

@@ -53,7 +53,7 @@
       "name": "My Likes",
       "short_name": "Likes",
       "description": "My thumbed-up songs",
-      "url": "https://messianicradio.com/#/mylikes",
+      "url": "/#/mylikes",
       "icons": [
         {
           "src": "/images/shortcut_mylikes.png",
@@ -64,7 +64,7 @@
     {
       "name": "Trending",
       "description": "Songs recently thumbed-up by listeners",
-      "url": "https://messianicradio.com/#/trending",
+      "url": "/#/trending",
       "icons": [
         {
           "src": "/images/shortcut_trending.png",
@@ -75,7 +75,7 @@
     {
       "name": "Recent",
       "description": "Songs you recently listened to",
-      "url": "https://messianicradio.com/#/recent",
+      "url": "/#/recent",
       "icons": [
         {
           "src": "/images/shortcut_recent.png",
@@ -86,7 +86,7 @@
     {
       "name": "Popular",
       "description": "The highest ranked songs on Chavah",
-      "url": "https://messianicradio.com/#/popular",
+      "url": "/#/popular",
       "icons": [
         {
           "src": "/images/shortcut_popular.png",
@@ -380,7 +380,7 @@
     },
     {
       "src": "/images/chavah-monochrome512x512.svg",
-      "sizes": "512x512",
+      "sizes": "933x933",
       "type": "image/svg+xml",
       "purpose": "monochrome"
     },

@@ -9,8 +9,8 @@ namespace BitShuva.Chavah.Models
         public string Name { get; set; } = string.Empty;
         public string? HebrewName { get; set; }
         public string Artist { get; set; } = string.Empty;
-        public Uri AlbumArtUri { get; set; } = UriExtensions.Localhost;
-        public List<SongUpload> Songs { get; set; } = new List<SongUpload>();
+        public TempFile AlbumArt { get; set; } = new TempFile();
+        public List<TempFile> Songs { get; set; } = new List<TempFile>();
         public Uri? PurchaseUrl { get; set; }
         public string Genres { get; set; } = string.Empty;
         public string ForeColor { get; set; } = string.Empty;

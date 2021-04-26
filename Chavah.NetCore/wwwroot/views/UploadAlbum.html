@@ -10,7 +10,7 @@
                     <form>
                         <div class="form-group">
                             <label>Artist</label>
-                            <input type="text" class="form-control" ng-model="vm.artist.name" popover-trigger="focus" popover-placement="bottom" />
+                            <input type="text" class="form-control" ng-model="vm.artistName" />
                         </div>
                         <div class="form-group">
                             <label>Album name</label>
@@ -22,22 +22,25 @@
                         </div>
                         <div class="form-group">
                             <label>Album art</label>
-                            <br ng-show="vm.albumArt" />
-                            <img class="album-art" ng-show="vm.albumArt" ng-src="{{vm.albumArt.url}}" />
-                            <div ng-show="vm.albumArt" style="width: 300px; padding: 10px;" ng-style="{ 'background-color': vm.backColor, 'color': vm.foreColor }">
-                                <div ng-show="vm.albumArt" ng-style="{ 'text-shadow': '0 0 5px ' + vm.textShadowColor }">
-                                    {{vm.songs[0].name || 'Song Name Here'}}
-                                    <br />
-                                    <span ng-style="{ 'color': vm.mutedColor }">By</span>
-                                    {{vm.artist.name || 'Joseph A. Artist'}}
-                                    <br />
-                                    <span ng-style="{ 'color': vm.mutedColor }">on</span>
-                                    {{vm.albumName || 'Some New Album'}}
+                            <div ng-if="vm.albumArt && vm.albumArt.status === 'completed'" class="album-tile-preview">
+                                <br />
+                                <img ng-show="vm.albumArt && vm.albumArt.url" ng-src="{{vm.albumArt ? vm.albumArt.url : ''}}" />
+                                <div style="width: 300px; padding: 10px;" ng-style="{ 'background-color': vm.backColor, 'color': vm.foreColor }">
+                                    <div ng-show="vm.albumArt" ng-style="{ 'text-shadow': '0 0 5px ' + vm.textShadowColor }">
+                                        {{vm.songs[0].name || 'Song Name Here'}}
+                                        <br />
+                                        <span ng-style="{ 'color': vm.mutedColor }">By</span>
+                                        {{vm.artistName || 'Joseph A. Artist'}}
+                                        <br />
+                                        <span ng-style="{ 'color': vm.mutedColor }">on</span>
+                                        {{vm.albumName || 'Some New Album'}}
+                                    </div>
                                 </div>
                             </div>
                             <br />
                             <button class="btn btn-default" ng-click="vm.chooseAlbumArt()">Choose album art...</button>
-                            <div ng-show="vm.albumArt">
+                            <input class="form-control-file needsclick sr-only" type="file" accept="image/png, image/jpeg" id="chooseAlbumArtInput" file-upload-changed="vm.albumArtChosen(e)">
+                            <div ng-show="vm.albumArt && vm.albumArt.status === 'completed'">
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <h5>Album colors</h5>
@@ -136,27 +139,57 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!--Album art uploading-->
+                            <div ng-if="vm.albumArt && vm.albumArt.status === 'uploading'">
+                                <p>
+                                    <i class="fa fa-circle-o-notch fa-spin text-info"></i>
+                                    Uploading...
+                                </p>
+                            </div>
+
+                            <!--Album art upload failed-->
+                            <div ng-if="vm.albumArt && vm.albumArt.status === 'failed'">
+                                <p class="text-danger">
+                                    <i class="fa fa-exclamation-circle"></i>
+                                    There was an error uploading the album art. {{vm.albumArt.error}}
+                                </p>
+                            </div>
                         </div>
+
                         <div class="form-group">
                             <label>Songs</label>
-                            <ul class="list-group">
-                                <li class="list-group-item" ng-repeat="song in vm.songs">
-                                    <input type="text" class="form-control" ng-model="song.friendlyName" />
-                                    <div class="btn-group" role="group" aria-label="...">
-                                        <button type="button" class="btn btn-default" title="Move song up" ng-click="vm.moveSongUp(song)">
-                                            <i class="fa fa-arrow-up"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-default" title="Move song down" ng-click="vm.moveSongDown(song)">
-                                            <i class="fa fa-arrow-down"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-default" title="Remove song" ng-click="vm.removeSong(song)">
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
+                            <ol class="songs-container">
+                                <li class="song" ng-repeat="song in vm.songs">
+                                    <input type="text" class="form-control" ng-model="song.name" />
+                                    <div class="song-details-container">
+                                        <span class="text-info" ng-show="song.status === 'queued' || song.status === 'uploading'">
+                                            <i class="fa fa-circle-o-notch fa-spin"></i>
+                                            <span ng-show="song.status === 'uploading'">Uploading...</span>
+                                            <span ng-show="song.status === 'queued'">Queued for upload...</span>
+                                        </span>
+                                        <span class="text-danger" ng-show="song.status === 'failed'">
+                                            Error: {{song.error}}
+                                        </span>
+                                        <audio preload="none" ng-show="song.status === 'completed'" controls ng-src="{{song.url}}" />
+                                        <div class="btn-group" role="group" aria-label="Change order of songs">
+                                            <button type="button" class="btn btn-default" title="Move song up" ng-click="vm.moveSongUp(song)">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default" title="Move song down" ng-click="vm.moveSongDown(song)">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </button>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-danger" title="Remove song" ng-click="vm.removeSong(song)">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <audio preload="none" controls ng-src="{{song.trustedUrl}}" />
                                 </li>
-                            </ul>
+                            </ol>
                             <button class="btn btn-default" ng-click="vm.chooseSongs()">Choose songs...</button>
+                            <input class="form-control-file needsclick sr-only" type="file" accept="audio/mpeg, audio/mp3" id="chooseMp3sInput" multiple file-upload-changed="vm.songsChosen(e)">
                         </div>
                         <div class="form-group">
                             <label>Purchase URL</label>
@@ -168,7 +201,11 @@
                                 <option value="">Select a genre...</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary" ng-click="vm.upload()" ng-disabled="vm.isUploading">Upload</button>
+                        <button type="submit" class="btn btn-primary" ng-click="vm.upload()" ng-disabled="vm.isSaving || vm.isUploadingMediaFiles || vm.anySongsFailedToUpload">Upload</button>
+                        <div class="alert alert-danger" role="alert" ng-if="vm.uploadError">
+                            <i class="fa-exclamation-circle"></i>
+                            Can't upload. {{vm.uploadError}}
+                        </div>
                     </form>
                 </div>
             </div>

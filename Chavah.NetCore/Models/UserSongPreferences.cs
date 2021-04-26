@@ -45,7 +45,7 @@ namespace BitShuva.Chavah.Models
         private const double AgeMultiplier2 = 2;
         private const double AgeMultiplierNormal = 1;
 
-        private static readonly Random _random = new Random();
+        private static readonly Random _random = new();
         
         public string UserId { get; set; } = string.Empty;
         public List<LikeDislikeCount> Artists { get; set; } = new List<LikeDislikeCount>();

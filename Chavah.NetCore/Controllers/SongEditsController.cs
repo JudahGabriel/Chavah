@@ -40,7 +40,7 @@ namespace BitShuva.Chavah.Controllers
         {
             var user = await GetUserOrThrow();
             var song = await DbSession.LoadRequiredAsync<Song>(songId);
-            var songEditId = GetSongEditId(songId, user.Id);
+            var songEditId = GetSongEditId(songId, user.Id!);
             var existingEdit = await DbSession.LoadOptionalAsync<SongEdit>(songEditId);
 
             // If the existing edit is pending, return that.
@@ -64,11 +64,11 @@ namespace BitShuva.Chavah.Controllers
 
             var existingSong = await DbSession.LoadRequiredAsync<Song>(song.Id);
 
-            var songEditId = GetSongEditId(existingSong.Id!, user.Id);
+            var songEditId = GetSongEditId(existingSong.Id!, user.Id!);
             var songEdit = new SongEdit(existingSong, song)
             {
                 Id = songEditId,
-                UserId = user.Id
+                UserId = user.Id!
             };
             if (songEdit.HasAnyChanges())
             {
