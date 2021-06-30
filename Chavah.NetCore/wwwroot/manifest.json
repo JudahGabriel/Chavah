@@ -95,6 +95,104 @@
       ]
     }
   ],
+  "screenshots": [
+    {
+      "src": "/images/screenshots/desktop-1920x1200.png",
+      "sizes": "1920x1200",
+      "platform": "wide",
+      "label": "Chavah plays a wide variety of Messianic Jewish music from 1970s to today"
+    },
+    {
+      "src": "/images/screenshots/desktop-mylikes-1920x1200.png",
+      "sizes": "1920x1200",
+      "platform": "wide",
+      "label": "Thumb-up songs you like, thumb-down those you don't. Chavah plays more of the good stuff. Chavah saves your liked songs for instant play later."
+    },
+    {
+      "src": "/images/screenshots/desktop-comments-1920x1200.png",
+      "sizes": "1920x1200",
+      "platform": "wide",
+      "label": "Chavah lets users comment on songs. Join the worldwide Messianic music community!"
+    },
+    {
+      "src": "/images/screenshots/desktop-songrequest-1920x1200.png",
+      "sizes": "1920x1200",
+      "platform": "wide",
+      "label": "Search for songs by name, artist, or album, and Chavah will play the song request for you and everyone listening."
+    },
+    {
+      "src": "/images/screenshots/desktop-trending-1920x1200.png",
+      "sizes": "1920x1200",
+      "platform": "wide",
+      "label": "See what music is trending right now among the international Messianic community on Chavah"
+    },
+    {
+      "src": "/images/screenshots/phone-1080x1920.png",
+      "sizes": "1080x1920",
+      "platform": "narrow",
+      "label": "Chavah plays a wide variety of Messianic Jewish music from 1970s to today"
+    },
+    {
+      "src": "/images/screenshots/phone-songrequest-1125x2436.png",
+      "sizes": "1125x2436",
+      "platform": "narrow",
+      "label": "Chavah plays a wide variety of Messianic Jewish music from 1970s to today"
+    },
+    {
+      "src": "/images/screenshots/phone-lyrics-1125x2436.png",
+      "sizes": "1125x2436",
+      "platform": "narrow",
+      "label": "Browse song lyrics"
+    },
+    {
+      "src": "/images/screenshots/phone-tags-1125x2436.png",
+      "sizes": "1125x2436",
+      "platform": "narrow",
+      "label": "Browse songs by tags, like instrumental, male vocal, piano, worship, and more. Chavah learns what kind of music you like and plays more of the good stuff"
+    },
+    {
+      "src": "/images/screenshots/phone-editsong-1125x2436.png",
+      "sizes": "1125x2436",
+      "platform": "narrow",
+      "label": "Chavah lets you edit song information, lyrics, tags, and more"
+    },
+    {
+      "src": "/images/screenshots/phone-1125x2436.png",
+      "sizes": "1125x2436",
+      "platform": "narrow",
+      "label": "Chavah plays a wide variety of Messianic Jewish music from 1970s to today"
+    },
+    {
+      "src": "/images/screenshots/phone-1242x2208.png",
+      "sizes": "1242x2208",
+      "platform": "narrow",
+      "label": "Chavah plays a wide variety of Messianic Jewish music from 1970s to today"
+    },
+    {
+      "src": "/images/screenshots/tablet-1600x2560.png",
+      "sizes": "1600x2560",
+      "platform": "narrow",
+      "label": "Chavah plays a wide variety of Messianic Jewish music from 1970s to today"
+    },
+    {
+      "src": "/images/screenshots/tablet-2048x1536.png",
+      "sizes": "2048x1536",
+      "platform": "wide",
+      "label": "Chavah plays a wide variety of Messianic Jewish music from 1970s to today"
+    },
+    {
+      "src": "/images/screenshots/tablet-2560x1600.png",
+      "sizes": "2560x1600",
+      "platform": "wide",
+      "label": "Chavah plays a wide variety of Messianic Jewish music from 1970s to today"
+    },
+    {
+      "src": "/images/screenshots/tablet-2732x2048.png",
+      "sizes": "2732x2048",
+      "platform": "wide",
+      "label": "Chavah plays a wide variety of Messianic Jewish music from 1970s to today"
+    }
+  ],
   "icons": [
     {
       "src": "/images/chavah16x16.png",
@@ -439,6 +537,11 @@
       "sizes": "1000x1000",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/images/chavah1024x500.png",
+      "sizes": "1024x500",
+      "purpose": "any"
     },
     {
       "src": "/images/chavah1024x748.png",
