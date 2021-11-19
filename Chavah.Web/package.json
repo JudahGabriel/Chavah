@@ -1,0 +1,9 @@
+{
+  "name": "chavah.web",
+  "version": "0.0.0",
+  "description": "Chavah.Web",
+  "main": "server.js",
+  "author": {
+    "name": ""
+  }
+}

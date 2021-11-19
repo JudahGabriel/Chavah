@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28729.10
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BDFA9646-C6AE-43D0-88E5-B501F699233C}"
 	ProjectSection(SolutionItems) = preProject
@@ -16,6 +16,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chavah.NetCore", "Chavah.NetCore\Chavah.NetCore.csproj", "{F1AEC0AF-E797-4DE1-B5F4-7F706E15E641}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{03FE4951-BBA5-4DA8-AC3B-4F7CA0FA113C}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Chavah.Web", "Chavah.Web\Chavah.Web.njsproj", "{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,42 @@ Global
 		{03FE4951-BBA5-4DA8-AC3B-4F7CA0FA113C}.Release|x64.Build.0 = Release|Any CPU
 		{03FE4951-BBA5-4DA8-AC3B-4F7CA0FA113C}.Release|x86.ActiveCfg = Release|Any CPU
 		{03FE4951-BBA5-4DA8-AC3B-4F7CA0FA113C}.Release|x86.Build.0 = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|Android.Build.0 = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|ARM.Build.0 = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|iOS.Build.0 = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|Windows-x64.Build.0 = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|Windows-x86.Build.0 = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|x64.Build.0 = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Debug|x86.Build.0 = Debug|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|Android.ActiveCfg = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|Android.Build.0 = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|ARM.ActiveCfg = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|ARM.Build.0 = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|iOS.ActiveCfg = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|iOS.Build.0 = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|Windows-ARM.Build.0 = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|Windows-x64.Build.0 = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|Windows-x86.ActiveCfg = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|x64.ActiveCfg = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|x64.Build.0 = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|x86.ActiveCfg = Release|Any CPU
+		{8E5853A5-B7ED-4B24-A380-7EA9CEC21EBE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

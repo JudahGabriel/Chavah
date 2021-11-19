@@ -80,8 +80,6 @@
         nativeShare(song: Song) {
             if (navigator["share"]) {
                 this.tryShareWeb(song);
-            } else if (window["Windows"]) {
-                this.tryShareOnWindows(song);
             }
         }
 
@@ -106,42 +104,13 @@
                 try {
                     navigator["share"]({
                         title: `${songName} by ${song.artist}`,
-                        text: "via Chavah Messianic Radio",
+                        text: "on Chavah Messianic Radio",
                         url: `${this.homeViewModel.defaultUrl}/?song=${song.id}`
                     }).catch(error => console.log("Native shared failed", error));
                 } catch (error) {
                     console.log("Unable to trigger navigator.share", error);
                 }
             }
-        }
-
-        private tryShareOnWindows(song: Song): boolean {
-            // TODO: this should probably be in a platform-specific file or module.
-            if (window["Windows"]) {
-                try {
-                    const DataTransferManager = Windows.ApplicationModel.DataTransfer.DataTransferManager;
-                    const RandomAccessStreamReference = Windows.Storage.Streams.RandomAccessStreamReference;
-                    const ShareProvider = Windows.ApplicationModel.DataTransfer["ShareProvider"];
-                    const Uri = Windows.Foundation.Uri;
-
-                    const dataTransferManager = DataTransferManager.getForCurrentView();
-                    dataTransferManager.addEventListener("datarequested", (ev) => {
-                        const data = ev.request.data;
-                        var shareData = this.getShareData(song);
-                        data.properties.title = shareData.title;
-                        data.properties["url"] = shareData.url;
-                        data.setText(shareData.text);
-                    });
-
-                    dataTransferManager["showShareUI"]();
-                    return true;
-                }
-                catch (error) {
-                    console.log("Unable to invoke Windows share functionality.", error);
-                }
-            }
-
-            return false;
         }
 
         private getShareData(song: Song): { title: string; text: string; url: string; } {

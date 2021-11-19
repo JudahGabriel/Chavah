@@ -241,7 +241,7 @@ namespace BitShuva.Chavah {
 
         private stalled(args: any) {
             this.status.onNext(AudioStatus.Stalled);            
-            console.log("Audio stalled, unable to stream in audio data.", this.audio.currentSrc, args);
+            console.warn("Audio stalled, unable to stream in audio data.", this.audio.currentSrc, args);
         }
 
         private playbackPositionChanged(args: any) {

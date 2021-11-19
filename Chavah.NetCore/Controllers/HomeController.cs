@@ -104,6 +104,7 @@ namespace BitShuva.Chavah.Controllers
         public IActionResult ServiceWorker()
         {
             var path = $"~/js/ServiceWorkers/{_appOptions.ServiceWorker}";
+            //var path = $"~/js/ServiceWorkers/Minimal.js";
             return File(path, "application/javascript");
         }
 

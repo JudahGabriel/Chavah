@@ -271,35 +271,11 @@
         }
 
         copyShareUrl() {
-            // iOS share functionality.
             const shareUrlInput = document.querySelector("#currentSongShareLink") as HTMLInputElement;
-            const isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
 
             // If we're a modern browser, we 
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(shareUrlInput.value);
-            } else if (isiOSDevice) {
-                // Older versions of iOS have specific rules about copying text. https://stackoverflow.com/a/43001673/536
-            
-                const editable = shareUrlInput.contentEditable;
-                const readOnly = shareUrlInput.readOnly;
-
-                shareUrlInput.contentEditable = "true"; // yes, a string: "true", "false", "inheritable" https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/contentEditable
-                shareUrlInput.readOnly = false;
-
-                const range = document.createRange();
-                range.selectNodeContents(shareUrlInput);
-
-                const selection = window.getSelection();
-                if (selection) {
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                }
-
-                shareUrlInput.setSelectionRange(0, 999999);
-                shareUrlInput.contentEditable = editable;
-                shareUrlInput.readOnly = readOnly;
-
             } else {
                 // Old browsers.
                 shareUrlInput.select();
