@@ -1,9 +1,48 @@
 {
-  "name": "chavah.web",
-  "version": "0.0.0",
-  "description": "Chavah.Web",
-  "main": "server.js",
-  "author": {
-    "name": ""
+  "name": "pwa-starter",
+  "version": "0.0.1",
+  "description": "A starter kit for building PWAs!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist/ && rollup --config rollup.config.js && node workbox.mjs",
+    "start": "concurrently \"rollup --config rollup.config.dev.js --watch\" \"web-dev-server --app-index build/index.html --root-dir build/ --compatibility none --node-resolve --watch --open /\"",
+    "dev": "concurrently \"rollup --config rollup.config.dev.js --watch\" \"web-dev-server --app-index build/index.html --root-dir build/ --compatibility none --node-resolve --watch --open /\"",
+    "dev-task": "concurrently \"rollup --config rollup.config.dev.js --watch\" \"web-dev-server --app-index build/index.html --root-dir build/ --compatibility none --node-resolve --watch /\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pwabuilder/pwainstall": "^1.6.7",
+    "@vaadin/router": "^1.7.4",
+    "lit": "^2.0.2",
+    "workbox-build": "^6.3.0",
+    "workbox-core": "^6.3.0",
+    "workbox-precaching": "^6.3.0"
+  },
+  "devDependencies": {
+    "@open-wc/rollup-plugin-html": "^1.2.5",
+    "@rollup/plugin-node-resolve": "^13.0.5",
+    "@rollup/plugin-replace": "^3.0.0",
+    "@rollup/plugin-strip": "^2.1.0",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "@types/service_worker_api": "^0.0.9",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "@web/dev-server": "^0.1.25",
+    "concurrently": "^6.3.0",
+    "danger": "^10.7.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.1",
+    "eslint-plugin-node": "^11.1.0",
+    "lit-analyzer": "^1.2.1",
+    "prettier": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.58.0",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-workbox": "^6.2.0",
+    "typescript": "^4.4.4"
   }
 }

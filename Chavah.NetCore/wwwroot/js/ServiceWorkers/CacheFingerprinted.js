@@ -264,7 +264,7 @@ function onFetch(event) {
     const request = event.request;
     const isFingerprinted = request.url.match(/(\?|&)v=/ig);
     const isCdn = isCdnUrl(request.url);
-    const isMediaResource = false; // COMMENTED OUT: if we tried fetching media resources from the cache, iOS would say "stalling" forever. // isMediaUrl(request.url);
+    const isMediaResource = isMediaUrl(request.url); 
     const isHomePage = request.method === "GET" && (request.url === "/" || request.url.endsWith("/#") || request.url.endsWith("/#/"));
     const isApiCall = request.url.includes("messianicradio.com/api/");
     // Always fetch non-GET requests from the network
@@ -276,8 +276,13 @@ function onFetch(event) {
         } else if (isHomePage) {
             event.respondWith(networkFirst(appShellCacheName, event));
         } else if (isMediaResource) {
-            // Cache first for media resources (our MP3s and album art)
-            event.respondWith(fetchCacheFirst(mediaCacheName, event));
+            // For MP3s, don't do cache first. Otherwise we get "Stalled" audio problem on iOS.
+            // For album art, cache first is fine.
+            if (request.url.endsWith(".mp3")) {
+                event.respondWith(fetchFromNetwork(event));
+            } else {
+                event.respondWith(fetchCacheFirst(mediaCacheName, event));
+            }
         } else if (isFingerprinted || isCdn) {
             // Cache first our app shell: fingerprinted resources (our HTML, JS, CSS) and shell-related scripts (jQuery, Bootstrap, and others on various CDNs)
             event.respondWith(fetchCacheFirst(appShellCacheName, event));
