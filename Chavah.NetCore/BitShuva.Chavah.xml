@@ -822,6 +822,14 @@
             <param name="search"></param>
             <returns></returns>
         </member>
+        <member name="M:BitShuva.Chavah.Controllers.SongsController.GetSongByNameAndArtist(System.String,System.String)">
+            <summary>
+            Finds a song by name and artist. Used by MessianicChords.com to look up existing songs in Chavah.
+            </summary>
+            <param name="name">The song name.</param>
+            <param name="artist">The artist name.</param>
+            <returns>The song with the specified name by the specified artist, or null if no such song is found.</returns>
+        </member>
         <member name="M:BitShuva.Chavah.Controllers.StreamController.TuneInV4">
             <summary>
             Returns an M3U file. Used for streaming services such as TuneIn radio.

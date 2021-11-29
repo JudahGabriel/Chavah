@@ -634,6 +634,20 @@ namespace BitShuva.Chavah.Controllers
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Finds a song by name and artist. Used by MessianicChords.com to look up existing songs in Chavah.
+        /// </summary>
+        /// <param name="name">The song name.</param>
+        /// <param name="artist">The artist name.</param>
+        /// <returns>The song with the specified name by the specified artist, or null if no such song is found.</returns>
+        [HttpGet]
+        public async Task<Song?> GetSongByNameAndArtist(string name, string artist)
+        {
+            var song = await DbSession.Query<Song, Songs_GeneralQuery>()
+                .FirstOrDefaultAsync(s => s.Name == name && s.Artist == artist);
+            return song;
+        }
+
         private async Task<Song> PickRandomSong()
         {
             var song = await DbSession.Query<Song, Songs_GeneralQuery>()

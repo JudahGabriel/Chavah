@@ -61,7 +61,7 @@ export class AppHeader extends LitElement {
           ${this.enableBack ? html`<fast-anchor href="/">
             Back
           </fast-anchor>` : null}
-
+      
           <h1>${this.title}</h1>
         </div>
       </header>
