@@ -43,11 +43,10 @@
     "religion",
     "society"
   ],
-  "url_handlers": [
-    {
-      "origin": "messianicradio.com"
-    }
-  ],
+  "launch_handler": {
+    "route_to": "existing-client",
+    "navigate_existing_client": "always"
+  },
   "shortcuts": [
     {
       "name": "My Likes",
