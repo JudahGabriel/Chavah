@@ -72,7 +72,7 @@ namespace BitShuva.Chavah.Controllers
         public RedirectResult GetStationId()
         {
             var directory = new Uri(cdnSettings.Value.HttpPath).Combine(cdnSettings.Value.SoundEffects);
-            var idAnnouncement = new Random().Next(1, 9);
+            var idAnnouncement = new Random().Next(1, 11);
             return Redirect(directory.Combine($"StationId{idAnnouncement}.mp3").AbsoluteUri);
         }
 
