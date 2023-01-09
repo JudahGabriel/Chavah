@@ -85,13 +85,6 @@
             <param name="number"></param>
             <returns></returns>
         </member>
-        <member name="M:BitShuva.Chavah.Common.QuartzAppBuilderExtensions.UseQuartzForEmailRetry(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
-            <summary>
-            Uses Quartz.NET to schedule retry of failed emails.
-            </summary>
-            <param name="app"></param>
-            <returns></returns>
-        </member>
         <member name="M:BitShuva.Chavah.Common.RavenExtensions.AddChavahRavenDbDocStore(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Add Chavah Raven Db instance with SSL Certificate loaded from Azure Vault.
@@ -830,6 +823,13 @@
             <param name="artist">The artist name.</param>
             <returns>The song with the specified name by the specified artist, or null if no such song is found.</returns>
         </member>
+        <member name="M:BitShuva.Chavah.Controllers.SongsController.RecordAudioError(BitShuva.Chavah.Models.AudioErrorInfo)">
+            <summary>
+            Records an audio error experienced by the user.
+            </summary>
+            <param name="audioError">The error details.</param>
+            <returns></returns>
+        </member>
         <member name="M:BitShuva.Chavah.Controllers.StreamController.TuneInV4">
             <summary>
             Returns an M3U file. Used for streaming services such as TuneIn radio.
@@ -1200,6 +1200,44 @@
             <summary>
             The number of times the email has been retried.
             </summary>
+        </member>
+        <member name="T:BitShuva.Chavah.Models.FeedSyncRecord">
+            <summary>
+            A record of when blog feeds were synced to AppUser.Notifications.
+            Used in coordination with <see cref="T:BitShuva.Chavah.Services.BlogPostNotificationCreator"/>.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.FeedSyncRecord.Id">
+            <summary>
+            The ID of the sync record. This will always be "FeedSyncRecords/1", because we only ever store a single instance of this in the database.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.FeedSyncRecord.LastSyncedPostDate">
+            <summary>
+            The published date of the last blog post synced to App User Notifications.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.FeedSyncRecord.SyncedNotifications">
+            <summary>
+            A list of notifications synced to each user.
+            </summary>
+        </member>
+        <member name="P:BitShuva.Chavah.Models.FeedSyncRecord.SyncedPostIds">
+            <summary>
+            A list of blog post IDs we've synced to AppUser Notifications.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.FeedSyncRecord.AddSyncedNotification(BitShuva.Chavah.Models.Notification)">
+            <summary>
+            Adds a notification that we've synced from a blog feed. If the count exceeds 10, we remove the oldest.
+            </summary>
+            <param name="notification"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Models.FeedSyncRecord.AddSyncedPostId(System.String)">
+            <summary>
+            Adds the ID of a blog post that has been synced to user notifications.
+            </summary>
+            <param name="id"></param>
         </member>
         <member name="T:BitShuva.Chavah.Models.HomeViewModel">
             <summary>
@@ -1750,6 +1788,12 @@
              The roles of the user.
             </summary>
         </member>
+        <member name="T:BitShuva.Chavah.Services.BlogPostNotificationCreator">
+            <summary>
+            A background service that periodically checks the Chavah and Kineti blogs for new content.
+            New posts are then broadcasted out in a push notification and inserted into AppUser.Notifications.
+            </summary>
+        </member>
         <member name="T:BitShuva.Chavah.Services.BunnyCdnHttpClient">
             <summary>
             An HTTP client configured for POSTing files to BunnyCDN.
@@ -1877,10 +1921,9 @@
             <param name="fileName">The name of the file to create in BunnyCDN.</param>
             <returns>An HTTP URI pointing to the new file in BunnyCDN.</returns>
         </member>
-        <member name="T:BitShuva.Chavah.Services.EmailRetryJob">
+        <member name="T:BitShuva.Chavah.Services.EmailRetryService">
             <summary>
-            Quartz.NET scheduling job that retries any emails that failed to send.
-            Initialized by <see cref="T:BitShuva.Chavah.Common.QuartzAppBuilderExtensions"/>.
+            Background service that retries sending emails that previously erred when sending.
             </summary>
         </member>
         <member name="T:BitShuva.Chavah.Services.FtpCdnManagerService">
@@ -2118,14 +2161,6 @@
             <param name="notification">The notification.</param>
             <returns></returns>
         </member>
-        <member name="T:BitShuva.Chavah.Services.QuartzJobFactoryWithIoC">
-            <summary>
-            Quartz.net job factory that creates jobs using the ASP.NET Core dependency injection container.
-            </summary>
-            <remarks>
-            Courtesy of https://stackoverflow.com/a/42199955/536
-            </remarks>
-        </member>
         <member name="T:BitShuva.Chavah.Services.SongUploadService">
             <summary>
             Takes a song uploaded as a temporary media file and renames it to its final file name.
@@ -2133,6 +2168,26 @@
             <remarks>
             Our CDN doesn't support renaming, so we actually upload a copy of the temporary media file to the CDN using the correct, desired file name, and after its successful, we delete the temporary file.
             </remarks>
+        </member>
+        <member name="T:BitShuva.Chavah.Services.TimedBackgroundServiceBase">
+            <summary>
+            Base class for a background service that executes code on a timer.
+            </summary>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.TimedBackgroundServiceBase.#ctor(System.TimeSpan,System.TimeSpan,Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Creates a new timed background service.
+            </summary>
+            <param name="dueTime">When the first run should execute.</param>
+            <param name="intervalTime">How often runs should be repeated.</param>
+            <param name="logger"></param>
+        </member>
+        <member name="M:BitShuva.Chavah.Services.TimedBackgroundServiceBase.DoWorkAsync(System.Threading.CancellationToken)">
+            <summary>
+            Runs the service. This is called from a timer.
+            </summary>
+            <param name="cancelToken"></param>
+            <returns></returns>
         </member>
         <member name="M:BitShuva.Services.IEmailService.QueueSendEmail(System.String,System.String,System.String,System.String)">
             <summary>

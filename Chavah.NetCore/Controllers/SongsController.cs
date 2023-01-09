@@ -648,6 +648,23 @@ namespace BitShuva.Chavah.Controllers
             return song;
         }
 
+        /// <summary>
+        /// Records an audio error experienced by the user.
+        /// </summary>
+        /// <param name="audioError">The error details.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult RecordAudioError(AudioErrorInfo audioError)
+        {
+            if (string.IsNullOrEmpty(audioError.UserId))
+            {
+                audioError.UserId = User.Identity?.Name;
+            }
+
+            logger.LogError("Audio error experienced by user. {details}", audioError);
+            return Ok();
+        }
+
         private async Task<Song> PickRandomSong()
         {
             var song = await DbSession.Query<Song, Songs_GeneralQuery>()

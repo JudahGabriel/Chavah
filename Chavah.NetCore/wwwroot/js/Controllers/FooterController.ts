@@ -18,6 +18,7 @@
             "songRequestApi",
             "accountApi",
             "userApi",
+            "songApi",
             "stationIdentifier",
             "adAnnouncer",
             "appNav",
@@ -31,6 +32,7 @@
             private songRequestApi: SongRequestApiService,
             private accountApi: AccountService,
             private userApi: UserApiService,
+            private songApi: SongApiService,
             private stationIdentifier: StationIdentifierService,
             private adAnnouncer: AdAnnouncerService,
             private appNav: AppNavService,
@@ -56,8 +58,7 @@
                 .subscribe(percent => $(".footer .trackbar").width(percent + "%"));
             this.audioPlayer.error
                 .debounce(2000)
-                .where(val => this.shouldShowErrorNotification(val))
-                .subscribe(audioError => this.showAudioErrorNotification(audioError));
+                .subscribe(audioError => this.onAudioError(audioError));
                         
             // If we sign in, restore the volume preference for the user.
             this.accountApi.signedInState
@@ -359,11 +360,21 @@
         shouldShowErrorNotification(errorInfo: IAudioErrorInfo): boolean {
             const currentSong = this.audioPlayer.song.getValue();
             const isErrorForCurrentSong = !currentSong || !errorInfo.songId || currentSong.id === errorInfo.songId;
+            const isErrorForAnnouncement = errorInfo.mp3Url && errorInfo.mp3Url.includes("soundEffects");
 
             // The song may have started playing after the initial error.
             const isSongPlaying = this.audioPlayer.status.getValue() === AudioStatus.Playing;
 
-            return isErrorForCurrentSong && !isSongPlaying;
+            return isErrorForCurrentSong && !isSongPlaying && !isErrorForAnnouncement;
+        }
+
+        private onAudioError(errorInfo: IAudioErrorInfo): void {
+            if (this.shouldShowErrorNotification(errorInfo)) {
+                this.showAudioErrorNotification(errorInfo);
+                this.songApi.songFailed(errorInfo);
+            } else {
+                this.playNextSong();
+            }
         }
 
         private showAudioErrorNotification(errorInfo: IAudioErrorInfo) {

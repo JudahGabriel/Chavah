@@ -225,7 +225,8 @@ namespace BitShuva.Chavah {
             const errorInfo: IAudioErrorInfo = {
                 errorCode: this.audio.error,
                 songId: currentSong ? currentSong.id : "",
-                trackPosition: this.audio.currentTime
+                trackPosition: this.audio.currentTime,
+                mp3Url: this.audio.src || ""
             };
             this.error.onNext(errorInfo);
         }

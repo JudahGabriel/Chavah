@@ -65,10 +65,11 @@ namespace BitShuva.Chavah
             services.AddTransient<ISongUploadService, SongUploadService>();
             services.AddTransient<IAlbumService, AlbumService>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<EmailRetryJob>();
             services.AddSingleton<BunnyCdnHttpClient>();
 
             services.AddBackgroundQueueWithLogging(1, TimeSpan.FromSeconds(5));
+            services.AddHostedService<BlogPostNotificationCreator>();
+            services.AddHostedService<EmailRetryService>();
             services.AddCacheBustedAngularViews("/views");
 
             // Add RavenDB document store, session, and migrations.
@@ -215,9 +216,6 @@ namespace BitShuva.Chavah
                         description.GroupName.ToUpperInvariant());
                 }
             });
-
-            // Use our EmailRetryService
-            app.UseQuartzForEmailRetry();
 
             // Run pending Raven migrations.
             var migrationService = app.ApplicationServices.GetRequiredService<MigrationRunner>();

@@ -2,15 +2,13 @@
     export class StationIdentifierService {
 
         static $inject = [
-            "audioPlayer",
-            "homeViewModel",
+            "audioPlayer"
         ];
 
         lastAnnouncementTime = new Date();
 
         constructor(
-            private audioPlayer: AudioPlayerService,
-            private homeViewModel: Server.HomeViewModel) {
+            private audioPlayer: AudioPlayerService) {
         }
 
         hasPendingAnnouncement() {

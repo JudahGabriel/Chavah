@@ -64,7 +64,7 @@
 
             if (!this.hasPlayedRequestAnnouncement) {
                 this.hasPlayedRequestAnnouncement = true;
-                const songRequestNumbers = [1, 3, 4, 5, 6, 7, 8, 9];
+                const songRequestNumbers = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
                 // tslint:disable-next-line:max-line-length
                 const songRequestName = "SongRequest" + songRequestNumbers[Math.floor(Math.random() * songRequestNumbers.length)] + ".mp3";
                 const songRequestUrl = `${this.homeViewModel.soundEffects}/${songRequestName}`;

@@ -152,7 +152,7 @@
         }
 
         songFailed(error: IAudioErrorInfo): ng.IPromise<any> {
-            return this.httpApi.post("/api/songs/audiofailed", error);
+            return this.httpApi.post("/api/songs/recordAudioError", error);
         }
 
         getSongsAdmin(skip: number, take: number, search: string): ng.IPromise<Server.PagedList<Server.Song>> {
