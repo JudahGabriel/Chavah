@@ -33,7 +33,7 @@
 
         playAdAnnouncement() {
             const announcementNumbers = [1,2,3,4,5];
-            const fileName = "ad" + announcementNumbers[Math.floor(Math.random() * announcementNumbers.length)] + ".mp3";
+            const fileName = "ad" + announcementNumbers[Math.floor(Math.random() * announcementNumbers.length)] + "x.mp3";
             const songUrl = `${this.homeViewModel.soundEffects}/${fileName}`;
             this.audioPlayer.playNewUri(songUrl);
         }

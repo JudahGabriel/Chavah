@@ -223,7 +223,7 @@ namespace BitShuva.Chavah {
             this.status.onNext(AudioStatus.Erred);
             const currentSong = this.song.getValue();
             const errorInfo: IAudioErrorInfo = {
-                errorCode: this.audio.error,
+                errorCode: this.audio.error?.code || null,
                 songId: currentSong ? currentSong.id : "",
                 trackPosition: this.audio.currentTime,
                 mp3Url: this.audio.src || ""
