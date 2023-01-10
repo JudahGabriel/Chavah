@@ -31,7 +31,7 @@
     "@typescript-eslint/parser": "^5.0.0",
     "@web/dev-server": "^0.1.25",
     "concurrently": "^6.3.0",
-    "danger": "^10.7.0",
+    "danger": "^11.2.1",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.1",
