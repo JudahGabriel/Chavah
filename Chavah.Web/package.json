@@ -16,7 +16,7 @@
     "@pwabuilder/pwainstall": "^1.6.7",
     "@vaadin/router": "^1.7.4",
     "lit": "^2.0.2",
-    "workbox-build": "^6.3.0",
+    "workbox-build": "^6.5.4",
     "workbox-core": "^6.3.0",
     "workbox-precaching": "^6.3.0"
   },
