@@ -112,7 +112,7 @@
         },
         {
           "provider": "cdnjs",
-          "library": "tslib@1.11.1",
+          "library": "tslib@2.4.1",
           "destination": "wwwroot/lib/tslib/",
           "files": [
             "tslib.min.js"

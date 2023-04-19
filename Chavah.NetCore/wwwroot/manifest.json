@@ -44,15 +44,15 @@
     "society"
   ],
   "launch_handler": {
-    "route_to": "existing-client",
-    "navigate_existing_client": "always"
+    "client_mode": "existing-client"
   },
+  "handle_links": "preferred",
   "shortcuts": [
     {
       "name": "My Likes",
       "short_name": "Likes",
       "description": "My thumbed-up songs",
-      "url": "/#/mylikes",
+      "url": "https://messianicradio.com/#/mylikes",
       "icons": [
         {
           "src": "/images/shortcut_mylikes.png",
