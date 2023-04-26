@@ -1,0 +1,107 @@
+﻿@using BitShuva.Chavah.Settings
+@model HomeViewModel
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <title>@Model.Title</title>
+    <base href="/">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preconnect" href="https://chavah.b-cdn.net" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    @*This allows fixed position elements to work properly*@
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+    <meta name="description" content="@Model.Description" />
+    <meta name="keywords" content="@Model.Keywords" />
+
+    @*Chrome on Android sets the page toolbar color. https://developers.google.com/web/updates/2014/11/Support-for-theme-color-in-Chrome-39-for-Android *@
+    <meta name="theme-color" content="#2f3d58">
+
+    @* Fav icons *@
+    <link rel="icon" type="image/png" href="/assets/images/brand/16x16.png" sizes="16x16" />
+    <link rel="icon" type="image/ico" href="/favicon.ico" sizes="16x16">
+    <link rel="icon" type="image/png" href="/assets/images/brand/32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/assets/images/brand/64x64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="/assets/images/brand/128x128.png" sizes="128x128">
+    <link rel="icon" type="image/png" href="/assets/images/brand/256x256.png" sizes="256x256">
+    <link rel="icon" type="image/png" href="/assets/images/brand/512x512.png" sizes="512x512">
+    <!--<![endif]-->
+
+    @* Apple iOS shortcut *@
+    <link rel="apple-touch-icon" href="/assets/images/brand/180x180.png" />
+
+    @* iOS status bar style. See http://stackoverflow.com/questions/39749015/apple-mobile-web-app-status-bar-style-in-ios-10 *@
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    @* Twitter card. When a user shares a song, we show a full card containing album art and song info. *@
+    <meta name="twitter:creator" content="@Model.TwitterHandle">
+    <meta name="twitter:site" content="@Model.TwitterHandle">
+    <meta name="twitter:card" content="@Model.TwitterCardType" />
+    <meta name="twitter:title" content="@Model.Title" />
+    <meta name="twitter:description" content="@Model.Description" />
+    <meta name="twitter:image" content="@Model.SocialCardImage" />
+    <meta name="twitter:url" content="@Model.SocialCardUrl" />
+
+    @*Facebook share info. See https://developers.facebook.com/docs/sharing/webmasters/*@
+    <meta property="og:title" content="@Model.Title" />
+    <meta property="og:url" content="@Model.SocialCardUrl" />
+    <meta property="og:type" content="@Model.FacebookCardType" />
+    <meta property="og:description" content="@Model.Description" />
+    <meta property="og:image" content="@Model.SocialCardImage" />
+
+    <script type="module" crossorigin="anonymous" src="@Model.IndexJsUrl"></script>
+    @if (@Model.IndexCssUrl != null)
+    {
+        <link rel="stylesheet" href="@Model.IndexCssUrl" />
+    }
+</head>
+
+<body>
+    @RenderBody()
+
+    @*Splash screen. This is hidden inside App.ts when the client is ready to go. Inline styles so that we don't have to wait for the external CSS to load.*@
+    <div class="splash" style="width: 100%; height: 100%; position: fixed; background-color: #333f58; left: 0; right: 0; top: 0; bottom: 0; z-index: 999;">
+        <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+            <div style="text-align: center;">
+                @if (Model != null)
+                {
+                    <picture style="width: 120px; height: 120px;">
+                        <source srcset="@Model.CdnUrl/chavah-splash.webp" type="image/webp">
+                        <source srcset="@Model.CdnUrl/chavah-splash.png" type="image/png">
+                        <img src="@Model.CdnUrl/chavah-splash.png" type="image/png">
+                    </picture>
+                }
+                <br />
+                <h5 style="color: #e9dd9a;">@Model!.Title</h5>
+            </div>
+        </div>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    @*Hanukkah partial*@
+    @*@Html.Partial("Hanukkah")*@
+    
+    @*Google analytics*@
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        var userId = '@(Model.User?.Email ?? string.Empty)';
+        if (userId) {
+            ga('create', '@Model.GoogleAnalyticsId', 'auto', { userId: userId });
+        } else {
+            ga('create', '@Model.GoogleAnalyticsId', 'auto');
+        }
+    </script>
+</body>
+</html>

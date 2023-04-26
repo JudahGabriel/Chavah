@@ -1,0 +1,1 @@
+//# sourceMappingURL=ICropImageResult.js.map

@@ -1,0 +1,85 @@
+﻿/* Colors */
+.song-deck {
+  margin-right: 75px;
+}
+@media (max-width: 767px) {
+  .song-deck {
+    margin-left: 10px;
+  }
+}
+.song-deck .songs-container {
+  width: 100%;
+  perspective: 10000px;
+  perspective-origin: top;
+}
+.song-deck .song-item {
+  padding: 10px;
+  display: inline-block;
+  margin: 15px -200px 0 0;
+  cursor: pointer;
+  box-shadow: 0 10px 15px 0 gray;
+  transform: rotateY(15deg) skewY(-2deg);
+  transition: all 0.2s ease-out;
+  position: relative;
+  opacity: 0.9;
+}
+.song-deck .song-item:hover {
+  transform: rotateY(0deg) scale(1.1) translate3d(5px, 0, 1px);
+  z-index: 2;
+  opacity: 1;
+}
+.song-deck .song-item:hover .song-info .share-links {
+  opacity: 1;
+}
+@media (max-width: 767px) {
+  .song-deck .song-item {
+    margin: 15px -100px 0 0;
+  }
+  .song-deck .song-item:hover {
+    margin: 15px -50px 0 -50px;
+    left: 20px;
+  }
+}
+.song-deck .song-item img {
+  max-width: 300px;
+  height: auto;
+  /* Phones use smaller images sizes */
+}
+@media (max-width: 767px) {
+  .song-deck .song-item img {
+    max-width: 150px;
+  }
+}
+.song-deck .song-item .song-info {
+  margin-top: 5px;
+  max-width: 300px;
+}
+.song-deck .song-item .song-info .song-info-text {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+@media (max-width: 767px) {
+  .song-deck .song-item .song-info {
+    max-width: 150px;
+  }
+}
+.song-deck .song-item .song-info .share-links {
+  font-size: 2em;
+  opacity: 0.1;
+  transition: all 0.2s ease-in;
+}
+.song-deck .song-item .song-info .share-links a:hover {
+  text-decoration: none;
+}
+.song-deck .song-item .share-links {
+  display: inline-block;
+}
+.song-deck .song-item .share-links .dropup {
+  display: inline-block;
+}
+.song-deck .song-item .share-links .dropup .dropdown-menu {
+  margin-left: -45px;
+}

@@ -1,0 +1,40 @@
+{
+  "name": "blessisrael.messianicchords",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "node aspnetcore-https && node aspnetcore-react",
+    "dev": "vite --open",
+    "dev-task": "vite",
+    "build": "tsc && vite build",
+    "start": "npm run build && vite preview",
+    "start-remote": "vite --host"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vaadin/router": "^1.7.4",
+    "lit": "^2.5.0",
+    "rxjs": "^7.5.5",
+    "workbox-build": "^6.5.2",
+    "workbox-core": "^6.5.2",
+    "workbox-precaching": "^6.5.2",
+    "workbox-recipes": "^6.5.2",
+    "workbox-routing": "^6.5.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.3",
+    "vite": "^2.9.13",
+    "vite-plugin-pwa": "^0.11.13"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "quoteProps": "consistent",
+    "trailingComma": "es5",
+    "endOfLine": "crlf",
+    "bracketSpacing": true
+  }
+}

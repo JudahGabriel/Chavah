@@ -1,0 +1,138 @@
+﻿/* Colors */
+.footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  text-align: center;
+  background-color: #2f3d58;
+  z-index: 100;
+  /* Volume control. Courtesy https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/ */
+}
+.footer .btn-link {
+  transition: all 0.2s linear;
+  border-radius: 1px;
+  color: white;
+}
+@media (max-width: 767px) {
+  .footer .btn-link {
+    padding: 10px 15px 10px 15px;
+    font-size: 15px;
+  }
+}
+.footer .btn-link:focus {
+  outline: none;
+}
+.footer .btn-link:hover {
+  background-color: #415479;
+  color: #e9dd9a;
+}
+.footer .btn-link.active {
+  color: #d7c146;
+}
+.footer .btn-link.active .fa {
+  text-shadow: 0 0 30px #e9dd9a;
+}
+.footer .audio-status {
+  position: absolute;
+  left: 10px;
+  bottom: 25px;
+  color: #95a5a6;
+}
+@media (max-width: 767px) {
+  .footer .audio-status {
+    bottom: initial;
+    top: 5px;
+  }
+}
+.footer .volume-and-track-time {
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+}
+@media (max-width: 767px) {
+  .footer .volume-and-track-time {
+    display: none;
+  }
+}
+.footer .volume-and-track-time .track-time-container {
+  color: #95a5a6;
+}
+.footer .trackbar {
+  position: absolute;
+  transition: 1.1s;
+  height: 3px;
+  width: 0;
+  background-color: #95a5a6;
+}
+.footer .buffering {
+  position: absolute;
+  width: 100%;
+  height: 10px;
+  transition: 1s linear all;
+  opacity: 0.5;
+}
+.footer .buffering.ng-hide {
+  opacity: 0;
+}
+.footer .buffering.ng-hide-remove {
+  opacity: 0;
+}
+.footer .buffering.ng-hide-remove-active {
+  opacity: 0.5;
+}
+.footer input[type=range] {
+  position: absolute;
+  top: -75px;
+  right: -35px;
+  transform: rotateZ(-90deg);
+  -webkit-appearance: none;
+  margin: 7.5px 0;
+  width: 100%;
+  background-color: transparent;
+}
+.footer input[type=range]:focus {
+  outline: none;
+}
+.footer input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  animation: 0.2s;
+  box-shadow: 2px 2px 2px #222, 0px 0px 2px #2f2f2f;
+  background: #424242;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+.footer input[type=range]::-webkit-slider-thumb {
+  box-shadow: 1px 1px 1px #111, 0px 0px 1px #1e1e1e;
+  border: 1px solid white;
+  height: 15px;
+  width: 15px;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -3.5px;
+}
+.footer input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #4f4f4f;
+}
+.footer input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  animation: 0.2s;
+  box-shadow: 2px 2px 2px #222, 0px 0px 2px #2f2f2f;
+  background: #424242;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+.footer input[type=range]::-moz-range-thumb {
+  box-shadow: 1px 1px 1px #111, 0px 0px 1px #1e1e1e;
+  border: 1px solid white;
+  height: 15px;
+  width: 15px;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}

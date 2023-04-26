@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Chavah Messianic Radio</title>
+
+  <base href="/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Chavah Messianic radio is music for Yeshua's disciples. The very best Messianic Jewish and Hebrew Roots radio on the web" />
+  <meta name="keywords"
+    content="messianic music hebrew roots radio jewish christian">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Lora&display=swap" rel="stylesheet">
+  <link rel="icon" href="/assets/images/brand/16x16.png" sizes="16x16" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/16x16.ico" sizes="16x16" type="image/x-icon" />
+  <link rel="icon" href="/assets/images/brand/32x32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/32x32.ico" sizes="32x32" type="image/x-icon" />
+  <link rel="icon" href="/assets/images/brand/64x64.png" sizes="64x64" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/120x120.png" sizes="120x120" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/128x128.png" sizes="128x128" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/152x152.png" sizes="152x152" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/167x167.png" sizes="167x167" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/180x180.png" sizes="180x180" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/192x192.png" sizes="192x192" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/196x196.png" sizes="196x196" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/256x256.png" sizes="256x256" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/512x512.png" sizes="512x512" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/600x600.png" sizes="600x600" type="image/png" />
+  <link rel="icon" href="/assets/images/brand/1024x1024.png" sizes="1024x1024" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/images/brand/120x120-maskable.png" sizes="120x120" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/images/brand/152x152-maskable.png" sizes="152x152" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/images/brand/167x167-maskable.png" sizes="167x167" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/images/brand/180x180-maskable.png" sizes="180x180" type="image/png" />
+  <link rel="manifest" href="manifest.json" />
+
+  <script type="module" src="https://unpkg.com/@fluentui/web-components" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --title-font: 'Homemade Apple', cursive;
+      --subtitle-font: 'Lora', serif;
+      --theme-color: #0b0974;
+      --highlight-orange: #febf04;
+      --highlight-background: linear-gradient(rgb(255, 214, 94) 0%, #febf04 100%);
+      --highlight-border-radius: 60px 30px 35px 15px / 25px 38px 66px 53px;
+      --highlight-box-shadow: rgb(255 214 94 / 90%) 2px 2px 10px;
+      --bs-blue: #0d6efd;
+      --bs-indigo: #6610f2;
+      --bs-purple: #6f42c1;
+      --bs-pink: #d63384;
+      --bs-red: #dc3545;
+      --bs-orange: #fd7e14;
+      --bs-yellow: #ffc107;
+      --bs-green: #198754;
+      --bs-teal: #20c997;
+      --bs-cyan: #0dcaf0;
+      --bs-black: #000;
+      --bs-white: #fff;
+      --bs-gray: #6c757d;
+      --bs-gray-dark: #343a40;
+      --bs-gray-100: #f8f9fa;
+      --bs-gray-200: #e9ecef;
+      --bs-gray-300: #dee2e6;
+      --bs-gray-400: #ced4da;
+      --bs-gray-500: #adb5bd;
+      --bs-gray-600: #6c757d;
+      --bs-gray-700: #495057;
+      --bs-gray-800: #343a40;
+      --bs-gray-900: #212529;
+      --bs-primary: #0d6efd;
+      --bs-secondary: #6c757d;
+      --bs-success: #198754;
+      --bs-info: #0dcaf0;
+      --bs-warning: #ffc107;
+      --bs-danger: #dc3545;
+      --bs-light: #f8f9fa;
+      --bs-dark: #212529;
+      --bs-primary-rgb: 13, 110, 253;
+      --bs-secondary-rgb: 108, 117, 125;
+      --bs-success-rgb: 25, 135, 84;
+      --bs-info-rgb: 13, 202, 240;
+      --bs-warning-rgb: 255, 193, 7;
+      --bs-danger-rgb: 220, 53, 69;
+      --bs-light-rgb: 248, 249, 250;
+      --bs-dark-rgb: 33, 37, 41;
+      --bs-white-rgb: 255, 255, 255;
+      --bs-black-rgb: 0, 0, 0;
+      --bs-body-color-rgb: 33, 37, 41;
+      --bs-body-bg-rgb: 255, 255, 255;
+      --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+      --bs-body-font-family: var(--bs-font-sans-serif);
+      --bs-body-font-size: 1rem;
+      --bs-body-font-weight: 400;
+      --bs-body-line-height: 1.5;
+      --bs-body-color: #212529;
+      --bs-body-bg: #fff;
+      --bs-border-width: 1px;
+      --bs-border-style: solid;
+      --bs-border-color: #dee2e6;
+      --bs-border-color-translucent: rgba(0, 0, 0, 0.175);
+      --bs-border-radius: 0.375rem;
+      --bs-border-radius-sm: 0.25rem;
+      --bs-border-radius-lg: 0.5rem;
+      --bs-border-radius-xl: 1rem;
+      --bs-border-radius-2xl: 2rem;
+      --bs-border-radius-pill: 50rem;
+      --bs-link-color: #0d6efd;
+      --bs-link-hover-color: #0a58ca;
+      --bs-code-color: #d63384;
+      --bs-highlight-bg: #fff3cd;
+    }
+
+    fast-design-system-provider {
+      color: black;
+    }
+  </style>
+  <script type="module" src="/src/app-index.ts"></script>
+</head>
+
+<body>
+  <fluent-design-system-provider>
+    <app-index></app-index>
+  </fluent-design-system-provider>
+</body>
+
+</html>

@@ -1,0 +1,298 @@
+{
+  "lang": "en-US",
+  "dir": "ltr",
+  "name": "Messianic Chords",
+  "short_name": "Messianic Chords",
+  "description": "Guitar chords and lyrics for Messianic Jewish music",
+  "display": "minimal-ui",
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#0b0974",
+  "orientation": "any",
+  "categories": [
+    "music",
+    "entertainment",
+    "religion",
+    "reference"
+  ],
+  "capture_links": "existing_client_event",
+  "url_handlers": [
+    {
+      "origin": "https://messianicchords.com"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/assets/images/16x16.ico",
+      "sizes": "16x16",
+      "purpose": "any",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/assets/images/16x16.png",
+      "sizes": "16x16",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/32x32.png",
+      "sizes": "32x32",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/32x32.ico",
+      "sizes": "32x32",
+      "purpose": "any",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/assets/images/64x64.png",
+      "sizes": "64x64",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/120x120.png",
+      "sizes": "120x120",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/120x120-maskable.png",
+      "sizes": "120x120",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/128x128.png",
+      "sizes": "128x128",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/152x152.png",
+      "sizes": "152x152",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/152x152-maskable.png",
+      "sizes": "152x152",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/167x167.png",
+      "sizes": "167x167",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/167x167-maskable.png",
+      "sizes": "167x167",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/180x180.png",
+      "sizes": "180x180",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/180x180-maskable.png",
+      "sizes": "180x180",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/196x196.png",
+      "sizes": "196x196",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/256x256.png",
+      "sizes": "256x256",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/300x300.png",
+      "sizes": "300x300",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/512x512.png",
+      "sizes": "512x512",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/512x512-maskable.png",
+      "sizes": "512x512",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/512x512-monochrome.png",
+      "sizes": "512x512",
+      "purpose": "monochrome",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/600x600.png",
+      "sizes": "600x600",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/1024x1024.png",
+      "sizes": "1024x1024",
+      "purpose": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/1024x1024-maskable.png",
+      "sizes": "1024x1024",
+      "purpose": "maskable",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/1080x1080.png",
+      "sizes": "1080x1080",
+      "purpose": "any",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/images/screenshots/desktop-home-2732x1536.png",
+      "sizes": "2732x1536",
+      "platform": "wide",
+      "label": "Messianic Chords is chord charts for Messianic Jewish music"
+    },
+    {
+      "src": "/assets/images/screenshots/desktop-chords-2732x1536.png",
+      "sizes": "2732x1536",
+      "platform": "wide",
+      "label": "View chord charts and lyrics"
+    },
+    {
+      "src": "/assets/images/screenshots/desktop-search-2732x1536.png",
+      "sizes": "2732x1536",
+      "platform": "wide",
+      "label": "Search by song, artist, or lyrics"
+    },
+    {
+      "src": "/assets/images/screenshots/desktop-browsebyartist-2732x1536.png",
+      "sizes": "2732x1536",
+      "platform": "wide",
+      "label": "Browse chord charts by artist, by song name, by newest, and by random"
+    },
+    {
+      "src": "/assets/images/screenshots/tablet-home-2732x2048.png",
+      "sizes": "2732x2048",
+      "platform": "wide",
+      "label": "Search and browse charts and lyrics"
+    },
+    {
+      "src": "/assets/images/screenshots/tablet-home-1024x500.png",
+      "sizes": "1024x500",
+      "platform": "wide",
+      "label": "Search and browse charts and lyrics"
+    },
+    {
+      "src": "/assets/images/screenshots/tablet-search-2732x2048.png",
+      "sizes": "2732x2048",
+      "platform": "wide",
+      "label": "Search for chord charts"
+    },
+    {
+      "src": "/assets/images/screenshots/tablet-chordchart-2048x2732.png",
+      "sizes": "2048x2732",
+      "platform": "narrow",
+      "label": "View chord charts and lyrics"
+    },
+    {
+      "src": "/assets/images/screenshots/tablet-chordchart-2732x2048.png",
+      "sizes": "2732x2048",
+      "platform": "wide",
+      "label": "View chord charts and lyrics"
+    },
+    {
+      "src": "/assets/images/screenshots/tablet-browsebyartist-2048x2732.png",
+      "sizes": "2048x2732",
+      "platform": "narrow",
+      "label": "Browse chord charts by artist, by song name, by newest, and by random"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-home-1125x2436.png",
+      "sizes": "1125x2436",
+      "platform": "narrow",
+      "label": "Messianic Chords is chord charts for Messianic Jewish music"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-home-1242x2208.png",
+      "sizes": "1242x2208",
+      "platform": "narrow",
+      "label": "Messianic Chords is chord charts for Messianic Jewish music"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-home-1242x2688.png",
+      "sizes": "1242x2688",
+      "platform": "narrow",
+      "label": "Messianic Chords is chord charts for Messianic Jewish music"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-chordchart-1242x2688.png",
+      "sizes": "1242x2688",
+      "platform": "narrow",
+      "label": "View chord charts and lyrics"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-chordchart-1242x2208.png",
+      "sizes": "1242x2208",
+      "platform": "narrow",
+      "label": "View chord charts and lyrics"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-browsebysong-1242x2688.png",
+      "sizes": "1242x2688",
+      "platform": "narrow",
+      "label": "Browse chord charts by song name"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-browsebysong-1242x2208.png",
+      "sizes": "1242x2208",
+      "platform": "narrow",
+      "label": "Browse chord charts by song name"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-browsebyartist-1242x2688.png",
+      "sizes": "1242x2688",
+      "platform": "narrow",
+      "label": "Browse chord charts by artist"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-browsebyartist-1242x2208.png",
+      "sizes": "1242x2208",
+      "platform": "narrow",
+      "label": "Browse chord charts by artist"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-search-1242x2688.png",
+      "sizes": "1242x2688",
+      "platform": "narrow",
+      "label": "Search for chord charts by song name, artist, or lyrics"
+    },
+    {
+      "src": "/assets/images/screenshots/phone-search-1242x2208.png",
+      "sizes": "1242x2208",
+      "platform": "narrow",
+      "label": "Search for chord charts by song name, artist, or lyrics"
+    }
+  ]
+}

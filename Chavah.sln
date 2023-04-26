@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chavah.NetCore", "Chavah.NetCore\Chavah.NetCore.csproj", "{F1AEC0AF-E797-4DE1-B5F4-7F706E15E641}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chavah", "Chavah\Chavah.csproj", "{F1AEC0AF-E797-4DE1-B5F4-7F706E15E641}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{03FE4951-BBA5-4DA8-AC3B-4F7CA0FA113C}"
 EndProject
