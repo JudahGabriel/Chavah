@@ -1,0 +1,40 @@
+name: Build and deploy Chavah
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+  
+# If this workflow is already running, cancel it.
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+  
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+          
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+          
+      - name: Write publish profile to directory
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+          path: ${{ env.home }}/ChavahOnVm.pubxml
+          contents: |
+            ${{ secrets.PUBLISH_PROFILE }}
+          write-mode: overwrite
+
+      - name: dotnet publish
+        run: dotnet publish -c Release -o Publish /p:PublishProfileFullPath=${{ env.home }}/ChavahOnVm.pubxml
