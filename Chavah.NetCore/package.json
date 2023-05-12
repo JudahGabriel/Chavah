@@ -26,8 +26,6 @@
   },
   "homepage": "https://github.com/JudahGabriel/Chavah#readme",
   "dependencies": {
-    "@types/croppie": "^2.5.3",
-    "@types/google.visualization": "0.0.56"
   },
   "devDependencies": {
     "@types/angular": "^1.6.39",
@@ -45,6 +43,9 @@
     "@types/rx": "^4.1.1",
     "@types/tinycolor": "^1.1.27",
     "@types/winrt-uwp": "^0.0.21",
+    "@types/croppie": "^2.5.3",
+    "@types/google.visualization": "0.0.56",
+    "@vibrant/types": "^3.2.1-alpha.1",
     "npx": "^10.2.0",
     "tslint": "^5.9.1",
     "typescript": "^3.0.1"

@@ -10,7 +10,7 @@
     "noEmitHelpers": true,
     "strictNullChecks": true,
     "experimentalDecorators": true,
-    "typeRoots": [ "typings", "node_modules/@types" ]
+    "typeRoots": [ "node_modules/@types" ]
   },
   "compileOnSave": true,
   "exclude": [

@@ -32,22 +32,23 @@
         }
 
         addImages() {
-            filepicker.setKey(this.homeViewModel.filePickrKey);
-            let options: FilepickerMultipleFilePickOptions = {
-                extensions: [".jpg", ".png"],
-                maxFiles: 100,
-            };
-            filepicker.pickMultiple(
-                options,
-                (result: FilepickerInkBlob[]) => this.imagesAdded(result),
-                // tslint:disable-next-line:arrow-parens
-                (error) => console.log("Failed to add image.", error));
+            //filepicker.setKey(this.homeViewModel.filePickrKey);
+            //let options: FilepickerMultipleFilePickOptions = {
+            //    extensions: [".jpg", ".png"],
+            //    maxFiles: 100,
+            //};
+            //filepicker.pickMultiple(
+            //    options,
+            //    (result: FilepickerInkBlob[]) => this.imagesAdded(result),
+            //    // tslint:disable-next-line:arrow-parens
+            //    (error) => console.log("Failed to add image.", error));
+            console.log("commented out filepickr");
         }
 
-        imagesAdded(images: FilepickerInkBlob[]) {
-            images.forEach(i => this.artist!.images.push(i.url));
-            this.$scope.$applyAsync();
-        }
+        //imagesAdded(images: FilepickerInkBlob[]) {
+        //    images.forEach(i => this.artist!.images.push(i.url));
+        //    this.$scope.$applyAsync();
+        //}
 
         save() {
             if (this.artist && !this.artist.isSaving) {

@@ -51,7 +51,7 @@
       "name": "My Likes",
       "short_name": "Likes",
       "description": "My thumbed-up songs",
-      "url": "https://messianicradio.com/#/mylikes",
+      "url": "/#/mylikes",
       "icons": [
         {
           "src": "/images/shortcut_mylikes.png",

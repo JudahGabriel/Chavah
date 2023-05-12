@@ -106,25 +106,26 @@
         }
 
         chooseAlbumArt() {
-            filepicker.setKey(this.homeViewModel.filePickrKey);
-            let options: FilepickerMultipleFilePickOptions = {
-                extensions: [".jpg", ".png"],
-            };
-            filepicker.pick(
-                options,
-                (result: FilepickerInkBlob) => this.albumArtChosen(result),
-                // tslint:disable-next-line:arrow-parens
-                (error) => console.log("Album art pick failed.", error));
+            //filepicker.setKey(this.homeViewModel.filePickrKey);
+            //let options: FilepickerMultipleFilePickOptions = {
+            //    extensions: [".jpg", ".png"],
+            //};
+            //filepicker.pick(
+            //    options,
+            //    (result: FilepickerInkBlob) => this.albumArtChosen(result),
+            //    // tslint:disable-next-line:arrow-parens
+            //    (error) => console.log("Album art pick failed.", error));
+            console.log("commented out FilePickr");
         }
 
-        albumArtChosen(albumArt: FilepickerInkBlob) {
-            this.hasChangedAlbumArt = true;
-            if (this.album) {
-                this.album.albumArtUri = albumArt.url;
-            }
-            this.loadCanvasSafeAlbumArt(albumArt.url)
-                .then(img => this.populateColorSwatches(img));
-        }
+        //albumArtChosen(albumArt: unknown /*FilepickerInkBlob*/) {
+        //    this.hasChangedAlbumArt = true;
+        //    if (this.album) {
+        //        this.album.albumArtUri = albumArt.url;
+        //    }
+        //    this.loadCanvasSafeAlbumArt(albumArt.url)
+        //        .then(img => this.populateColorSwatches(img));
+        //}
 
         populateColorSwatches(image: HTMLImageElement) {
             if (this.album) {
