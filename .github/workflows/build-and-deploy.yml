@@ -26,7 +26,7 @@ jobs:
           include-prerelease: true
           
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build Chavah.NetCore.csproj --configuration Release
           
       - name: Write publish profile to directory
         uses: DamianReeves/write-file-action@v1.2
