@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Bet.Extensions.AzureVault" Version="3.1.10" />
     <PackageReference Include="Bet.AspNetCore.HealthChecks" Version="3.1.10" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
@@ -52,8 +52,8 @@
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
     <PackageReference Include="Pwned.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Quartz" Version="3.2.3" />
-    <PackageReference Include="RavenDB.Client" Version="5.4.103" />
-    <PackageReference Include="RavenDB.Identity" Version="8.0.7" />
+    <PackageReference Include="RavenDB.Client" Version="5.4.104" />
+    <PackageReference Include="RavenDB.Identity" Version="8.0.8" />
     <PackageReference Include="RavenDB.StructuredLogger" Version="6.0.1" />
     <PackageReference Include="RavenMigrations" Version="5.0.1" />
     <PackageReference Include="RavenDB.DependencyInjection" Version="4.0.2" />

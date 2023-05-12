@@ -58,17 +58,15 @@ namespace BitShuva.Chavah.Controllers
             {
                 return File("/dev-index.html", "text/html");
             }
-
             
             var user = await GetUser();
-            var userVm = user != null ? _mapper.Map<UserViewModel>(user) : null;
+            var userVm = user != null ? this.mapper.Map<UserViewModel>(user) : null;
             var loadedSong = await GetSongFromQuery(artist, album, song);
-            var homeViewModel = HomeViewModel.From(userVm, loadedSong, _appOptions, _cdnOptions);
+            var homeViewModel = HomeViewModel.From(userVm, loadedSong, this.appOptions, this.cdnOptions);
             homeViewModel.Embed = embed;
-            homeViewModel.CacheBustedAngularViews = _ngViews.Views;
 
             // TODO
-            //homeViewModel.Redirect =
+            //homeViewModel.Redirect = 
 
             return View("Index", homeViewModel);
         }
