@@ -1,5 +1,6 @@
 ﻿
 namespace BitShuva.Chavah {
+    declare var Vibrant;
     export class UploadAlbumController {
         albumName = "";
         artistName = "";
@@ -141,9 +142,9 @@ namespace BitShuva.Chavah {
             }
         }
 
-        fetchAlbumColorSwatches(imageUrl: string): ng.IPromise<ISwatchList> {
+        fetchAlbumColorSwatches(imageUrl: string): ng.IPromise<any /*ISwatchList*/> {
             const img = document.createElement("img");
-            const deferred = this.$q.defer<ISwatchList>();
+            const deferred = this.$q.defer<any /*ISwatchList*/>();
             img.crossOrigin = "Anonymous";
             //img.src = imageUrl;
             img.src = "/api/albums/imageOnDomain?imageUrl=" + encodeURIComponent(imageUrl);
@@ -269,11 +270,11 @@ namespace BitShuva.Chavah {
             };
         }
 
-        static getFriendlySwatches(rawSwatches: ISwatchList): IAlbumSwatch[] {
+        static getFriendlySwatches(rawSwatches: any /*ISwatchList*/): IAlbumSwatch[] {
             return Object.getOwnPropertyNames(rawSwatches)
                 .filter(p => !!rawSwatches[p])
                 .map(p => {
-                    let swatch: ISwatch = rawSwatches[p];
+                    let swatch = rawSwatches[p];
                     let friendlySwatch: IAlbumSwatch = {
                         name: p,
                         color: swatch.getHex(),

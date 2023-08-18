@@ -56,7 +56,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     options.OperationFilter<SwaggerDefaultValues>();
 
                     // integrate xml comments
-                    options.IncludeXmlComments(XmlCommentsFilePath);
+                    // options.IncludeXmlComments(XmlCommentsFilePath);
                 });
 
             services.Configure<ApiBehaviorOptions>(options =>

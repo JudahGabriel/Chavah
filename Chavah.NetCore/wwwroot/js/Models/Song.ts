@@ -46,7 +46,7 @@ namespace BitShuva.Chavah {
         private _reasonPlayedText: string | null;
 
         // tslint:disable-next-line:member-ordering
-        static readonly defaultSwatch: ISwatch = {
+        static readonly defaultSwatch = {
             getBodyTextColor: () => "black",
             getHex: () => "white",
             getHsl: () => "black",

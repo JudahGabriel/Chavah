@@ -1,4 +1,7 @@
 ﻿namespace BitShuva.Chavah {
+
+    declare var Vibrant;
+
     export class EditAlbumController {
 
         static $inject = [
