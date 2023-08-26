@@ -177,4 +177,33 @@
             .thumb();
         }
     }
+
+    .discord-chat {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        bottom: 100px;
+        right: 20px;
+        background-color: @brand-background;
+        border-radius: 50px;
+        box-shadow: 0 0 5px 1px gray;
+        transition: all ease-in-out .5s;
+        opacity: 0.5;
+
+        img {
+            filter: invert(0.9);
+            margin-top: 5px;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .discord-chat {
+            display: none;
+        }
+    }
+
+    .discord-chat:hover {
+        opacity: 1;
+        transform: rotateZ(360deg);
+    }
 }

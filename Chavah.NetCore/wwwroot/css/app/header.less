@@ -218,4 +218,13 @@ header {
             color: @text-color-light !important;
         }
     }
+    /* Unlike the other menu icons, discord icon is an image (SVG). The icon is black. Tone it down a bit to fit in with the others. */
+    img.discord-chat {
+        opacity: 0.4;
+    }
+    /* On hover of the menu item, turn the discord icon white. */
+    li:hover img.discord-chat {
+        opacity: 1;
+        filter: invert(1);
+    }
 }
