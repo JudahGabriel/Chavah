@@ -9,7 +9,7 @@ namespace BitShuva.Chavah.Models
             Items = new List<T>();
         }
 
-        public int Total { get; set; }
+        public long Total { get; set; }
         public List<T> Items { get; set; }
         public int Skip { get; set; }
         public int Take { get; set; }

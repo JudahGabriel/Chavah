@@ -95,13 +95,21 @@ namespace BitShuva.Chavah.Services
             // Serialize it
             var jsonNotification = JsonConvert.SerializeObject(notification);
             var patchScript = @"
-                this.Notifications.unshift(" + jsonNotification + @");
-                if (this.Notifications.length > 10) {
-                    this.Notifications.length = 10;
-                }
+                var existingNotification = this.Notifications.find(n => n.Url !== url);
+                if (!existingNotification) {
+                    this.Notifications.unshift(json);
+                    if (this.Notifications.length > 10) {
+                        this.Notifications.length = 10;
+                    }
+               }
             ";
-            var patchOperation = docStore.PatchAll<AppUser>(patchScript);
-            await patchOperation.WaitForCompletionAsync(TimeSpan.FromMinutes(1));
+            var variables = new Dictionary<string, object>
+            {
+                { "url", notification.Url },
+                { "json", jsonNotification }
+            };
+            var patchOperation = docStore.PatchAll<AppUser>(patchScript, variables);
+            await patchOperation.WaitForCompletionAsync(TimeSpan.FromSeconds(30));
 
             return notification;
         }

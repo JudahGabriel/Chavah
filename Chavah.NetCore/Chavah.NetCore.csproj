@@ -25,12 +25,12 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Bet.Extensions.AzureVault" Version="3.1.10" />
     <PackageReference Include="Bet.AspNetCore.HealthChecks" Version="3.1.10" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
-    <PackageReference Include="CodeHollow.FeedReader" Version="1.2.4" />
+    <PackageReference Include="CodeHollow.FeedReader" Version="1.2.6" />
     <PackageReference Include="CoreFtp" Version="1.4.0" />
     <PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.1" />
@@ -43,19 +43,19 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
     <PackageReference Include="Pwned.AspNetCore" Version="2.0.0" />
-    <PackageReference Include="Quartz" Version="3.2.3" />
-    <PackageReference Include="RavenDB.Client" Version="5.1.0" />
-    <PackageReference Include="RavenDB.Identity" Version="8.0.4" />
+    <PackageReference Include="Quartz" Version="3.8.0" />
+    <PackageReference Include="RavenDB.Client" Version="6.0.1" />
+    <PackageReference Include="RavenDB.Identity" Version="8.0.9" />
     <PackageReference Include="RavenDB.StructuredLogger" Version="6.0.1" />
-    <PackageReference Include="RavenMigrations" Version="5.0.0" />
-    <PackageReference Include="RavenDB.DependencyInjection" Version="4.0.0" />
-    <PackageReference Include="Sendgrid" Version="9.21.2" />
+    <PackageReference Include="RavenMigrations" Version="5.0.1" />
+    <PackageReference Include="RavenDB.DependencyInjection" Version="4.0.2" />
+    <PackageReference Include="Sendgrid" Version="9.28.1" />
     <PackageReference Include="SimpleSitemap" Version="3.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="System.Interactive" Version="5.0.0" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="5.0.0" />
-    <PackageReference Include="WebPush" Version="1.0.11" />
-    <PackageReference Include="Polly" Version="7.2.1" />
+    <PackageReference Include="WebPush" Version="1.0.12" />
+    <PackageReference Include="Polly" Version="8.2.0" />
   </ItemGroup>
 
   <ItemGroup>

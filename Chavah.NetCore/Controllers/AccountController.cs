@@ -378,7 +378,7 @@ namespace BitShuva.Chavah.Controllers
             if (isValidToken)
             {
                 user.EmailConfirmed = true;
-                logger.LogInformation("Successfully confirmed new account", email);
+                logger.LogInformation("Successfully confirmed new account {email}", email);
 
                 // Add a welcome notification for the user.
                 user.AddNotification(Notification.Welcome(appOptions.AuthorImageUrl));

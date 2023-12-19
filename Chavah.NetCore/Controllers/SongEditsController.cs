@@ -126,7 +126,7 @@ namespace BitShuva.Chavah.Controllers
                 songEdit.Apply(song);
                 songEdit.Status = SongEditStatus.Approved;
                 await DbSession.StoreAsync(songEdit);
-                logger.LogInformation("Applied song edit", songEdit);
+                logger.LogInformation("Applied song edit {edit}", songEdit);
 
                 // Notify the user.
                 var user = await DbSession.LoadAsync<AppUser>(songEdit.UserId);

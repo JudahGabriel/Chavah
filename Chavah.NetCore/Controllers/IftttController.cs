@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
+using System.Collections.Generic;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -79,7 +80,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateNotification(string secretToken, string title, string? imgUrl, string sourceName, string url)
+        public async Task<IActionResult> CreateNotification(string secretToken, string title, string? imgUrl, string sourceName, string url)
         {
             AuthorizeKey(secretToken);
 
@@ -108,7 +109,7 @@ namespace BitShuva.Chavah.Controllers
                 Url = url
             };
 
-            AddNotificationToAllUsers(notification);
+            await AddNotificationToAllUsers(notification);
 
             // Send out HTML5 push notifications.
             var pushNotification = new PushNotification
@@ -220,16 +221,25 @@ namespace BitShuva.Chavah.Controllers
             return lyricsSection;
         }
 
-        private void AddNotificationToAllUsers(Notification notification)
+        private Task AddNotificationToAllUsers(Notification notification)
         {
             var jsonNotification = JsonConvert.SerializeObject(notification);
             var patchScript = @"
-                this.Notifications.unshift(" + jsonNotification + @");
-                if (this.Notifications.length > 10) {
-                    this.Notifications.length = 10;
-                }
+                var existingNotification = this.Notifications.find(n => n.Url !== url);
+                if (!existingNotification) {
+                    this.Notifications.unshift(json);
+                    if (this.Notifications.length > 10) {
+                        this.Notifications.length = 10;
+                    }
+               }
             ";
-            DbSession.Advanced.DocumentStore.PatchAll<AppUser>(patchScript);
+            var variables = new Dictionary<string, object>
+            {
+                { "url", notification.Url },
+                { "json", jsonNotification }
+            };
+            var operation = DbSession.Advanced.DocumentStore.PatchAll<AppUser>(patchScript, variables);
+            return operation.WaitForCompletionAsync(TimeSpan.FromSeconds(60));
         }
 
         private void AuthorizeKey(string key)
