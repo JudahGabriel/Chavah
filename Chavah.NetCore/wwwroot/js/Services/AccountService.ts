@@ -121,6 +121,10 @@
             };
             return this.httpApi.post(`${this.apiUri}/resendConfirmationEmail`, args);
         }
+
+        deleteAccount(): ng.IPromise<any> {
+            return this.httpApi.post(`${this.apiUri}/deleteMyAccount`, {});
+        }
     }
 
     App.service("accountApi", AccountService);

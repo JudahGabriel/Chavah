@@ -132,6 +132,16 @@
                 this.accountApi.currentUser.updateFrom(updatedUser);
             }
         }
+
+        async deleteMyAccount() {
+            this.isSaving = true;
+            try {
+                await this.accountApi.deleteAccount();
+                window.location.href = "/";
+            } finally {
+                this.isSaving = false;
+            }
+        }
     }
 
     App.controller("ProfileController", ProfileController);

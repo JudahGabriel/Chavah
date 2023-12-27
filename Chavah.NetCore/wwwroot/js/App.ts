@@ -178,7 +178,4 @@
                 }
             });
         }]);
-
-    // Setup Fastclick to remove the 300ms click delay on mobile browsers.
-    document.addEventListener("DOMContentLoaded", () => FastClick.attach(document.body), false);
 }

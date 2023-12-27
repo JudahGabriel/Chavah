@@ -7,6 +7,7 @@
     text-align: center;
     background-color: @brand-background;
     z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom); /* On iPhones and other mobile devices with a notch at the bottom for manipulating windows, give extra padding. Without this, the footer is partially covered by the notch. */
 
     .btn-link {
         transition: all .2s linear;

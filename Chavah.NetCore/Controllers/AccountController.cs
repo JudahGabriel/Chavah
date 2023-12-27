@@ -594,6 +594,20 @@ namespace BitShuva.Chavah.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteMyAccount()
+        {
+            var user = await GetUser();
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            await userManager.DeleteAsync(user);
+            await signInManager.SignOutAsync();
+            return Ok();
+        }
+
         private SignInStatus SignInStatusFromResult(Microsoft.AspNetCore.Identity.SignInResult result, string email)
         {
             if (result.Succeeded)

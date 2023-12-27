@@ -46,14 +46,6 @@
         },
         {
             "provider": "cdnjs",
-            "library": "fastclick@1.0.6",
-            "destination": "wwwroot/lib/fastclick/",
-            "files": [
-                "fastclick.js"
-            ]
-        },
-        {
-            "provider": "cdnjs",
             "library": "nprogress@0.2.0",
             "destination": "wwwroot/lib/nprogress/",
             "files": [

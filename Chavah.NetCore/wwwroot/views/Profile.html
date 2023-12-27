@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-offset-2">
             <h2 class="page-title">My profile</h2>
-            
+
             <div class="row">
 
                 <!--The profile pic column-->
@@ -11,9 +11,8 @@
                     <!--Show the profile pic if we've got one-->
                     <div ng-if="vm.profilePicUrl" class="text-center">
                         <div class="img-container">
-                            <img class="img-responsive profile-pic" ng-src="{{vm.profilePicUrl}}" />
+                            <img class="img-responsive profile-pic" ng-src="{{vm.profilePicUrl}}" ng-click="vm.launchImagePicker()" />
                         </div>
-                        <!--<div class="profile-pic" background-image="vm.profilePicUrl" ng-click="vm.launchImagePicker()"></div>-->
                         <br />
                         <label class="btn btn-default btn-file btn-sm">
                             Change my profile photo
@@ -26,7 +25,7 @@
 
                         <!--The placeholder tile-->
                         <div class="panel panel-default profile-pic-placeholder">
-                            <div class="panel-body needsclick" ng-click="vm.launchImagePicker()" aria-hidden="true">
+                            <div class="panel-body" ng-click="vm.launchImagePicker()" aria-hidden="true" role="button">
                                 <h4>
                                     <i class="fa fa-user-circle-o fa-5x"></i>
                                     <br />
@@ -35,7 +34,7 @@
                                     Add a profile photo
                                 </h4>
                             </div>
-                            <input type="file" class="form-control-file needsclick sr-only" accept="image/*" id="imagePicker" file-upload-changed="vm.profilePicChanged(e)" />
+                            <input type="file" class="form-control-file sr-only" accept="image/*" id="imagePicker" file-upload-changed="vm.profilePicChanged(e)" />
                         </div>
 
                         <!--The loading indicator-->
@@ -95,22 +94,49 @@
                         </div>
                     </form>
 
-                    <button class="btn btn-primary" ng-disabled="vm.isSavingOrUploading" ng-click="vm.save()">
-                        <span ng-hide="vm.isSavingOrUploading">
-                            <i class="fa fa-save"></i> Save
-                        </span>
-                        <span ng-show="vm.isSavingOrUploading">
-                            <i class="fa fa-circle-o-notch fa-spin"></i> Saving...
-                        </span>
-                    </button>
+                    <div style="display: flex; justify-content: space-between;">
+                        <button class="btn btn-primary" ng-disabled="vm.isSavingOrUploading" ng-click="vm.save()">
+                            <span ng-hide="vm.isSavingOrUploading">
+                                <i class="fa fa-save"></i> Save
+                            </span>
+                            <span ng-show="vm.isSavingOrUploading">
+                                <i class="fa fa-circle-o-notch fa-spin"></i> Saving...
+                            </span>
+                        </button>
 
-                    <p class="text-success" ng-show="vm.hasSavedSuccessfully">
-                        <br />
-                        <i class="fa fa-check"></i> Profile saved
-                    </p>
+                        <button class="btn btn-link delete-account-btn" data-toggle="modal" data-target="#confirmDeleteAccount" ng-disabled="vm.isSavingOrUploading">
+                            <i class="fa fa-trash-o text-danger"></i>
+                            <span class="text-danger">Delete my account</span>
+                        </button>
+                    </div>
                 </div>
 
             </div>
         </div>
     </div>
+
+    <div id="confirmDeleteAccount" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-disabled="vm.isSavingOrUploading"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Are you sure?</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Do you really want to delete <strong>{{vm.user.email}}</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-disabled="vm.isSavingOrUploading">Cancel</button>
+                    <button type="button" class="btn btn-danger" ng-click="vm.deleteMyAccount()" ng-disabled="vm.isSavingOrUploading">
+                        <span ng-hide="vm.isSavingOrUploading">
+                            <i class="fa fa-trash-o"></i> Delete my account
+                        </span>
+                        <span ng-show="vm.isSavingOrUploading">
+                            <i class="fa fa-circle-o-notch fa-spin"></i> Deleting...
+                        </span>
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </section>
