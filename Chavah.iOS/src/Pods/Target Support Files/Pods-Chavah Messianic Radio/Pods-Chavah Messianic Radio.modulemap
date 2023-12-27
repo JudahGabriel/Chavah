@@ -1,0 +1,6 @@
+framework module Pods_Chavah_Messianic_Radio {
+  umbrella header "Pods-Chavah Messianic Radio-umbrella.h"
+
+  export *
+  module * { export * }
+}
