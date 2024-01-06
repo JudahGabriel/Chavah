@@ -378,6 +378,7 @@ namespace BitShuva.Chavah.Common
             {
                 Query = rqlPatch.ToString()
             });
+            
             return db.Operations.Send(patch);
         }
 

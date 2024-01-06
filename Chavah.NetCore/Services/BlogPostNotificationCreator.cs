@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.ServiceModel.Syndication;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Reactive.Linq;
 
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
@@ -36,7 +36,7 @@ namespace BitShuva.Chavah.Services
             IPushNotificationSender pushNotifications,
             IHttpClientFactory httpClientFactory,
             ILogger<BlogPostNotificationCreator> logger)
-            : base(TimeSpan.FromSeconds(20), TimeSpan.FromMinutes(30), logger)
+            : base(TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(30), logger)
         {
             this.docStore = docStore;
             this.pushNotifications = pushNotifications;
@@ -95,9 +95,9 @@ namespace BitShuva.Chavah.Services
             // Serialize it
             var jsonNotification = JsonConvert.SerializeObject(notification);
             var patchScript = @"
-                var existingNotification = this.Notifications.find(n => n.Url !== url);
+                var existingNotification = this.Notifications.find(n => n.Url === url);
                 if (!existingNotification) {
-                    this.Notifications.unshift(json);
+                    this.Notifications.unshift(JSON.parse(post));
                     if (this.Notifications.length > 10) {
                         this.Notifications.length = 10;
                     }
@@ -106,7 +106,7 @@ namespace BitShuva.Chavah.Services
             var variables = new Dictionary<string, object>
             {
                 { "url", notification.Url },
-                { "json", jsonNotification }
+                { "post", jsonNotification }
             };
             var patchOperation = docStore.PatchAll<AppUser>(patchScript, variables);
             await patchOperation.WaitForCompletionAsync(TimeSpan.FromSeconds(30));

@@ -225,9 +225,9 @@ namespace BitShuva.Chavah.Controllers
         {
             var jsonNotification = JsonConvert.SerializeObject(notification);
             var patchScript = @"
-                var existingNotification = this.Notifications.find(n => n.Url !== url);
+                var existingNotification = this.Notifications.find(n => n.Url === url);
                 if (!existingNotification) {
-                    this.Notifications.unshift(json);
+                    this.Notifications.unshift(JSON.parse(post));
                     if (this.Notifications.length > 10) {
                         this.Notifications.length = 10;
                     }
@@ -236,7 +236,7 @@ namespace BitShuva.Chavah.Controllers
             var variables = new Dictionary<string, object>
             {
                 { "url", notification.Url },
-                { "json", jsonNotification }
+                { "post", jsonNotification }
             };
             var operation = DbSession.Advanced.DocumentStore.PatchAll<AppUser>(patchScript, variables);
             return operation.WaitForCompletionAsync(TimeSpan.FromSeconds(60));
