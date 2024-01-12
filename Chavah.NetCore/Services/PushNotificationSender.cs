@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Dynamic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -147,16 +148,25 @@ namespace BitShuva.Chavah.Services
             }
             catch (Exception error)
             {
+                var isSubscriptionNoLongerValid = error is WebPush.WebPushException && error.Message.Contains("Subscription no longer valid", StringComparison.OrdinalIgnoreCase);
+
                 using (logger.BeginKeyValueScope("recipient", recipient))
                 using (logger.BeginKeyValueScope("publicKey", details.PublicKey))
                 using (logger.BeginKeyValueScope("publicKey", details.PrivateKey))
                 {
-                    logger.LogError(error, "Error sending push notification");
+                    if (isSubscriptionNoLongerValid)
+                    {
+                        logger.LogWarning(error, "Unable to send push notification because recipient subscription is no longer valid. Marking as unsubscribed.");
+                    }
+                    else
+                    {
+                        logger.LogError(error, "Error sending push notification");
+                    }
                 }
 
                 recipient.NotificationErrorMessage = error.Message;
                 recipient.FailedNotificationCount++;
-                if (error is WebPush.WebPushException webPushError && webPushError.Message == "Subscription no longer valid")
+                if (isSubscriptionNoLongerValid)
                 {
                     recipient.Unsubscribed = true;
                 }

@@ -32,8 +32,7 @@
 
         private sizeHeightToContents() {
             this.textAreaElement.rows = this.minRows;
-            const newRowCount = Math.ceil((this.textAreaElement.scrollHeight - this.baseScrollHeight) / 16);
-            console.log("input changed. scrollHeight, baseScrollHeight, calc:", this.textAreaElement.scrollHeight, this.baseScrollHeight, newRowCount);
+            const newRowCount = Math.ceil((this.textAreaElement.scrollHeight - this.baseScrollHeight) / 16); 
             const rows = newRowCount;
             this.textAreaElement.rows = this.minRows + rows;
         }
@@ -42,7 +41,6 @@
             const savedValue = this.textAreaElement.value;
             this.textAreaElement.value = '';
             this.baseScrollHeight = this.textAreaElement.scrollHeight;
-            console.log("base scroll height is...", this.baseScrollHeight);
             this.textAreaElement.value = savedValue;
         }
 

@@ -253,7 +253,6 @@
         function lightMenorah(candleIndicesToLight) {
             var nextCandleToLight = candleIndicesToLight[0];
             setTimeout(function () {
-                //console.log("lighting candle ", nextCandleToLight);
                 var candleSelector = ".hanukkah-container #candle" + nextCandleToLight;
                 $(candleSelector).prop("checked", "checked");
 

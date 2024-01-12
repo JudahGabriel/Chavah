@@ -47,7 +47,7 @@ namespace BitShuva.Chavah.Controllers
                 }
             }
 
-            // Find all the artist directories in the music directory.
+            // Find all the artist directories in the music directory. 
             var musicDir = cdnSettings.Value.MusicDirectory;
             var artistDirectories = await cdnManager.GetDirectories(musicDir);
             foreach (var artistDir in artistDirectories)
