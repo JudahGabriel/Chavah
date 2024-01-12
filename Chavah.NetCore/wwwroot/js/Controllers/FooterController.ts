@@ -5,7 +5,6 @@
         volumeVal = new Rx.Subject<number>();
         isBuffering = false;
         lastAudioErrorTime: Date | null = null;
-        stalledTimerHandle: number | null = null;
         audio: HTMLAudioElement | null = null;
         isShowingAudioError = false;
         wakeLock: Object | null = null;
@@ -43,6 +42,26 @@
                 .debounce(1000)
                 .subscribe(status => this.audioStatusChanged(status));
 
+            // If we've been stalled for a long time, show an error.
+            this.audioPlayer.status
+                .debounce(20000)
+                .where(s => s === AudioStatus.Stalled)
+                .subscribe(() => this.showAudioErrorNotification(this.createAudioErrorInfo("Audio stalled for more than 20 seconds")));
+
+            // If the audio is aborted and not recovered after 3 seconds, show an error.
+            this.audioPlayer.status
+                .debounce(3000)
+                .where(s => s === AudioStatus.Aborted)
+                .subscribe(status => {
+                    this.showAudioErrorNotification(this.createAudioErrorInfo(`Audio aborted for more than 3 seconds`));
+                });
+
+            // If an audio error occurred and it doesn't recover after 5 seconds, show an error.
+            this.audioPlayer.error
+                .debounce(5000)
+                .where(error => error.songId === this.audioPlayer.song.getValue()?.id && this.audioPlayer.status.getValue() === AudioStatus.Erred)
+                .subscribe(error => this.showAudioErrorNotification(error));
+
             // Update the track time. We don't use angular for this, because of the constant (per second) update.
             this.audioPlayer.playedTimeText
                 .distinctUntilChanged()
@@ -56,9 +75,6 @@
             this.audioPlayer.playedTimePercentage
                 .distinctUntilChanged()
                 .subscribe(percent => $(".footer .trackbar").width(percent + "%"));
-            this.audioPlayer.error
-                .debounce(2000)
-                .subscribe(audioError => this.onAudioError(audioError));
                         
             // If we sign in, restore the volume preference for the user.
             this.accountApi.signedInState
@@ -290,31 +306,6 @@
                 this.playNextSong();
             }
 
-            if (status === AudioStatus.Erred) {
-                // If it's been more than 30 seconds since the last error, play the next song.
-                // (We don't want to always play the next song, because if we're disconnected, all audio will fail.)
-                const minSecondsBetweenErrors = 30;
-                const hasBeen30SecSinceLastError = this.lastAudioErrorTime === null || moment().diff(moment(this.lastAudioErrorTime), "seconds") > minSecondsBetweenErrors;
-                if (hasBeen30SecSinceLastError) {
-                    this.playNextSong();
-                }
-
-                this.lastAudioErrorTime = new Date();
-            } else if (status === AudioStatus.Stalled) {
-                // Sometimes on mobile platforms (especially older Android) we 
-                // get into a stalled state and never recover.
-                // To rectify this, check if we're still stalled 7 seconds later
-                // and if so, play the next song.
-                if (this.stalledTimerHandle) {
-                    clearTimeout(this.stalledTimerHandle);
-                    this.stalledTimerHandle = setTimeout(() => {
-                        if (this.audioPlayer.status.getValue() === AudioStatus.Stalled) {
-                            this.playNextSong();
-                        }
-                    }, 5000);
-                }
-            }
-
             this.isBuffering = status === AudioStatus.Buffering || status === AudioStatus.Stalled;
             this.$scope.$applyAsync();
         }
@@ -357,31 +348,32 @@
             }
         }
 
-        shouldShowErrorNotification(errorInfo: IAudioErrorInfo): boolean {
+        private showAudioErrorNotification(errorInfo: IAudioErrorInfo) {
+            // Make sure we should show the error.
             const currentSong = this.audioPlayer.song.getValue();
             const isErrorForCurrentSong = !currentSong || !errorInfo.songId || currentSong.id === errorInfo.songId;
             const isErrorForAnnouncement = errorInfo.mp3Url && errorInfo.mp3Url.includes("soundEffects");
-
-            // The song may have started playing after the initial error.
             const isSongPlaying = this.audioPlayer.status.getValue() === AudioStatus.Playing;
-
-            return isErrorForCurrentSong && !isSongPlaying && !isErrorForAnnouncement;
-        }
-
-        private onAudioError(errorInfo: IAudioErrorInfo): void {
-            if (this.shouldShowErrorNotification(errorInfo)) {
-                this.showAudioErrorNotification(errorInfo);
+            const shouldShowError = isErrorForCurrentSong && !isSongPlaying && !isErrorForAnnouncement;
+            if (shouldShowError) {
                 this.songApi.songFailed(errorInfo);
-            } else {
+                console.error("Error playing audio", errorInfo);
+                this.isShowingAudioError = true;
+                this.appNav.showErrorPlayingAudio(errorInfo, this.audioPlayer.song.getValue())
+                    .closed.finally(() => this.isShowingAudioError = false);
+            } else if (!isSongPlaying && isErrorForAnnouncement) {
+                // Is it an error for an announcement? Just play next song.
                 this.playNextSong();
             }
         }
 
-        private showAudioErrorNotification(errorInfo: IAudioErrorInfo) {
-            console.log("Error playing audio", errorInfo);
-            this.isShowingAudioError = true;
-            this.appNav.showErrorPlayingAudio(errorInfo, this.audioPlayer.song.getValue())
-                .closed.finally(() => this.isShowingAudioError = false);
+        private createAudioErrorInfo(message: string): IAudioErrorInfo {
+            return {
+                errorMessage: message,
+                mp3Url: this.audio?.src || null,
+                songId: this.audioPlayer.song.getValue()?.id || null,
+                trackPosition: this.audio?.currentTime || null
+            };
         }
     }
 

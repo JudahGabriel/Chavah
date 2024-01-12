@@ -7,5 +7,7 @@
         public double? TrackPosition { get; set; }
         public string? UserId { get; set; }
         public string? Mp3Url { get; set; }
+        public string? ErrorMessage { get; set; }
+        public string? ErrorDetails { get; set; }
     }
 }

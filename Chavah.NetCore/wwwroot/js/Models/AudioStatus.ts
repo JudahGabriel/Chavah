@@ -6,6 +6,6 @@ namespace BitShuva.Chavah {
         Erred,
         Stalled,
         Buffering,
-        Aborted,
+        Aborted
     }
 }

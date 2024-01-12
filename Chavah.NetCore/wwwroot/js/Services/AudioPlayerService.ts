@@ -82,14 +82,14 @@ namespace BitShuva.Chavah {
                         if (playTask && playTask.catch) {
                             playTask.catch(taskError => {
                                 console.log("Unable to play audio due to task error", taskError);
-                                this.status.onNext(AudioStatus.Paused);
+                                //this.status.onNext(AudioStatus.Paused);
                             });
                         }
                     } catch (error) {
                         // This can happen on mobile when we try to play before user interaction.
                         // Don't worry about it; it will remain paused until the user clicks play.
                         console.log("Unable to play audio", error);
-                        this.status.onNext(AudioStatus.Paused);
+                        //this.status.onNext(AudioStatus.Paused);
                     }
                 }
             }
@@ -226,7 +226,9 @@ namespace BitShuva.Chavah {
                 errorCode: this.audio.error?.code || null,
                 songId: currentSong ? currentSong.id : "",
                 trackPosition: this.audio.currentTime,
-                mp3Url: this.audio.src || ""
+                mp3Url: this.audio.src || "",
+                errorMessage: args.message,
+                errorDetails: `${args.error}`
             };
             this.error.onNext(errorInfo);
         }
@@ -240,7 +242,7 @@ namespace BitShuva.Chavah {
             this.status.onNext(AudioStatus.Ended);
         }
 
-        private stalled(args: any) {
+        private stalled(args: Event) {
             this.status.onNext(AudioStatus.Stalled);            
             console.warn("Audio stalled, unable to stream in audio data.", this.audio.currentSrc, args);
         }
