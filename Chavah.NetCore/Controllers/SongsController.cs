@@ -375,7 +375,7 @@ namespace BitShuva.Chavah.Controllers
                     .FirstOrDefaultAsync(s => s.Album == album && s.Artist == artist);
             if (songOrNull == null)
             {
-                logger.LogWarning("Couldn't find song by artist and album", (Artist: artist, Album: album));
+                logger.LogWarning("Couldn't find song by artist and album pair: {artist} - {album}", artist, album);
                 return null;
             }
 
