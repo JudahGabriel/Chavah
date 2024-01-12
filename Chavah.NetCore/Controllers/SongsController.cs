@@ -661,7 +661,7 @@ namespace BitShuva.Chavah.Controllers
                 audioError.UserId = User.Identity?.Name;
             }
 
-            logger.LogError("Audio error experienced by user. {details}", audioError);
+            logger.LogWarning("Audio error experienced by user. {details}", audioError);
             return Ok();
         }
 

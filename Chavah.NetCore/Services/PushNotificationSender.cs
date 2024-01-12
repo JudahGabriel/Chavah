@@ -148,7 +148,9 @@ namespace BitShuva.Chavah.Services
             }
             catch (Exception error)
             {
-                var isSubscriptionNoLongerValid = error is WebPush.WebPushException && error.Message.Contains("Subscription no longer valid", StringComparison.OrdinalIgnoreCase);
+                var isSubscriptionNoLongerValid = error is WebPush.WebPushException webPushError &&
+                    webPushError.StatusCode == System.Net.HttpStatusCode.Gone &&
+                    error.Message.Contains("Subscription no longer valid", StringComparison.OrdinalIgnoreCase);
 
                 using (logger.BeginKeyValueScope("recipient", recipient))
                 using (logger.BeginKeyValueScope("publicKey", details.PublicKey))
