@@ -159,6 +159,13 @@
         dismissDonationBanner() {
             window.localStorage.setItem(HeaderController.donationBannerLocalStorageKey, "true");
         }
+
+        skipToNearEnd(): void {
+            const duration = this.audioPlayer.duration.getValue();
+            if (!isNaN(duration) && duration > 0) {
+                this.audioPlayer.skipToNearEndZanz();
+            }
+        }
     }
 
     App.controller("HeaderController", HeaderController);

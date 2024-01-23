@@ -43,6 +43,8 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
+		<key>NSAllowsArbitraryLoadsUsageDescription</key>
+		<dict/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Access to the camera allows you to take photos for your profile picture.</string>
@@ -99,6 +101,7 @@
 		<string>audio</string>
 		<string>processing</string>
 		<string>remote-notification</string>
+		<string>fetch</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -126,11 +129,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>WKAppBoundDomains</key>
-	<array>
-		<string>messianicradio.com</string>
-		<string>blog.judahgabriel.com</string>
-		<string>blog.messianicradio.com</string>
-	</array>
 </dict>
 </plist>

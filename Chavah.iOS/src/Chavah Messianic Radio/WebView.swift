@@ -8,7 +8,7 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     
     let config = WKWebViewConfiguration()
     let userContentController = WKUserContentController()
-
+    userContentController.add(WKSMH, name: "audiohandler")
     userContentController.add(WKSMH, name: "print")
     userContentController.add(WKSMH, name: "push-subscribe")
     userContentController.add(WKSMH, name: "push-permission-request")
@@ -16,8 +16,10 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     config.userContentController = userContentController
     
     if #available(iOS 14, *) {
-        config.limitsNavigationsToAppBoundDomains = true;
-        
+        config.limitsNavigationsToAppBoundDomains = true
+        config.allowsAirPlayForMediaPlayback = true
+        config.allowsPictureInPictureMediaPlayback = true
+        config.mediaTypesRequiringUserActionForPlayback = []
     }
     config.preferences.javaScriptCanOpenWindowsAutomatically = true
     config.allowsInlineMediaPlayback = true
@@ -26,22 +28,16 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     let webView = WKWebView(frame: calcWebviewFrame(webviewView: container, toolbarView: nil), configuration: config)
     setCustomCookie(webView: webView)
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    webView.isHidden = true;
+    webView.isHidden = false;
     webView.navigationDelegate = WKND;
-    webView.scrollView.bounces = false;
+    webView.scrollView.bounces = true;
     webView.allowsBackForwardNavigationGestures = true
     webView.configuration.applicationNameForUserAgent = "Safari/604.1" // See https://github.com/pwa-builder/pwabuilder-ios/issues/30
-    webView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1";    
+    webView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1 Chavah iOS WKWebView";
     webView.scrollView.contentInsetAdjustmentBehavior = .never
     webView.addObserver(NSO, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: NSKeyValueObservingOptions.new, context: nil)
     
     return webView
-}
-
-func setAppStoreAsReferrer(contentController: WKUserContentController) {
-    let scriptSource = "document.referrer = `app-info://platform/ios-store`;"
-    let script = WKUserScript(source: scriptSource, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-    contentController.addUserScript(script);
 }
 
 func setCustomCookie(webView: WKWebView) {

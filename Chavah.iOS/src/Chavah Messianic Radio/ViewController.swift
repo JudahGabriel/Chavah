@@ -1,9 +1,11 @@
 import UIKit
 import WebKit
+import AVFoundation
 
 var webView: WKWebView! = nil
+var audioPlayer = AudioPlayer() // Chavah uses native iOS audio in the iOS app to get around Apple's continual breaking of HTML5 audio, most recently twitter.com/JudahGabriel/status/1748246465863205110
 
-class ViewController: UIViewController, WKNavigationDelegate {
+class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegate {
 
     @IBOutlet weak var loadingView: UIView!
     @IBOutlet weak var progressView: UIProgressView!
@@ -29,10 +31,18 @@ class ViewController: UIViewController, WKNavigationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        initAudioPlayer()
         initWebView()
         initToolbarView()
         loadRootUrl()
-                
+        
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+             debugPrint(error)
+        }
+        
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification , object: nil)
     }
     
@@ -52,6 +62,34 @@ class ViewController: UIViewController, WKNavigationDelegate {
                 self.overrideUIStyle()
             }
         }
+    }
+    
+    func initAudioPlayer() {
+        // will call dispatchEventToWeb func.
+        ChavahMessianicRadio.audioPlayer.eventTarget = self
+    }
+    
+    // This is where we talk to the JS.
+    // We dispatch events onto the window object indicating things like current track position.
+    // To see the inverse, web JS talking to Swift, see WKSwiftMessageHandler in this file.
+    func dispatchEventToWeb(eventName: String) {
+        let player = ChavahMessianicRadio.audioPlayer
+        
+        // Change the name of the event from X to iosaudioX. "timeupdate" becomes "iosaudiotimeupdate"
+        let webEventName = "iosaudio\(eventName)"
+        
+        var eventJs = "";
+        switch (eventName) {
+        case "error":
+            eventJs = "new ErrorEvent('\(webEventName)', { message: '\(player.error?.localizedDescription ?? "")' })"
+        case "timeupdate":
+            eventJs = "new CustomEvent('\(webEventName)', { detail: { currentTime: \(player.currentTime as Double), duration: \(player.duration as Double) } })"
+        default:
+            eventJs = "new CustomEvent('\(webEventName)', { detail: null })"
+        }
+
+        let js = "window.dispatchEvent(\(eventJs))"
+        ChavahMessianicRadio.webView.evaluateJavaScript(js)
     }
     
     func createToolbarView() -> UIToolbar{
@@ -194,7 +232,10 @@ class ViewController: UIViewController, WKNavigationDelegate {
     }
 }
 
+// This is where the web talks to us in Swift land.
+// It sends us messages like "pause the song", "set the audio src to https://...", etc.
 extension ViewController: WKScriptMessageHandler {
+    
   func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "print" {
             printView(webView: ChavahMessianicRadio.webView)
@@ -208,6 +249,42 @@ extension ViewController: WKScriptMessageHandler {
         if message.name == "push-permission-state" {
             handlePushState()
         }
+      
+      // This is called when the web app calls into Swift.
+      if message.name == "audiohandler" {
+          let player = ChavahMessianicRadio.audioPlayer
+          if let messageBody = message.body as? [String: Any], let action = messageBody["action"] as? String {
+              // Supported actions: 
+              // - src
+              // - currentTime
+              // - volume
+              // - pause
+              // - play
+              // - mediasession
+              if action == "src", let src = messageBody["details"] as? String {
+                  player.src = URL(string: src)
+              } else if action == "currentTime", let currentTime = messageBody["details"] as? Double {
+                  player.currentTime = currentTime
+              } else if action == "volume", let volume = messageBody["details"] as? Float {
+                  player.volume = volume
+              } else if action == "pause" {
+                  player.pause()
+              } else if action == "play" {
+                  player.play()
+              } else if action == "mediasession", let mediaSessionJson = messageBody["details"] as? String {
+                  do {
+                      let mediaSession = try JSONDecoder().decode(
+                        MediaSession.self,
+                        from: mediaSessionJson.data(using: .utf8)!)
+                      player.setMediaSession(mediaSession: mediaSession);
+                  } catch {
+                      print("Error decoding and setting media session", error.localizedDescription)
+                  }
+              }
+          }
+          
+          //ChavahMessianicRadio.webView.evaluateJavaScript("document.querySelector('audio').src = 'https://judahtemp.b-cdn.net/ios-webkit-audio-bug/1.mp3'; document.querySelector('audio').currentTime = 0;  document.querySelector('audio').play();  document.querySelector('.title').innerText = 'foo!';")
+      }
   }
 }
 

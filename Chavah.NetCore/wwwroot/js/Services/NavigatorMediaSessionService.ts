@@ -8,10 +8,13 @@
         private mediaSession: any | null;
 
         static $inject = [
-            "audioPlayer"
+            "audioPlayer",
+            "iosAudioPlayer"
         ];
 
-        constructor(private readonly audioPlayer: AudioPlayerService) {
+        constructor(
+            private readonly audioPlayer: AudioPlayerService,
+            private readonly iosAudioPlayer: IOSAudioPlayer) {
 
         }
 
@@ -107,6 +110,11 @@
                     this.mediaSession.metadata = new window["MediaMetadata"](metadata);
                 } catch (error) {
                     console.log("unable to set mediaSession metadata", error);
+                }
+
+                // If we're in the iOS app, we may be using native audio. In that case, tell the iOS app about the new artwork.
+                if (this.iosAudioPlayer.isIOSWebApp && song) {
+                    this.iosAudioPlayer.setMediaSession(metadata.album, metadata.artist, metadata.title, metadata.artwork.length > 0 ? metadata.artwork[0].src : "");
                 }
             }
         }

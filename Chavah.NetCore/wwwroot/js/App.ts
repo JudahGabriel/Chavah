@@ -117,7 +117,6 @@
         "appNav",
         "adminScripts",
         "navigatorMediaSession",
-        "iOSMediaSession",
         "$rootScope",
         "$location",
         "$window",
@@ -128,7 +127,6 @@
             appNav: AppNavService,
             adminScripts: AdminScriptsService,
             navigatorMediaSession: NavigatorMediaSessionService,
-            iOSMediaSession: IOSMediaSessionService,
             $rootScope: ng.IRootScopeService,
             $location: ng.ILocationService,
             $window: ng.IWindowService,
@@ -138,8 +136,7 @@
             // See http://stackoverflow.com/a/41825004/536
             $window["Promise"] = $q;
 
-            // Integrate with the host platform's audio services, e.g. lockscreen media buttons, "currently playing" media info panels, etc.
-            iOSMediaSession.install(); // iOS
+            // Integrate with the host platform's audio services, e.g. lock screen media buttons, "currently playing" media info panels, etc.
             navigatorMediaSession.install(); // Android, emerging web standard
 
             // Attach the view-busted template paths to the root scope so that we can bind to the names in our views.

@@ -4,7 +4,8 @@ namespace BitShuva.Chavah {
 
         static $inject = [
             "songApi",
-            "homeViewModel"
+            "homeViewModel",
+            "iosAudioPlayer"
         ];
 
         readonly status = new Rx.BehaviorSubject(AudioStatus.Paused);
@@ -16,14 +17,15 @@ namespace BitShuva.Chavah {
         readonly playedTimePercentage = new Rx.BehaviorSubject<number>(0);
         readonly duration = new Rx.BehaviorSubject<number>(0);
         playedSongs: Song[] = [];
-        private audio: HTMLAudioElement;
+        private audio: PlatformAudio;
         readonly error = new Rx.Subject<IAudioErrorInfo>();
 
         private lastPlayedTime = 0;
 
         constructor(
             private readonly songApi: SongApiService,
-            private readonly homeViewModel: Server.HomeViewModel) {
+            private readonly homeViewModel: Server.HomeViewModel,
+            private readonly iosAudioPlayer: IOSAudioPlayer) {
 
             // Listen for when the song changes and update the document title.
             this.song
@@ -31,25 +33,21 @@ namespace BitShuva.Chavah {
         }
 
         initialize(audio: HTMLAudioElement) {
-            let supportsMp3Audio = Modernizr.audio.mp3;
-            if (supportsMp3Audio) {
-                this.audio = audio;
+            this.audio = audio;
 
-                // this.audio.addEventListener("abort", (args) => this.aborted(args));
-                this.audio.addEventListener("ended", () => this.ended());
-                this.audio.addEventListener("error", args => this.erred(args));
-                this.audio.addEventListener("pause", () => this.status.onNext(AudioStatus.Paused));
-                this.audio.addEventListener("play", () => this.status.onNext(AudioStatus.Playing));
-                this.audio.addEventListener("playing", () => this.status.onNext(AudioStatus.Playing));
-                this.audio.addEventListener("waiting", () => this.status.onNext(AudioStatus.Buffering));
-                this.audio.addEventListener("stalled", args => this.stalled(args));
-                this.audio.addEventListener("timeupdate", args => this.playbackPositionChanged(args));
-            } else {
-                // UPGRADE TODO
-                // require(["viewmodels/upgradeBrowserDialog"],(UpgradeBrowserDialog) => {
-                //    App.showDialog(new UpgradeBrowserDialog());
-                // });
+            // On the Chavah iOS app, we won't actually use HTML5 audio. See IOSAudioPlayer for details why.
+            if (this.iosAudioPlayer.isIOSWebApp) {
+                this.audio = new IOSAudioPlayer();
             }
+
+            this.audio.addEventListener("ended", () => this.ended());
+            this.audio.addEventListener("error", args => this.erred(args));
+            this.audio.addEventListener("pause", () => this.status.onNext(AudioStatus.Paused));
+            this.audio.addEventListener("play", () => this.status.onNext(AudioStatus.Playing));
+            this.audio.addEventListener("playing", () => this.status.onNext(AudioStatus.Playing));
+            this.audio.addEventListener("waiting", () => this.status.onNext(AudioStatus.Buffering));
+            this.audio.addEventListener("stalled", args => this.stalled(args));
+            this.audio.addEventListener("timeupdate", args => this.playbackPositionChanged(args));
         }
 
         playNewSong(song: Song) {
@@ -198,13 +196,27 @@ namespace BitShuva.Chavah {
             }
         }
 
+        get volume(): number {
+            if (this.audio) {
+                return this.audio.volume;
+            }
+
+            return 1;
+        }
+
         /**
          * Sets the volume level.
          * @param level Should be between 0 and 1, where 1 is full volume, and 0 is muted.
          */
-        setVolume(level: number) {
+        set volume(level: number) {
             if (this.audio) {
-                this.audio.volume = 0;
+                this.audio.volume = level;
+            }
+        }
+
+        skipToNearEndZanz() {
+            if (this.audio && this.audio.duration) {
+                this.audio.currentTime = this.audio.duration - 10;
             }
         }
 
@@ -212,11 +224,6 @@ namespace BitShuva.Chavah {
             if (this.audio && this.audio.duration) {
                 this.audio.currentTime = this.audio.duration - 1;
             }
-        }
-
-        private aborted(args: any) {
-            this.status.onNext(AudioStatus.Aborted);
-            console.log("Audio aborted", this.audio.currentSrc, args);
         }
 
         private erred(args: ErrorEvent) {
@@ -244,7 +251,7 @@ namespace BitShuva.Chavah {
 
         private stalled(args: Event) {
             this.status.onNext(AudioStatus.Stalled);            
-            console.warn("Audio stalled, unable to stream in audio data.", this.audio.currentSrc, args);
+            console.warn("Audio stalled, unable to stream in audio data.", this.audio.src, args);
         }
 
         private playbackPositionChanged(args: any) {

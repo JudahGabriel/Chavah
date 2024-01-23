@@ -127,21 +127,15 @@
         }
 
         get volume() {
-            if (this.audio) {
-                return this.audio.volume;
-            }
-
-            return 1;
+            return this.audioPlayer.volume;
         }
 
         set volume(val: number) {
             if (isNaN(val)) {
                 val = 1.0;
             }
-            if (this.audio) {
-                this.audio.volume = val;
-            }
 
+            this.audioPlayer.volume = val;
             this.volumeVal.onNext(val);
         }
 
