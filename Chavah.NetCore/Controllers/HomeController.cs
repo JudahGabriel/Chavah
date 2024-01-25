@@ -116,6 +116,14 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
+        [Route("giveonce")]
+        [Route("give-once")]
+        public IActionResult GiveOnce()
+        {
+            return Redirect("https://messianicradio.com/#/donate");
+        }
+
+        [HttpGet]
         public IActionResult ActivityFeed()
         {
             return RedirectToActionPermanent("ActivityFeed", "Activities");

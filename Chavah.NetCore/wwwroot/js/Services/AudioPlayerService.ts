@@ -214,12 +214,6 @@ namespace BitShuva.Chavah {
             }
         }
 
-        skipToNearEndZanz() {
-            if (this.audio && this.audio.duration) {
-                this.audio.currentTime = this.audio.duration - 10;
-            }
-        }
-
         skipToEnd() {
             if (this.audio && this.audio.duration) {
                 this.audio.currentTime = this.audio.duration - 1;
