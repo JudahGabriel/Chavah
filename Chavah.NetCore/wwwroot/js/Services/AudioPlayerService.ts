@@ -37,7 +37,7 @@ namespace BitShuva.Chavah {
 
             // On the Chavah iOS app, we won't actually use HTML5 audio. See IOSAudioPlayer for details why.
             if (this.iosAudioPlayer.isIOSWebApp) {
-                this.audio = new IOSAudioPlayer();
+                this.audio = this.iosAudioPlayer;
             }
 
             this.audio.addEventListener("ended", () => this.ended());

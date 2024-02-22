@@ -101,6 +101,7 @@
                 .when("/admin/songs", { redirectTo: "/admin" })
                 .when("/admin/donations", createRoute("/AdminDonations.html", RouteAccess.Admin))
                 .when("/admin/users", createRoute("/AdminUsers.html", RouteAccess.Admin))
+                .when("/admin/ioslogs", createRoute("/AdminIOSLogs.html", RouteAccess.Admin))
 
                 .otherwise({
                     redirectTo: "/nowplaying",

@@ -12,14 +12,17 @@
         <li role="presentation" ng-class="{ active: adminPage === 'users' }">
             <a href="#/admin/users">Users</a>
         </li>
-        <li ng-class="{ active: adminPage === 'songedits' }">
+        <li role="presentation" ng-class="{ active: adminPage === 'songedits' }">
             <a href="#/admin/songedits">Pending song edits</a>
         </li>
-        <li ng-class="{ active: adminPage === 'tags' }">
+        <li role="presentation"  ng-class="{ active: adminPage === 'tags' }">
             <a href="#/admin/tags">Tags</a>
         </li>
-        <li ng-class="{ active: adminPage === 'logs' }">
+        <li role="presentation" ng-class="{ active: adminPage === 'logs' }">
             <a href="#/admin/logs">Logs</a>
+        </li>
+        <li role="presentation" ng-class="{ active: adminPage === 'ioslogs' }">
+            <a href="#/admin/ioslogs">iOS Logs</a>
         </li>
     </ul>
 </div>
