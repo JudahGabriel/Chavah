@@ -76,8 +76,13 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpGet]
-        public async Task<RedirectResult> GetAlbumArtBySongId(string songId)
+        public async Task<IActionResult> GetAlbumArtBySongId(string songId)
         {
+            if (string.IsNullOrWhiteSpace(songId))
+            {
+                return BadRequest("songId must not be null or empty");
+            }
+
             var song = await DbSession.LoadRequiredAsync<Song>(songId);
             return Redirect(song.AlbumArtUri.ToString());
         }

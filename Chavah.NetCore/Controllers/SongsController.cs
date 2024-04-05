@@ -332,6 +332,18 @@ namespace BitShuva.Chavah.Controllers
             return songDto;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetMp3ById(string songId)
+        {
+            var song = await GetById(songId);
+            if (song == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(song.Uri);
+        }
+
         [HttpPost]
         public async Task SongCompleted(string songId)
         {

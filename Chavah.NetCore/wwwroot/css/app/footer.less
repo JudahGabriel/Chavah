@@ -102,7 +102,7 @@
     @thumb-border-width: 1px;
     @thumb-border-color: white;
 
-    @track-width: 100%;
+    @track-width: 15px;
     @track-height: 10px;
     @track-shadow-size: 2px;
     @track-shadow-blur: 2px;
@@ -136,9 +136,9 @@
 
     input[type=range] {
         position: absolute;
-        top: -75px;
-        right: -35px;
-        transform: rotateZ(-90deg);
+        top: -135px;
+        right: 21px;
+        writing-mode: vertical-lr;
         -webkit-appearance: none; // override the default appearance
         margin: @thumb-height/2 0;
         width: @track-width;
@@ -188,7 +188,7 @@
         background-color: @brand-background;
         border-radius: 50px;
         box-shadow: 0 0 5px 1px gray;
-        transition: all ease-in-out .5s;
+        transition: transform ease-in-out .5s;
         opacity: 0.5;
 
         img {
