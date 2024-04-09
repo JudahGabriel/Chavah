@@ -341,7 +341,7 @@ namespace BitShuva.Chavah.Controllers
                 return NotFound();
             }
 
-            return Ok(song.Uri);
+            return Redirect(song.Uri.ToString());
         }
 
         [HttpPost]
