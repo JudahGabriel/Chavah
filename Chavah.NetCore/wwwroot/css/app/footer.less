@@ -138,11 +138,12 @@
         position: absolute;
         top: -135px;
         right: 21px;
-        writing-mode: vertical-lr;
+        writing-mode: vertical-rl;
         -webkit-appearance: none; // override the default appearance
         margin: @thumb-height/2 0;
         width: @track-width;
         background-color: transparent;
+        transform: rotate(180deg);
 
         &:focus {
             outline: none;
