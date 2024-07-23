@@ -31,6 +31,15 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<CommentThread> Get(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+            if (!id.StartsWith("CommentThreads/", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("ID must start with CommentThreads/", nameof(id));
+            }
+
             var thread = await DbSession.LoadOptionalAsync<CommentThread>(id);
 
             // No comment thread created for the song? No worries; create a new empty one.

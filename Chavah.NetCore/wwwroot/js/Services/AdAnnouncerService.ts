@@ -32,11 +32,7 @@
         }
 
         playAdAnnouncement() {
-            // Sukkot 2023 ad: play it every even hour;
-            const announcementNumbers = [1, 2, 3, 4, 5];
-            const fileName = "ad" + announcementNumbers[Math.floor(Math.random() * announcementNumbers.length)] + "x.mp3";
-
-            const songUrl = `${this.homeViewModel.soundEffects}/${fileName}`;
+            const songUrl = "/api/cdn/getAdAnnouncement";
             this.audioPlayer.playNewUri(songUrl);
         }
     }

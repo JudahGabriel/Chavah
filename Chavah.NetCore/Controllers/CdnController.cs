@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BitShuva.Chavah.Common;
@@ -74,6 +75,29 @@ namespace BitShuva.Chavah.Controllers
             var directory = new Uri(cdnSettings.Value.HttpPath).Combine(cdnSettings.Value.SoundEffects);
             var idAnnouncement = new Random().Next(1, 12);
             return Redirect(directory.Combine($"StationId{idAnnouncement}.mp3").AbsoluteUri);
+        }
+
+        /// <summary>
+        /// Redirects to the MP3 audio file of a random Chavah ad.
+        /// </summary>
+        /// <returns></returns>
+        public RedirectResult GetAdAnnouncement()
+        {
+            var sukkotAd = "sukkot2024.mp3";
+            var ads = new[]
+            {
+                sukkotAd,
+                "ad1x.mp3",
+                "ad2x.mp3",
+                "ad3x.mp3",
+                "ad4x.mp3",
+                "ad5x.mp3",
+                "ad6x.mp3",
+            };
+            // Sukkot 2024 ad: play it every even hour.
+            var fileName = DateTime.UtcNow.Hour % 2 == 0 ? sukkotAd : ads.RandomElement()!;
+            var directory = new Uri(cdnSettings.Value.HttpPath).Combine(cdnSettings.Value.SoundEffects);
+            return Redirect(directory.Combine(fileName).AbsoluteUri);
         }
 
         /// <summary>

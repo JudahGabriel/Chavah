@@ -346,7 +346,7 @@
             // Make sure we should show the error.
             const currentSong = this.audioPlayer.song.getValue();
             const isErrorForCurrentSong = !currentSong || !errorInfo.songId || currentSong.id === errorInfo.songId;
-            const isErrorForAnnouncement = errorInfo.mp3Url && errorInfo.mp3Url.includes("soundEffects");
+            const isErrorForAnnouncement = errorInfo.mp3Url && (errorInfo.mp3Url.toLowerCase().includes("soundeffects") || errorInfo.mp3Url.toLowerCase().includes("/api/cdn/"));
             const isSongPlaying = this.audioPlayer.status.getValue() === AudioStatus.Playing;
             const shouldShowError = isErrorForCurrentSong && !isSongPlaying && !isErrorForAnnouncement;
             if (shouldShowError) {

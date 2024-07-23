@@ -614,6 +614,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:BitShuva.Chavah.Controllers.CdnController.GetAdAnnouncement">
+            <summary>
+            Redirects to the MP3 audio file of a random Chavah ad.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:BitShuva.Chavah.Controllers.CdnController.GetUserProfile(System.String)">
             <summary>
             Redirects to the profile picture of the user with the specified ID. If it doesn't exist, 
