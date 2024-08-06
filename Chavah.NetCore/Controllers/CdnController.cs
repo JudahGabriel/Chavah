@@ -94,8 +94,30 @@ namespace BitShuva.Chavah.Controllers
                 "ad5x.mp3",
                 "ad6x.mp3",
             };
+
             // Sukkot 2024 ad: play it every even hour.
             var fileName = DateTime.UtcNow.Hour % 2 == 0 ? sukkotAd : ads.RandomElement()!;
+            var directory = new Uri(cdnSettings.Value.HttpPath).Combine(cdnSettings.Value.SoundEffects);
+            return Redirect(directory.Combine(fileName).AbsoluteUri);
+        }
+
+        /// <summary>
+        /// Redirects to the MP3 audio file of a random "next up is a new song" announcement.
+        /// </summary>
+        /// <returns></returns>
+        public RedirectResult GetNewMusicAnnouncement()
+        {
+            var newMusicAnnouncements = new[]
+            {
+                "new-music-1.mp3",
+                "new-music-2.mp3",
+                "new-music-3.mp3",
+                "new-music-4.mp3",
+                "new-music-5.mp3",
+                "new-music-6.mp3",
+            };
+
+            var fileName = newMusicAnnouncements.RandomElement()!;
             var directory = new Uri(cdnSettings.Value.HttpPath).Combine(cdnSettings.Value.SoundEffects);
             return Redirect(directory.Combine(fileName).AbsoluteUri);
         }

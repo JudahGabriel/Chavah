@@ -15,9 +15,9 @@ namespace BitShuva.Chavah.Models
         private const double VeryPoorRankingMultipler = 0.1;
         private const double PoorRankingMultipler = 0.5;
         private const double NormalRankingMultiplier = 1;
-        private const double GoodRankingMultipler = 2;
-        private const double GreatRankingMultipler = 3;
-        private const double BestRankingMultipler = 4;
+        private const double GoodRankingMultipler = 1.5;
+        private const double GreatRankingMultipler = 2;
+        private const double BestRankingMultipler = 3;
 
         private const double SongDislikedMultiplier = 0.1;
         private const double SongLikedMultipler = 2;
@@ -37,8 +37,8 @@ namespace BitShuva.Chavah.Models
         private const double TagVeryDislikedMultiplier = 0.1;
         private const double TagDislikedMultiplier = 0.5;
         private const double TagLikedMultiplier = 1.1;
-        private const double TagVeryLikedMultiplier = 1.5;
-        private const double TagFavoriteMultiplier = 2;
+        private const double TagVeryLikedMultiplier = 1.2;
+        private const double TagFavoriteMultiplier = 1.5;
 
         private const double AgeMultiplier4 = 4;
         private const double AgeMultiplier3 = 3;

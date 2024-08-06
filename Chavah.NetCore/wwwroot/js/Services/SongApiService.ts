@@ -175,6 +175,10 @@
             return this.httpApi.query("/api/songs/getRandomNewSongs", args, SongApiService.songListConverter);
         }
 
+        getRandomNewSongForUser(): ng.IPromise<string | null> {
+            return this.httpApi.query("/api/songs/GetRandomNewSongForUser", null);
+        }
+
         // tslint:disable-next-line:member-ordering
         public static songPagedListConverter(dto: Server.PagedList<Server.Song>): Server.PagedList<Song> {
             return {

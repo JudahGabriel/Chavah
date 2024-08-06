@@ -23,10 +23,6 @@
             private songRequestApi: SongRequestApiService,
             accountApi: AccountService) {
 
-            // Clear out the old songs batch. The old songs batch use the now-obsolete bitshuvafiles CDN.
-            // Remove this code by 2020.
-            window.localStorage.removeItem("songsbatch");
-
             // Listen for when we sign in. When that happens, we want to refresh our song batch.
             // Refreshing the batch is needed to update the song like statuses, etc. of the songs in the batch.
             accountApi.signedInState

@@ -647,6 +647,45 @@ namespace BitShuva.Chavah.Controllers
         }
 
         /// <summary>
+        /// Similar to GetRandomNewSongs, but this returns the ID of just a single song that isn't thumbed-down by the user.
+        /// This is used once an hour to play a new song for the current user.
+        /// </summary>
+        /// <returns>The ID of a new song, or null if none is available.</returns>
+        [HttpGet]
+        public async Task<string?> GetRandomNewSongForUser()
+        {
+            var user = await GetUser();
+            var thirtyDaysAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30));
+            var newSongIds = await DbSession.Query<Song, Songs_GeneralQuery>()
+                .Customize(x => x.RandomOrdering())
+                .Where(x => x.UploadDate > thirtyDaysAgo)
+                .Select(s => s.Id)
+                .Take(3)
+                .ToListAsync();
+
+            if (user == null)
+            {
+                // No user? Just return the first new song.
+                return newSongIds.FirstOrDefault();
+            }
+            else // We have a logged in user. Return a new song that he hasn't disliked.
+            {
+                var likeIdsForNewSongs = newSongIds.Select(songId => $"Likes/AppUsers/{user.Id}/{songId}");
+                var likesForNewSongs = await DbSession.LoadAsync<Like>(likeIdsForNewSongs);
+                var songIdsWithLikeIds = newSongIds.Zip(likeIdsForNewSongs);
+                foreach (var (songId, likeId) in songIdsWithLikeIds)
+                {
+                    if (!likesForNewSongs.TryGetValue(likeId, out var like) || like == null || like.Status != LikeStatus.Dislike)
+                    {
+                        return songId;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Finds a song by name and artist. Used by MessianicChords.com to look up existing songs in Chavah.
         /// </summary>
         /// <param name="name">The song name.</param>

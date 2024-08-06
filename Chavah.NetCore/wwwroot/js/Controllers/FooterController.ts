@@ -20,6 +20,7 @@
             "songApi",
             "stationIdentifier",
             "adAnnouncer",
+            "newMusicAnnouncer",
             "appNav",
             "$scope"
         ];
@@ -34,6 +35,7 @@
             private songApi: SongApiService,
             private stationIdentifier: StationIdentifierService,
             private adAnnouncer: AdAnnouncerService,
+            private newMusicAnnouncer: NewMusicAnnouncerService,
             private appNav: AppNavService,
             private $scope: ng.IScope) {
 
@@ -283,6 +285,7 @@
             this.audioPlayer.pause();
 
             // If we've got a song request, play that.
+            const pendingNewMusicAnnouncement = this.newMusicAnnouncer.getPendingNewMusicAnnouncement();
             if (this.songRequestApi.hasPendingRequest()) {
                 this.songRequestApi.playRequest();
             } else if (this.stationIdentifier.hasPendingAnnouncement()) {
@@ -290,7 +293,10 @@
                 this.stationIdentifier.playStationIdAnnouncement();
             } else if (this.adAnnouncer.hasPendingAnnouncement()) {
                 this.adAnnouncer.playAdAnnouncement();
-            }else {
+            } else if (pendingNewMusicAnnouncement) {
+                this.newMusicAnnouncer.play(pendingNewMusicAnnouncement);
+            }
+            else {
                 this.songBatch.playNext();
             }
         }

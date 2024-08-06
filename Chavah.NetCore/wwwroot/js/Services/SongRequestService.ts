@@ -28,10 +28,6 @@
                 .distinctUntilChanged()
                 .where(i => i === true)
                 .subscribe(() => this.userSignedIn());
-
-            // Deprecated: the album art cache is no more. Remove it from the local store.
-            // Remove this code after 6/1/2019
-            localStorage.removeItem("album-art-cache");
         }
 
         hasPendingRequest() {
@@ -92,10 +88,6 @@
             };
             return this.httpApi.query("/api/songRequests/getRandomRecentlyRequestedSongs", args, SongApiService.songListConverter);
         }
-
-        //removePendingSongRequest(songId: string) {
-        //    this.pendingSongRequestIds = this.pendingSongRequestIds.filter(id => id !== songId);
-        //}
 
         private fetchPendingSongRequests() {
             // If we checked in the last 30 seconds, don't check again.
