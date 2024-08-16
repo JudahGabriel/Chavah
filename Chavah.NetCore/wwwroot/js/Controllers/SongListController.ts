@@ -43,7 +43,7 @@
             // Clone the song so that we assign a new clientId for tracking separately in ng repeaters.
             const clone = new Song(song);
             clone.setSolePickReason(SongPick.YouRequestedSong);
-            this.audioPlayer.playNewSong(clone);
+            this.audioPlayer.playSongById(clone.id); // We play song by ID so that we fetch the user's like status for it.
         }
 
         private fetchSongs() {

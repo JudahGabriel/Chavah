@@ -89,14 +89,14 @@ namespace BitShuva.Chavah.Controllers
             // Fix up the tag name in each song.
             const string patchScript = @"
                 if (this.Tags && this.Tags.length) {
-                    var oldTagIndex = this.Tags.indexOf(oldTag);
+                    var oldTagIndex = this.Tags.indexOf($oldTag);
                     if (oldTagIndex >= 0)
                     {
                         this.Tags.splice(oldTagIndex, 1);
 
-                        var newTagIndex = this.Tags.indexOf(newTag);
+                        var newTagIndex = this.Tags.indexOf($newTag);
                         if (newTagIndex === -1) {
-                            this.Tags.splice(oldTagIndex, 0, newTag);
+                            this.Tags.splice(oldTagIndex, 0, $newTag);
                         }
                     }
                 }";

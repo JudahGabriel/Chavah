@@ -225,9 +225,9 @@ namespace BitShuva.Chavah.Controllers
         {
             var jsonNotification = JsonConvert.SerializeObject(notification);
             var patchScript = @"
-                var existingNotification = this.Notifications.find(n => n.Url === url);
+                var existingNotification = this.Notifications.find(n => n.Url === $url);
                 if (!existingNotification) {
-                    this.Notifications.unshift(JSON.parse(post));
+                    this.Notifications.unshift(JSON.parse($post));
                     if (this.Notifications.length > 10) {
                         this.Notifications.length = 10;
                     }

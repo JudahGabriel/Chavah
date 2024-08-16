@@ -358,25 +358,35 @@ namespace BitShuva.Chavah.Common
             rqlPatch.AppendLine("update {");
 
             // For each variable in the dictionary, declare the variable in the RQL script.
-            if (variables != null)
-            {
-                variables
-                    .Select(kv =>
-                    {
-                        var variableValue = kv.Value?.ToString();
-                        var escapedVariableValue = variableValue?.Replace("\"", "\\\""); // replace any quotes with escaped quotes. 'Hi I am a "JS" string' -> 'Hi I am a \"JS\" string'
-                        var escapedWithQuotes = kv.Value is string ? "\"" + escapedVariableValue + "\"" : escapedVariableValue; // string? Surround the value with quotes. foo -> "foo"
-                        return $"var {kv.Key} = {escapedWithQuotes};"; // The actual variable declaration, e.g. var foo = "123";
-                    })
-                    .ForEach(v => rqlPatch.AppendLine(v));
-            }
+            //if (variables != null)
+            //{
+            //    variables
+            //        .Select(kv =>
+            //        {
+            //            var variableValue = kv.Value?.ToString();
+            //            var escapedVariableValue = variableValue?.Replace("\"", "\\\""); // replace any quotes with escaped quotes. 'Hi I am a "JS" string' -> 'Hi I am a \"JS\" string'
+            //            var escapedWithQuotes = kv.Value is string ? "\"" + escapedVariableValue + "\"" : escapedVariableValue; // string? Surround the value with quotes. foo -> "foo"
+            //            return $"var {kv.Key} = {escapedWithQuotes};"; // The actual variable declaration, e.g. var foo = "123";
+            //        })
+            //        .ForEach(v => rqlPatch.AppendLine(v));
+            //}
 
             rqlPatch.AppendLine(jsPatchScript);
             rqlPatch.Append('}');
 
+            var queryParams = new Raven.Client.Parameters();
+            if (variables != null)
+            {
+                foreach (var queryVariable in variables)
+                {
+                    queryParams.Add(queryVariable.Key, queryVariable.Value);
+                }
+            }
+
             var patch = new PatchByQueryOperation(new Raven.Client.Documents.Queries.IndexQuery
             {
-                Query = rqlPatch.ToString()
+                Query = rqlPatch.ToString(),
+                QueryParameters = queryParams
             });
             
             return db.Operations.Send(patch);

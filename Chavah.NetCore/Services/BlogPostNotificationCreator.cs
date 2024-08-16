@@ -36,7 +36,7 @@ namespace BitShuva.Chavah.Services
             IPushNotificationSender pushNotifications,
             IHttpClientFactory httpClientFactory,
             ILogger<BlogPostNotificationCreator> logger)
-            : base(TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(30), logger)
+            : base(TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(30), logger)
         {
             this.docStore = docStore;
             this.pushNotifications = pushNotifications;
@@ -95,9 +95,9 @@ namespace BitShuva.Chavah.Services
             // Serialize it
             var jsonNotification = JsonConvert.SerializeObject(notification);
             var patchScript = @"
-                var existingNotification = this.Notifications.find(n => n.Url === url);
+                var existingNotification = this.Notifications.find(n => n.Url === $url);
                 if (!existingNotification) {
-                    this.Notifications.unshift(JSON.parse(post));
+                    this.Notifications.unshift(JSON.parse($post));
                     if (this.Notifications.length > 10) {
                         this.Notifications.length = 10;
                     }

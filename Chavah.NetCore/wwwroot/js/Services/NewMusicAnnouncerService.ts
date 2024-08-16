@@ -18,6 +18,10 @@ namespace BitShuva.Chavah {
         constructor(
             private readonly audioPlayer: AudioPlayerService,
             private readonly songApi: SongApiService) {
+
+            // Move the last new music announcement to yesterday.
+            // That way we'll get a new music announcement on our desired timeframe, even if we just started listening.
+            this.lastNewMusicAnnouncement.setDate(this.lastNewMusicAnnouncement.getDate() - 1); 
         }
 
         getPendingNewMusicAnnouncement(): NewMusicAnnoucement | null {
