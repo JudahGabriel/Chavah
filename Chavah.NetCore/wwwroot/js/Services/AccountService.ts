@@ -125,6 +125,13 @@
         deleteAccount(): ng.IPromise<any> {
             return this.httpApi.post(`${this.apiUri}/deleteMyAccount`, {});
         }
+
+        migrateUserEmail(oldEmail: string, newEmail: string): ng.IPromise<unknown> {
+            return this.httpApi.post(`${this.apiUri}/migrateAccount`, {
+                oldEmail,
+                newEmail
+            });
+        }
     }
 
     App.service("accountApi", AccountService);

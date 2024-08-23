@@ -71,6 +71,11 @@ namespace BitShuva.Chavah.Models
         /// </summary>
         public string LastName { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Gets the previous email of this account that was migrated from previously.
+        /// </summary>
+        public string? MigratedOldAccountEmail { get; set; }
+
         public void AddNotification(Notification notification)
         {
             // If there's an existing notification with the same URL and title, skip it.

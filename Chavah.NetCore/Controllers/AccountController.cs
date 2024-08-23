@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -20,6 +22,7 @@ using Microsoft.Extensions.Options;
 
 using Pwned.AspNetCore;
 
+using Raven.Client.Documents.BulkInsert;
 using Raven.Client.Documents.Session;
 using Raven.StructuredLog;
 
@@ -605,6 +608,80 @@ namespace BitShuva.Chavah.Controllers
 
             await userManager.DeleteAsync(user);
             await signInManager.SignOutAsync();
+            return Ok();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task<IActionResult> MigrateAccount([FromBody]MigrateUserModel model)
+        {
+            var oldEmail = model.OldEmail.ToLowerInvariant();
+            var newEmail = model.NewEmail.ToLowerInvariant();
+            if (oldEmail == newEmail)
+            {
+                return BadRequest("Emails are identical");
+            }
+
+            var oldUser = await userManager.FindByEmailAsync(oldEmail.ToLowerInvariant());
+            if (oldUser == null)
+            {
+                return BadRequest("No existing user with old email");
+            }
+
+            var newUser = await userManager.FindByEmailAsync(newEmail.ToLowerInvariant());
+            if (newUser == null)
+            {
+                // No new user with this email address? Register them now.
+                newUser = new AppUser
+                {
+                    Id = $"AppUsers/{newEmail}",
+                    UserName = newEmail,
+                    Email = newEmail,
+                    LastSeen = DateTime.UtcNow,
+                    RegistrationDate = DateTime.UtcNow
+                };
+                var createUserResult = await userManager.CreateAsync(newUser, Guid.NewGuid().ToString());
+                if (createUserResult.Errors.Any())
+                {
+                    var errorMessages = string.Join(", ", createUserResult.Errors.Select(e => e.Description + " - error code - " + e.Code));
+                    throw new Exception($"Unable to create a new user with email address {newEmail} due to errors: {errorMessages}");
+                }
+            }
+
+            // Bring over the old user details.
+            newUser.EmailConfirmed = oldUser.EmailConfirmed;
+            newUser.LastSeen = oldUser.LastSeen;
+            newUser.FirstName = oldUser.FirstName;
+            newUser.LastName = oldUser.LastName;
+            newUser.LockoutEnabled = oldUser.LockoutEnabled;
+            newUser.MigratedOldAccountEmail = oldEmail;
+            newUser.Notifications = oldUser.Notifications;
+            newUser.PasswordHash = oldUser.PasswordHash;
+            newUser.ProfilePicUrl = oldUser.ProfilePicUrl;
+            newUser.RecentSongIds = oldUser.RecentSongIds;
+            newUser.RegistrationDate = oldUser.RegistrationDate;
+            newUser.RequiresPasswordReset = oldUser.RequiresPasswordReset;
+            newUser.SecurityStamp = oldUser.SecurityStamp;
+            newUser.TotalPlays = oldUser.TotalPlays;
+            newUser.TotalSongRequests = oldUser.TotalSongRequests;
+            newUser.Volume = oldUser.Volume;
+
+            // We're done with session changes. Save.
+            await DbSession.SaveChangesAsync();
+
+            // Finally, bring over all the user's likes. Because there can be many (potentially thousands) of likes,
+            // we do this outside the session via BulkInsert.
+            var existingLikes = await DbSession.Advanced.StreamAsync<Like>($"Likes/{oldUser.Id}");
+            using var bulkInsert = DbSession.Advanced.DocumentStore.BulkInsert();
+            while (await existingLikes.MoveNextAsync())
+            {
+                var newLike = new Like(newUser, existingLikes.Current.Document.SongId, existingLikes.Current.Document.Status)
+                {
+                    Date = existingLikes.Current.Document.Date
+                };
+                await bulkInsert.StoreAsync(newLike, newLike.Id);
+            }
+
             return Ok();
         }
 

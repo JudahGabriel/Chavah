@@ -1,6 +1,11 @@
 ﻿namespace BitShuva.Chavah {
     export class AdminUsersController {
 
+        private oldEmail = "";
+        private newEmail = "";
+        private isMigratingUser = false;
+        private showUserMigrationSuccess = false;
+        private userMigrationErrorMessage = "";
         private timeframes: ToggleOption[] = [
             { title: "Last week", value: 7 },
             { title: "Last month", value: 30 },
@@ -13,12 +18,14 @@
 
         static $inject = [
             "userApi",
-            "adminScripts"
+            "adminScripts",
+            "accountApi"
         ];
 
         constructor(
             private readonly userApi: UserApiService,
-            private readonly adminScripts: AdminScriptsService) {
+            private readonly adminScripts: AdminScriptsService,
+            private readonly accountApi: AccountService) {
         }
 
         $onInit() {
@@ -72,6 +79,24 @@
             });
             data.addRows(rows);
             return data;
+        }
+
+        migrateUserEmail(): void {
+            if (!this.isMigratingUser && this.oldEmail !== this.newEmail) {
+                this.isMigratingUser = true;
+                this.accountApi.migrateUserEmail(this.oldEmail, this.newEmail)
+                    .then(() => {
+                        this.oldEmail = "";
+                        this.newEmail = "";
+                        this.showUserMigrationSuccess = true;
+                    })
+                    .catch(error => {
+                        this.userMigrationErrorMessage = JSON.stringify(error);
+                    })
+                    .finally(() => {
+                        this.isMigratingUser = false;
+                    });
+            }
         }
     }
 

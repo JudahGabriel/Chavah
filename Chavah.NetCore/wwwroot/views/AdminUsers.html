@@ -18,8 +18,35 @@
                     <div style="width: 940px; height: 780px; background-color: white; padding: 20px;">
                         <div id="adminUsersChart"></div>
                     </div>
+
+                    <hr />
+                    <h3>User account migration</h3>
+                    <form>
+                        <div class="form-group">
+                            <label for="oldEmailInput">Old email address</label>
+                            <input type="email" class="form-control" id="oldEmailInput" ng-model="vm.oldEmail" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="newEmailInput">New email address</label>
+                            <input type="email" class="form-control" id="newEmailInput" ng-model="vm.newEmail" autocomplete="off" aria-describedby="saveResultMessage">
+                            <span id="saveResultMessage" class="help-block" ng-show="vm.showUserMigrationSuccess || vm.userMigrationErrorMessage">
+                                <span class="text-danger" ng-show="vm.userMigrationErrorMessage">Error migrating using: {{vm.userMigrationErrorMessage}}</span>
+                                <span class="text-success" ng-show="vm.showUserMigrationSuccess"><i class="fa fa-check"></i> Successfully migrated user account.</span>
+                            </span>
+                        </div>
+
+                        <button class="btn btn-primary" ng-disabled="vm.isMigratingUser || vm.oldEmail === vm.newEmail || !vm.oldEmail || !vm.newEmail" ng-click="vm.migrateUserEmail()">
+                            <span ng-hide="vm.isMigratingUser">
+                                <i class="fa fa-save"></i> Migrate
+                            </span>
+                            <span ng-show="vm.isMigratingUser">
+                                <i class="fa fa-circle-o-notch fa-spin"></i> Saving...
+                            </span>
+                        </button>
+                    </form>
                 </div>
             </div>
+
         </div>
     </div>
 </section>

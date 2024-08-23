@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualBasic;
 
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq.Indexing;
