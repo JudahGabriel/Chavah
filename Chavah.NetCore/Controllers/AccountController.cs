@@ -629,6 +629,7 @@ namespace BitShuva.Chavah.Controllers
             }
 
             var newUser = await userManager.FindByEmailAsync(newEmail.ToLowerInvariant());
+            var useOldUserPassword = newUser == null; // Use the old password only if we're making a brand new user. Otherwise, preserve their existing password.
             if (newUser == null)
             {
                 // No new user with this email address? Register them now.
@@ -656,7 +657,6 @@ namespace BitShuva.Chavah.Controllers
             newUser.LockoutEnabled = oldUser.LockoutEnabled;
             newUser.MigratedOldAccountEmail = oldEmail;
             newUser.Notifications = oldUser.Notifications;
-            newUser.PasswordHash = oldUser.PasswordHash;
             newUser.ProfilePicUrl = oldUser.ProfilePicUrl;
             newUser.RecentSongIds = oldUser.RecentSongIds;
             newUser.RegistrationDate = oldUser.RegistrationDate;
@@ -665,6 +665,10 @@ namespace BitShuva.Chavah.Controllers
             newUser.TotalPlays = oldUser.TotalPlays;
             newUser.TotalSongRequests = oldUser.TotalSongRequests;
             newUser.Volume = oldUser.Volume;
+            if (useOldUserPassword)
+            {
+                newUser.PasswordHash = oldUser.PasswordHash;
+            }
 
             // We're done with session changes. Save.
             await DbSession.SaveChangesAsync();
