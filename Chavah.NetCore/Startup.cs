@@ -141,6 +141,8 @@ namespace BitShuva.Chavah
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(o =>
             {
+                o.SlidingExpiration = true; // automatically extend cookie expiration on user activity
+                o.ExpireTimeSpan = TimeSpan.FromDays(365);
                 o.Events.OnRedirectToLogin = (context) =>
                 {
                     context.Response.StatusCode = 401;

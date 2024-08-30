@@ -5,6 +5,8 @@
         profilePicUrl: string | null = null;
         canSubscribeToPushNotifications = false;
         showDonationBanner = false;
+        highlightUnreadNotifications = false;
+        hasOpenedNotifications = false;
 
         static readonly donationBannerLocalStorageKey = "hasDismissedDonationBanner";
         static $inject = [
@@ -81,9 +83,18 @@
             this.loadPushNotificationState();
             this.updateAppBadge(this.unreadNotificationCount);
 
+            // Show the donation banner after a short while.
             if (!this.hasDismissedDonationBanner()) {
                 this.$timeout(() => this.showDonationBanner = true, 5 * 60 * 1000); // 5 minutes
             }
+
+            // Tell the user if they have unread notifications after a bit.
+            this.$timeout(() => {
+                console.log("zanz", this.notifications && this.notifications.filter(n => n.isUnread).length > 0);
+                if (this.notifications && this.notifications.filter(n => n.isUnread).length > 0) {
+                    this.highlightUnreadNotifications = true;
+                }
+            }, 10 * 1000) // 30 seconds
         }
 
         loadPushNotificationState() {
@@ -98,6 +109,8 @@
             }
 
             this.updateAppBadge(0);
+            this.highlightUnreadNotifications = false;
+            this.hasOpenedNotifications = true;
         }
 
         signOut() {
