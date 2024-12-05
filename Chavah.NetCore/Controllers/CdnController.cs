@@ -91,8 +91,7 @@ namespace BitShuva.Chavah.Controllers
                 "ad2x.mp3",
                 "ad3x.mp3",
                 "ad4x.mp3",
-                "ad5x.mp3",
-                "ad6x.mp3",
+                "ad5x.mp3"
             };
 
             // Sukkot 2024 ad: play it every even hour.
