@@ -83,10 +83,10 @@ namespace BitShuva.Chavah.Controllers
         /// <returns></returns>
         public RedirectResult GetAdAnnouncement()
         {
-            var sukkotAd = "sukkot2024.mp3";
+            // var sukkotAd = "sukkot2024.mp3";
             var ads = new[]
             {
-                sukkotAd,
+                // sukkotAd,
                 "ad1x.mp3",
                 "ad2x.mp3",
                 "ad3x.mp3",
@@ -96,9 +96,10 @@ namespace BitShuva.Chavah.Controllers
             };
 
             // Sukkot 2024 ad: play it every even hour.
-            var fileName = DateTime.UtcNow.Hour % 2 == 0 ? sukkotAd : ads.RandomElement()!;
+            //var fileName = DateTime.UtcNow.Hour % 2 == 0 ? sukkotAd : ads.RandomElement()!;
+            var fileName = ads.RandomElement();
             var directory = new Uri(cdnSettings.Value.HttpPath).Combine(cdnSettings.Value.SoundEffects);
-            return Redirect(directory.Combine(fileName).AbsoluteUri);
+            return Redirect(directory.Combine(fileName!).AbsoluteUri);
         }
 
         /// <summary>

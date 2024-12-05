@@ -90,7 +90,6 @@
 
             // Tell the user if they have unread notifications after a bit.
             this.$timeout(() => {
-                console.log("zanz", this.notifications && this.notifications.filter(n => n.isUnread).length > 0);
                 if (this.notifications && this.notifications.filter(n => n.isUnread).length > 0) {
                     this.highlightUnreadNotifications = true;
                 }

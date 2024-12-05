@@ -32,8 +32,22 @@
         }
 
         playAdAnnouncement() {
-            const songUrl = "/api/cdn/getAdAnnouncement";
-            this.audioPlayer.playNewUri(songUrl);
+            const adUrl = "/api/cdn/getAdAnnouncement";
+
+            // Check if this is a redirect. If so, find the target of the redirect and play that.
+            // If not, play the URL.
+            // Reason is, on iOS we use native audio to play the URL. It can have issues playing a redirect result.
+            window.fetch(adUrl)
+                .then(res => {
+                    const isRedirect = res.status >= 300 && res.status < 400;
+                    if (isRedirect) {
+                        const redirectUrl = res.headers.get("Location");
+                        this.audioPlayer.playNewUri(redirectUrl || adUrl);
+                    }
+                }, err => {
+                    console.warn("Unable to fetch ad announcement URL due to error", err);
+                    this.audioPlayer.playNewUri(adUrl);
+                });
         }
     }
 
