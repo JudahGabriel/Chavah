@@ -184,5 +184,42 @@ namespace BitShuva.Chavah.Controllers
 
             return Json(new[] { appLink });
         }
+
+        /// <summary>
+        /// Redirects the user to the app store based on their user agent.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("appstore")]
+        public RedirectResult AppStore()
+        {
+            var userAgent = HttpContext.Request.Headers.UserAgent.ToString();
+            if (string.IsNullOrWhiteSpace(userAgent))
+            {
+                return Redirect("https://messianicradio.com");
+            }
+
+            if (userAgent.Contains("iPhone", System.StringComparison.OrdinalIgnoreCase) || userAgent.Contains("iPad", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return Redirect("https://apps.apple.com/us/app/chavah-messianic-radio/id1361894819");
+            }
+
+            if (userAgent.Contains("Android"))
+            {
+                return Redirect("https://play.google.com/store/apps/details/Chavah+Messianic+Radio?id=com.messianicradio");
+            }
+
+            if (userAgent.Contains("Windows NT"))
+            {
+                return Redirect("https://apps.microsoft.com/detail/9nhkjb6lpptv");
+            }
+
+            if (userAgent.Contains("Silk"))
+            {
+                return Redirect("https://www.amazon.com/Bless-Israel-Chavah-Messianic-Radio/dp/B07KJVGLCS");
+            }
+
+            return Redirect("https://messianicradio.com");
+        }
     }
 }
