@@ -60,9 +60,9 @@
 
             if (!this.hasPlayedRequestAnnouncement) {
                 this.hasPlayedRequestAnnouncement = true;
-                const songRequestNumbers = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-                // tslint:disable-next-line:max-line-length
-                const songRequestName = "SongRequest" + songRequestNumbers[Math.floor(Math.random() * songRequestNumbers.length)] + ".mp3";
+                const availableSongRequestAnnouncements = 13;
+                const songRequestAnnouncementNumber = randomNumber(1, availableSongRequestAnnouncements);
+                const songRequestName = "SongRequest" + songRequestAnnouncementNumber + ".mp3";
                 const songRequestUrl = `${this.homeViewModel.soundEffects}/${songRequestName}`;
                 this.audioPlayer.playNewUri(songRequestUrl);
             } else {

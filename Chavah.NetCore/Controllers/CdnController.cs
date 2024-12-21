@@ -70,6 +70,7 @@ namespace BitShuva.Chavah.Controllers
         /// Redirects to a random station identifier MP3 on the CDN.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Not used due to issues with native iOS audio redirects. Avoid using redirects.")]
         public RedirectResult GetStationId()
         {
             var directory = new Uri(cdnSettings.Value.HttpPath).Combine(cdnSettings.Value.SoundEffects);
@@ -81,6 +82,7 @@ namespace BitShuva.Chavah.Controllers
         /// Redirects to the MP3 audio file of a random Chavah ad.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Not used due to issues with native iOS audio redirects. Avoid using redirects.")]
         public RedirectResult GetAdAnnouncement()
         {
             // var sukkotAd = "sukkot2024.mp3";
@@ -105,6 +107,7 @@ namespace BitShuva.Chavah.Controllers
         /// Redirects to the MP3 audio file of a random "next up is a new song" announcement.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Not used due to issues with native iOS audio redirects. Avoid using redirects.")]
         public RedirectResult GetNewMusicAnnouncement()
         {
             var newMusicAnnouncements = new[]

@@ -9,7 +9,8 @@ namespace BitShuva.Chavah {
 
         static $inject = [
             "audioPlayer",
-            "songApi"
+            "songApi",
+            "homeViewModel"
         ];
 
         private lastNewMusicAnnouncement = new Date();
@@ -17,7 +18,8 @@ namespace BitShuva.Chavah {
 
         constructor(
             private readonly audioPlayer: AudioPlayerService,
-            private readonly songApi: SongApiService) {
+            private readonly songApi: SongApiService,
+            private readonly homeViewModel: Server.HomeViewModel) {
 
             // Move the last new music announcement to yesterday.
             // That way we'll get a new music announcement on our desired timeframe, even if we just started listening.
@@ -48,9 +50,10 @@ namespace BitShuva.Chavah {
         play(announcement: NewMusicAnnoucement) {
             if (!announcement.announcementPlayed) {
                 // First play the announcement, "next up is new music..."
-                const songUrl = "/api/cdn/getNewMusicAnnouncement";
-                announcement.announcementPlayed = true;
-                this.audioPlayer.playNewUri(songUrl);
+                const newMusicAnnouncementCount = 6;
+                const randomNewMusicNumber = randomNumber(1, newMusicAnnouncementCount);
+                const newMusicUrl = `${this.homeViewModel.soundEffects}/new-music-${randomNewMusicNumber}.mp3`;
+                this.audioPlayer.playNewUri(newMusicUrl);
             } else {
                 // Then play the actual new song and reset our state.
                 this.audioPlayer.playSongById(announcement.songId);

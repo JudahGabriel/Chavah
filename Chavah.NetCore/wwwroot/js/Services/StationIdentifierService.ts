@@ -2,13 +2,15 @@
     export class StationIdentifierService {
 
         static $inject = [
-            "audioPlayer"
+            "audioPlayer",
+            "homeViewModel"
         ];
 
         lastAnnouncementTime = new Date();
 
         constructor(
-            private audioPlayer: AudioPlayerService) {
+            private audioPlayer: AudioPlayerService,
+            private readonly homeViewModel: Server.HomeViewModel) {
         }
 
         hasPendingAnnouncement() {
@@ -30,8 +32,10 @@
         }
 
         playStationIdAnnouncement() {
-            let songUrl = "/api/cdn/getstationid";
-            this.audioPlayer.playNewUri(songUrl);
+            const stationIdCount = 11;
+            const randomStationIdNumber = randomNumber(1, stationIdCount);
+            const stationIdUrl = `${this.homeViewModel.soundEffects}/StationId${randomStationIdNumber}.mp3`;
+            this.audioPlayer.playNewUri(stationIdUrl);
         }
     }
 

@@ -33,7 +33,9 @@
         }
 
         playAdAnnouncement() {
-            const adUrl = "/api/cdn/getAdAnnouncement";
+            const availableAds = 5;
+            const randomAdNumber = randomNumber(1, availableAds);
+            const adUrl = `${this.homeViewModel.soundEffects}/ad${randomAdNumber}x.mp3`;
             this.audioPlayer.playNewUri(adUrl);
         }
     }
