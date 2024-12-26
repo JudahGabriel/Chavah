@@ -52,7 +52,7 @@ namespace BitShuva.Chavah {
                 // First play the announcement, "next up is new music..."
                 const newMusicAnnouncementCount = 6;
                 const randomNewMusicNumber = randomNumber(1, newMusicAnnouncementCount);
-                const newMusicUrl = `${this.homeViewModel.soundEffects}/new-music-${randomNewMusicNumber}.mp3`;
+                const newMusicUrl = `${this.homeViewModel.soundEffects}/new-music-${randomNewMusicNumber}x.mp3`;
                 this.audioPlayer.playNewUri(newMusicUrl);
             } else {
                 // Then play the actual new song and reset our state.

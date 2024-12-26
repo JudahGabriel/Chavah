@@ -220,17 +220,7 @@ namespace BitShuva.Chavah {
             }
         }
 
-        private isPlayingAnnouncement(): boolean {
-            return !!this.audio.src && (this.audio.src.includes("/api/cdn") || this.audio.src.includes("/soundEffects/"));
-        }
-
         private erred(args: ErrorEvent) {
-            if (this.isPlayingAnnouncement()) {
-                // If we're playing an announcement, don't worry about it. Just play the next thing.
-                this.ended();
-                return;
-            }
-
             this.status.onNext(AudioStatus.Erred);
             const currentSong = this.song.getValue();
             const errorInfo: IAudioErrorInfo = {
