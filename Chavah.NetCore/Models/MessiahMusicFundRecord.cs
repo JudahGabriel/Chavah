@@ -20,7 +20,7 @@ namespace BitShuva.Chavah.Models
 
         /// <summary>
         /// The ID of the artist who receives this artist's donations.
-        /// For example, the artist "Ted Pearce & Cultural Xchange" will have its donations sent to the artist "Ted Pearce".
+        /// For example, the artist "Ted Pearce and Cultural Xchange" will have its donations sent to the artist "Ted Pearce".
         /// </summary>
         public string? DonationRecipientId { get; set; }
 

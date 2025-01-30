@@ -98,11 +98,6 @@ namespace BitShuva.Chavah.Models
         public string ServiceWorker { get; set; } = string.Empty;
 
         /// <summary>
-        /// The API key used for FilePickr.
-        /// </summary>
-        public string FilePickrKey { get; set; } = string.Empty;
-
-        /// <summary>
         /// Converts the view model to a JSON object.
         /// </summary>
         /// <returns></returns>
@@ -130,8 +125,7 @@ namespace BitShuva.Chavah.Models
                 User = user,
                 Song = song,
                 IsDownForMaintenance = appOptions.IsDownForMaintenance,
-                PushNotificationsPublicKey = appOptions.PushNotificationsPublicKey,
-                FilePickrKey = appOptions.FilePickrKey
+                PushNotificationsPublicKey = appOptions.PushNotificationsPublicKey
             };
 
             if (song != null)
