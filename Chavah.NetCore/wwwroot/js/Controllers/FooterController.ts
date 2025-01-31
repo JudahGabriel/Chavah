@@ -334,7 +334,9 @@
         }
 
         restoreVolumeFromSignedInUser() {
-            if (this.accountApi.currentUser) {
+            const isShowingVolumeUi = matchMedia("(min-width: 768px)").matches;
+            if (this.accountApi.currentUser && isShowingVolumeUi) {
+                // Only do this if we're not on mobile. Mobile doesn't have volume UI controls shown; they can just set their phone volume.
                 // Set the volume to whatever the user last set it.
                 // Min value is 0.1, otherwise users may wonder why they don't hear audio
                 this.volume = Math.max(0.1, this.accountApi.currentUser.volume);
