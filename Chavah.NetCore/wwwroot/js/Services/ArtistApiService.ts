@@ -55,6 +55,14 @@
             return this.httpApi.postUriEncoded("/api/artists/RecordMessiahsMusicFundMonthlyDisbursement", args);
         }
 
+        createPaypalOrder(donation: Server.DueDonation): ng.IPromise<Server.PaypalOrderConfirmation> {
+            return this.httpApi.post("/api/artists/createPaypalOrder", donation);
+        }
+
+        payPaypalOrder(donation: Server.DueDonation): ng.IPromise<Server.PaypalOrderConfirmation> {
+            return this.httpApi.post("/api/artists/payOrder", donation);
+        }
+
         // tslint:disable-next-line:member-ordering
         static artistSelector(serverObj: Server.Artist): Artist {
             return new Artist(serverObj);

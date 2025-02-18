@@ -75,10 +75,16 @@ public class PayPalService
                         Description = $"Courtesy of Chavah Messianic Radio, Messiah's Music Fund. https://messianicradio.com/give Thanks for the music!",
                         Payee = new Payee
                         {
-                            EmailAddress = payment.Recipient
-                        }
+                            EmailAddress = payment.RecipientAddress
+                        },
                     },
                 },
+                ApplicationContext = new OrderApplicationContext
+                {
+                    ReturnUrl = $"https://messianicradio.com/#/admin/donations?paypalordercreated=true&artistid={Uri.EscapeDataString(payment.RecipientArtistId)}",
+                    CancelUrl = $"https://messianicradio.com/#/admin/donations?paypalordercreated=false&artistid={Uri.EscapeDataString(payment.RecipientArtistId)}",
+                    UserAction = OrderApplicationContextUserAction.PayNow
+                }
             }
         };
 
@@ -93,7 +99,7 @@ public class PayPalService
             throw new Exception("PayPal order was created, but no approve link was found in the response.");
         }
 
-        logger.LogInformation("Successfully created PayPal order {id} with status {status} for donation of ${amount} to {payee}, with approval link {approvalLink}", orderResult.Data.Id, orderResult.StatusCode, payment.AmountInUsd, payment.Recipient, approveLink);
+        logger.LogInformation("Successfully created PayPal order {id} with status {status} for donation of ${amount} to {payee}, with approval link {approvalLink}", orderResult.Data.Id, orderResult.StatusCode, payment.AmountInUsd, payment.RecipientAddress, approveLink);
         return new PayPalOrderConfirmation(orderResult.Data.Id, approveLink);
     }
 

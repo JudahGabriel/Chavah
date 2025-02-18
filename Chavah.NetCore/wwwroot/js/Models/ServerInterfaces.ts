@@ -283,5 +283,11 @@
         amount: number;
         donationUrl: string;
         donations: DonationContext[];
+        order: Server.PaypalOrderConfirmation | null;
+    }
+
+    export interface PaypalOrderConfirmation {
+        orderId: string;
+        approveUrl: string;
     }
 }

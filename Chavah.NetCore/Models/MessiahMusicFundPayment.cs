@@ -13,12 +13,17 @@ public class MessiahMusicFundPayment
     /// <summary>
     /// The amount of funds to send in US dollars, e.g. "5.42"
     /// </summary>
-    public decimal AmountInUsd { get; set; }
+    public double AmountInUsd { get; set; }
 
     /// <summary>
     /// The recipient of the funds. This is either a PayPal email address or a Venmo phone number based on the <see cref="RecipientType"/>.
     /// </summary>
-    public string Recipient { get; set; } = string.Empty;
+    public string RecipientAddress { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The ID of the artist receiving the donation.
+    /// </summary>
+    public string RecipientArtistId { get; set; } = string.Empty;
 }
 
 /// <summary>
