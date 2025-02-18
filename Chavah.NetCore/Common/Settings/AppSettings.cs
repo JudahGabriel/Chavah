@@ -68,8 +68,8 @@
         public string PayPalClientSecret { get; set; } = string.Empty;
 
         /// <summary>
-        /// The PayPal API URL.
+        /// The PayPal API environement. Should be either "sandbox" or "production".
         /// </summary>
-        public string PayPalApiUrl { get; set; } = string.Empty;
+        public string PayPalEnv { get; set; } = "sandbox";
     }
 }
