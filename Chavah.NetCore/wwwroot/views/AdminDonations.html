@@ -24,7 +24,7 @@
                                         {{due.name}} - ${{due.amount.toFixed(2)}}
                                     </h3>
                                 </div>
-                                <div class="panel-body" ng-hide="!vm.showDonationsForArtistsWithoutContactInfo && !(due.donationUrl || due.hasDeclinedDonations)">
+                                <div class="panel-body" ng-hide="!vm.showDonationsForArtistsWithoutContactInfo && (!due.donationUrl || due.hasDeclinedDonations)">
                                     <a href="{{due.donationUrl}}">{{due.donationUrl}}</a>
                                     <ul>
                                         <li ng-repeat="donation in due.donations">
