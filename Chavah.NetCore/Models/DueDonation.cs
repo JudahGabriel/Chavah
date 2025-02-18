@@ -38,6 +38,11 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// Whether the artist has declined donations.
         /// </summary>
-        public bool HasDeclinedDonations { get; set; }   
+        public bool HasDeclinedDonations { get; set; }
+
+        /// <summary>
+        /// The Paypal confirmation created for this donation.
+        /// </summary>
+        public PayPalOrderConfirmation? Order { get; set; }
     }
 }

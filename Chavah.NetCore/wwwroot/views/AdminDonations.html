@@ -19,10 +19,17 @@
                         <div>
                             <div class="panel panel-primary" ng-repeat="due in vm.dueDonations.items">
                                 <div class="panel-heading clearfix">
-                                    <button class="pull-right btn btn-default btn-sm" ng-click="vm.markAsPaid(due)">Mark as paid</button>
-                                    <h3 class="panel-title">
-                                        {{due.name}} - ${{due.amount.toFixed(2)}}
-                                    </h3>
+                                    <div class="d-flex justify-space-between">
+                                        <h3 class="panel-title">
+                                            {{due.name}} - ${{due.amount.toFixed(2)}}
+                                        </h3>
+                                        <div class="d-flex gap-1">
+                                            <button class="pull-right btn btn-info btn-sm" ng-click="vm.payViaPaypal(due)" ng-show="vm.hasPaypalEmail(due)" ng-disabled="vm.getPaypalDisabled(due)">
+                                                {{vm.getPaypalBtnLabel(due)}}
+                                            </button>
+                                            <button class="pull-right btn btn-default btn-sm" ng-click="vm.markAsPaid(due)">Mark as paid</button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="panel-body" ng-hide="!vm.showDonationsForArtistsWithoutContactInfo && !due.donationUrl">
                                     <a href="{{due.donationUrl}}">{{due.donationUrl}}</a>

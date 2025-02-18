@@ -57,6 +57,19 @@
 
         public string IftttKey { get; set; } = string.Empty;
 
-        public string FilePickrKey { get; set; } = string.Empty;
+        /// <summary>
+        /// The PayPal client ID.
+        /// </summary>
+        public string PayPalClientId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The PayPal client secret.
+        /// </summary>
+        public string PayPalClientSecret { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The PayPal API environement. Should be either "sandbox" or "production".
+        /// </summary>
+        public string PayPalEnv { get; set; } = "sandbox";
     }
 }

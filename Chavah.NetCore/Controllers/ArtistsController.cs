@@ -10,6 +10,7 @@ using BitShuva.Chavah.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
 using Raven.Client.Documents;
@@ -34,6 +35,7 @@ namespace BitShuva.Chavah.Controllers
             var artist = await DbSession
                 .Query<Artist>()
                 .FirstOrDefaultAsync(a => a.Name == artistName);
+
             return artist;
         }
 
@@ -244,7 +246,7 @@ namespace BitShuva.Chavah.Controllers
         /// <summary>
         /// Marks the donation as paid.
         /// </summary>
-        /// <param name="donation"></param>
+        /// <param name="dueDonation"></param>
         /// <returns></returns>
         [Authorize(Roles = AppUser.AdminRole)]
         public async Task<DueDonation> MarkDueDonationAsPaid([FromBody]DueDonation dueDonation)
@@ -265,6 +267,57 @@ namespace BitShuva.Chavah.Controllers
             }
 
             return dueDonation;
+        }
+
+        /// <summary>
+        /// Creates a Paypal order for the specified donation to the artist. The order must be approved in the browser by the user. Then ConfirmPaypalOrder must be called.
+        /// </summary>
+        /// <param name="dueDonation">The donation to pay via Paypal. It must have a DonationUrl containing a Paypal email, e.g. "paypal://?email=..."</param>
+        /// <param name="paypal">The Paypal service.</param>
+        /// <returns>A Paypal order confirmation. The order must be approved in browser by the payer. Afterwards, a call to PayOrder must be made.</returns>
+        [Authorize(Roles = AppUser.AdminRole)]
+        public Task<PayPalOrderConfirmation> CreatePaypalOrder([FromBody] DueDonation dueDonation, [FromServices] PayPalService paypal)
+        {
+            // Make sure we have a Paypal email address for this artist donation.
+            if (dueDonation.DonationUrl == null)
+            {
+                throw new ArgumentException("Donation must have a donation URL");
+            }
+            
+            var query = QueryHelpers.ParseQuery(dueDonation.DonationUrl.Query);
+            var email = query["email"].FirstOrDefault();
+            if (email == null)
+            {
+                throw new ArgumentException("Donation must have a donation URL containing a ?email= query string. Example: paypal://?email=foo@bar.com");
+            }
+
+            var payment = new MessiahMusicFundPayment
+            {
+                AmountInUsd = dueDonation.Amount,
+                RecipientAddress = email,
+                RecipientArtistId = dueDonation.ArtistId,
+                RecipientType = MessiahMusicFundRecipientType.PayPalEmail
+            };
+            return paypal.CreateOrder(payment);
+        }
+
+        /// <summary>
+        /// Commits payment of Paypal order, causing cash to exchange hands. It also marks the donation as paid.
+        /// </summary>
+        /// <param name="donation">The donation being paid. It must have an Order.</param>
+        /// <param name="paypal">The Paypal service.</param>
+        /// <returns>The ID of the paid order.</returns>
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task<string> PayOrder([FromBody]DueDonation donation, [FromServices] PayPalService paypal)
+        {
+            if (donation.Order == null)
+            {
+                throw new ArgumentException("Donation must have an .Order");
+            }
+
+            var orderId = await paypal.PayOrder(donation.Order.OrderId);
+            await MarkDueDonationAsPaid(donation);
+            return orderId;
         }
     }
 }

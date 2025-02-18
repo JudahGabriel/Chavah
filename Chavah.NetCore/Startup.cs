@@ -66,6 +66,7 @@ namespace BitShuva.Chavah
             services.AddTransient<IAlbumService, AlbumService>();
             services.AddTransient<IUserService, UserService>();
             services.AddSingleton<BunnyCdnHttpClient>();
+            services.AddTransient<PayPalService>();
 
             services.AddBackgroundQueueWithLogging(1, TimeSpan.FromSeconds(5));
             services.AddHostedService<BlogPostNotificationCreator>();
