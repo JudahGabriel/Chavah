@@ -29,6 +29,11 @@ namespace BitShuva.Chavah.Models
         public Uri? DonationUrl { get; set; }
 
         /// <summary>
+        /// Whether the artist has declined accepting donations from Chavah.
+        /// </summary>
+        public bool HasDeclinedDonations { get; set; }
+
+        /// <summary>
         /// Gets the name of the artist including any disambiguation.
         /// </summary>
         /// <returns></returns>

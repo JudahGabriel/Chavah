@@ -60,7 +60,7 @@
 
             if (!this.hasPlayedRequestAnnouncement) {
                 this.hasPlayedRequestAnnouncement = true;
-                const availableSongRequestAnnouncements = 13;
+                const availableSongRequestAnnouncements = 15;
                 const songRequestAnnouncementNumber = randomNumber(1, availableSongRequestAnnouncements);
                 const songRequestName = "SongRequest" + songRequestAnnouncementNumber + ".mp3";
                 const songRequestUrl = `${this.homeViewModel.soundEffects}/${songRequestName}`;

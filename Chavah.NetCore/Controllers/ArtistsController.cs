@@ -212,7 +212,10 @@ namespace BitShuva.Chavah.Controllers
             var artists = new List<Artist>(1000);
             await foreach (var artist in DbSession.Advanced.Stream<Artist>())
             {
-                artists.Add(artist);
+                if (!artist.HasDeclinedDonations)
+                {
+                    artists.Add(artist);
+                }
             }
 
             return artists
@@ -231,6 +234,7 @@ namespace BitShuva.Chavah.Controllers
                     ArtistId = a.Artist.Id!,
                     Donations = a.Donations,
                     DonationUrl = a.Artist.DonationUrl,
+                    HasDeclinedDonations = a.Artist.HasDeclinedDonations,
                     Name = a.Artist.Name
                 })
                 .Where(a => a.Amount >= minimum)

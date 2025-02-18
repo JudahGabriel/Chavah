@@ -5,7 +5,8 @@
             "artistApi"
         ];
 
-        minimum = 3;
+        showDonationsForArtistsWithoutContactInfo = true;
+        minimum = 10;
         dueDonations = new List<Server.DueDonation>(() => this.artistApi.getDueDonations(this.minimum));
         currentTab: "pending" | "new" = "pending";
         donationAmount = 0;

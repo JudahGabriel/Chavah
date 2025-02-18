@@ -278,6 +278,7 @@
 
     export interface DueDonation {
         artistId: string;
+        hasDeclinedDonations: boolean;
         name: string;
         amount: number;
         donationUrl: string;
