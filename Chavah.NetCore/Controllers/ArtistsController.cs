@@ -231,6 +231,7 @@ namespace BitShuva.Chavah.Controllers
                     ArtistId = a.Artist.Id!,
                     Donations = a.Donations,
                     DonationUrl = a.Artist.DonationUrl,
+                    HasDeclinedDonations = a.Artist.NoDonationsAccepted,
                     Name = a.Artist.Name
                 })
                 .Where(a => a.Amount >= minimum)

@@ -42,6 +42,7 @@
         name: string;
         images: string[];
         bio: string;
+        hasDeclinedDonations: boolean;
     }
 
     export interface ArtistWithNetLikeCount extends Artist {
@@ -278,6 +279,7 @@
 
     export interface DueDonation {
         artistId: string;
+        hasDeclinedDonations: boolean;
         name: string;
         amount: number;
         donationUrl: string;
