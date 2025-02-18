@@ -42,7 +42,6 @@
         name: string;
         images: string[];
         bio: string;
-        hasDeclinedDonations: boolean;
     }
 
     export interface ArtistWithNetLikeCount extends Artist {
