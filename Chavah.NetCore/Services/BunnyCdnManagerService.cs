@@ -134,12 +134,11 @@ namespace BitShuva.Chavah.Services
         /// Uploads a user's profile picture to BunnyCDN.
         /// </summary>
         /// <param name="source">The stream containing the image bytes.</param>
-        /// <param name="contentType">The content type of the image. Should be "image/png" or "image/jpg".</param>
+        /// <param name="contentType">The content type of the image. Should be "image/png", "image/jpg", or "image/webp".</param>
         /// <returns>The URL of the uploaded profile picture on the CDN.</returns>
         public Task<Uri> UploadProfilePicAsync(Stream source, string contentType)
         {
-            var fileExtension = string.Equals("image/png", contentType, StringComparison.InvariantCultureIgnoreCase) ? ".png" : ".jpg";
-            var fileName = Guid.NewGuid().GetHashCode().ToString() + fileExtension;
+            var fileName = Guid.NewGuid().GetHashCode().ToString() + contentType.GetImageFileExtensionFromMimeType();
             return UploadMedia(source, settings.Value.ProfilePicsDirectory, fileName);
         }
 
