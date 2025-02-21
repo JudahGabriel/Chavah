@@ -105,6 +105,51 @@ namespace BitShuva.Chavah.Common
             return (english, hebrew);
         }
 
+        public static IEnumerable<string> GetFeaturedArtistsFromSongName(this string songName)
+        {
+            var featuredIndex = songName.IndexOf("(feat.", StringComparison.OrdinalIgnoreCase);
+            if (featuredIndex == -1)
+            {
+                featuredIndex = songName.IndexOf("(ft.", StringComparison.OrdinalIgnoreCase);
+            }
+            if (featuredIndex == -1)
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            var featuredEndIndex = songName.IndexOf(')', featuredIndex);
+            if (featuredEndIndex == -1)
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            return songName.Substring(featuredIndex, featuredEndIndex - featuredIndex)
+                .Replace("(", string.Empty)
+                .Replace(")", string.Empty)
+                .Replace("feat.", string.Empty)
+                .Replace("ft.", string.Empty)
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim());
+        }
+
+        /// <summary>
+        /// Gets the file extension to use based on a mime type. Mime type should be image/jpeg, image/png, image/webp.
+        /// </summary>
+        /// <param name="mimeType"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static string GetImageFileExtensionFromMimeType(this string mimeType)
+        {
+            return mimeType.ToLowerInvariant() switch
+            {
+                "image/png" => ".png",
+                "image/webp" => ".webp",
+                "image/jpg" => ".jpg",
+                "image/jpeg" => ".jpg",
+                _ => throw new ArgumentOutOfRangeException(nameof(mimeType), mimeType, "Unsupported image MIME type."),
+            };
+        }
+
         public static bool EqualsAny(
             this string text,
             StringComparison comparison,

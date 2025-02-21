@@ -169,9 +169,10 @@ namespace BitShuva.Chavah.Controllers
             var isMp3 = new[] { "audio/mpeg", "audio/mp3", "audio/mpeg3" }.Any(mp3MimeType => string.Equals(mp3MimeType, contentType, StringComparison.InvariantCultureIgnoreCase));
             var isJpg = new[] { "image/jpeg", "image/jpg" }.Any(jpgMimeType => string.Equals(jpgMimeType, contentType, StringComparison.InvariantCultureIgnoreCase));
             var isPng = string.Equals("image/png", contentType, StringComparison.InvariantCultureIgnoreCase);
-            if (!isMp3 && !isJpg && !isPng)
+            var isWebp = string.Equals("image/webp", contentType, StringComparison.InvariantCultureIgnoreCase);
+            if (!isMp3 && !isJpg && !isPng && !isWebp)
             {
-                throw new ArgumentOutOfRangeException(nameof(file), contentType, "Wrong file format. Music files must be in MP3 format. Album art must be in JPG or PNG format.");
+                throw new ArgumentOutOfRangeException(nameof(file), contentType, "Wrong file format. Music files must be in MP3 format. Album art must be in jpg, png, or webp format.");
             }
 
             // Make sure it's a reasonable size before we fetch it.
@@ -183,7 +184,7 @@ namespace BitShuva.Chavah.Controllers
 
             // OK, we're cool to upload it to our CDN.
             using var mediaFileStream = file.OpenReadStream();
-            var fileExtension = isMp3 ? ".mp3" : isPng ? ".png" : ".jpg";
+            var fileExtension = isMp3 ? ".mp3" : isPng ? ".png" : isWebp ? ".webp" : ".jpg";
             var fileName = Guid.NewGuid().ToString() + fileExtension;
             var tempFileUri = await cdnManagerService.UploadTempFileAsync(mediaFileStream, fileName);
             return new TempFile
@@ -260,6 +261,7 @@ namespace BitShuva.Chavah.Controllers
                     Artist = album.Artist,
                     AlbumArtUri = albumArtUriCdn,
                     CommunityRankStanding = CommunityRankStanding.Normal,
+                    ContributingArtists = english.GetFeaturedArtistsFromSongName().ToList(),
                     Genres = album.Genres.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
                     Name = english,
                     HebrewName = hebrew,

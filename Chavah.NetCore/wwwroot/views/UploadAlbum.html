@@ -39,7 +39,7 @@
                             </div>
                             <br />
                             <button class="btn btn-default" ng-click="vm.chooseAlbumArt()">Choose album art...</button>
-                            <input class="form-control-file needsclick sr-only" type="file" accept="image/png, image/jpeg" id="chooseAlbumArtInput" file-upload-changed="vm.albumArtChosen(e)">
+                            <input class="form-control-file needsclick sr-only" type="file" accept=".jpg, .jpeg, .png, .webp" id="chooseAlbumArtInput" file-upload-changed="vm.albumArtChosen(e)">
                             <div ng-show="vm.albumArt && vm.albumArt.status === 'completed'">
                                 <div class="row">
                                     <div class="col-sm-4">

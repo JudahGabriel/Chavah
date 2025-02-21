@@ -190,7 +190,7 @@ namespace BitShuva.Chavah.Services
         public async Task<Uri> UploadProfilePicAsync(Stream imageStream, string contentType)
         {
             using var ftpConnection = await CreateFtpConnection();
-            var fileExtension = string.Equals("image/png", contentType, StringComparison.InvariantCultureIgnoreCase) ? ".png" : ".jpg";
+            var fileExtension = contentType.GetImageFileExtensionFromMimeType();
             var fileName = Guid.NewGuid().GetHashCode().ToString() + fileExtension;
 
             // Switch to the album art directory.
