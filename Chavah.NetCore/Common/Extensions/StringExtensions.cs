@@ -105,6 +105,11 @@ namespace BitShuva.Chavah.Common
             return (english, hebrew);
         }
 
+        /// <summary>
+        /// Looks for a string like "(feat. Joe Schmoe)" in the song name and returns the featured artists.
+        /// </summary>
+        /// <param name="songName"></param>
+        /// <returns></returns>
         public static IEnumerable<string> GetFeaturedArtistsFromSongName(this string songName)
         {
             var featuredIndex = songName.IndexOf("(feat.", StringComparison.OrdinalIgnoreCase);
