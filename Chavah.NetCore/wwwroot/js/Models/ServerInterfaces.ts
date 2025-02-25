@@ -176,6 +176,7 @@
         debug: boolean;
         redirect: string | null;
         embed: boolean;
+        autoplay: boolean;
         cacheBustedAngularViews: string[];
         defaultUrl: string;
         cdnUrl: string;

@@ -137,7 +137,7 @@ namespace BitShuva.Chavah.Models
         public string GetShareDescription()
         {
             var communityRankPrefix = CommunityRank > 0 ? "+" : string.Empty;
-            return $"${GetShareTitle()} appears as the {Number.ToNumberWord()} on the {Album} album. Chavah listeners rank it {communityRankPrefix}{CommunityRank}.";
+            return $"{GetShareTitle()} appears as the {Number.ToNumberWord()} on the {Album} album. Chavah listeners rank it {communityRankPrefix}{CommunityRank}.";
         }
 
         public string GetCommunityRankText()

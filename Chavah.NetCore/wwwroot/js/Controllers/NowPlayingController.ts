@@ -55,10 +55,12 @@
             
             if (homeViewModel.embed) {
                 // If we're embedded on another page, queue up the song we're told to play.
-                // Don't play it automatically, though, because there may be multiple embeds on the same page.
                 if (this.homeViewModel.song) {
                     this.audioPlayer.playNewSong(new Song(this.homeViewModel.song));
-                    this.audioPlayer.pause();
+                    // Don't play it automatically, though, because there may be multiple embeds on the same page.
+                    if (!this.homeViewModel.autoplay) {
+                        this.audioPlayer.pause();
+                    }
                 }
             } else {
                 // Play the next song if we don't already have one playing.

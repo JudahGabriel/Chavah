@@ -48,6 +48,11 @@ namespace BitShuva.Chavah.Models
         public string? Redirect { get; set; }
 
         /// <summary>
+        /// Whether the song should autoplay.
+        /// </summary>
+        public bool Autoplay { get; set; }
+
+        /// <summary>
         /// Whether the page is being loaded in an embedded iframe.
         /// </summary>
         public bool Embed { get; set; }

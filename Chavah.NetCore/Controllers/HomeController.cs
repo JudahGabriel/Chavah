@@ -50,13 +50,19 @@ namespace BitShuva.Chavah.Controllers
         /// </summary>
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index(string? artist = null, string? album = null, string? song = null, bool embed = false)
+        public async Task<IActionResult> Index(
+            string? artist = null,
+            string? album = null,
+            string? song = null,
+            bool embed = false,
+            bool autoplay = true)
         {
             var user = await GetUser();
             var userVm = user != null ? _mapper.Map<UserViewModel>(user) : null;
             var loadedSong = await GetSongFromQuery(artist, album, song);
             var homeViewModel = HomeViewModel.From(userVm, loadedSong, _appOptions, _cdnOptions);
             homeViewModel.Embed = embed;
+            homeViewModel.Autoplay = autoplay;
             homeViewModel.CacheBustedAngularViews = _ngViews.Views;
 
             // TODO
