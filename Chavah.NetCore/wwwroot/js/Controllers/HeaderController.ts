@@ -84,7 +84,7 @@
             this.updateAppBadge(this.unreadNotificationCount);
 
             // Show the donation banner after a short while.
-            if (!this.hasDismissedDonationBanner()) {
+            if (!this.hasDismissedDonationBanner() && !this.homeViewModel.embed) {
                 this.$timeout(() => this.showDonationBanner = true, 5 * 60 * 1000); // 5 minutes
             }
 
@@ -93,7 +93,7 @@
                 if (this.notifications && this.notifications.filter(n => n.isUnread).length > 0) {
                     this.highlightUnreadNotifications = true;
                 }
-            }, 10 * 1000) // 30 seconds
+            }, 10 * 1000) // 10 seconds
         }
 
         loadPushNotificationState() {

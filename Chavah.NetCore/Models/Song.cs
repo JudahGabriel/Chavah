@@ -103,13 +103,13 @@ namespace BitShuva.Chavah.Models
         }
 
         /// <summary>
-        /// Gets the 
+        /// Gets the embed URL for the song used in social media shares.
         /// </summary>
-        /// <param name="rootUrl"></param>
+        /// <param name="rootUrl">The root website domain, e.g. messianicradio.com</param>
         /// <returns></returns>
         public Uri GetShareEmbedUrl(string rootUrl)
         {
-            return new Uri(rootUrl).Combine($"home/embed?songId={Id}");
+            return new Uri($"{rootUrl}?songid={Id}&embed=true");
         }
 
         /// <summary>
