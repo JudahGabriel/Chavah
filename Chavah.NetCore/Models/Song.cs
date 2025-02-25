@@ -109,7 +109,7 @@ namespace BitShuva.Chavah.Models
         /// <returns></returns>
         public Uri GetShareEmbedUrl(string rootUrl)
         {
-            return new Uri($"{rootUrl}?songid={Id}&embed=true");
+            return new Uri($"{rootUrl}?song={Id}&embed=true&twitterembed=true");
         }
 
         /// <summary>
