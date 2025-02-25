@@ -47,15 +47,17 @@
     <meta name="twitter:site" content="&#64;messianicradio">
     @if (Model != null && Model.Song != null && appOptions != null)
     {
-        // Show a Twitter summary card with the song info.
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="@appOptions.DefaultUrl@(Model.Song.GetSongShareLink(appOptions.DefaultUrl))" />
-        <meta name="twitter:title" content="@Model.Song.Name by @Model.Song.Artist" />
-        <meta name="twitter:description" content='"@Model.Song.Name" by @Model.Song.Artist appears as the @Model.SongNth song on the @Model.Song.Album album. @Model.Song.Name is now ranked @(Model.Song.CommunityRank >= 0 ? '+' : '-')@Model.Song.CommunityRank by the international Messianic community.' />
+        // Show a Twitter player card with the song info.
+        <meta name="twitter:card" content="player" />
+        <meta name="twitter:title" content="@Model.Song.GetShareTitle()" />
+        <meta name="twitter:description" content="@Model.Song.GetShareDescription()" />
         <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
+        <meta name="twitter:player" content="https://judahtemp.b-cdn.net/x-player-container.html" />
+        <meta name="twitter:player:width" content="480" />
+        <meta name="twitter:player:height" content="480" />
 
         @*Facebook share info. See https://developers.facebook.com/docs/sharing/webmasters/*@
-        <meta property="og:url" content="@appOptions.DefaultUrl@(Model.Song.GetSongShareLink(appOptions.DefaultUrl))" />
+        <meta property="og:url" content="@appOptions.DefaultUrl@(Model.Song.GetShareLink(appOptions.DefaultUrl))" />
         <meta property="og:type" content="music.song" />
         <meta property="og:title" content="@Model.Song.Name by @Model.Song.Artist" />
         <meta property="og:description" content="Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music on the web" />

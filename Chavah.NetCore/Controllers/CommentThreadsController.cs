@@ -95,7 +95,7 @@ namespace BitShuva.Chavah.Controllers
                 DateTime = DateTimeOffset.UtcNow,
                 Title = $"{newComment.UserDisplayName} commented on {song.Name} by {song.Artist}",
                 Description = newComment.Content,
-                MoreInfoUri = song.GetSongShareLink(appSettings.Value.DefaultUrl),
+                MoreInfoUri = song.GetShareLink(appSettings.Value.DefaultUrl),
                 EntityId = song.Id,
                 Type = ActivityType.Comment
             };

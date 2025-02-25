@@ -59,7 +59,7 @@ namespace BitShuva.Chavah.Controllers
                         syndicationId,
                         $"Today's top trending song is {song.Name} by {song.Artist} with +{likeCount} thumb-ups so far today. It's now ranked at {song.GetCommunityRankText()}.",
                         "",
-                        song.GetSongShareLink(appOptions.DefaultUrl));
+                        song.GetShareLink(appOptions.DefaultUrl));
                     rssItems.Add(syndicationLink);
                 }
             }

@@ -92,9 +92,52 @@ namespace BitShuva.Chavah.Models
             return ToDto(LikeStatus.None, SongPick.RandomSong);
         }
 
-        public Uri GetSongShareLink(string url)
+        /// <summary>
+        /// Gets the link to the song used in social media shares.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public Uri GetShareLink(string url)
         {
             return new Uri($"{url}/?song={Id}");
+        }
+
+        /// <summary>
+        /// Gets the 
+        /// </summary>
+        /// <param name="rootUrl"></param>
+        /// <returns></returns>
+        public Uri GetShareEmbedUrl(string rootUrl)
+        {
+            return new Uri(rootUrl).Combine($"home/embed?songId={Id}");
+        }
+
+        /// <summary>
+        /// Gets title of the song for use in social media shares, e.g. "Adonai Li אדוני לי".
+        /// If the song doesn't have a Hebrew name, only the English name is returned.
+        /// </summary>
+        /// <returns></returns>
+        public string GetShareTitle()
+        {
+            var featuringString = ContributingArtists.Any()
+                ? $" ft. {string.Join(", ", ContributingArtists)}"
+                : string.Empty;
+            if (!string.IsNullOrEmpty(HebrewName) && !string.IsNullOrEmpty(Name))
+            {
+                return $"{Name} {HebrewName} by {Artist}{featuringString}";
+            }
+
+            return Name;
+        }
+
+        /// <summary>
+        /// Gets the longer description used in social media shares.
+        /// </summary>
+        /// <returns></returns>
+        public string GetShareDescription()
+        {
+            var communityRankPrefix = CommunityRank > 0 ? "+" : string.Empty;
+            return $"${GetShareTitle()} appears as the {Number.ToNumberWord()} on the {Album} album. Chavah listeners rank it {communityRankPrefix}{CommunityRank}.";
         }
 
         public string GetCommunityRankText()

@@ -233,7 +233,7 @@ namespace BitShuva.Chavah.Controllers
                 DateTime = DateTime.UtcNow,
                 Title = $"{song.Artist} - {song.Name} was thumbed up ({songRankString}) on {appSettings?.Title}",
                 Description = $"\"{song.Name}\" by {songArtist} was thumbed up ({songRankString}) on {appSettings?.Title}.",
-                MoreInfoUri = song.GetSongShareLink(appSettings!.DefaultUrl),
+                MoreInfoUri = song.GetShareLink(appSettings!.DefaultUrl),
                 EntityId = song.Id,
                 Type = ActivityType.Like
             };
