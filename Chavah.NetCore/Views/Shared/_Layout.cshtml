@@ -53,8 +53,10 @@
         <meta name="twitter:description" content="@Model.Song.GetShareDescription()" />
         <meta name="twitter:image" content="@Model.Song.AlbumArtUri" />
         <meta name="twitter:player" content="@Model.Song.GetShareEmbedUrl(Model.DefaultUrl)" />
-        <meta name="twitter:player:width" content="480" />
-        <meta name="twitter:player:height" content="480" />
+        <meta name="twitter:player:width" content="600" />
+        <meta name="twitter:player:height" content="600" />
+        <meta name="twitter:player:stream" content="@Model.Song.Uri" />
+        <meta name="twitter:player:stream:content_type" content="audio/mpeg">
 
         @*Facebook share info. See https://developers.facebook.com/docs/sharing/webmasters/*@
         <meta property="og:url" content="@appOptions.DefaultUrl@(Model.Song.GetShareLink(appOptions.DefaultUrl))" />
