@@ -37,4 +37,4 @@ jobs:
           write-mode: overwrite
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o Publish /p:PublishProfileFullPath=${{ env.home }}/ChavahOnVm.pubxml
+        run: dotnet publish Chavah.NetCore/Chavah.NetCore.csproj -c Release -o Publish /p:PublishProfileFullPath=${{ env.home }}/ChavahOnVm.pubxml
