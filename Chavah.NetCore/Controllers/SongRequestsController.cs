@@ -102,7 +102,7 @@ namespace BitShuva.Chavah.Controllers
 
             if (song != null)
             {
-                var requestExpiration = DateTime.UtcNow.AddDays(10);
+                var requestExpiration = DateTime.UtcNow.AddDays(30);
                 var hasSongBeenRecentlyRequested = await HasSongBeenRequestedRecently(songId);
                 var hasManyRequestForArtist = await HasManyPendingSongRequestForArtist(song.Artist);
                 var hasManySongRequestsFromUser = await HasManyRecentSongRequestsFromUser(user.Id!);

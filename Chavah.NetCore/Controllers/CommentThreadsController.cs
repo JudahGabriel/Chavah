@@ -101,6 +101,7 @@ namespace BitShuva.Chavah.Controllers
             };
             
             await DbSession.StoreAsync(commentActivity);
+            DbSession.SetRavenExpiration(commentActivity, DateTime.UtcNow.AddDays(30));
             
             return commentThread;
         }

@@ -239,7 +239,7 @@ namespace BitShuva.Chavah.Controllers
             };
 
             await DbSession.StoreAsync(activity);
-            DbSession.SetRavenExpiration(activity, DateTime.UtcNow.AddDays(7));
+            DbSession.SetRavenExpiration(activity, DateTime.UtcNow.AddDays(30));
         }
     }
 }
