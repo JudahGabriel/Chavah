@@ -1,4 +1,9 @@
 ﻿namespace BitShuva.Chavah {
+
+    interface SongEditViewModel extends Server.SongEdit {
+        isSaving: boolean;
+    }
+
     export class ApproveSongEditsController {
 
         static $inject = [
@@ -7,9 +12,8 @@
             "tagApi"
         ];
 
-        pendingEdits: Server.SongEdit[] = [];
-        currentEdit: Server.SongEdit | null = null;
-        isSaving = false;
+        pendingEdits: SongEditViewModel[] = [];
+        currentEdit: SongEditViewModel | null = null;
         hasLoaded = false;
         tagsInput: string = "";
 
@@ -29,23 +33,23 @@
         }
 
         pendingEditsLoaded(results: Server.SongEdit[]) {
-            this.pendingEdits = results;
-            this.setCurrentEdit(results[0]);
+            this.pendingEdits = results.map(a => this.createSongEditViewModel(a));
+            this.setCurrentEdit(this.pendingEdits[0]);
             this.hasLoaded = true;
         }
 
-        setCurrentEdit(songEdit: Server.SongEdit | null) {
+        setCurrentEdit(songEdit: SongEditViewModel | null) {
             this.currentEdit = songEdit;
         }
 
         approve() {
             if (this.user) {
                 let edit = this.currentEdit;
-                if (!this.isSaving && edit) {
-                    this.isSaving = true;
+                if (edit && !edit.isSaving) {
+                    edit.isSaving = true;
                     this.songEditApi.approve(edit)
                         .then(results => this.removeSongEdit(results.id))
-                        .finally(() => this.isSaving = false);
+                        .finally(() => edit!.isSaving = false);
                 }
          
             }
@@ -53,16 +57,16 @@
 
         reject() {
             if (this.user) {
-            let edit = this.currentEdit;
-                        if (!this.isSaving && edit) {
-                            this.isSaving = true;
-                            this.songEditApi.reject(edit.id)
-                                .then(result => {
-                                    if (result) {
-                                        this.removeSongEdit(result.id);
-                                    }
-                                })
-                                .finally(() => this.isSaving = false);
+                let edit = this.currentEdit;
+                if (edit && !edit.isSaving) {
+                    edit.isSaving = true;
+                    this.songEditApi.reject(edit.id)
+                        .then(result => {
+                            if (result) {
+                                this.removeSongEdit(result.id);
+                            }
+                        })
+                        .finally(() => edit!.isSaving = false);
                 }
             }
         }
@@ -120,6 +124,13 @@
 
         signedInUserChanged(user: User | null) {
             this.user = user;
+        }
+
+        createSongEditViewModel(songEdit: Server.SongEdit): SongEditViewModel {
+            return {
+                isSaving: false,
+                ...songEdit
+            };
         }
     }
 

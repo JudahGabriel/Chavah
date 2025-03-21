@@ -227,5 +227,17 @@ namespace BitShuva.Chavah.Controllers
 
             return Redirect("https://messianicradio.com");
         }
+
+        /// <summary>
+        /// Called via OAuth2 redirect from Chavah's Twitter/X account @messianicradio
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("twitterauth-callback")]
+        public RedirectResult XAuthCallback()
+        {
+            logger.LogInformation("Twitter/X auth callback hit.");
+            return Redirect("/");
+        }
     }
 }

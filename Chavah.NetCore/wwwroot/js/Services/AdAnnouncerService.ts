@@ -33,6 +33,13 @@
         }
 
         playAdAnnouncement() {
+            // Half the time, play the Passover in Jerusalem ad.
+            if (randomNumber(1, 2) === 1) {
+                const jerusalemAdUrl = `${this.homeViewModel.soundEffects}/ad-passover-jerusalem-2025.mp3`;
+                this.audioPlayer.playNewUri(jerusalemAdUrl);
+                return;
+            }
+
             const availableAds = 5;
             const randomAdNumber = randomNumber(1, availableAds);
             const adUrl = `${this.homeViewModel.soundEffects}/ad${randomAdNumber}x.mp3`;

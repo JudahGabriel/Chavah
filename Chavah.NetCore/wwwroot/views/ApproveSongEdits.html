@@ -77,10 +77,10 @@
                                         </div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary" ng-disabled="vm.isSaving" ng-click="vm.approve()">
+                                    <button type="submit" class="btn btn-primary" ng-disabled="vm.currentEdit && vm.currentEdit.isSaving" ng-click="vm.approve()">
                                         <i class="fa fa-save"></i> Approve
                                     </button>
-                                    <button type="submit" class="btn btn-danger" ng-disabled="vm.isSaving" ng-click="vm.reject()">
+                                    <button type="submit" class="btn btn-danger" ng-disabled="vm.currentEdit && vm.currentEdit.isSaving" ng-click="vm.reject()">
                                         <i class="fa fa-ban"></i> Reject
                                     </button>
                                 </form>
