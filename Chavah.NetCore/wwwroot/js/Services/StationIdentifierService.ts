@@ -32,7 +32,7 @@
         }
 
         playStationIdAnnouncement() {
-            const stationIdCount = 16;
+            const stationIdCount = 24;
             const randomStationIdNumber = randomNumber(1, stationIdCount);
             const stationIdUrl = `${this.homeViewModel.soundEffects}/StationId${randomStationIdNumber}.mp3`;
             this.audioPlayer.playNewUri(stationIdUrl);
