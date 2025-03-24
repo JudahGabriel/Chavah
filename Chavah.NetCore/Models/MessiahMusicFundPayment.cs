@@ -16,7 +16,7 @@ public class MessiahMusicFundPayment
     public double AmountInUsd { get; set; }
 
     /// <summary>
-    /// The recipient of the funds. This is either a PayPal email address or a Venmo phone number based on the <see cref="RecipientType"/>.
+    /// The recipient of the funds. This is either a PayPal email address, user name, or a Venmo phone number based on the <see cref="RecipientType"/>.
     /// </summary>
     public string RecipientAddress { get; set; } = string.Empty;
 

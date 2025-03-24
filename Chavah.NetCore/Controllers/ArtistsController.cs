@@ -285,10 +285,10 @@ namespace BitShuva.Chavah.Controllers
             }
             
             var query = QueryHelpers.ParseQuery(dueDonation.DonationUrl.Query);
-            var email = query["email"].FirstOrDefault();
+            var email = query["email"].FirstOrDefault() ?? query["username"].FirstOrDefault();
             if (email == null)
             {
-                throw new ArgumentException("Donation must have a donation URL containing a ?email= query string. Example: paypal://?email=foo@bar.com");
+                throw new ArgumentException("Donation must have a donation URL containing a ?email or ?username query string. Example: paypal://?email=foo@bar.com");
             }
 
             var payment = new MessiahMusicFundPayment

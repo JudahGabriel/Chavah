@@ -81,7 +81,13 @@
         }
 
         hasPaypalEmail(due: DueDonationViewModel): boolean {
-            return !!due.donationUrl && due.donationUrl.startsWith("paypal://?email=") && !!(new URL(due.donationUrl).searchParams.get("email"));
+            const hasPayPalDonationUrl = !!due.donationUrl && due.donationUrl.startsWith("paypal:");
+            if (hasPayPalDonationUrl) {
+                const url = new URL(due.donationUrl);
+                return !!url.searchParams.get("email") || !!url.searchParams.get("username");
+            }
+
+            return false;
         }
 
         payViaPaypal(donation: DueDonationViewModel): void {
