@@ -658,7 +658,7 @@ namespace BitShuva.Chavah.Controllers
             var thirtyDaysAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(30));
             var newSongIds = await DbSession.Query<Song, Songs_GeneralQuery>()
                 .Customize(x => x.RandomOrdering())
-                .Where(x => x.UploadDate > thirtyDaysAgo)
+                .Where(x => x.UploadDate > thirtyDaysAgo && x.CommunityRank >= 0)
                 .Select(s => s.Id)
                 .Take(3)
                 .ToListAsync();
