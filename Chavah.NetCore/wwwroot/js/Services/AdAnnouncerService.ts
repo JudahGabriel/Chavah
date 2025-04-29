@@ -19,7 +19,6 @@
             // Check if we're within that time and that we haven't played the annoucement in 20+ minutes.
             const currentTime = new Date();
             const currentMinute = currentTime.getMinutes();
-            const currentHour = currentTime.getHours();
             const isNearMinute = currentMinute >= 42 && currentMinute <= 47;
             // tslint:disable-next-line:max-line-length
             const minutesDifferenceSinceLastAnnouncement = (currentTime.valueOf() - this.lastAnnouncementTime.valueOf()) / 60000;
@@ -33,12 +32,12 @@
         }
 
         playAdAnnouncement() {
-            //// Half the time, play the Passover in Jerusalem ad.
-            //if (randomNumber(1, 2) === 1) {
-            //    const jerusalemAdUrl = `${this.homeViewModel.soundEffects}/ad-passover-jerusalem-2025.mp3`;
-            //    this.audioPlayer.playNewUri(jerusalemAdUrl);
-            //    return;
-            //}
+            // Half the time, play the Sukkot 2025 ad
+            if (randomNumber(1, 2) === 1) {
+                const sukkotAdUrl = `${this.homeViewModel.soundEffects}/sukkot-west-coast-2025.mp3`;
+                this.audioPlayer.playNewUri(sukkotAdUrl);
+                return;
+            }
 
             const availableAds = 5;
             const randomAdNumber = randomNumber(1, availableAds);

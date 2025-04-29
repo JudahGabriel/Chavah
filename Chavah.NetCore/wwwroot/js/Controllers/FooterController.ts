@@ -62,7 +62,14 @@
             this.audioPlayer.error
                 .debounce(5000)
                 .where(error => error.songId === this.audioPlayer.song.getValue()?.id && this.audioPlayer.status.getValue() === AudioStatus.Erred)
+                .where(error => !error.mp3Url || !error.mp3Url.toLowerCase().includes("soundeffects")) // sound effect errors are handled after this.
                 .subscribe(error => this.showAudioErrorNotification(error));
+
+            // If a sound effect error occurs, just skip to the next song.
+            this.audioPlayer.error
+                .debounce(1000)
+                .where(error => !!error.mp3Url && error.mp3Url.toLowerCase().includes("soundeffects"))
+                .subscribe(error => this.playNextSong());
 
             // Update the track time. We don't use angular for this, because of the constant (per second) update.
             this.audioPlayer.playedTimeText
