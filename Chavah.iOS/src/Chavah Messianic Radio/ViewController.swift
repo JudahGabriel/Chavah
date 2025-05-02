@@ -85,7 +85,7 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
         case "timeupdate":
             eventJs = "new CustomEvent('\(webEventName)', { detail: { currentTime: \(player.currentTime as Double), duration: \(player.duration as Double) } })"
         default:
-            eventJs = "new CustomEvent('\(webEventName)', { detail: '\(eventDetail)' })"
+            eventJs = "new CustomEvent('\(webEventName)', { detail: '\(eventDetail ?? "")' })"
         }
 
         let js = "window.dispatchEvent(\(eventJs))"
