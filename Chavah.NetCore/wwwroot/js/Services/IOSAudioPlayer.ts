@@ -28,6 +28,7 @@ namespace BitShuva.Chavah {
                 window.addEventListener("iosaudioplaying", () => this.dispatchEvent(new CustomEvent("playing")));
                 window.addEventListener("iosaudiowaiting", () => this.dispatchEvent(new CustomEvent("waiting")));
                 window.addEventListener("iosaudiostalled", () => this.dispatchEvent(new CustomEvent("stalled")));
+                window.addEventListener("iosaudioaudioroutechanged", e => this.dispatchEvent(new CustomEvent("audioroutechanged", { detail: e })));
                 window.addEventListener("iosaudiotimeupdate", (e: CustomEvent) => {
                     this._currentTime = e.detail.currentTime;
                     this._duration = e.detail.duration;

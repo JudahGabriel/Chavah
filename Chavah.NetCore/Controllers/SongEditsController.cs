@@ -126,6 +126,7 @@ namespace BitShuva.Chavah.Controllers
                 songEdit.Apply(song);
                 songEdit.Status = SongEditStatus.Approved;
                 await DbSession.StoreAsync(songEdit);
+                DbSession.SetRavenExpiration(songEdit, DateTime.UtcNow.AddDays(1));
                 logger.LogInformation("Applied song edit {edit}", songEdit);
 
                 // Notify the user.
@@ -144,6 +145,7 @@ namespace BitShuva.Chavah.Controllers
             if (existingEdit != null)
             {
                 existingEdit.Status = SongEditStatus.Rejected;
+                DbSession.SetRavenExpiration(existingEdit, DateTime.UtcNow.AddDays(1));
             }
 
             return existingEdit;

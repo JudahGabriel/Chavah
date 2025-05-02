@@ -13,9 +13,9 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
     @IBOutlet weak var webviewView: UIView!
     @IBOutlet weak var splashBkgView: UIView!
     var toolbarView: UIToolbar!
-    
+
     var htmlIsLoaded = false
-    
+
     private var themeObservation: NSKeyValueObservation?
     var currentWebViewTheme: UIUserInterfaceStyle = .unspecified
     override var preferredStatusBarStyle : UIStatusBarStyle {
@@ -35,27 +35,27 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
         initWebView()
         initToolbarView()
         loadRootUrl()
-        
+
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
              debugPrint(error)
         }
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification , object: nil)
     }
-    
+
     @objc func keyboardWillHide(_ notification: NSNotification) {
         ChavahMessianicRadio.webView.setNeedsLayout()
     }
-    
+
     func initWebView() {
         ChavahMessianicRadio.webView = createWebView(container: webviewView, WKSMH: self, WKND: self, NSO: self, VC: self)
         webviewView.addSubview(ChavahMessianicRadio.webView);
         ChavahMessianicRadio.webView.uiDelegate = self;
         ChavahMessianicRadio.webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
-        
+
         if #available(iOS 15.0, *), adaptiveUIStyle {
             themeObservation = ChavahMessianicRadio.webView.observe(\.underPageBackgroundColor) { [unowned self] webView, _ in
                 currentWebViewTheme = ChavahMessianicRadio.webView.underPageBackgroundColor.isLight() ?? true ? .light : .dark
@@ -63,21 +63,21 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
             }
         }
     }
-    
+
     func initAudioPlayer() {
         // will call dispatchEventToWeb func.
         ChavahMessianicRadio.audioPlayer.eventTarget = self
     }
-    
+
     // This is where we talk to the JS.
     // We dispatch events onto the window object indicating things like current track position.
     // To see the inverse, web JS talking to Swift, see WKSwiftMessageHandler in this file.
-    func dispatchEventToWeb(eventName: String) {
+    func dispatchEventToWeb(eventName: String, eventDetail: String?) {
         let player = ChavahMessianicRadio.audioPlayer
-        
+
         // Change the name of the event from X to iosaudioX. "timeupdate" becomes "iosaudiotimeupdate"
         let webEventName = "iosaudio\(eventName)"
-        
+
         var eventJs = "";
         switch (eventName) {
         case "error":
@@ -85,26 +85,26 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
         case "timeupdate":
             eventJs = "new CustomEvent('\(webEventName)', { detail: { currentTime: \(player.currentTime as Double), duration: \(player.duration as Double) } })"
         default:
-            eventJs = "new CustomEvent('\(webEventName)', { detail: null })"
+            eventJs = "new CustomEvent('\(webEventName)', { detail: '\(eventDetail)' })"
         }
 
         let js = "window.dispatchEvent(\(eventJs))"
         ChavahMessianicRadio.webView.evaluateJavaScript(js)
     }
-    
+
     func createToolbarView() -> UIToolbar{
         let statusBarHeight = getStatusBarHeight()
         let toolbarView = UIToolbar(frame: CGRect(x: 0, y: 0, width: webviewView.frame.width, height: 0))
         toolbarView.sizeToFit()
         toolbarView.frame = CGRect(x: 0, y: 0, width: webviewView.frame.width, height: toolbarView.frame.height + statusBarHeight)
 //        toolbarView.autoresizingMask = [.flexibleTopMargin, .flexibleRightMargin, .flexibleWidth]
-        
+
         let flex = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let close = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(loadRootUrl))
         toolbarView.setItems([close,flex], animated: true)
-        
+
         toolbarView.isHidden = true
-        
+
         return toolbarView
     }
 
@@ -112,18 +112,18 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
         let winScene = UIApplication.shared.connectedScenes.first
         let windowScene = winScene as! UIWindowScene
         var statusBarHeight = windowScene.statusBarManager?.statusBarFrame.height ?? 60
-        
+
         #if targetEnvironment(macCatalyst)
         if (statusBarHeight == 0) {
             statusBarHeight = 30
         }
         #endif
-        
+
         return statusBarHeight;
     }
-    
+
     func initToolbarView() {
-        toolbarView =  createToolbarView()        
+        toolbarView =  createToolbarView()
         webviewView.addSubview(toolbarView)
 
         // Set the top of the splashBkgView to the bottom of the status bar.
@@ -131,7 +131,7 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
 //        let splashBkgFrame = self.splashBkgView.frame
 //        self.splashBkgView.frame = CGRect(x: splashBkgFrame.minX, y: statusBarHeight, width: splashBkgFrame.width, height: splashBkgFrame.height)
     }
-    
+
     func overrideUIStyle(toDefault: Bool = false) {
         if #available(iOS 15.0, *), adaptiveUIStyle {
             if (((htmlIsLoaded && !ChavahMessianicRadio.webView.isHidden) || toDefault) && self.currentWebViewTheme != .unspecified) {
@@ -143,7 +143,7 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
             }
         }
     }
-    
+
     @objc func loadRootUrl() {
         // Was the app launched via a universal link? If so, navigate to that.
         // Otherwise, see if we were launched via shortcut and nav to that.
@@ -151,33 +151,33 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
         let launchUrl = SceneDelegate.universalLinkToLaunch ?? SceneDelegate.shortcutLinkToLaunch ?? rootUrl;
         ChavahMessianicRadio.webView.load(URLRequest(url: launchUrl))
     }
-    
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!){
         htmlIsLoaded = true;
-        
+
         self.setProgress(1.0, true);
         self.animateConnectionProblem(false);
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
             ChavahMessianicRadio.webView.isHidden = false;
             self.loadingView.isHidden = true;
-           
+
             self.setProgress(0.0, false);
-            
+
             self.overrideUIStyle()
         }
     }
-    
+
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         htmlIsLoaded = false;
-        
+
         if (error as NSError)._code != (-999) {
             self.overrideUIStyle(toDefault: true);
-            
+
             webView.isHidden = true;
             loadingView.isHidden = false;
             animateConnectionProblem(true);
-            
+
             setProgress(0.05, true);
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
@@ -188,7 +188,7 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
             }
         }
     }
-    
+
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 
         if (keyPath == #keyPath(WKWebView.estimatedProgress) &&
@@ -196,19 +196,19 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
                 !self.loadingView.isHidden &&
                 !self.htmlIsLoaded) {
                     var progress = Float(ChavahMessianicRadio.webView.estimatedProgress);
-                    
+
                     if (progress >= 0.8) { progress = 1.0; };
                     if (progress >= 0.3) { self.animateConnectionProblem(false); }
-                    
+
                     self.setProgress(progress, true);
-            
+
         }
     }
-    
+
     func setProgress(_ progress: Float, _ animated: Bool) {
         self.progressView.setProgress(progress, animated: animated);
     }
-    
+
     func animateConnectionProblem(_ show: Bool) {
         if (show) {
             self.connectionProblemView.isHidden = false;
@@ -226,7 +226,7 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
             })
         }
     }
-        
+
     deinit {
         ChavahMessianicRadio.webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
     }
@@ -235,7 +235,7 @@ class ViewController: UIViewController, WKNavigationDelegate, AudioPlayerDelegat
 // This is where the web talks to us in Swift land.
 // It sends us messages like "pause the song", "set the audio src to https://...", etc.
 extension ViewController: WKScriptMessageHandler {
-    
+
   func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "print" {
             printView(webView: ChavahMessianicRadio.webView)
@@ -249,12 +249,12 @@ extension ViewController: WKScriptMessageHandler {
         if message.name == "push-permission-state" {
             handlePushState()
         }
-      
+
       // This is called when the web app calls into Swift.
       if message.name == "audiohandler" {
           let player = ChavahMessianicRadio.audioPlayer
           if let messageBody = message.body as? [String: Any], let action = messageBody["action"] as? String {
-              // Supported actions: 
+              // Supported actions:
               // - src
               // - currentTime
               // - volume
@@ -282,7 +282,7 @@ extension ViewController: WKScriptMessageHandler {
                   }
               }
           }
-          
+
           //ChavahMessianicRadio.webView.evaluateJavaScript("document.querySelector('audio').src = 'https://judahtemp.b-cdn.net/ios-webkit-audio-bug/1.mp3'; document.querySelector('audio').currentTime = 0;  document.querySelector('audio').play();  document.querySelector('.title').innerText = 'foo!';")
       }
   }

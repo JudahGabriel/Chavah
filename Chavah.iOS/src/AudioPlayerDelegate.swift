@@ -8,5 +8,5 @@
 import Foundation
 
 protocol AudioPlayerDelegate: AnyObject {
-    func dispatchEventToWeb(eventName: String)
+    func dispatchEventToWeb(eventName: String, eventDetail: String?)
 }
