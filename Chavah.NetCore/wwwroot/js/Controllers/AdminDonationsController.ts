@@ -2,6 +2,7 @@
 
     interface DueDonationViewModel extends Server.DueDonation {
         paypalState: "none" | "order-creating" | "order-created" | "order-confirming" | "order-confirmed" | "error";
+        hasDonationUrl: boolean;
     }
 
     interface PaypalDonationCallbackEvent {
@@ -122,6 +123,7 @@
         createDueDonationViewModel(due: Server.DueDonation): DueDonationViewModel {
             const vm: DueDonationViewModel = {
                 paypalState: "none",
+                hasDonationUrl: !!due.donationUrl && !due.donationUrl.includes("no-response"),
                 ...due
             };
             return vm;
