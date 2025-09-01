@@ -197,6 +197,9 @@ namespace BitShuva.Chavah.Controllers
             song.CommunityRank += (multiplier * changePositiveOrNegative);
             await UpdateSongRankStanding(song);
 
+            // Wait for index to catch up before returning.
+            DbSession.Advanced.WaitForIndexesAfterSaveChanges(timeout: TimeSpan.FromSeconds(3), throwOnTimeout: false);
+
             return song.CommunityRank;
         }
 
