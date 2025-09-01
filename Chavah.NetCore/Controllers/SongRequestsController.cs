@@ -169,11 +169,11 @@ namespace BitShuva.Chavah.Controllers
         [HttpGet]
         public async Task<List<Song>> GetRandomRecentlyRequestedSongs(int count)
         {
-            var dayAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(1));
+            var daysAgo = DateTime.UtcNow.Subtract(TimeSpan.FromDays(3));
             var songIds = await DbSession.Query<SongRequest>()
                 .Customize(x => x.RandomOrdering())
                 .Include(r => r.SongId)
-                .Where(r => r.DateTime > dayAgo)
+                .Where(r => r.DateTime > daysAgo)
                 .Take(count)
                 .Select(r => r.SongId)
                 .ToListAsync();
