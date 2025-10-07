@@ -21,15 +21,14 @@ namespace BitShuva.Chavah
                 {
                     webBuilder.ConfigureAppConfiguration((hostingContext, configBuilder) =>
                     {
-                        // based on environment Development = dev; Production = prod prefix in Azure Vault.
-                        var envName = hostingContext.HostingEnvironment.EnvironmentName;
-                        //var configuration = configBuilder.AddAzureKeyVault(hostingEnviromentName: envName, usePrefix: true);
-
-                        // helpful to see what was retrieved from all of the configuration providers.
-                        if (hostingContext.HostingEnvironment.IsDevelopment())
+                        var env = hostingContext.HostingEnvironment;
+                        configBuilder.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                                     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                        if (env.IsDevelopment())
                         {
-                            //configuration.DebugConfigurations();
+                            configBuilder.AddUserSecrets<Startup>(optional: true);
                         }
+                        //var configuration = configBuilder.AddAzureKeyVault(hostingEnviromentName: env.EnvironmentName, usePrefix: true);
                     })
                     .UseStartup<Startup>();
                 });

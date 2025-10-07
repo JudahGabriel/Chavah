@@ -68,6 +68,9 @@ namespace BitShuva.Chavah
             services.AddSingleton<BunnyCdnHttpClient>();
             services.AddTransient<PayPalService>();
 
+            // Register HttpClient for BunnyCdnManagerService
+            services.AddHttpClient<BunnyCdnManagerService>();
+
             services.AddBackgroundQueueWithLogging(1, TimeSpan.FromSeconds(5));
             services.AddHostedService<BlogPostNotificationCreator>();
             services.AddHostedService<EmailRetryService>();
