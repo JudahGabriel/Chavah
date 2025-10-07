@@ -23,7 +23,7 @@ namespace BitShuva.Chavah
                     {
                         // based on environment Development = dev; Production = prod prefix in Azure Vault.
                         var envName = hostingContext.HostingEnvironment.EnvironmentName;
-                        var configuration = configBuilder.AddAzureKeyVault(hostingEnviromentName: envName, usePrefix: true);
+                        //var configuration = configBuilder.AddAzureKeyVault(hostingEnviromentName: envName, usePrefix: true);
 
                         // helpful to see what was retrieved from all of the configuration providers.
                         if (hostingContext.HostingEnvironment.IsDevelopment())

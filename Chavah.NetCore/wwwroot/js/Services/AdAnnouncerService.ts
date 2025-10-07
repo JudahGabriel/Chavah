@@ -32,13 +32,6 @@
         }
 
         playAdAnnouncement() {
-            // Half the time, play the Sukkot 2025 ad
-            if (randomNumber(1, 2) === 1) {
-                const sukkotAdUrl = `${this.homeViewModel.soundEffects}/sukkot-west-coast-2025.mp3`;
-                this.audioPlayer.playNewUri(sukkotAdUrl);
-                return;
-            }
-
             const availableAds = 5;
             const randomAdNumber = randomNumber(1, availableAds);
             const adUrl = `${this.homeViewModel.soundEffects}/ad${randomAdNumber}x.mp3`;
