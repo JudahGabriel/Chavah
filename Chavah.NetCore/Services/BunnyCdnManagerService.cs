@@ -59,7 +59,7 @@ namespace BitShuva.Chavah.Services
             var artistFolder = GetAlphaNumericEnglish(song.Artist);
             var directory = $"{settings.Value.MusicDirectory}/{artistFolder}";
             var fileName = GetCdnSafeSongFileName(song.Artist, song.Album, song.Number, song.Name);
-            await bunnyStorage.DeleteObjectAsync($"{directory}/{fileName}");
+            await bunnyStorage.DeleteObjectAsync($"{settings.Value.StorageZone}/{directory}/{fileName}");
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace BitShuva.Chavah.Services
         /// <returns></returns>
         public async Task DeleteTempFileAsync(string tempFileName)
         {
-            await bunnyStorage.DeleteObjectAsync($"temp/{tempFileName}");
+            await bunnyStorage.DeleteObjectAsync($"{settings.Value.StorageZone}/temp/{tempFileName}");
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace BitShuva.Chavah.Services
             if (user.ProfilePicUrl != null)
             {
                 var fileName = user.ProfilePicUrl.OriginalString.Split('/').Last();
-                return bunnyStorage.DeleteObjectAsync($"{settings.Value.ProfilePicsDirectory}/{fileName}");
+                return bunnyStorage.DeleteObjectAsync($"{settings.Value.StorageZone}/{settings.Value.ProfilePicsDirectory}/{fileName}");
             }
 
             return Task.CompletedTask;
