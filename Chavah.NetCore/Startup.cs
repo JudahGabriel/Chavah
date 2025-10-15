@@ -60,7 +60,6 @@ namespace BitShuva.Chavah
             // Add application services.
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddTransient<IPushNotificationSender, PushNotificationSender>();
-            services.AddTransient<ICdnManagerService, BunnyCdnManagerService>();
             services.AddTransient<ISongService, SongService>();
             services.AddTransient<ISongUploadService, SongUploadService>();
             services.AddTransient<IAlbumService, AlbumService>();
@@ -69,7 +68,7 @@ namespace BitShuva.Chavah
             services.AddTransient<PayPalService>();
 
             // Register HttpClient for BunnyCdnManagerService
-            services.AddHttpClient<BunnyCdnManagerService>();
+            services.AddHttpClient<ICdnManagerService, BunnyCdnManagerService>();
 
             services.AddBackgroundQueueWithLogging(1, TimeSpan.FromSeconds(5));
             services.AddHostedService<BlogPostNotificationCreator>();

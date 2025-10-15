@@ -253,7 +253,8 @@ namespace BitShuva.Chavah.Services
         private async Task<Uri> UploadMedia(Uri source, string directory, string fileName)
         {
             using var sourceFile = await DownloadTempFileLocally(source);
-            return await UploadMedia(sourceFile.Stream, directory, fileName);
+            var uploadResult = await UploadMedia(sourceFile.Stream, directory, fileName);
+            return uploadResult;
         }
 
         public async Task<Uri> UploadMedia(Stream source, string directory, string fileName)
