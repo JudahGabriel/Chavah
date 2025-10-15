@@ -74,6 +74,7 @@
         newAlbum: string;
         newName: string;
         newHebrewName: string;
+        newUri: string;
         newTags: string[];
         newLyrics: string;
         newContributingArtists: string[];

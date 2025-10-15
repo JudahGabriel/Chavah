@@ -19,6 +19,7 @@ namespace BitShuva.Chavah.Models
             NewHebrewName = updated.HebrewName;
             NewLyrics = updated.Lyrics;
             NewTags = updated.Tags;
+            NewUri = updated.Uri;
             NewContributingArtists = updated.ContributingArtists;
             OldArtist = existing.Artist;
             OldAlbum = existing.Album;
@@ -26,6 +27,7 @@ namespace BitShuva.Chavah.Models
             OldName = existing.Name;
             OldHebrewName = existing.HebrewName;
             OldTags = existing.Tags;
+            OldUri = existing.Uri;
             OldContributingArtists = existing.ContributingArtists;
         }
 
@@ -39,11 +41,13 @@ namespace BitShuva.Chavah.Models
         public string NewName { get; set; } = string.Empty;
         public string NewHebrewName { get; set; } = string.Empty;
         public List<string> NewTags { get; set; } = new List<string>();
+        public Uri NewUri { get; set; } = new Uri("http://localhost/");
         public List<string> NewContributingArtists { get; set; } = new List<string>();
         public string NewLyrics { get; set; } = string.Empty;
         public string OldArtist { get; set; } = string.Empty;
         public string OldAlbum { get; set; } = string.Empty;
         public string OldLyrics { get; set; } = string.Empty;
+        public Uri OldUri = new Uri("http://localhost/");
         public string OldName { get; set; } = string.Empty;
         public string OldHebrewName { get; set; } = string.Empty;
         public List<string> OldTags { get; set; } = new List<string>();
@@ -57,6 +61,7 @@ namespace BitShuva.Chavah.Models
                 || NewHebrewName != OldHebrewName
                 || NewLyrics != OldLyrics
                 || !NewTags.SequenceEqual(OldTags)
+                || NewUri != OldUri
                 || !NewContributingArtists.SequenceEqual(OldContributingArtists);
         }
 
@@ -69,6 +74,7 @@ namespace BitShuva.Chavah.Models
             song.Tags = NewTags;
             song.HebrewName = NewHebrewName;
             song.ContributingArtists = NewContributingArtists;
+            song.Uri = NewUri;
         }
     }
 }

@@ -68,7 +68,8 @@ namespace BitShuva.Chavah.Controllers
             var songEdit = new SongEdit(existingSong, song)
             {
                 Id = songEditId,
-                UserId = user.Id!
+                UserId = user.Id!,
+                NewUri = song.Uri
             };
             if (songEdit.HasAnyChanges())
             {

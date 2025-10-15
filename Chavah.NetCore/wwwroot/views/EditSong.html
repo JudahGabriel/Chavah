@@ -30,6 +30,10 @@
                             <label for="albumInput">Album</label>
                             <input type="text" class="form-control" id="albumInput" placeholder="Album" ng-model="vm.song.album">
                         </div>
+                        <div class="form-group" ng-show="vm.isAdmin">
+                            <label for="uriInput">MP3 URL</label>
+                            <input type="url" class="form-control" id="uriInput" placeholder="https://..." ng-model="vm.song.uri">
+                        </div>
                         <div class="form-group">
                             <label for="lyricsInput">Lyrics</label>
                             <textarea class="form-control" ng-model="vm.song.lyrics" rows="15" placeholder="Type the lyrics here" trigger-focus="vm.isLyricsFocused"></textarea>

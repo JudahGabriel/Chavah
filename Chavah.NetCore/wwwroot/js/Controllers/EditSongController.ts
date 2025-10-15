@@ -45,6 +45,7 @@
             this.song = Song.empty();
             this.song.id = songEdit.songId;
             this.song.name = songEdit.newName;
+            this.song.uri = songEdit.newUri;
             this.song.hebrewName = songEdit.newHebrewName;
             this.song.album = songEdit.newAlbum;
             this.song.artist = songEdit.newArtist;
