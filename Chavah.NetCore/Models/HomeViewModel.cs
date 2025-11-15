@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Settings;
@@ -31,7 +32,7 @@ namespace BitShuva.Chavah.Models
         /// <summary>
         /// The image to use for social media network previews of a Chavah link.
         /// </summary>
-        public string? DescriptiveImageUrl { get; set; }
+        public Uri? DescriptiveImageUrl { get; set; }
 
         /// <summary>
         /// Whether the app is running in debug mode.
@@ -136,7 +137,7 @@ namespace BitShuva.Chavah.Models
             if (song != null)
             {
                 vm.PageTitle = $"{song.Name} by {song.Artist} on {appOptions.Title}";
-                vm.DescriptiveImageUrl = song.AlbumArtUri?.ToString();
+                vm.DescriptiveImageUrl = song.AlbumArtUri;
                 vm.Song = song;
                 vm.SongNth = song.Number.ToNumberWord();
             }

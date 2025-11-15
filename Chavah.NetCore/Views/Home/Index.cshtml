@@ -1,6 +1,6 @@
 ﻿@model BitShuva.Chavah.Models.HomeViewModel
 @* Attach an image that Facebook will use if someone links to a song. *@
-@if (!string.IsNullOrEmpty(Model.DescriptiveImageUrl))
+@if (Model.DescriptiveImageUrl != null)
 {
     <img src="@Model.DescriptiveImageUrl" style="display:none;" />
 }
