@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 using Raven.Client.Documents;
-using Raven.StructuredLog;
+using Raven.StructuredLogger;
 
 namespace BitShuva.Chavah.Services
 {

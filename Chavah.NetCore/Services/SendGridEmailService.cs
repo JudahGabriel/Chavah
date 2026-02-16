@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using Raven.Client.Documents;
-using Raven.StructuredLog;
+using Raven.StructuredLogger;
 
 using SendGrid.Helpers.Mail;
 

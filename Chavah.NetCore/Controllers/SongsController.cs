@@ -17,7 +17,7 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Operations.Counters;
 using Raven.Client.Documents.Session;
-using Raven.StructuredLog;
+using Raven.StructuredLogger;
 
 namespace BitShuva.Chavah.Controllers
 {

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using Raven.Client.Documents.Session;
-using Raven.StructuredLog;
+using Raven.StructuredLogger;
 
 namespace BitShuva.Chavah.Controllers
 {

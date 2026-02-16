@@ -31,7 +31,7 @@ using Polly;
 using Raven.DependencyInjection;
 using Raven.Identity;
 using Raven.Migrations;
-using Raven.StructuredLog;
+using Raven.StructuredLogger;
 using Microsoft.Extensions.Hosting;
 
 namespace BitShuva.Chavah

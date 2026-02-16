@@ -33,7 +33,13 @@
 
         playAdAnnouncement() {
             const availableAds = 6;
-            const randomAdNumber = randomNumber(1, availableAds);
+            let randomAdNumber = randomNumber(1, availableAds);
+
+            // Ad 6 is Eli's ad. Let's play it more often than the others.
+            if (randomAdNumber !== 6 && Math.random() > 0.5) {
+                randomAdNumber = 6;
+            }
+
             const adUrl = `${this.homeViewModel.soundEffects}/ad${randomAdNumber}x.mp3`;
             this.audioPlayer.playNewUri(adUrl);
         }

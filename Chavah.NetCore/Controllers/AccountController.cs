@@ -24,7 +24,7 @@ using Pwned.AspNetCore;
 
 using Raven.Client.Documents.BulkInsert;
 using Raven.Client.Documents.Session;
-using Raven.StructuredLog;
+using Raven.StructuredLogger;
 
 namespace BitShuva.Chavah.Controllers
 {
