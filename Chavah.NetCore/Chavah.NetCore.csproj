@@ -46,12 +46,12 @@
     <PackageReference Include="PayPalServerSDK" Version="0.6.1" />
     <PackageReference Include="Pwned.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Quartz" Version="3.8.0" />
-    <PackageReference Include="RavenDB.Client" Version="6.0.1" />
-    <PackageReference Include="RavenDB.Identity" Version="8.0.9" />
-    <PackageReference Include="RavenDB.StructuredLogger" Version="6.0.1" />
-    <PackageReference Include="RavenMigrations" Version="5.0.1" />
-    <PackageReference Include="RavenDB.DependencyInjection" Version="4.0.2" />
-    <PackageReference Include="Sendgrid" Version="9.28.1" />
+    <PackageReference Include="RavenDB.Client" Version="7.2.0" />
+    <PackageReference Include="RavenDB.Identity" Version="9.0.1" />
+    <PackageReference Include="RavenDB.StructuredLogger" Version="7.1.0" />
+    <PackageReference Include="RavenMigrations" Version="6.0.2" />
+    <PackageReference Include="RavenDB.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Sendgrid" Version="9.29.3" />
     <PackageReference Include="SimpleSitemap" Version="3.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="System.Interactive" Version="5.0.0" />

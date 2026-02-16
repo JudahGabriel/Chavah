@@ -32,7 +32,7 @@
         }
 
         playAdAnnouncement() {
-            const availableAds = 5;
+            const availableAds = 6;
             const randomAdNumber = randomNumber(1, availableAds);
             const adUrl = `${this.homeViewModel.soundEffects}/ad${randomAdNumber}x.mp3`;
             this.audioPlayer.playNewUri(adUrl);

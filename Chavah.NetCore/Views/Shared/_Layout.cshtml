@@ -63,8 +63,7 @@
         <meta property="og:type" content="music.song" />
         <meta property="og:title" content="@Model.Song.Name by @Model.Song.Artist" />
         <meta property="og:description" content="Courtesy of Chavah Messianic Radio - The very best Messianic Jewish and Hebrew Roots music on the web" />
-        @*We can't use Song.AlbumArtUri because that URL will be on a different domain, and Facebook restricts us to use only images on our domain. So we'll trick it with a redirect.*@
-        <meta property="og:image" content="@appOptions?.DefaultUrl/api/albums/getAlbumArtBySongId?songId=@Model.Song.Id" />
+        <meta property="og:image" content="@Model.Song.AlbumArtUri" />
     }
     else if (appOptions != null)
     {
