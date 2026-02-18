@@ -5,6 +5,7 @@
         cropImageModal: string;
         songRequestResult: string;
         confirmDeleteSongModal: string;
+        confirmUnlikeSongModal: string;
         headerPartial: string;
         footerPartial: string;
         adminSidebar: string;

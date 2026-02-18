@@ -1,0 +1,17 @@
+﻿<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" ng-click="vm.close()" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">Remove song like?</h4>
+</div>
+<div class="modal-body">
+    <strong>You already like this song.</strong>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="vm.close()">
+        <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+        Keep my song like
+    </button>
+    <button type="button" class="btn btn-danger" ng-click="vm.unlikeSong()" ng-disabled="vm.saving">
+        <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
+        Remove my song like
+    </button>
+</div>

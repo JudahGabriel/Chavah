@@ -218,7 +218,6 @@
                         this.dislikeSong(currentSong);
                         this.songBatch.playNext();
                     } else {
-                        // Otherwise, set as unranked.
                         this.setSongAsUnranked(currentSong);
                     }
                 }
@@ -230,10 +229,10 @@
                 const currentSong = this.audioPlayer.song.getValue();
                 if (currentSong) {
                     // If we haven't liked the song, like it.
-                    if (currentSong.songLike !== SongLike.Liked) {
+                    if (currentSong.songLike !== SongLike.Liked) { 
                         this.likeSong(currentSong);
                     } else {
-                        this.setSongAsUnranked(currentSong);
+                        this.appNav.confirmUnlikeSong(currentSong);
                     }
                 }
             }

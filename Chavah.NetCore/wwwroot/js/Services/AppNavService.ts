@@ -96,6 +96,17 @@
             });
         }
 
+        confirmUnlikeSong(song: Song): ng.ui.bootstrap.IModalServiceInstance {
+            return this.$uibModal.open({
+                controller: "ConfirmUnlikeSongController as vm",
+                templateUrl: this.templatePaths.confirmUnlikeSongModal,
+                windowClass: "confirm-unlike-song-modal",
+                resolve: {
+                    song: () => song
+                }
+            });
+        }
+
         pushSubscriptionSuccessful(): ng.ui.bootstrap.IModalServiceInstance {
             return this.$uibModal.open({
                 templateUrl: this.templatePaths.pushSubscriptionSuccessful

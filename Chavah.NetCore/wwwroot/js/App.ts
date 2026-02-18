@@ -38,6 +38,7 @@
         artistList: findCacheBustedView("/partials/ArtistList.html"),
         songRequestModal: findCacheBustedView("/modals/RequestSongModal.html"),
         confirmDeleteSongModal: findCacheBustedView("/modals/ConfirmDeleteSongModal.html"),
+        confirmUnlikeSongModal: findCacheBustedView("/modals/ConfirmUnlikeSongModal.html"),
         songRequestResult: findCacheBustedView("/partials/SongRequestResult.html"),
         headerPartial: findCacheBustedView("/partials/Header.html"),
         footerPartial: findCacheBustedView("/partials/Footer.html"),
