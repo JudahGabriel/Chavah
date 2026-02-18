@@ -22,7 +22,7 @@ namespace BitShuva.Chavah {
         unlikeSong() {
             this.saving = true;
             this.song.songLike = SongLike.Unranked;
-            this.likeApi.dislikeSong(this.song.id)
+            this.likeApi.setSongAsUnranked(this.song.id)
                 .then(rank => {
                     this.song.communityRank = rank;
                     this.close();
