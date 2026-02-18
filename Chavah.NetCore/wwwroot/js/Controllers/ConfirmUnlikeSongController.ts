@@ -19,12 +19,12 @@ namespace BitShuva.Chavah {
             this.$uibModalInstance.close(false);
         }
 
-        unlikeSong(song: Song) {
+        unlikeSong() {
             this.saving = true;
-            song.songLike = SongLike.Unranked;
-            this.likeApi.dislikeSong(song.id)
+            this.song.songLike = SongLike.Unranked;
+            this.likeApi.dislikeSong(this.song.id)
                 .then(rank => {
-                    song.communityRank = rank;
+                    this.song.communityRank = rank;
                     this.close();
                 })
                 .finally(() => this.saving = false);
