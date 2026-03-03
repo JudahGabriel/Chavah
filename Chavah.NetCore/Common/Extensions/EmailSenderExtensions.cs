@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Encodings.Web;
 
 using BitShuva.Chavah.Models;
@@ -51,6 +52,22 @@ namespace BitShuva.Chavah.Common
                 </p>
                 <p>{message.Message}</p>";
             emailSender.QueueSendEmail(recipient, subject, body, message.Email);
+        }
+
+        public static void QueueAlbumSubmissionEmail(this IEmailService emailSender, AlbumSubmissionByArtist album, string? userName, string recipient)
+        {
+            var subject = $"New album submission: {album.Name} by {album.Artist}";
+            var body = $@"
+                <p>A user has uploaded their music to Chavah for your review:</p>
+                <p>{album.Artist} - {album.ArtistEmail}</p>
+                <p>Uploaded by {userName ?? "unknown user"} {album.ArtistEmail}</p>
+                <p><img src='{album.AlbumArt.Url}' style='max-width: 500px; max-height: auto' /></p>
+                <ol>
+                    {album.Songs.Select(s => $"<li><a href='{s.Url}'>{s.Name}</a> <audio controls src='{s.Url}'></audio></li>")}
+                </ol>
+                <p>Please visit <a href='https://messianicradio.com/#/admin/albums'>Chavah admin></a> to approve or reject.</p>
+            ";
+            emailSender.QueueSendEmail(recipient, subject, body);
         }
 
         public static void QueueWelcomeEmail(this IEmailService emailSender, string recipient)

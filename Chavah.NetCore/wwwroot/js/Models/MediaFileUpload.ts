@@ -6,9 +6,14 @@
         name: string;
 
         /**
-         * The ID of the temp file. This will be null if the media file hasn't been uploaded yet.
+         * The database ID of the temp file. This will be null if the media file hasn't been uploaded yet.
          */
         id: string | null;
+
+        /**
+         * The CDN ID of the uploaded asset. This will be null if the media file hasn't been uploaded, or if an error occurred during upload.
+         */
+        cdnId: string | null;
 
         /**
          * The URL of the uploaded asset. This will be null if the media file hasn't been uploaded.

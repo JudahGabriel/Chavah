@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using BitShuva.Chavah.Common;
 using BitShuva.Chavah.Models;
 using BitShuva.Chavah.Models.Indexes;
-using BitShuva.Chavah.Settings;
 using BitShuva.Chavah.Services;
+using BitShuva.Chavah.Settings;
+using BitShuva.Services;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,7 +21,6 @@ using Microsoft.Extensions.Options;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
-using Microsoft.AspNetCore.Http;
 
 namespace BitShuva.Chavah.Controllers
 {
@@ -156,7 +157,7 @@ namespace BitShuva.Chavah.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = AppUser.AdminRole)]
+        // [Authorize(Roles = AppUser.AdminRole)] // Commented out: We no longer require admin role for this, because /music/submission page where artists can upload their own music. To prevent abuse, we limit uploads to 100 per day.
         public async Task<TempFile> UploadTempFile([FromForm] IFormFile file)
         {
             if (file == null)
@@ -182,6 +183,31 @@ namespace BitShuva.Chavah.Controllers
                 throw new ArgumentOutOfRangeException(nameof(file), file.Length, $"Too large. Max size is {maxSize} bytes");
             }
 
+            // To prevent abuse, we limit the number of uploads to 100 per day total.
+            var oneDayAgo = DateTimeOffset.UtcNow.AddDays(-1);
+            var tempFilesTodayCount = await DbSession.Query<TempFile>()
+                .Where(tf => tf.CreatedAt >= oneDayAgo)
+                .CountAsync();
+            if (tempFilesTodayCount > 100)
+            {
+                logger.LogError("Tried to upload a temp file, but there have already been {0} in the last day. This is limited to prevent abuse.", tempFilesTodayCount);
+                throw new InvalidOperationException($"Cannot upload temp file because there have been too many temp files uploaded recently.");
+            }
+
+            // Clean up any old temp files.
+            var tempFilesReadyForDeletion = await DbSession.Query<TempFile>()
+                .Where(t => t.CreatedAt < DateTimeOffset.UtcNow.AddDays(30))
+                .ToListAsync();
+            if (tempFilesReadyForDeletion.Count > 0)
+            {
+                foreach (var tempFileToDelete in tempFilesReadyForDeletion)
+                {
+                    await cdnManagerService.DeleteTempFileAsync(tempFileToDelete.CdnId);
+                    DbSession.Delete(tempFileToDelete);
+                }
+                await DbSession.SaveChangesAsync();
+            }
+
             // OK, we're cool to upload it to our CDN.
             using var mediaFileStream = file.OpenReadStream();
             var fileExtension = isMp3 ? ".mp3" : isPng ? ".png" : isWebp ? ".webp" : ".jpg";
@@ -191,7 +217,8 @@ namespace BitShuva.Chavah.Controllers
             {
                 Url = tempFileUri,
                 Name = fileName,
-                Id = fileName
+                CdnId = fileName,
+                Id = $"TempFiles/{fileName}/{DateTime.UtcNow:O}"
             };
         }
 
@@ -201,8 +228,8 @@ namespace BitShuva.Chavah.Controllers
         {
             // Put the album art on the CDN with the correct file name containing the album name, artist name, etc.
             // Then Delete the temporary album art file.
-            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtAsync(album.AlbumArt.Url, album.Artist, album.Name, System.IO.Path.GetExtension(album.AlbumArt.Id));
-            await cdnManagerService.DeleteTempFileAsync(album.AlbumArt.Id);
+            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtAsync(album.AlbumArt.Url, album.Artist, album.Name, System.IO.Path.GetExtension(album.AlbumArt.CdnId));
+            await cdnManagerService.DeleteTempFileAsync(album.AlbumArt.CdnId);
 
             // Store the new album if it doesn't exist already.
             var existingAlbum = await DbSession.Query<Album>()
@@ -295,6 +322,33 @@ namespace BitShuva.Chavah.Controllers
             }
 
             return existingAlbum.Id!;
+        }
+
+        /// <summary>
+        /// Stores an AlbumSubmission object in the database and notifies admins via email that an album submission is waiting for approval.
+        /// </summary>
+        /// <param name="album">The album being uploaded.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<string> UploadAlbumSubmissionByArtist([FromBody] AlbumSubmissionByArtist album, [FromServices] IEmailService emailSender, [FromServices] IOptionsMonitor<EmailSettings> emailOptions)
+        {
+            if (album.AlbumArt == null)
+            {
+                throw new ArgumentException("Album art must not be null.");
+            }
+            if (album.Songs == null || album.Songs.Count == 0)
+            {
+                throw new ArgumentException("Album upload must have at least one song.");
+            }
+
+            // Save it in the database.
+            album.Id = $"AlbumSubmissionsByArtist/{album.Artist}/{album.Name}/{DateTime.UtcNow:O}";
+            await DbSession.StoreAsync(album);
+
+            // Notify admins.
+            emailSender.QueueAlbumSubmissionEmail(album, GetUserId(), emailOptions.CurrentValue.SenderEmail);
+
+            return album.Id;
         }
 
         [HttpGet]

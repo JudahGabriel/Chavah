@@ -12,10 +12,19 @@
         }
 
         /**
-         * Uploads a new album. Returns a promise containing the ID of the new album.
+         * Uploads a new album. This is an admin-only endpoint. Returns a promise containing the ID of the new album.
          */
         upload(album: Server.AlbumUpload): ng.IPromise<string> {
             return this.httpApi.post("/api/albums/upload", album);
+        }
+
+        /**
+         * Uploads a new album as submitted by the artist themselves via the /music/submission page.
+         * @param album The album submission.
+         * @returns The ID of the album submission.
+         */
+        uploadAlbumSubmissionByArtist(album: Server.AlbumUpload): ng.IPromise<string> {
+            return this.httpApi.post("/api/albums/uploadAlbumSubmissionByArtist", album);
         }
 
         /**
@@ -57,8 +66,7 @@
                 artist,
                 album,
             };
-            return this.httpApi.query<Album | null>("/api/albums/getByArtistAlbum",
-                                                                args, AlbumApiService.albumSelector);
+            return this.httpApi.query<Album | null>("/api/albums/getByArtistAlbum", args, AlbumApiService.albumSelector);
         }
 
         save(album: Album): ng.IPromise<Album> {

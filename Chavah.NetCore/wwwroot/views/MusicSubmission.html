@@ -1,0 +1,141 @@
+﻿<section class="music-submission-page" ng-controller="MusicSubmissionController as vm">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h1 class="page-header" ng-hide="vm.submissionState === 'complete'">Submit Your Music to Chavah</h1>
+                <p class="lead" ng-hide="vm.submissionState === 'complete'">Share your music with the Messianic community on Chavah. Upload your songs (MP3) and album art (JPG, PNG, or WEBP) below.</p>
+
+                <form class="music-submission-form" name="musicSubmissionForm" ng-hide="vm.submissionState === 'complete'">
+
+                    <!-- Artist info -->
+                    <div class="form-group">
+                        <label for="artist-name">
+                            <i class="fa fa-user-circle"></i>
+                            Artist
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" id="artist-name" class="form-control" ng-model="vm.artist" placeholder="Your Artist Name" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="album-name">
+                            <i class="fa fa-circle"></i>
+                            Album
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" id="album-name" class="form-control" ng-model="vm.album" placeholder="Your Album Name" required />
+                    </div>
+
+                    <!-- Email Address -->
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fa fa-envelope"></i> Your email address
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="email" id="email" name="email" class="form-control" ng-model="vm.email" placeholder="your.email@example.com" required />
+                        <p class="help-block">We'll use this to contact you about your submission</p>
+                    </div>
+
+                    <!-- Purchase URL -->
+                    <div class="form-group">
+                        <label for="purchaseUrl">
+                            <i class="fa fa-link"></i> Link to your website, Bandcamp, YouTube, or ministry site.
+                        </label>
+                        <input type="text" id="purchase-url" name="purchaseUrl" class="form-control" ng-model="vm.purchaseUrl" placeholder="https://my-web-site.com" />
+                        <p class="help-block">This URL will be displayed whenever Chavah plays your music.</p>
+                    </div>
+
+                    <!-- Upload Album Art -->
+                    <div class="form-group">
+                        <label for="albumArt">
+                            <i class="fa fa-picture-o"></i> Upload album art
+                            <span class="text-danger">*</span>
+                            <span class="text-muted">(JPG, PNG, or WEBP)</span>
+                        </label>
+                        <input type="file"
+                               id="albumArt"
+                               name="albumArt"
+                               class="form-control"
+                               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                               input
+                               file-upload-changed="vm.albumArtChanged(e)" />
+                        <p class="help-block">Recommended size: 1000x1000 pixels or larger.</p>
+                    </div>
+
+                    <!-- Upload Songs -->
+                    <div class="form-group">
+                        <label for="songFiles">
+                            <i class="fa fa-music"></i> Upload songs
+                            <span class="text-danger">*</span>
+                            <span class="text-muted">(MP3 format)</span>
+                        </label>
+                        <input type="file" id="songFiles" name="songFiles" class="form-control" accept=".mp3,audio/mpeg" multiple file-upload-changed="vm.mp3sChanged(e)" />
+                        <ol class="songs-container">
+                            <li class="song" ng-repeat="song in vm.songs">
+                                <div style="display: flex; gap: 10px; align-items: baseline;">
+                                    <input id="song-{{vm.songs.indexOf(song)}}" class="form-control" required placeholder="Song Name" ng-model="song.name" />
+                                    <button type="button" class="btn btn-default" ng-click="vm.moveSongUp(song)" title="Move the song up in the list"><i class="fa fa-chevron-up"></i></button>
+                                    <button type="button" class="btn btn-default" ng-click="vm.moveSongDown(song)" title="Move the song down in the list"><i class="fa fa-chevron-down"></i></button>
+                                    <button type="button" class="btn btn-danger" ng-click="vm.removeSong(song)" title="Remove the song"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- Royalty Payments Checkbox -->
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="wantsRoyalties" name="wantsRoyalties" ng-model="vm.enrollInMessiahsMusicFund" />
+                                I want to receive royalty payments from Chavah
+                            </label>
+                        </div>
+                        <p class="help-block">Check this box if you'd like to receive monthly royalty payments based on your music's play count. For more info, see <a target="_blank" href="/give">Messiah's Music Fund</a></p>
+                    </div>
+
+                    <div class="form-group paypal-email-address-group" ng-show="vm.enrollInMessiahsMusicFund">
+                        <label for="paypal-email">
+                            PayPal email address
+                        </label>
+                        <input type="email" id="paypal-email" placeholder="your.paypal@example.com" class="form-control" ng-model="vm.payPalEmail" />
+                        <p class="help-block">Chavah will send royalty payments to this PayPal address.</p>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" ng-click="vm.submit(e)" ng-disabled="vm.submissionState === 'saving'">
+                            <span ng-hide="vm.submissionState === 'saving'">
+                                <i class="fa fa-cloud-upload"></i> Submit Music
+                            </span>
+                            <span ng-show="vm.submissionState === 'saving'">
+                                <i class="fa fa-circle-o-notch fa-spin"></i> Submitting, please wait...
+                            </span>
+                        </button>
+                    </div>
+
+                </form>
+
+                <!--Success-->
+                <div ng-show="vm.submissionState === 'complete'">
+                    <h1 class="page-header">
+                        <i class="fa fa-check-circle text-success"></i> Submitted! Chavah thanks you (<span class="bow">✿</span>◠‿◠)
+                    </h1>
+                    <p class="lead">
+                        Your music has been submitted to Chavah and will be reviewed. If approved, we'll contact you by email. Questions or comments? <a href="/#/support">Contact us</a>. Todah rabah, thanks for contributing your music to Chavah!
+                    </p>
+                    <a class="btn btn-primary" href="#/"><i class="fa fa-home"></i> Home</a>
+                </div>
+
+                <!--Failure-->
+                <div ng-show="vm.submissionState === 'error'">
+                    <h3 class="text-danger">
+                        <i class="fa fa-exclamation-circle"></i> Oh no, there was an error. (<span class="bow">✿</span>×_×;）
+                    </h3>
+                    <p>
+                        Sorry, there was a problem submitting your music. It's probably our fault. You can try submitting your music again, or <a href="/#/support">contact us</a> if you keep hitting the problem.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

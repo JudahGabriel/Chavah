@@ -61,7 +61,12 @@ namespace BitShuva.Chavah.Services
                 {
                     // We were able to update the Song.Uri to the finalized file name URI.
                     // We can safely delete the temporary song.
-                    await TryDeleteTempFileAsync(tempUpload.Id);
+                    await TryDeleteTempFileAsync(tempUpload.CdnId);
+
+                    // Also, delete the TempFile from the database.
+                    using var dbSession = db.OpenAsyncSession();
+                    dbSession.Delete(tempUpload.Id);
+                    await dbSession.SaveChangesAsync();
                 }
             }
         }

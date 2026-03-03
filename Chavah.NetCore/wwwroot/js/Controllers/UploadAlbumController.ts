@@ -95,7 +95,8 @@ namespace BitShuva.Chavah {
                 error: null,
                 url: null,
                 status: "queued",
-                id: null
+                id: null,
+                cdnId: null
             };
         }
 
@@ -121,6 +122,7 @@ namespace BitShuva.Chavah {
         markUploadAsCompleted(upload: MediaFileUpload, tempFile: Server.TempFile) {
             upload.status = "completed";
             upload.url = tempFile.url;
+            upload.cdnId = tempFile.cdnId;
             upload.id = tempFile.id;
             upload.error = null;
         }
@@ -266,7 +268,9 @@ namespace BitShuva.Chavah {
             return {
                 name: file.name,
                 url: file.url!,
-                id: file.id
+                id: file.id,
+                cdnId: file.cdnId,
+                createdAt: new Date().toISOString(),
             };
         }
 

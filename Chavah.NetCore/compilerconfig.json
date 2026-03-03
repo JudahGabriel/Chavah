@@ -106,5 +106,9 @@
   {
     "outputFile": "wwwroot/css/app/recent.css",
     "inputFile": "wwwroot/css/app/recent.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/musicSubmission.css",
+    "inputFile": "wwwroot/css/app/musicSubmission.less"
   }
 ]

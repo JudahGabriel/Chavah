@@ -62,6 +62,8 @@
         url: string;
         name: string;
         id: string;
+        cdnId: string | null;
+        createdAt: string;
     }
 
     export interface SongEdit {
@@ -99,6 +101,11 @@
         backColor: string;
         mutedColor: string;
         textShadowColor: string;
+    }
+
+    export interface AlbumSubmissionByArtist extends AlbumUpload {
+        artistEmail: string;
+        artistPayPalEmail: string | null;
     }
 
     export interface Album {

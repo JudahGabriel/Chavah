@@ -45,7 +45,7 @@
         adminSidebar: findCacheBustedView("/partials/AdminSidebar.html"),
         cropImageModal: findCacheBustedView("/modals/CropImageModal.html"),
         pushSubscriptionSuccessful: findCacheBustedView("/modals/PushSubscriptionSuccessful.html"),
-        errorPlayingAudioModal: findCacheBustedView("/modals/ErrorPlayingAudioModal.html")
+        errorPlayingAudioModal: findCacheBustedView("/modals/ErrorPlayingAudioModal.html"),
     };
     App.constant("templatePaths", templatePaths);
     
@@ -103,6 +103,8 @@
                 .when("/admin/donations", createRoute("/AdminDonations.html", RouteAccess.Admin))
                 .when("/admin/users", createRoute("/AdminUsers.html", RouteAccess.Admin))
                 .when("/admin/ioslogs", createRoute("/AdminIOSLogs.html", RouteAccess.Admin))
+
+                .when("/music/submission", createRoute("/MusicSubmission.html", RouteAccess.Anonymous))
 
                 .otherwise({
                     redirectTo: "/nowplaying",
