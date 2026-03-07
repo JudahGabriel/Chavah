@@ -34,6 +34,11 @@ namespace BitShuva.Chavah.Models
         public bool HasDeclinedDonations { get; set; }
 
         /// <summary>
+        /// Gets the contact for the artist.
+        /// </summary>
+        public string Contact { get; set; }
+
+        /// <summary>
         /// Gets the name of the artist including any disambiguation.
         /// </summary>
         /// <returns></returns>

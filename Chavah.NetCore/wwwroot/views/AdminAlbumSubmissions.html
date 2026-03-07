@@ -1,0 +1,75 @@
+﻿<section class="admin-album-submissions-page admin-page" ng-controller="AdminAlbumSubmissionsController as vm">
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+            <div class="row">
+                <div class="col-xs-12 col-sm-3">
+                    <div ng-include="Partials.adminSidebar" ng-init="adminPage = 'album-submissions'"></div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="row" ng-show="vm.hasLoaded && vm.submissions.length === 0">
+                        <div class="col-xs-12">
+                            <h3 class="text-center"><i class="fa fa-info-circle text-info"></i> No pending album submissions</h3>
+                        </div>
+                    </div>
+
+                    <div class="row submissions-list-container" ng-show="vm.submissions.length">
+                        <div class="col-xs-12 col-sm-3">
+                            <div class="list-group submissions-list">
+                                <a href="javascript:void(0)" class="list-group-item" ng-repeat="album in vm.submissions" ng-class="{ active: vm.currentAlbum === album }" ng-click="vm.setCurrentAlbum(album)">
+                                    {{album.artist}} - {{album.name}}
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-9">
+
+                            <div ng-show="vm.currentAlbum">
+
+                                <h3>{{vm.currentAlbum.artist}} - {{vm.currentAlbum.name}}</h3>
+                                <h5>Submitted by {{vm.currentAlbum.artistEmail}}</h5>
+
+                                <div ng-include="Partials.albumPreviewer" ng-init="artistName = vm.currentAlbum.artist; albumName = vm.currentAlbum.name; albumArt = vm.currentAlbum;"></div>
+
+                                <div class="songs-container d-flex flex-column">
+                                    <h3>Song list</h3>
+                                    <div class="song-container d-flex" ng-repeat="song in vm.currentAlbum.songs">
+                                        <h4>{{vm.currentAlbum.songs.indexOf(song) + 1}}.</h4>
+                                        <div>
+                                            <input type="text" class="form-control" ng-model="song.name" />
+                                            <audio controls src="{{song.url}}"></audio>
+                                        </div>
+                                        <button class="btn btn-default" title="Move up" ng-click="vm.moveSongUp(song)">
+                                            <i class="fa fa-chevron-up"></i>
+                                        </button>
+                                        <button class="btn btn-default" title="Move down" ng-click="vm.moveSongDown(song)">
+                                            <i class="fa fa-chevron-down"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger" ng-click="vm.removeSong(song)" title="Remove the song">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="footer-buttons d-flex">
+                                    <button type="button" class="btn btn-success" ng-click="vm.approve()" ng-disabled="vm.isSaving">
+                                        <i class="fa fa-check"></i>
+                                        Approve
+                                    </button>
+                                    <button type="button" class="btn btn-danger" ng-click="vm.reject()" ng-disabled="vm.isSaving">
+                                        <i class="fa fa-trash"></i>
+                                        Reject
+                                    </button>
+                                </div>
+                                <h4 class="text-danger" ng-show="vm.errorMessage">
+                                    <br />
+                                    {{vm.errorMessage}}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

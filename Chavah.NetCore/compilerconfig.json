@@ -110,5 +110,13 @@
   {
     "outputFile": "wwwroot/css/app/musicSubmission.css",
     "inputFile": "wwwroot/css/app/musicSubmission.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/adminAlbumSubmissions.css",
+    "inputFile": "wwwroot/css/app/adminAlbumSubmissions.less"
+  },
+  {
+    "outputFile": "wwwroot/css/app/albumPreviewer.css",
+    "inputFile": "wwwroot/css/app/albumPreviewer.less"
   }
 ]

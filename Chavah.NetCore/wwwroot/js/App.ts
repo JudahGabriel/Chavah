@@ -46,6 +46,7 @@
         cropImageModal: findCacheBustedView("/modals/CropImageModal.html"),
         pushSubscriptionSuccessful: findCacheBustedView("/modals/PushSubscriptionSuccessful.html"),
         errorPlayingAudioModal: findCacheBustedView("/modals/ErrorPlayingAudioModal.html"),
+        albumPreviewer: findCacheBustedView("/partials/AlbumPreviewer.html")
     };
     App.constant("templatePaths", templatePaths);
     
@@ -100,6 +101,7 @@
                 .when("/admin/tags", createRoute("/TagEditor.html", RouteAccess.Admin))
                 .when("/admin/logs", createRoute("/LogEditor.html", RouteAccess.Admin))
                 .when("/admin/songs", { redirectTo: "/admin" })
+                .when("/admin/albums/submissions", createRoute("/AdminAlbumSubmissions.html", RouteAccess.Admin))
                 .when("/admin/donations", createRoute("/AdminDonations.html", RouteAccess.Admin))
                 .when("/admin/users", createRoute("/AdminUsers.html", RouteAccess.Admin))
                 .when("/admin/ioslogs", createRoute("/AdminIOSLogs.html", RouteAccess.Admin))

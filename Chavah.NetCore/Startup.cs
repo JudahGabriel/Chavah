@@ -73,6 +73,7 @@ namespace BitShuva.Chavah
             services.AddBackgroundQueueWithLogging(1, TimeSpan.FromSeconds(5));
             services.AddHostedService<BlogPostNotificationCreator>();
             services.AddHostedService<EmailRetryService>();
+            services.AddHostedService<AlbumSubmissionCleanup>();
             services.AddCacheBustedAngularViews("/views");
 
             // Add RavenDB document store, session, and migrations.
@@ -97,7 +98,9 @@ namespace BitShuva.Chavah
                 .AddDefaultTokenProviders()
                 .AddRavenDbIdentityStores<AppUser>(); // Use Raven for users and roles.
 
+#if !DEBUG
             services.InstallIndexes();
+#endif
             services.AddMemoryCache();
 
             services.AddApiVersioning(v =>

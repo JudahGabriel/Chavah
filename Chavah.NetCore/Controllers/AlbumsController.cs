@@ -76,6 +76,142 @@ namespace BitShuva.Chavah.Controllers
             };
         }
 
+        /// <summary>
+        /// Gets the list of album submissions.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task<List<AlbumSubmissionByArtist>> GetSubmissions()
+        {
+            return await DbSession.Query<AlbumSubmissionByArtist>()
+                .Where(s => s.Status == ApprovalStatus.Pending)
+                .Take(100)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Approves an album submission, converting it to a permanent album with songs live on Chavah.
+        /// </summary>
+        /// <param name="submission"></param>
+        /// <returns>The ID of the new album.</returns>
+        [HttpPost]
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task<string> ApproveSubmission([FromBody] AlbumSubmissionByArtist submission)
+        {
+            // Put the album art on the CDN with the correct file name containing the album name, artist name, etc.
+            // Then Delete the temporary album art file.
+            var albumArtUriCdn = await cdnManagerService.UploadAlbumArtAsync(submission.AlbumArt.Url, submission.Artist, submission.Name, System.IO.Path.GetExtension(submission.AlbumArt.CdnId));
+            await cdnManagerService.DeleteTempFileAsync(submission.AlbumArt.CdnId);
+
+            // Store the new album
+            var newAlbum = new Album
+            {
+                AlbumArtUri = albumArtUriCdn,
+                Artist = submission.Artist,
+                BackgroundColor = submission.BackColor,
+                ForegroundColor = submission.ForeColor,
+                IsVariousArtists = submission.Artist == "Various Artists",
+                MutedColor = submission.MutedColor,
+                Name = submission.Name,
+                SongCount = submission.Songs.Count,
+                TextShadowColor = submission.TextShadowColor,
+            };
+            await DbSession.StoreAsync(newAlbum);
+
+            // Store the Artist as well if we don't already have an artist for them.
+            Artist? existingArtist = null;
+            if (submission.Artist != "Various Artists")
+            {
+                // Grab the existing artist only if we're not the special case "Various Artists"
+                existingArtist = await DbSession.Query<Artist>()
+                    .FirstOrDefaultAsync(a => a.Name == submission.Artist);
+            }
+
+            // Create the artist if necessary.
+            if (existingArtist == null)
+            {
+                existingArtist = new Artist
+                {
+                    Bio = "",
+                    Name = submission.Artist,
+                    Contact = submission.ArtistEmail,
+                    Disambiguation = submission.Artist == "Various Artists" ? submission.Name : null,
+                    DonationUrl = string.IsNullOrWhiteSpace(submission.ArtistPayPalEmail) ? null : new Uri($"paypal:?email={Uri.EscapeDataString(submission.ArtistPayPalEmail)}")
+                };
+                await DbSession.StoreAsync(existingArtist);
+            }
+
+            // Store the songs in the DB.
+            var songNumber = 1;
+            var songsWithTempFiles = new Dictionary<Song, TempFile>(submission.Songs.Count);
+            foreach (var tempFile in submission.Songs)
+            {
+                var (english, hebrew) = tempFile.Name.GetEnglishAndHebrew();
+                var song = new Song
+                {
+                    Album = submission.Name,
+                    AlbumHebrewName = null,
+                    Artist = submission.Artist,
+                    AlbumArtUri = albumArtUriCdn,
+                    CommunityRankStanding = CommunityRankStanding.Normal,
+                    ContributingArtists = [.. english.GetFeaturedArtistsFromSongName()],
+                    Genres = [],
+                    Name = english,
+                    HebrewName = hebrew,
+                    Number = songNumber,
+                    PurchaseUri = submission.PurchaseUrl,
+                    UploadDate = DateTime.UtcNow,
+                    AlbumId = newAlbum.Id,
+                    ArtistId = existingArtist.Id,
+                    AlbumColors = new AlbumColors
+                    {
+                        Background = newAlbum.BackgroundColor,
+                        Foreground = newAlbum.ForegroundColor,
+                        Muted = newAlbum.MutedColor,
+                        TextShadow = newAlbum.TextShadowColor
+                    },
+                    Uri = tempFile.Url
+                };
+                await DbSession.StoreAsync(song);
+
+                songsWithTempFiles.Add(song, tempFile);
+                songNumber++;
+            }
+
+            // Finally, we can mark the submission as approved.
+            submission.Status = ApprovalStatus.Approved;
+            await DbSession.SaveChangesAsync();
+
+            // Now that the songs are saved in the database, migrate their URIs from temp file to
+            // a final file name that includes song, artist, album, etc.ccting 
+            foreach (var (song, tempFile) in songsWithTempFiles)
+            {
+                songUploadService.MoveSongUriFromTemporaryToFinal(tempFile, submission, song.Number, song.Id!);
+            }
+
+            return newAlbum.Id!;
+        }
+
+        /// <summary>
+        /// Rejects an album submission. The album won't be converted to a permanent album on the station. The song uploads and album art upload will be deleted.
+        /// </summary>
+        /// <param name="submission">The album submission to reject.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(Roles = AppUser.AdminRole)]
+        public async Task RejectSubmission([FromBody] AlbumSubmissionByArtist submission)
+        {
+            var existingSubmission = await DbSession.LoadAsync<AlbumSubmissionByArtist>(submission.Id);
+            if (existingSubmission == null)
+            {
+                throw new ArgumentException($"Could not find album submission with ID {submission.Id}");
+            }
+
+            // Mark it as rejected. The submission and its temp files will be deleted at a later date during a background task; see AlbumSubmissionCleanup.cs
+            existingSubmission.Status = ApprovalStatus.Rejected;
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAlbumArtBySongId(string songId)
         {
@@ -194,32 +330,22 @@ namespace BitShuva.Chavah.Controllers
                 throw new InvalidOperationException($"Cannot upload temp file because there have been too many temp files uploaded recently.");
             }
 
-            // Clean up any old temp files.
-            var tempFilesReadyForDeletion = await DbSession.Query<TempFile>()
-                .Where(t => t.CreatedAt < DateTimeOffset.UtcNow.AddDays(30))
-                .ToListAsync();
-            if (tempFilesReadyForDeletion.Count > 0)
-            {
-                foreach (var tempFileToDelete in tempFilesReadyForDeletion)
-                {
-                    await cdnManagerService.DeleteTempFileAsync(tempFileToDelete.CdnId);
-                    DbSession.Delete(tempFileToDelete);
-                }
-                await DbSession.SaveChangesAsync();
-            }
-
             // OK, we're cool to upload it to our CDN.
             using var mediaFileStream = file.OpenReadStream();
             var fileExtension = isMp3 ? ".mp3" : isPng ? ".png" : isWebp ? ".webp" : ".jpg";
             var fileName = Guid.NewGuid().ToString() + fileExtension;
             var tempFileUri = await cdnManagerService.UploadTempFileAsync(mediaFileStream, fileName);
-            return new TempFile
+            var tempFile = new TempFile
             {
                 Url = tempFileUri,
                 Name = fileName,
                 CdnId = fileName,
-                Id = $"TempFiles/{fileName}/{DateTime.UtcNow:O}"
+                Id = $"TempFiles/{fileName}/{DateTime.UtcNow:O}",
+                CreatedAt = DateTimeOffset.UtcNow
             };
+
+            await DbSession.StoreAsync(tempFile);
+            return tempFile;
         }
 
         [HttpPost]
@@ -343,6 +469,8 @@ namespace BitShuva.Chavah.Controllers
 
             // Save it in the database.
             album.Id = $"AlbumSubmissionsByArtist/{album.Artist}/{album.Name}/{DateTime.UtcNow:O}";
+            album.Status = ApprovalStatus.Pending;
+            album.CreatedAt = DateTimeOffset.UtcNow;
             await DbSession.StoreAsync(album);
 
             // Notify admins.

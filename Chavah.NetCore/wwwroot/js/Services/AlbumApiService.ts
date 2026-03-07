@@ -23,8 +23,16 @@
          * @param album The album submission.
          * @returns The ID of the album submission.
          */
-        uploadAlbumSubmissionByArtist(album: Server.AlbumUpload): ng.IPromise<string> {
+        uploadAlbumSubmissionByArtist(album: Server.AlbumSubmissionByArtist): ng.IPromise<string> {
             return this.httpApi.post("/api/albums/uploadAlbumSubmissionByArtist", album);
+        }
+
+        approveAlbumSubmission(album: Server.AlbumSubmissionByArtist): ng.IPromise<void> {
+            return this.httpApi.post("/api/albums/approveSubmission", album);
+        }
+
+        rejectAlbumSubmission(album: Server.AlbumSubmissionByArtist): ng.IPromise<void> {
+            return this.httpApi.post("/api/albums/rejectSubmission", album);
         }
 
         /**
@@ -50,6 +58,10 @@
                 id,
             };
             return this.httpApi.query<Album | null>("/api/albums/get", args, AlbumApiService.albumSelector);
+        }
+
+        getSubmissions(): ng.IPromise<Server.AlbumSubmissionByArtist[]> {
+            return this.httpApi.query<Server.AlbumSubmissionByArtist[]>("/api/albums/getSubmissions");
         }
 
         getAll(skip: number, take: number, search: string | null): ng.IPromise<Server.PagedList<Album>> {

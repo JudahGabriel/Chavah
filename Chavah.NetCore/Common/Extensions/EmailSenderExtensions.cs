@@ -63,9 +63,9 @@ namespace BitShuva.Chavah.Common
                 <p>Uploaded by {userName ?? "unknown user"} {album.ArtistEmail}</p>
                 <p><img src='{album.AlbumArt.Url}' style='max-width: 500px; max-height: auto' /></p>
                 <ol>
-                    {album.Songs.Select(s => $"<li><a href='{s.Url}'>{s.Name}</a> <audio controls src='{s.Url}'></audio></li>")}
+                    {string.Join(' ', album.Songs.Select(s => $"<li><a href='{s.Url}'>{s.Name}</a> <audio controls src='{s.Url}'></audio></li>"))}
                 </ol>
-                <p>Please visit <a href='https://messianicradio.com/#/admin/albums'>Chavah admin></a> to approve or reject.</p>
+                <p>Please visit <a href='https://messianicradio.com/#/admin/albums/submissions'>Chavah admin</a> to approve or reject.</p>
             ";
             emailSender.QueueSendEmail(recipient, subject, body);
         }

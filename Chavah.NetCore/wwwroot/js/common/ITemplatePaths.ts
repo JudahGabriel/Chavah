@@ -11,5 +11,6 @@
         adminSidebar: string;
         pushSubscriptionSuccessful: string;
         errorPlayingAudioModal: string;
+        albumPreviewer: string;
     }
 }
