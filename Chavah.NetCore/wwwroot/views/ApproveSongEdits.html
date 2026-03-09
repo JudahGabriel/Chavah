@@ -17,7 +17,7 @@
                         <div class="col-xs-12 col-sm-3">
                             <div class="list-group" style="overflow: auto; max-height: 700px;">
                                 <a href="javascript:void(0)" class="list-group-item" ng-repeat="edit in vm.pendingEdits" ng-class="{ active: vm.currentEdit === edit }" ng-click="vm.setCurrentEdit(edit)">
-                                    {{edit.oldArtist}} - {{edit.oldName}}
+                                    {{edit.oldArtist}} - {{edit.oldName}} <br /><span class="text-muted">{{vm.getFriendlyDate(edit)}}</span> <span class="text-danger" ng-show="vm.hasNewerEdit(edit)"><br />[warning: newer edit available]</span>
                                 </a>
                             </div>
                         </div>

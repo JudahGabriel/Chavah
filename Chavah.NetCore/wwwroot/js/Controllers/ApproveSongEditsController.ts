@@ -132,6 +132,21 @@
                 ...songEdit
             };
         }
+
+        getFriendlyDate(songEdit: Server.SongEdit): string {
+            return new Intl.DateTimeFormat("en-US", {
+                dateStyle: "short"
+            } as any).format(new Date(songEdit.submitDate));
+        }
+
+        hasNewerEdit(songEdit: Server.SongEdit): boolean {
+            // Find any song edits for the same song ID and a newer submitDate.
+            return this.pendingEdits.some(e =>
+                e !== songEdit &&
+                e.songId === songEdit.songId &&
+                new Date(e.submitDate) > new Date(songEdit.submitDate)
+            );
+        }
     }
 
     App.controller("ApproveSongEditsController", ApproveSongEditsController);

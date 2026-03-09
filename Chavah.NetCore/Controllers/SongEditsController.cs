@@ -108,7 +108,7 @@ namespace BitShuva.Chavah.Controllers
 
         [HttpGet]
         [Authorize(Roles = AppUser.AdminRole)]
-        public Task<List<SongEdit>> GetPendingEdits(int take = 20)
+        public Task<List<SongEdit>> GetPendingEdits(int take = 100)
         {
             return DbSession.Query<SongEdit>()
                 .Where(s => s.Status == SongEditStatus.Pending)
