@@ -29,16 +29,19 @@ namespace BitShuva.Chavah.Controllers
     {
         private readonly ICdnManagerService cdnManagerService;
         private readonly ISongUploadService songUploadService;
+        private readonly HttpClient http;
         private readonly AppSettings appOptions;
 
         public AlbumsController(
             ICdnManagerService cdnManagerService,
             ISongUploadService songUploadService,
+            IHttpClientFactory httpClientFactory,
             IAsyncDocumentSession dbSession,
             ILogger<AlbumsController> logger,
             IOptionsMonitor<AppSettings> options)
             : base(dbSession, logger)
         {
+            http = httpClientFactory.CreateClient();
             this.cdnManagerService = cdnManagerService;
             this.songUploadService = songUploadService;
 
@@ -524,16 +527,33 @@ namespace BitShuva.Chavah.Controllers
         /// <param name="imageUrl"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<FileContentResult> ImageOnDomain(string imageUrl)
+        public async Task<IActionResult> ImageOnDomain(Uri imageUrl)
         {
-            if (string.IsNullOrWhiteSpace(imageUrl))
+            if (!imageUrl.IsAbsoluteUri)
             {
-                throw new ArgumentNullException(nameof(imageUrl));
+                logger.LogError("ImageOnDomain failed because input image URL, {url}, is not an absolute URL", imageUrl);
+                return BadRequest("ImageOnDomain image URL must be absolute");
+            }
+            if (imageUrl.IsLoopback)
+            {
+                logger.LogError("ImageOnDomain failed due to input imageUrl being a loopback. {url}", imageUrl);
+                return BadRequest("ImageOnDomain image URL must not be a loopback");
             }
 
-            using var webClient = new WebClient();
-            var bytes = await webClient.DownloadDataTaskAsync(imageUrl);
-            return File(bytes, "image/jpeg");
+            var response = await http.GetAsync(imageUrl);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "ImageOnDomain failed to fetch remote image {imageUrl} due to status code: {statusCode}", imageUrl, response.StatusCode);
+                return new StatusCodeResult((int)response.StatusCode);
+            }
+
+            var stream = await response.Content.ReadAsStreamAsync();
+            var contentType = response.Content.Headers.ContentType?.MediaType ?? "image/jpeg";
+            return File(stream, contentType);
         }
 
         /// <summary>
