@@ -298,6 +298,7 @@ namespace BitShuva.Chavah.Controllers
         {
             if (file == null)
             {
+                logger.LogError("Attempted to upload temp file, but no file was provided.");
                 throw new ArgumentNullException(nameof(file));
             }
 
@@ -309,6 +310,7 @@ namespace BitShuva.Chavah.Controllers
             var isWebp = string.Equals("image/webp", contentType, StringComparison.InvariantCultureIgnoreCase);
             if (!isMp3 && !isJpg && !isPng && !isWebp)
             {
+                logger.LogError("Attempted to upload temp file with unsupported content type {0}", contentType);
                 throw new ArgumentOutOfRangeException(nameof(file), contentType, "Wrong file format. Music files must be in MP3 format. Album art must be in jpg, png, or webp format.");
             }
 
@@ -316,6 +318,7 @@ namespace BitShuva.Chavah.Controllers
             var maxSize = isMp3 ? 50000000 : 10000000;
             if (file.Length >= maxSize)
             {
+                logger.LogError("Attempted to upload temp file with size {0} bytes, which exceeds the max size of {1} bytes", file.Length, maxSize);
                 throw new ArgumentOutOfRangeException(nameof(file), file.Length, $"Too large. Max size is {maxSize} bytes");
             }
 
@@ -331,21 +334,30 @@ namespace BitShuva.Chavah.Controllers
             }
 
             // OK, we're cool to upload it to our CDN.
-            using var mediaFileStream = file.OpenReadStream();
             var fileExtension = isMp3 ? ".mp3" : isPng ? ".png" : isWebp ? ".webp" : ".jpg";
             var fileName = Guid.NewGuid().ToString() + fileExtension;
-            var tempFileUri = await cdnManagerService.UploadTempFileAsync(mediaFileStream, fileName);
-            var tempFile = new TempFile
+            try
             {
-                Url = tempFileUri,
-                Name = fileName,
-                CdnId = fileName,
-                Id = $"TempFiles/{fileName}/{DateTime.UtcNow:O}",
-                CreatedAt = DateTimeOffset.UtcNow
-            };
+                using var mediaFileStream = file.OpenReadStream();
+                var tempFileUri = await cdnManagerService.UploadTempFileAsync(mediaFileStream, fileName);
+                var tempFile = new TempFile
+                {
+                    Url = tempFileUri,
+                    Name = fileName,
+                    CdnId = fileName,
+                    Id = $"TempFiles/{fileName}/{DateTime.UtcNow:O}",
+                    CreatedAt = DateTimeOffset.UtcNow
+                };
 
-            await DbSession.StoreAsync(tempFile);
-            return tempFile;
+                await DbSession.StoreAsync(tempFile);
+                logger.LogInformation("Successfully uploaded temp file {fileName} to CDN and stored in database with ID {tempFileId}", fileName, tempFile.Id);
+                return tempFile;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Uploading temp file {fileName} to CDN failed due to an error.", fileName);
+                throw new InvalidOperationException("Error uploading file. Please try again later.");
+            }
         }
 
         [HttpPost]
@@ -460,10 +472,12 @@ namespace BitShuva.Chavah.Controllers
         {
             if (album.AlbumArt == null)
             {
+                logger.LogError("Attempted to upload album submission, but no album art was provided.");
                 throw new ArgumentException("Album art must not be null.");
             }
             if (album.Songs == null || album.Songs.Count == 0)
             {
+                logger.LogError("Attempted to upload album submission, but no songs were provided.");
                 throw new ArgumentException("Album upload must have at least one song.");
             }
 
@@ -475,6 +489,8 @@ namespace BitShuva.Chavah.Controllers
 
             // Notify admins.
             emailSender.QueueAlbumSubmissionEmail(album, GetUserId(), emailOptions.CurrentValue.SenderEmail);
+
+            logger.LogInformation("Successfully saved album submission by artist {artist} for album {album}. Stored in database with ID {id}", album.Artist, album.Name, album.Id);
 
             return album.Id;
         }
