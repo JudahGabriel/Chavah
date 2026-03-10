@@ -28,7 +28,7 @@
                 .select(() => this.accountApi.currentUser)
                 .subscribe(user => this.signedInUserChanged(user));
 
-            this.songEditApi.getPendingEdits(20)
+            this.songEditApi.getPendingEdits(100)
                 .then(results => this.pendingEditsLoaded(results));
         }
 
@@ -146,6 +146,38 @@
                 e.songId === songEdit.songId &&
                 new Date(e.submitDate) > new Date(songEdit.submitDate)
             );
+        }
+
+        hasLyricChanges(): boolean {
+            return !!this.currentEdit && this.currentEdit.oldLyrics !== this.currentEdit.newLyrics;
+        }
+
+        hasTagChanges(): boolean {
+            if (!this.currentEdit) {
+                return false;
+            }
+
+            return this.currentEdit.newTags.length !== this.currentEdit.oldTags.length ||
+                this.currentEdit.newTags.every((t, i) => this.currentEdit?.oldTags[i] !== t);
+        }
+
+        getTagClass(tag: string): string {
+            // If a tag has been added, give it the "added-tag" class.
+            // If a tag has been removed, give it the "removed-tag" class.
+            if (!this.currentEdit) {
+                return "";
+            }
+
+            const includedInNewTags = this.currentEdit.newTags.includes(tag);
+            const includedInOldTags = this.currentEdit.oldTags.includes(tag);
+
+            if (includedInNewTags && !includedInOldTags) {
+                return "added-tag";
+            } else if (!includedInNewTags && includedInOldTags) {
+                return "removed-tag";
+            }
+
+            return "";
         }
     }
 

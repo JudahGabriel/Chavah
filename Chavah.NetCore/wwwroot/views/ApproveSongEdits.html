@@ -31,12 +31,12 @@
 
                                 <form>
                                     <div class="form-group">
-                                        <label><i class="fa fa-tags"></i> Tags</label>
+                                        <label><i class="fa fa-tags"></i> Tags <span class="text-info" ng-show="!vm.hasTagChanges()">- no changes</span></label>
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-6">
                                                 <!--<input type="text" class="form-control" ng-model="vm.currentEditNewCsv">-->
                                                 <div class="tags-container">
-                                                    <div class="tag" ng-repeat="tag in vm.currentEdit.newTags">
+                                                    <div class="tag {{vm.getTagClass(tag)}}" ng-repeat="tag in vm.currentEdit.newTags">
                                                         <i class="fa fa-tag"></i>
                                                         {{tag}}
                                                         <button type="button" class="close" data-dismiss="modal" ng-click="vm.removeTag(tag)" aria-hidden="true" title="Remove tag">×</button>
@@ -55,7 +55,7 @@
                                             </div>
                                             <div class="col-xs-12 col-sm-6">
                                                 <div class="tags-container">
-                                                    <div class="tag" ng-repeat="tag in vm.currentEdit.oldTags">
+                                                    <div class="tag {{vm.getTagClass(tag)}}" ng-repeat="tag in vm.currentEdit.oldTags">
                                                         <i class="fa fa-tag"></i>
                                                         {{tag}}
                                                         <button type="button" class="close" data-dismiss="modal" ng-click="vm.removeTag(tag)" aria-hidden="true" title="Remove tag">×</button>
@@ -66,7 +66,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Lyrics</label>
+                                        <label>Lyrics <span class="text-info" ng-show="!vm.hasLyricChanges()">- no changes</span></label>
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-6">
                                                 <textarea class="form-control" rows="20" ng-model="vm.currentEdit.newLyrics" style="white-space: pre-wrap; word-break: break-word;"></textarea>
