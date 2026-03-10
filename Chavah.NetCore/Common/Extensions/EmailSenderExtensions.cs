@@ -41,7 +41,7 @@ namespace BitShuva.Chavah.Common
 
         public static void QueueSupportEmail(this IEmailService emailSender, SupportMessage message, string recipient)
         {
-            var subject = "Support message from listener on Chavah Messianic Radio";
+            var subject = $"Chavah: Support message from {message.Name}";
             var body = $@"
                 <p>You received the following message via Chavah's support page:</p>
                 <p>From: {message.Name}, {message.Email}

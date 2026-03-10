@@ -196,6 +196,10 @@ namespace BitShuva.Services
             var htmlContent = new Content("text/html", message.Body);
             var plainTextContent = Regex.Replace(htmlContent.Value, "<[^>]*>", "");
             var mail = MailHelper.CreateSingleEmailToMultipleRecipients(from, to.ToList(), subject, plainTextContent, htmlContent.Value);
+            if (message.ReplyToList.Any())
+            {
+                mail.ReplyTo = new EmailAddress(message.ReplyToList[0].Address, message.ReplyToList[0].DisplayName);
+            }
             await client.SendEmailAsync(mail);
         }
 
