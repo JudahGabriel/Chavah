@@ -118,6 +118,7 @@ namespace BitShuva.Chavah.Controllers
                 "new-music-4.mp3",
                 "new-music-5.mp3",
                 "new-music-6.mp3",
+                "new-music-7.mp3"
             };
 
             var fileName = newMusicAnnouncements.RandomElement()!;
