@@ -113,6 +113,8 @@ export class ChavahHeader extends LitElement {
       <header class="chavah-header">
         <div class="header-inner">
           <div class="header-left">
+            <img class="left-decor" src="/images/LeftDecor.jpg" alt="" />
+            <div class="header-titles">
             <div class="title">
               <a href="/">
                 Chavah <span class="hidden-xs">Messianic Radio</span>
@@ -126,6 +128,7 @@ export class ChavahHeader extends LitElement {
                   </wa-button>
                 </div>`
               : html`<div class="subtitle">${this.homeViewModel.pageDescription}</div>`}
+            </div>
           </div>
 
           <div class="header-right">
@@ -282,6 +285,24 @@ export class ChavahHeader extends LitElement {
       }
       chavah-header .header-left {
         min-width: 0;
+        display: flex;
+        align-items: flex-start;
+      }
+      chavah-header .left-decor {
+        margin-left: 10px;
+        margin-right: 30px;
+        max-height: 97px;
+        box-shadow: -2px 0 8px 1px rgba(29, 38, 55, 0.9), 2px 0 8px 1px rgba(29, 38, 55, 0.9);
+      }
+      chavah-header .header-titles {
+        min-width: 0;
+      }
+      @media (max-width: 767px) {
+        chavah-header .left-decor {
+          position: absolute;
+          z-index: -1;
+          left: -85px;
+        }
       }
       chavah-header .title {
         color: var(--chavah-title);

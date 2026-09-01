@@ -25,7 +25,7 @@ function createDefaultHomeViewModel(): HomeViewModel {
     cdnUrl: "",
     soundEffects: "",
     pageTitle: "Chavah Messianic Radio",
-    pageDescription: "",
+    pageDescription: "music for Yeshua's disciples",
     descriptiveImageUrl: "",
     song: null,
     user: null,
