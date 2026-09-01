@@ -348,6 +348,11 @@ export class ChavahHeader extends LitElement {
         color: var(--chavah-title);
         font-size: 22px;
       }
+      chavah-header .header-right wa-button::part(base):hover,
+      chavah-header .go-back wa-button::part(base):hover {
+        background-color: transparent;
+        color: var(--chavah-title-darker);
+      }
       chavah-header .profile-pic {
         max-width: 30px;
         max-height: 30px;

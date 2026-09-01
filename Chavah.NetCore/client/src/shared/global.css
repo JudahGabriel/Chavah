@@ -18,6 +18,31 @@ body {
 
 .hebrew { font-family: var(--chavah-hebrew-font); direction: rtl; }
 
+/* ------------------------------------------------------------------ *
+ * Base typography. Restores the Bootstrap 3 + Lato type scale that the
+ * ported AngularJS views assume. Web Awesome otherwise renders headings
+ * bold (600), in a system font, with no margins, and a 16px/1.6 body.
+ * These values mirror production (base 15px/1.428; headings 400 weight,
+ * inherited Lato, 1.1 line-height, Bootstrap heading margins).
+ * ------------------------------------------------------------------ */
+body { font-size: 15px; line-height: 1.42857143; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  font-weight: 400;
+  line-height: 1.1;
+  color: inherit;
+}
+h1, h2, h3 { margin-top: 21px; margin-bottom: 10.5px; }
+h4, h5, h6 { margin-top: 10.5px; margin-bottom: 10.5px; }
+h1 { font-size: 39px; }
+h2 { font-size: 32px; }
+h3 { font-size: 26px; }
+h4 { font-size: 19px; }
+h5 { font-size: 15px; }
+h6 { font-size: 12px; }
+p { margin: 0 0 10.5px; }
+
 #currentPageContainer {
   display: block;
   padding: 100px 10px 100px 10px;
