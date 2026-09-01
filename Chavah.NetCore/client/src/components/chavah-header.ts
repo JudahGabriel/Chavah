@@ -384,10 +384,16 @@ export class ChavahHeader extends LitElement {
         margin-right: 10px;
       }
       chavah-header .donation-alert {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 12px;
         width: fit-content;
-        margin: 12px auto;
+        max-width: calc(100vw - 40px);
         text-align: center;
         white-space: normal;
+        z-index: 5;
       }
       chavah-header .donation-alert a {
         color: var(--chavah-title);
