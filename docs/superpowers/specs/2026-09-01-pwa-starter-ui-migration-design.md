@@ -45,7 +45,9 @@ spiderloop skill.
 | --- | --- |
 | Frontend location | In place inside `Chavah.NetCore/client`, building to `Chavah.NetCore/wwwroot` |
 | Reference pattern | `C:\dev\store.web\src\Api\client` (Vite + Lit + Web Awesome served by ASP.NET) |
-| Routing | Path-based (`/trending`) with server SPA fallback; legacy `#/x` links redirected client-side to `/x` |
+| Routing | Path-based (`/trending`) via the web platform **Navigation API**, with server SPA fallback; legacy `#/x` links redirected client-side to `/x` |
+| Theming | Web Awesome theme + design tokens; brand color aligned to Chavah `#2f3d58` |
+| Dates/formatting | Web platform **Intl** APIs (no moment.js) |
 | Dev workflow | Vite dev server (HMR) proxied by ASP.NET Core in Development |
 | Component library | Web Awesome; component APIs read from `node_modules/@awesome.me/webawesome/dist/llms.txt` |
 | Sequencing | Phased — scaffold + core listening experience first, then remaining pages in batches |
@@ -86,7 +88,10 @@ Chavah.NetCore/
 
 ## Routing
 
-- Client uses **path-based** routing. Route table replicates `App.ts`, including:
+- Client uses **path-based** routing built on the web platform **Navigation API**
+  (`navigation.addEventListener("navigate", …)` with `intercept()`), not a hash
+  router or third-party router. A small `urlpattern-polyfill` may back route
+  matching. Route table replicates `App.ts`, including:
   - Access levels: Anonymous / Authenticated / Admin, with redirect-to-sign-in
     guards and admin-script loading behavior.
   - All redirects (`/nowplaying → /`, `/admin/songs → /admin`, maintenance mode).
@@ -129,6 +134,7 @@ dependencies are replaced:
 - `$http` / `HttpApiService` → `fetch`-based API service (same method surface).
 - `$q` → native `Promise`.
 - `angular-local-storage` → `localStorage` wrapper.
+- moment.js → `Intl` APIs.
 - `$rootScope` events / two-way binding → a small reactive store + Lit reactive
   properties / events. `AudioPlayerService` drives an `<audio>` element and emits
   status events consumed by header/footer/now-playing.
@@ -140,6 +146,21 @@ low-risk.
 (background / foreground / muted / textShadow / albumSwatchDarker). These are
 applied via CSS custom properties on the relevant component subtree, preserving
 the current per-song color-adaptive UI (extracted from album art).
+
+**Dates & number formatting:** use the web platform `Intl` APIs
+(`Intl.DateTimeFormat`, `Intl.RelativeTimeFormat`, `Intl.NumberFormat`) in place
+of moment.js. A small `dates.ts` helper wraps the common formatting used today.
+
+## Theming
+
+Adopt a Web Awesome theme and drive colors/spacing/typography through Web Awesome
+**design tokens** (CSS custom properties). Set the brand/primary color to Chavah's
+`#2f3d58` (the existing `theme-color`) and map the app's accent colors onto WA
+token variables so buttons, dropdowns, dialogs, tooltips, sliders, etc. inherit a
+consistent Chavah look. Typography keeps the current fonts (Lato, EB Garamond,
+Cardo). Small visual deviations from the legacy Bootstrap look are acceptable so
+long as brand color and overall layout stay aligned; spiderloop validates the
+result against production.
 
 ## Phased Plan
 
