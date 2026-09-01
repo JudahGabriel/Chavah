@@ -16,6 +16,16 @@ export default defineConfig({
     // through the ASP.NET origin or the spiderloop proxy.
     hmr: { host: "127.0.0.1", clientPort: 5173, protocol: "ws" },
     cors: true,
+    // Dev-only: forward API calls to production so data-driven components
+    // (song lists, deck, now-playing) render real data during visual checks.
+    // Has zero effect on the production build.
+    proxy: {
+      "/api": {
+        target: "https://messianicradio.com",
+        changeOrigin: true,
+        secure: true,
+      },
+    },
   },
   build: {
     outDir,

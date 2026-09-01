@@ -3,13 +3,19 @@
  *
  * Ported from `wwwroot/js/common/List.ts`: the AngularJS `ng.IPromise` return
  * types become native `Promise`s and lodash's `_.pull` is replaced with a manual
- * splice loop.
+ * splice loop. A `changed` observable replaces the AngularJS digest cycle so Lit
+ * components can re-render when items load or state changes.
  */
+import { Subject } from "./reactive-store";
+
 export class List<T> {
   items: T[] = [];
   hasLoaded = false;
   isLoading = false;
   noItemsText = "There are no results";
+
+  /** Emits after any mutation that affects rendering (load, reset, remove). */
+  readonly changed = new Subject<void>();
 
   /**
    * @param fetcher The function that fetches the items from the server.
@@ -32,6 +38,7 @@ export class List<T> {
   reset(): void {
     this.items.length = 0;
     this.isLoading = false;
+    this.changed.next();
   }
 
   resetAndFetch(): void {
@@ -43,6 +50,7 @@ export class List<T> {
     if (!this.isLoading) {
       this.isLoading = true;
       this.hasLoaded = false;
+      this.changed.next();
       const task = this.fetcher();
       task
         .then((results) => {
@@ -60,7 +68,10 @@ export class List<T> {
           }
           this.hasLoaded = true;
         })
-        .finally(() => (this.isLoading = false));
+        .finally(() => {
+          this.isLoading = false;
+          this.changed.next();
+        });
       return task;
     }
 
@@ -74,7 +85,11 @@ export class List<T> {
         this.items.splice(i, 1);
       }
     }
-    return lengthBeforeRemoval > this.items.length;
+    const removed = lengthBeforeRemoval > this.items.length;
+    if (removed) {
+      this.changed.next();
+    }
+    return removed;
   }
 
   /**
@@ -102,6 +117,7 @@ export class List<T> {
           this.afterLoadProcessor(this.items);
         }
       }
+      this.changed.next();
     } catch (error) {
       console.log("Failed to rehydrate cached items for cacheKey", cacheKey, error);
     }
