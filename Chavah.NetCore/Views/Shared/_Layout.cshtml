@@ -1,12 +1,13 @@
 ﻿@using BitShuva.Chavah.Settings
 @inject IOptionsSnapshot<AppSettings> snapshot
+@inject BitShuva.Chavah.Services.ViteAssets Vite
 @model HomeViewModel
 
 @{
     var appOptions = snapshot.Value!;
 }
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en-us" class="wa-theme-default wa-palette-default wa-light">
 <head>
     <title>@ViewBag.PageTitle</title>
     <base href="/">
@@ -82,23 +83,8 @@
         <meta property="og:image" content="@appOptions.DefaultUrl/images/chavah512x512.png?v=1" />
     }
 
-    @*CSS for development*@
-    <environment include="Development">
-        <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Cardo&display=swap' rel='stylesheet' type='text/css' async />
-        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" asp-append-version="true" async />
-        <link rel="stylesheet" href="~/css/bootswatch.css" async asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/bootstrap-flatly.css" async asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/bootstrap-flatly-tweaks.css" async asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/nprogress.css" async asp-append-version="true" />
-        <link rel="stylesheet" asp-href-include="~/css/app/*.min.css" asp-append-version="true" async />
-    </environment>
-
-    @*CSS for production*@
-    <environment include="Test,Staging,Production">
-        <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Cardo&display=swap' async crossorigin="anonymous" rel='stylesheet' type='text/css' />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" async crossorigin="anonymous" />
-        <link rel="stylesheet" href="~/css/dist/app.min.css" asp-append-version="true" async />
-    </environment>
+    @* Fonts kept; all component/theme styles ship in the Vite bundle *@
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Cardo&display=swap' rel='stylesheet' type='text/css' />
 </head>
 
 <body>
@@ -122,57 +108,21 @@
         </div>
     </div>
 
-    @*JS for dev*@
-    <environment names="Development">
-        @*3rd party JS*@
-        <script src="~/lib/jquery/jquery.js"></script>
-        <script src="~/lib/bootstrap/js//bootstrap.js"></script>
-        <script src="~/lib/angular/angular.js"></script>
-        <script src="~/lib/angular/angular-route.js"></script>
-        <script src="~/lib/angular/angular-animate.js"></script>
-        <script src="~/lib/angular-bootstrap/ui-bootstrap.js"></script>
-        <script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-        <script src="~/lib/angular-local-storage/angular-local-storage.js"></script>
-        <script src="~/lib/modernizr/modernizr.dev.js"></script>
-        <script src="~/lib/nprogress/nprogress.js"></script>
-        <script src="~/lib/moment/moment.js"></script>
-        <script src="~/lib/lodash/lodash.js"></script>
-        <script src="~/lib/rxjs/rx.lite.js"></script>
-        <script src="~/lib/tslib/tslib.min.js"></script>
-        <script src="~/lib/tinycolor/tinycolor.js"></script>
-
-        @*Chavah JS*@
-        <script asp-src-include="~/js/polyfills/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/common/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/models/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/directives/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/services/*.js" asp-append-version="true"></script>
-        <script asp-src-include="~/js/controllers/*.js" asp-append-version="true"></script>
+    @*Vite client entry (dev server in Development; hashed bundle in Production)*@
+    <environment include="Development">
+        <script type="module" src="@($"{Vite.DevOrigin_}/@@vite/client")"></script>
+        <script type="module" src="@($"{Vite.DevOrigin_}/src/main.ts")"></script>
     </environment>
-
-    @*JS for production*@
-    <environment names="Test,Staging,Production">
-        @*3rd party JS*@
-        <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous" asp-fallback-src="~/lib/jquery/dist/jquery.min.js" asp-fallback-test="window.jQuery"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" crossorigin="anonymous" asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js" crossorigin="anonymous" asp-fallback-src="~/lib/angular/angular.js" asp-fallback-test="window.angular"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-route.min.js" crossorigin="anonymous"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-animate.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.7.1/angular-local-storage.js" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" crossorigin="anonymous" asp-fallback-src="~/lib/nprogress/nprogress.js" asp-fallback-test="window.NProgress"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js" crossorigin="anonymous" asp-fallback-src="~/lib/moment/moment.js" asp-fallback-test="window.moment"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js" crossorigin="anonymous" asp-fallback-src="~/lib/lodash/dist/lodash.js" asp-fallback-test="window._"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.lite.js" crossorigin="anonymous" asp-fallback-src="~/lib/rxjs/dist/rx.all.min.js" asp-fallback-test="window.Rx && window.Rx.Observable"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tslib/1.11.1/tslib.min.js" crossorigin="anonymous" asp-fallback-src="~/lib/tslib/tslib.js" asp-fallback-test="window.__asyncValues"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js" crossorigin="anonymous" asp-fallback-src="~/lib/tinycolor/tinycolor.js" asp-fallback-test="window.tinycolor"></script>
-
-        @*Chavah JS*@
-        <script src="~/js/dist/app.min.js" asp-append-version="true"></script>
-
+    <environment include="Test,Staging,Production">
+        @if (Vite.EntryCss != null)
+        {
+            <link rel="stylesheet" href="@Vite.EntryCss" />
+        }
+        @foreach (var preload in Vite.ModulePreloads)
+        {
+            <link rel="modulepreload" crossorigin href="@preload" />
+        }
+        <script type="module" src="@Vite.EntryJs"></script>
     </environment>
 
     @await RenderSectionAsync("Scripts", required: false)

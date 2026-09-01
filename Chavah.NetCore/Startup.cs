@@ -39,11 +39,14 @@ namespace BitShuva.Chavah
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        private readonly IWebHostEnvironment Environment;
 
         public Startup(
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -111,6 +114,18 @@ namespace BitShuva.Chavah
 
             services.AddVersionedApiExplorer();
             services.AddControllersWithViews(c => c.Conventions.Add(new ApiExplorerIgnores()));
+
+            // Resolves the Vite client entry tags (dev server in Development, hashed bundle in Production).
+            services.AddSingleton<Services.ViteAssets>();
+
+            // Allow the Vite dev server origin during development (HMR + module loads).
+            if (Environment.IsDevelopment())
+            {
+                services.AddCors(o => o.AddPolicy("ViteDev", p =>
+                    p.WithOrigins("http://127.0.0.1:5173", "http://localhost:5173")
+                     .AllowAnyHeader().AllowAnyMethod()));
+            }
+
             services.AddAutoMapper(typeof(Startup).Assembly);
             services.AddApiVersioning(o =>
             {
@@ -210,9 +225,20 @@ namespace BitShuva.Chavah
 
             app.UseHttpsRedirection();
             app.UseRouting();
+
+            if (env.IsDevelopment())
+            {
+                app.UseCors("ViteDev");
+            }
+
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints => endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}"));
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                // SPA fallback: any unmatched non-file, non-/api GET renders the SPA shell.
+                endpoints.MapFallbackToController("Index", "Home");
+            });
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>

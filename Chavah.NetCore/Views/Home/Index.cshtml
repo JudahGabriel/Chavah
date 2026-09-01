@@ -1,16 +1,12 @@
-﻿@model BitShuva.Chavah.Models.HomeViewModel
+@model BitShuva.Chavah.Models.HomeViewModel
 @* Attach an image that Facebook will use if someone links to a song. *@
 @if (Model.DescriptiveImageUrl != null)
 {
     <img src="@Model.DescriptiveImageUrl" style="display:none;" />
 }
 
-@*The Angular SPA*@
-<div id="appContainer" data-ng-app="ChavahApp">
-    <div ng-include="Partials.headerPartial"></div>
-    <div id="currentPageContainer" class="container-fluid" data-ng-view></div>
-    <footer ng-include="Partials.footerPartial"></footer>
-</div>
+@*The Lit + Web Awesome SPA host. Bootstrapped by the Vite client (see _Layout).*@
+<chavah-app></chavah-app>
 
 <script type="text/javascript">
     window["BitShuva.Chavah.HomeViewModel"] = @Html.Raw(Model.ToJson());

@@ -9,6 +9,13 @@
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <CodeAnalysisRuleSet>..\Chavah.ruleset</CodeAnalysisRuleSet>
     <nullable>enable</nullable>
+    <!-- The Vite client is a self-contained npm/Vite project; keep it out of the .NET SDK's
+         default Compile/Content/None/TypeScriptCompile globs (it builds via the BuildClient target). -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);client\**</DefaultItemExcludes>
+    <!-- Legacy AngularJS-era asset pipelines. Their output (app.min.css/js) is no longer referenced by
+         _Layout after the Vite migration; disabled here and fully removed in Task 12. -->
+    <RunWebCompiler>False</RunWebCompiler>
+    <RunBundleMinify>False</RunBundleMinify>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -79,6 +86,12 @@
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="npm install" />
+  </Target>
+
+  <!-- In Release, build the Vite client into wwwroot so it can be served/published. In Debug the Vite dev server serves the client. -->
+  <Target Name="BuildClient" BeforeTargets="BeforeBuild" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="npm install" WorkingDirectory="client" />
+    <Exec Command="npm run build" WorkingDirectory="client" />
   </Target>
 
 </Project>
