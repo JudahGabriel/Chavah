@@ -1,0 +1,9 @@
+/** Details about an audio playback error, reported by the audio player. */
+export interface IAudioErrorInfo {
+  errorCode?: number | null;
+  songId?: string | null;
+  trackPosition?: number | null;
+  mp3Url?: string | null;
+  errorMessage?: string | null;
+  errorDetails?: string | null;
+}
