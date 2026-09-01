@@ -6,16 +6,11 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <AssemblyName>BitShuva.Chavah</AssemblyName>
     <RootNamespace>BitShuva.Chavah</RootNamespace>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <CodeAnalysisRuleSet>..\Chavah.ruleset</CodeAnalysisRuleSet>
     <nullable>enable</nullable>
     <!-- The Vite client is a self-contained npm/Vite project; keep it out of the .NET SDK's
-         default Compile/Content/None/TypeScriptCompile globs (it builds via the BuildClient target). -->
+         default Compile/Content/None globs (it builds via the BuildClient target). -->
     <DefaultItemExcludes>$(DefaultItemExcludes);client\**</DefaultItemExcludes>
-    <!-- Legacy AngularJS-era asset pipelines. Their output (app.min.css/js) is no longer referenced by
-         _Layout after the Vite migration; disabled here and fully removed in Task 12. -->
-    <RunWebCompiler>False</RunWebCompiler>
-    <RunBundleMinify>False</RunBundleMinify>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,16 +22,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\Models\MediaFileUpload.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Bet.Extensions.AzureVault" Version="3.1.10" />
     <PackageReference Include="Bet.AspNetCore.HealthChecks" Version="3.1.10" />
-    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
-    <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
     <PackageReference Include="BunnyCDN.Net.Storage" Version="1.0.4" />
     <PackageReference Include="CodeHollow.FeedReader" Version="1.2.6" />
     <PackageReference Include="CoreFtp" Version="1.4.0" />
@@ -45,11 +34,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.2.0" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.2.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
     <PackageReference Include="PayPalServerSDK" Version="0.6.1" />
     <PackageReference Include="Pwned.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Quartz" Version="3.8.0" />
@@ -69,10 +53,6 @@
 
   <ItemGroup>
     <Folder Include="App_Data\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\js\Models\MediaFileUpload.ts" />
   </ItemGroup>
 
   <ItemGroup>

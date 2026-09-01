@@ -77,7 +77,6 @@ namespace BitShuva.Chavah
             services.AddHostedService<BlogPostNotificationCreator>();
             services.AddHostedService<EmailRetryService>();
             services.AddHostedService<AlbumSubmissionCleanup>();
-            services.AddCacheBustedAngularViews("/views");
 
             // Add RavenDB document store, session, and migrations.
             services

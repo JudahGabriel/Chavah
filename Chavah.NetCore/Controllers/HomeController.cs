@@ -19,14 +19,12 @@ namespace BitShuva.Chavah.Controllers
     public class HomeController : RavenController
     {
         private readonly ISongService _songService;
-        private readonly AngularCacheBustedViews _ngViews;
         private readonly AppSettings _appOptions;
         private readonly IMapper _mapper;
         private readonly CdnSettings _cdnOptions;
 
         public HomeController(
             ISongService songService,
-            AngularCacheBustedViews ngViews,
             IOptionsMonitor<AppSettings> appOptions,
             IOptionsMonitor<CdnSettings> cdnOptions,
             IMapper mapper,
@@ -35,7 +33,6 @@ namespace BitShuva.Chavah.Controllers
             : base(dbSession, logger)
         {
             _songService = songService ?? throw new System.ArgumentNullException(nameof(songService));
-            _ngViews = ngViews ?? throw new System.ArgumentNullException(nameof(ngViews));
             _mapper = mapper ?? throw new System.ArgumentNullException(nameof(mapper));
 
             _appOptions = appOptions.CurrentValue;
@@ -63,7 +60,6 @@ namespace BitShuva.Chavah.Controllers
             var homeViewModel = HomeViewModel.From(userVm, loadedSong, _appOptions, _cdnOptions);
             homeViewModel.Embed = embed;
             homeViewModel.Autoplay = autoplay;
-            homeViewModel.CacheBustedAngularViews = _ngViews.Views;
 
             // TODO
             //homeViewModel.Redirect =

@@ -69,11 +69,6 @@ namespace BitShuva.Chavah.Models
         public string PageDescription { get; set; } = string.Empty;
 
         /// <summary>
-        /// The list of cache-busted Angular views.
-        /// </summary>
-        public List<string> CacheBustedAngularViews { get; set; } = new List<string>();
-
-        /// <summary>
         /// The default URL of the page.
         /// </summary>
         public string DefaultUrl { get; set; } = string.Empty;
