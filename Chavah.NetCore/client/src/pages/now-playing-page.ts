@@ -290,10 +290,12 @@ export class NowPlayingPage extends LitElement {
         }
         now-playing-page .left-pane {
           flex: 0 0 25%;
+          min-width: 0;
           padding: 20px;
         }
         now-playing-page .right-pane {
           flex: 0 0 25%;
+          min-width: 0;
           padding: 20px;
         }
         now-playing-page .left-pane > .list-block,
