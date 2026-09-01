@@ -20,7 +20,6 @@ function createDefaultHomeViewModel(): HomeViewModel {
     redirect: null,
     embed: false,
     autoplay: false,
-    cacheBustedAngularViews: [],
     defaultUrl: window.location.origin,
     cdnUrl: "",
     soundEffects: "",

@@ -39,11 +39,6 @@
 
         public bool IsDownForMaintenance { get; set; }
 
-        /// <summary>
-        /// Specify what service work file to use. The Default is Minimal.js.
-        /// </summary>
-        public string ServiceWorker { get; set; } = "Minimal.js";
-
         public string PushNotificationsPublicKey { get; set; } = string.Empty;
 
         public string PushNotificationsPrivateKey { get; set; } = string.Empty;

@@ -35,6 +35,16 @@ export class PasswordPage extends LitElement {
   @state() private showResendConfirmEmail = false;
   @state() private sendConfirmationEmailState: "none" | "sending" | "sent" = "none";
 
+  private redirectTimer?: number;
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this.redirectTimer !== undefined) {
+      window.clearTimeout(this.redirectTimer);
+      this.redirectTimer = undefined;
+    }
+  }
+
   private get email(): string {
     return this.params?.email ? decodeURIComponent(this.params.email) : "";
   }
@@ -72,7 +82,7 @@ export class PasswordPage extends LitElement {
   private signInCompleted(result: ISignInResult): void {
     if (result.status === SignInStatus.Success) {
       this.signInSuccessful = true;
-      window.setTimeout(() => appNav.nowPlaying(), 2000);
+      this.redirectTimer = window.setTimeout(() => appNav.nowPlaying(), 2000);
     } else if (result.status === SignInStatus.LockedOut) {
       this.showPasswordError = true;
       this.passwordError = "Your account is locked out. Please contact judahgabriel@gmail.com";
@@ -89,7 +99,7 @@ export class PasswordPage extends LitElement {
       this.passwordError =
         result.errorMessage ||
         "Select a different password because the password you chose has appeared in a data breach";
-      window.setTimeout(() => appNav.resetPwnedPassword(this.email), 4000);
+      this.redirectTimer = window.setTimeout(() => appNav.resetPwnedPassword(this.email), 4000);
     }
   }
 
