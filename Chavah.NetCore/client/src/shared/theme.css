@@ -1,0 +1,17 @@
+:root,
+:host {
+  --wa-color-brand-fill-loud: #2f3d58;      /* primary buttons/controls */
+  --wa-color-brand-fill-normal: #2f3d58;
+  --wa-color-brand-border-loud: #263250;
+  --wa-color-brand-on-loud: #ffffff;
+
+  /* Chavah semantic tokens reused across components */
+  --chavah-brand: #2f3d58;
+  --chavah-brand-light: #3c4d6f;
+  --chavah-brand-dark: #263250;
+  --chavah-title: #e9dd9a;
+  --chavah-title-darker: #d7c146;
+  --chavah-text: #2f3d58;
+  --chavah-hebrew-font: "Cardo", serif;
+  --chavah-max-page: 1520px;
+}

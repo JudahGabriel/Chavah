@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:400,700,400italic|EB+Garamond|Cardo&display=swap");
+
+html { min-height: 100%; overflow-x: hidden; }
+
+body {
+  margin: 0;
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--chavah-text);
+  background: radial-gradient(closest-side at 50% 50%,
+      rgba(255, 215, 0, 0.15), rgba(218, 165, 32, 0.1), rgba(47, 61, 88, 0.1));
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  scrollbar-width: thin;
+  scrollbar-color: var(--chavah-brand) rgb(241, 240, 237);
+}
+::-webkit-scrollbar { width: 6px; background-color: rgb(241, 240, 237); }
+::-webkit-scrollbar-thumb { background: var(--chavah-brand); }
+
+.hebrew { font-family: var(--chavah-hebrew-font); direction: rtl; }
+
+#currentPageContainer {
+  display: block;
+  padding: 100px 10px 100px 10px;
+  max-width: var(--chavah-max-page);
+  margin-inline: auto;
+}
