@@ -256,7 +256,12 @@ export class ChavahHeader extends LitElement {
           rel="noopener"
           >Learn more</a
         >
-        <wa-button size="small" appearance="plain" @click=${() => this.dismissDonationBanner()}>
+        <wa-button
+          class="dismiss-btn"
+          size="small"
+          appearance="plain"
+          @click=${() => this.dismissDonationBanner()}
+        >
           <wa-icon name="xmark" label="Dismiss"></wa-icon>
         </wa-button>
       </wa-callout>
@@ -394,8 +399,32 @@ export class ChavahHeader extends LitElement {
         text-align: center;
         white-space: normal;
         z-index: 5;
+        color: #fff;
+        background-color: rgba(47, 61, 88, 0.95);
+        border-color: rgba(47, 61, 88, 0.95);
+        padding-right: 2.75rem;
+      }
+      chavah-header .donation-alert::part(icon) {
+        color: var(--chavah-title);
+      }
+      chavah-header .donation-alert strong {
+        color: #fff;
       }
       chavah-header .donation-alert a {
+        color: var(--chavah-title);
+        text-decoration: underline;
+      }
+      chavah-header .donation-alert .dismiss-btn {
+        position: absolute;
+        top: 0.25rem;
+        right: 0.25rem;
+        margin: 0;
+      }
+      chavah-header .donation-alert .dismiss-btn::part(base) {
+        color: #fff;
+      }
+      chavah-header .donation-alert .dismiss-btn::part(base):hover {
+        background-color: transparent;
         color: var(--chavah-title);
       }
       @media (max-width: 767px) {
