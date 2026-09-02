@@ -37,6 +37,24 @@ const routes: AppRoute[] = [
   { pattern: "/donatesuccess", access: RouteAccess.Anonymous, tag: "donate-success-page", load: () => import("../pages/donate-success-page") },
   { pattern: "/donatecancelled", access: RouteAccess.Anonymous, tag: "donate-cancelled-page", load: () => import("../pages/donate-cancelled-page") },
   { pattern: "/music/submission", access: RouteAccess.Anonymous, tag: "music-submission-page", load: () => import("../pages/music-submission-page") },
+
+  // Admin (E1: list/simple pages)
+  { pattern: "/admin/users", access: RouteAccess.Admin, tag: "admin-users-page", load: () => import("../pages/admin-users-page") },
+  { pattern: "/admin/donations", access: RouteAccess.Admin, tag: "admin-donations-page", load: () => import("../pages/admin-donations-page") },
+  { pattern: "/admin/ioslogs", access: RouteAccess.Admin, tag: "admin-ioslogs-page", load: () => import("../pages/admin-ioslogs-page") },
+  { pattern: "/admin/logs", access: RouteAccess.Admin, tag: "admin-log-editor-page", load: () => import("../pages/admin-log-editor-page") },
+  { pattern: "/admin/tags", access: RouteAccess.Admin, tag: "admin-tag-editor-page", load: () => import("../pages/admin-tag-editor-page") },
+  { pattern: "/admin/albums/submissions", access: RouteAccess.Admin, tag: "admin-album-submissions-page", load: () => import("../pages/admin-album-submissions-page") },
+
+  // Admin (E2: editors)
+  { pattern: "/admin", access: RouteAccess.Admin, tag: "admin-edit-songs-page", load: () => import("../pages/admin-edit-songs-page") },
+  { pattern: "/admin/songs", access: RouteAccess.Admin, tag: "", load: async () => {}, redirectTo: "/admin" },
+  { pattern: "/admin/songedits", access: RouteAccess.Admin, tag: "admin-approve-song-edits-page", load: () => import("../pages/admin-approve-song-edits-page") },
+  { pattern: "/admin/albums", access: RouteAccess.Admin, tag: "admin-albums-page", load: () => import("../pages/admin-albums-page") },
+  { pattern: "/admin/album/upload", access: RouteAccess.Admin, tag: "admin-upload-album-page", load: () => import("../pages/admin-upload-album-page") },
+  { pattern: "/admin/album/create", access: RouteAccess.Admin, tag: "admin-edit-album-page", load: () => import("../pages/admin-edit-album-page") },
+  { pattern: "/admin/album/:artist/:album", access: RouteAccess.Admin, tag: "admin-edit-album-page", load: () => import("../pages/admin-edit-album-page") },
+  { pattern: "/admin/artists{/:artistName}?", access: RouteAccess.Admin, tag: "admin-edit-artist-page", load: () => import("../pages/admin-edit-artist-page") },
 ];
 
 let outletEl: HTMLElement | null = null;

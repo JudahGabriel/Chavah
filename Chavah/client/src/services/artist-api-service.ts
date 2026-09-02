@@ -3,7 +3,9 @@ import { Artist } from "../models/artist";
 import type {
   Artist as ServerArtist,
   ArtistWithNetLikeCount,
+  DueDonation,
   PagedList,
+  PaypalOrderConfirmation,
 } from "../models/server-interfaces";
 
 /**
@@ -28,6 +30,31 @@ export class ArtistApiService {
   getLikedArtists(skip: number, take: number, search: string): Promise<PagedList<ArtistWithNetLikeCount>> {
     const args = { skip, take, search };
     return httpApi.query("/api/artists/getLikedArtists", args);
+  }
+
+  getDueDonations(minimum: number): Promise<DueDonation[]> {
+    return httpApi.query("/api/artists/getDueDonations", { minimum });
+  }
+
+  markDueDonationAsPaid(donation: DueDonation): Promise<DueDonation> {
+    return httpApi.post("/api/artists/markDueDonationAsPaid", donation);
+  }
+
+  recordMessiahsMusicFundMonthlyDisbursement(
+    year: number,
+    month: number,
+    donationDollars: number,
+  ): Promise<void> {
+    const args = { year, month, donations: donationDollars };
+    return httpApi.postUriEncoded("/api/artists/RecordMessiahsMusicFundMonthlyDisbursement", args);
+  }
+
+  createPaypalOrder(donation: DueDonation): Promise<PaypalOrderConfirmation> {
+    return httpApi.post("/api/artists/createPaypalOrder", donation);
+  }
+
+  payPaypalOrder(donation: DueDonation): Promise<PaypalOrderConfirmation> {
+    return httpApi.post("/api/artists/payOrder", donation);
   }
 
   static artistSelector(serverObj: ServerArtist): Artist {

@@ -254,3 +254,88 @@ export interface SongEdit {
   oldTags?: string[];
   oldContributingArtists?: string[];
 }
+
+// --- Admin: donations (ported from ArtistApiService/AdminDonations) ---
+
+export interface Donation {
+  amount: number;
+  donorName: string;
+  donorEmail: string;
+  date: string;
+  distributionDate: string | null;
+}
+
+export interface DonationContext extends Donation {
+  recipientArtist: string | null;
+  artistId: string;
+}
+
+export interface PaypalOrderConfirmation {
+  orderId: string;
+  approveUrl: string;
+}
+
+export interface DueDonation {
+  artistId: string;
+  hasDeclinedDonations: boolean;
+  name: string;
+  amount: number;
+  donationUrl: string;
+  donations: DonationContext[];
+  order: PaypalOrderConfirmation | null;
+}
+
+// --- Admin: album upload (ported from AlbumApiService/UploadAlbum) ---
+
+export interface AlbumUpload {
+  name: string;
+  hebrewName: string | null;
+  artist: string;
+  albumArt: TempFile;
+  songs: TempFile[];
+  purchaseUrl: string;
+  genres: string;
+  foreColor: string;
+  backColor: string;
+  mutedColor: string;
+  textShadowColor: string;
+}
+
+// --- Admin: logs (ported from LogService/LogEditor) ---
+
+export enum LogLevel {
+  Trace = 0,
+  Debug = 1,
+  Information = 2,
+  Warning = 3,
+  Error = 4,
+  Critical = 5,
+  None = 6,
+}
+
+export enum LogSort {
+  Oldest = 0,
+  Newest = 1,
+  OccurrenceCount = 2,
+}
+
+export interface Log {
+  message: string;
+  level: LogLevel;
+  created: string;
+  exception: string | null;
+  category: string;
+  eventId: number | null;
+  templateValues: Record<string, unknown> | null;
+  scope: string | null;
+}
+
+export interface StructuredLog {
+  id: string;
+  messageTemplate: string;
+  occurrenceCount: number;
+  level: LogLevel;
+  firstOccurrence: string;
+  lastOccurrence: string;
+  occurrences: Log[];
+}

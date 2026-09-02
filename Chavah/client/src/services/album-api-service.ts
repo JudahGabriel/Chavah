@@ -3,6 +3,7 @@ import { Album } from "../models/album";
 import type {
   Album as ServerAlbum,
   AlbumSubmissionByArtist,
+  AlbumUpload,
   AlbumWithNetLikeCount,
   PagedList,
   TempFile,
@@ -50,6 +51,22 @@ export class AlbumApiService {
 
   uploadAlbumSubmissionByArtist(album: AlbumSubmissionByArtist): Promise<string> {
     return httpApi.post("/api/albums/uploadAlbumSubmissionByArtist", album);
+  }
+
+  upload(album: AlbumUpload): Promise<string> {
+    return httpApi.post("/api/albums/upload", album);
+  }
+
+  getSubmissions(): Promise<AlbumSubmissionByArtist[]> {
+    return httpApi.query("/api/albums/getSubmissions");
+  }
+
+  approveAlbumSubmission(album: AlbumSubmissionByArtist): Promise<void> {
+    return httpApi.post("/api/albums/approveSubmission", album);
+  }
+
+  rejectAlbumSubmission(album: AlbumSubmissionByArtist): Promise<void> {
+    return httpApi.post("/api/albums/rejectSubmission", album);
   }
 
   changeArt(albumId: string, artUri: string): Promise<Album | null> {
