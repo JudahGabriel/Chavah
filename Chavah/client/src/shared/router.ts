@@ -9,6 +9,10 @@ const routes: AppRoute[] = [
   { pattern: "/promptsignin", access: RouteAccess.Anonymous, tag: "prompt-sign-in-page", load: () => import("../pages/prompt-sign-in-page") },
   { pattern: "/signin", access: RouteAccess.Anonymous, tag: "sign-in-page", load: () => import("../pages/sign-in-page") },
   { pattern: "/password/:email", access: RouteAccess.Anonymous, tag: "password-page", load: () => import("../pages/password-page") },
+  { pattern: "/trending", access: RouteAccess.Anonymous, tag: "trending-page", load: () => import("../pages/trending-page") },
+  { pattern: "/popular", access: RouteAccess.Anonymous, tag: "popular-page", load: () => import("../pages/popular-page") },
+  { pattern: "/recent", access: RouteAccess.Anonymous, tag: "recent-page", load: () => import("../pages/recent-page") },
+  { pattern: "/mylikes", access: RouteAccess.Authenticated, tag: "my-likes-page", load: () => import("../pages/my-likes-page") },
 ];
 
 let outletEl: HTMLElement | null = null;
