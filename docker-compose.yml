@@ -5,7 +5,7 @@ services:
     image: ${DOCKER_REGISTRY}chavah.web
     build:
       context: .
-      dockerfile: Chavah.NetCore/Dockerfile
+      dockerfile: Chavah/Dockerfile
     depends_on:
       - chavah.db
   chavah.db:

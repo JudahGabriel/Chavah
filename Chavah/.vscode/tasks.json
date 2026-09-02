@@ -1,0 +1,63 @@
+{
+    "version": "2.0.0",
+    "command": "dotnet",
+    "type": "shell",
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+    },
+    "args": [],
+    "tasks": [
+        {
+            "label": "build",
+            "args": [
+                "${workspaceRoot}/Chavah.csproj"
+            ],
+            "group": "build",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "tsc",
+            "command": "tsc",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "windows": {
+                "command": "${workspaceRoot}\\node_modules\\.bin\\tsc"
+            },
+            "type": "shell",
+            "problemMatcher":"$tsc"
+        },
+        {
+            "label": "bundle"
+        },
+        {
+            "label": "clean",
+            "args": [ "bundle", "clean" ]
+        },
+        {
+            "label": "watch",
+            "args": [ "bundle", "watch" ],
+            "isBackground": true
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/Chavah.csproj",
+                "-c",
+                "Debug",
+                "-o",
+                "./bin/Debug/netcoreapp2.1/"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

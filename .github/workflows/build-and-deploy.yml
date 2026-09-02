@@ -26,7 +26,7 @@ jobs:
           include-prerelease: true
           
       - name: Build with dotnet
-        run: dotnet build Chavah.NetCore\Chavah.NetCore.csproj --configuration Release
+        run: dotnet build Chavah\Chavah.csproj --configuration Release
           
       - name: Write publish profile to directory
         uses: DamianReeves/write-file-action@v1.2
@@ -37,4 +37,4 @@ jobs:
           write-mode: overwrite
 
       - name: dotnet publish
-        run: dotnet publish Chavah.NetCore/Chavah.NetCore.csproj -c Release -o Publish /p:PublishProfileFullPath=${{ env.home }}/ChavahOnVm.pubxml
+        run: dotnet publish Chavah/Chavah.csproj -c Release -o Publish /p:PublishProfileFullPath=${{ env.home }}/ChavahOnVm.pubxml

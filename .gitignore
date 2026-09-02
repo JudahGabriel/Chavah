@@ -462,29 +462,29 @@ Web.Configz
 /Chavah/App/*/*.js.map
 
 
-# Chavah.NetCore exceptions
-/Chavah.NetCore/appsettings.Development.json
-/Chavah.NetCore/appsettings.Production.json
-/Chavah.NetCore/appsettings.Test.json
+# Chavah exceptions
+/Chavah/appsettings.Development.json
+/Chavah/appsettings.Production.json
+/Chavah/appsettings.Test.json
 
-/Chavah.NetCore/wwwroot/js/app.js
-/Chavah.NetCore/wwwroot/js/app.map.js
+/Chavah/wwwroot/js/app.js
+/Chavah/wwwroot/js/app.map.js
 
-/Chavah.NetCore/wwwroot/js/App.js.map
+/Chavah/wwwroot/js/App.js.map
 
-/Chavah.NetCore/wwwroot/js/*/*.js
-/Chavah.NetCore/wwwroot/js/*/*.js.map
+/Chavah/wwwroot/js/*/*.js
+/Chavah/wwwroot/js/*/*.js.map
 
-/Chavah.NetCore/wwwroot/dist/
-/Chavah.NetCore/wwwroot/css/*.css
-/Chavah.NetCore/wwwroot/css/*.min.css
-/Chavah.NetCore/wwwroot/css/*/*.css
-/Chavah.NetCore/wwwroot/css/*/*.min.css
-/Chavah.NetCore/wwwroot/lib/
+/Chavah/wwwroot/dist/
+/Chavah/wwwroot/css/*.css
+/Chavah/wwwroot/css/*.min.css
+/Chavah/wwwroot/css/*/*.css
+/Chavah/wwwroot/css/*/*.min.css
+/Chavah/wwwroot/lib/
 
-/Chavah.NetCore/ravencert.Development.pfx
-/Chavah.NetCore/ravencert.Production.pfx
+/Chavah/ravencert.Development.pfx
+/Chavah/ravencert.Production.pfx
 
 # For iOS project, ignore the XCode intellisense database
 /Chavah.iOS/cordova/platforms/ios/Index/DataStore/v5
-/Chavah.NetCore/App_Data/*
+/Chavah/App_Data/*

@@ -1,0 +1,48 @@
+{
+  // Run backend (.NET) + frontend (Vite dev server) together.
+  // Pick "Full stack (backend + Vite)" from the Run and Debug dropdown, then press F5.
+  // The backend serves the app at https://localhost:44363/ and — because ASPNETCORE_ENVIRONMENT
+  // is Development — loads the Lit/Web Awesome client live from the Vite dev server (HMR).
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Frontend (Vite dev server)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}/Chavah/client"
+    },
+    {
+      "name": "Backend (.NET)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-backend",
+      "program": "${workspaceFolder}/Chavah/bin/Debug/net10.0/BitShuva.Chavah.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Chavah",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Chavah/Views"
+      },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+https?://\\S+",
+        "uriFormat": "https://localhost:44363/"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full stack (backend + Vite)",
+      "configurations": ["Frontend (Vite dev server)", "Backend (.NET)"],
+      "stopAll": true,
+      "presentation": {
+        "group": "fullstack",
+        "order": 1
+      }
+    }
+  ]
+}
