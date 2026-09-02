@@ -13,6 +13,22 @@ const routes: AppRoute[] = [
   { pattern: "/popular", access: RouteAccess.Anonymous, tag: "popular-page", load: () => import("../pages/popular-page") },
   { pattern: "/recent", access: RouteAccess.Anonymous, tag: "recent-page", load: () => import("../pages/recent-page") },
   { pattern: "/mylikes", access: RouteAccess.Authenticated, tag: "my-likes-page", load: () => import("../pages/my-likes-page") },
+
+  // Info / static
+  { pattern: "/about", access: RouteAccess.Anonymous, tag: "about-page", load: () => import("../pages/about-page") },
+  { pattern: "/privacy", access: RouteAccess.Anonymous, tag: "privacy-page", load: () => import("../pages/privacy-page") },
+  { pattern: "/support", access: RouteAccess.Anonymous, tag: "support-page", load: () => import("../pages/support-page") },
+  { pattern: "/welcome", access: RouteAccess.Anonymous, tag: "welcome-page", load: () => import("../pages/welcome-page") },
+  { pattern: "/maintenance", access: RouteAccess.Anonymous, tag: "maintenance-page", load: () => import("../pages/maintenance-page") },
+  { pattern: "/sharethanks{/:artist}?", access: RouteAccess.Anonymous, tag: "share-thanks-page", load: () => import("../pages/share-thanks-page") },
+  { pattern: "/songeditapproved/:artist/:songName", access: RouteAccess.Anonymous, tag: "song-edit-approved-page", load: () => import("../pages/song-edit-approved-page") },
+
+  // Auth
+  { pattern: "/forgotpassword{/:email}?{/:pwned}?", access: RouteAccess.Anonymous, tag: "forgot-password-page", load: () => import("../pages/forgot-password-page") },
+  { pattern: "/createpassword/:email", access: RouteAccess.Anonymous, tag: "create-password-page", load: () => import("../pages/create-password-page") },
+  { pattern: "/register{/:email}?", access: RouteAccess.Anonymous, tag: "register-page", load: () => import("../pages/register-page") },
+  { pattern: "/confirmemail/:email/:confirmCode", access: RouteAccess.Anonymous, tag: "confirm-email-page", load: () => import("../pages/confirm-email-page") },
+  { pattern: "/resetpassword/:email/:confirmCode", access: RouteAccess.Anonymous, tag: "reset-password-page", load: () => import("../pages/reset-password-page") },
 ];
 
 let outletEl: HTMLElement | null = null;

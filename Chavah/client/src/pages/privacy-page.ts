@@ -1,0 +1,32 @@
+import { LitElement, html } from "lit";
+import { customElement } from "lit/decorators.js";
+
+/**
+ * Privacy policy page. Ported from `views/PrivacyPolicy.html`.
+ */
+@customElement("privacy-page")
+export class PrivacyPage extends LitElement {
+  createRenderRoot() {
+    return this;
+  }
+
+  render() {
+    return html`
+      <section class="page privacy-page">
+        <div style="max-width: 800px; margin: 0 auto;">
+          <h3>Privacy Policy</h3>
+          <p>
+            If you register on Chavah, your email address and any information you supply via your profile will be stored
+            on Chavah Messianic Radio. We don't share your email address or any other personal information with 3rd
+            parties.
+          </p>
+          <p>Don't want your account anymore? <a href="/support">Contact us</a> and we will remove your email and other related information from our servers.</p>
+          <p>Should this policy change in the future, we'll notify you through email.</p>
+          <h3>Account Deletion</h3>
+          <p>If you wish to delete your account, go to <a href="/profile">Profile</a> and then click <strong>Delete My Account</strong>.</p>
+        </div>
+      </section>
+    `;
+  }
+}
+

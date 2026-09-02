@@ -1,0 +1,160 @@
+import { LitElement, html } from "lit";
+import { customElement } from "lit/decorators.js";
+import "@awesome.me/webawesome/dist/components/button/button.js";
+import "@awesome.me/webawesome/dist/components/icon/icon.js";
+
+/**
+ * Signed-in welcome page. Ported from `views/Welcome.html`.
+ */
+@customElement("welcome-page")
+export class WelcomePage extends LitElement {
+  createRenderRoot() {
+    return this;
+  }
+
+  render() {
+    return html`
+      <section class="page welcome-page">
+        <div style="max-width: 800px; margin: 0 auto; font-size: 1.5em;">
+          <h2 class="header">
+            Shalom and welcome to Chavah <br />
+            <span style="float: right;" title="Chavah is glad you're here">(◕‿◕<span class="bow">✿</span>)</span>
+          </h2>
+          <hr />
+
+          <div>
+            <p>Now that you're signed in, <strong>here are some fun things you can do</strong>:</p>
+            <a href="https://blog.messianicradio.com/2013/06/faq-how-can-i-thumb-up-or-down-song-on.html">
+              <img
+                class="img-responsive feature-img feature-img-left"
+                src="https://chavah.b-cdn.net/chavah-welcome-email-thumb-up.jpg"
+              />
+            </a>
+
+            <h3>👍 Thumb-up songs you like</h3>
+            <p>
+              You can <strong> 👍 songs you like</strong> (and 👎 those you don't!) Chavah learns what you like and
+              plays more of the good stuff. Thumbing-up a song increases its ranking, and songs with higher ranking are
+              played more often for everyone.
+              <a href="https://blog.messianicradio.com/2013/06/faq-how-can-i-thumb-up-or-down-song-on.html">Read more...</a>
+            </p>
+            <div style="clear: both;"></div>
+            <a href="https://blog.messianicradio.com/2012/12/faq-how-do-i-request-song.html">
+              <img
+                class="img-responsive feature-img feature-img-right"
+                src="https://chavah.b-cdn.net/chavah-welcome-email-request.jpg"
+              />
+            </a>
+            <h3>🎶 Do a song request</h3>
+            <p>
+              Got a song you want to hear? 🎵 <strong>Request a song and it'll play for you and everyone listening.</strong>
+              It'll play instantly for you, and everyone else when their current song finishes. <br /><br />To request a
+              song, click the <wa-icon name="comment"></wa-icon> button (it's next to the play/pause button), then type
+              the name of a song, artist, or album.
+              <a href="https://blog.messianicradio.com/2012/12/faq-how-do-i-request-song.html">Read more...</a>
+            </p>
+            <div style="clear: both;"></div>
+
+            <h3>💯 Share your favorite songs on Facebook</h3>
+            <p>
+              <a href="https://blog.messianicradio.com/2013/07/faq-how-can-i-share-song-on-facebook.html">
+                <img
+                  class="img-responsive feature-img feature-img-left"
+                  src="https://chavah.b-cdn.net/chavah-welcome-email-share.jpg"
+                />
+              </a>
+              Found great song that you want your friends to hear? 😍
+              <strong>Share the song to Facebook, Twitter, WhatsApp, and more</strong>. You can also share the song in a
+              text message from your phone. And if you're a blogger or run your own website, you can also embed a song
+              right into your webpage or blog post. Spread Messiah's music around! 🙌
+              <a href="https://blog.messianicradio.com/2013/07/faq-how-can-i-share-song-on-facebook.html">Read more...</a>
+            </p>
+            <div style="clear: both;"></div>
+
+            <h3>🎁 Get the app</h3>
+            <p>
+              <a href="https://blog.messianicradio.com/2018/03/iphone-ipad-chavah-is-now-in-ios-app.html">
+                <img
+                  class="hidden-xs pull-right img-responsive"
+                  src="https://chavah.b-cdn.net/chavah-welcome-email-ipad.png"
+                />
+                <img class="pull-right img-responsive" src="https://chavah.b-cdn.net/chavah-welcome-email-iphone.png" />
+              </a>
+              <strong
+                ><a href="https://blog.messianicradio.com/2018/03/iphone-ipad-chavah-is-now-in-ios-app.html"
+                  >Chavah is in the app store</a
+                ></strong
+              >! 😎 If you're on a mobile device, grab the Chavah app for the best experience:
+            </p>
+            <ul>
+              <li>
+                <wa-icon family="brands" name="apple" style="color: rgb(108,108,108)"></wa-icon>
+                <a href="https://itunes.apple.com/us/app/chavah-messianic-radio/id1361894819?platform=ipad&preserveScrollPosition=true">Chavah for iOS</a>
+              </li>
+              <li>
+                <wa-icon family="brands" name="android" style="color:rgb(142, 197, 69);"></wa-icon>
+                <a href="https://play.google.com/store/apps/details?id=com.messianicradio&hl=en">Chavah for Android</a>
+              </li>
+              <li>
+                <wa-icon family="brands" name="windows" style="color:rgb(0, 174, 240);"></wa-icon>
+                <a href="https://www.microsoft.com/en-us/store/p/chavah/9nhkjb6lpptv">Chavah for Windows and XBox</a>
+              </li>
+              <li><wa-icon name="globe"></wa-icon> Chavah on the web at <a href="https://messianicradio.com">messianicradio.com</a></li>
+            </ul>
+            <p class="visible-xs-block">
+              <a href="https://blog.messianicradio.com/2018/03/iphone-ipad-chavah-is-now-in-ios-app.html">
+                <img class="img-responsive" src="https://chavah.b-cdn.net/chavah-welcome-email-ipad.png" />
+              </a>
+            </p>
+            <div style="clear: both;"></div>
+
+            <h3>💗 Thanks!</h3>
+            <p>
+              This just scratches the surface of some fun things you can do with Chavah. If you're really digging
+              Chavah, you can also:
+            </p>
+            <ul>
+              <li><wa-icon name="camera"></wa-icon> <a href="https://messianicradio.com/profile">Add your profile pic</a></li>
+              <li>
+                <wa-icon name="bell" style="color: rgb(255,172,51)"></wa-icon>
+                <a href="https://blog.messianicradio.com/2019/01/new-feature-alert-me-of-new-music-on.html">Subscribe to new music alerts</a>
+              </li>
+              <li>
+                <wa-icon name="pencil" style="color: rgb(255,204,77);"></wa-icon>
+                <a href="https://blog.messianicradio.com/2017/02/new-feature-submit-lyrics-tags.html">Submit lyrics and tags for songs</a>
+              </li>
+              <li>
+                <wa-icon family="brands" name="facebook" style="color: rgb(59, 88, 152); padding: 3px;"></wa-icon>
+                <a href="https://www.facebook.com/chavahmessianicradio">Like us on Facebook</a> and
+                <a href="https://twitter.com/messianicradio"
+                  ><wa-icon family="brands" name="twitter" style="color: rgb(85, 172, 238); padding: 3px;"></wa-icon>
+                  follow us on Twitter</a
+                >
+              </li>
+              <li><wa-icon name="heart" style="color: red;"></wa-icon> <a href="https://www.patreon.com/chavah">Donate and support us through Patreon</a></li>
+              <li><wa-icon name="envelope"></wa-icon> <a href="/support">Contact us</a> if you've got questions or feedback</li>
+            </ul>
+            <p>
+              <br />
+              <a href="https://blog.judahgabriel.com">
+                <img class="img-responsive pull-left judah-profile-pic" src="https://chavah.b-cdn.net/judah.jpg" />
+              </a>
+              We genuinely hope you enjoy Messiah's music. Thanks for listening, fine Chavah fans!
+              <br />
+              <br />
+              -<a href="https://blog.judahgabriel.com">Judah Gabriel Himango</a>, Chavah Messianic Radio
+            </p>
+            <div style="clear: both;"></div>
+          </div>
+
+          <br />
+          <br />
+          <p>
+            <wa-button variant="brand" href="/" style="width: 100%;">OK! Take me to the music</wa-button>
+          </p>
+        </div>
+      </section>
+    `;
+  }
+}
+
