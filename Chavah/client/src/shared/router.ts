@@ -29,6 +29,14 @@ const routes: AppRoute[] = [
   { pattern: "/register{/:email}?", access: RouteAccess.Anonymous, tag: "register-page", load: () => import("../pages/register-page") },
   { pattern: "/confirmemail/:email/:confirmCode", access: RouteAccess.Anonymous, tag: "confirm-email-page", load: () => import("../pages/confirm-email-page") },
   { pattern: "/resetpassword/:email/:confirmCode", access: RouteAccess.Anonymous, tag: "reset-password-page", load: () => import("../pages/reset-password-page") },
+
+  // Profile / content
+  { pattern: "/profile", access: RouteAccess.Authenticated, tag: "profile-page", load: () => import("../pages/profile-page") },
+  { pattern: "/edit/songs/:id", access: RouteAccess.Authenticated, tag: "edit-song-page", load: () => import("../pages/edit-song-page") },
+  { pattern: "/donate{/:artist}?", access: RouteAccess.Anonymous, tag: "donate-page", load: () => import("../pages/donate-page") },
+  { pattern: "/donatesuccess", access: RouteAccess.Anonymous, tag: "donate-success-page", load: () => import("../pages/donate-success-page") },
+  { pattern: "/donatecancelled", access: RouteAccess.Anonymous, tag: "donate-cancelled-page", load: () => import("../pages/donate-cancelled-page") },
+  { pattern: "/music/submission", access: RouteAccess.Anonymous, tag: "music-submission-page", load: () => import("../pages/music-submission-page") },
 ];
 
 let outletEl: HTMLElement | null = null;

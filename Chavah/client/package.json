@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@awesome.me/webawesome": "^3.10.0",
+    "@types/croppie": "^2.6.4",
+    "croppie": "^2.6.5",
     "lit": "^3.2.1",
     "urlpattern-polyfill": "^10.0.0"
   },

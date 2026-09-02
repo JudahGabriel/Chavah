@@ -207,3 +207,50 @@ export interface Comment {
   flagCount: number;
   lastFlagDate: string | null;
 }
+
+export interface TempFile {
+  id: string;
+  cdnId: string | null;
+  url: string;
+  name: string;
+  createdAt: string;
+}
+
+export interface AlbumSubmissionByArtist {
+  artistEmail: string;
+  artistPayPalEmail: string;
+  name: string;
+  hebrewName: string | null;
+  artist: string;
+  albumArt: TempFile;
+  backColor: string;
+  foreColor: string;
+  mutedColor: string;
+  textShadowColor: string;
+  genres: string;
+  purchaseUrl: string;
+  songs: TempFile[];
+}
+
+export interface SongEdit {
+  id?: string;
+  status?: string;
+  submitDate?: string;
+  userId?: string;
+  songId: string;
+  newName: string;
+  newUri: string;
+  newHebrewName: string | null;
+  newAlbum: string;
+  newArtist: string;
+  newLyrics: string;
+  newTags: string[];
+  newContributingArtists: string[];
+  oldName?: string;
+  oldHebrewName?: string | null;
+  oldAlbum?: string;
+  oldArtist?: string;
+  oldLyrics?: string;
+  oldTags?: string[];
+  oldContributingArtists?: string[];
+}

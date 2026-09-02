@@ -2,8 +2,10 @@ import { httpApi } from "./http-api-service";
 import { Album } from "../models/album";
 import type {
   Album as ServerAlbum,
+  AlbumSubmissionByArtist,
   AlbumWithNetLikeCount,
   PagedList,
+  TempFile,
 } from "../models/server-interfaces";
 
 /**
@@ -38,6 +40,16 @@ export class AlbumApiService {
 
   save(album: Album): Promise<Album> {
     return httpApi.post("/api/albums/save", album, (a) => new Album(a));
+  }
+
+  uploadTempFile(file: File): Promise<TempFile> {
+    const form = new FormData();
+    form.set("file", file);
+    return httpApi.postFormData("/api/albums/uploadTempFile", form);
+  }
+
+  uploadAlbumSubmissionByArtist(album: AlbumSubmissionByArtist): Promise<string> {
+    return httpApi.post("/api/albums/uploadAlbumSubmissionByArtist", album);
   }
 
   changeArt(albumId: string, artUri: string): Promise<Album | null> {
