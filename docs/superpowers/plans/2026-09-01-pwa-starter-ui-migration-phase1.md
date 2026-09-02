@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Stand up a Vite + Lit + Web Awesome frontend inside `Chavah.NetCore`, replacing the AngularJS shell, and migrate the core listening experience (header, footer, now‑playing, sign‑in) to visual parity with production.
+**Goal:** Stand up a Vite + Lit + Web Awesome frontend inside `Chavah`, replacing the AngularJS shell, and migrate the core listening experience (header, footer, now‑playing, sign‑in) to visual parity with production.
 
-**Architecture:** A new `Chavah.NetCore/client` Vite app builds Lit web components into `Chavah.NetCore/wwwroot`. ASP.NET Core keeps rendering `Views/Home/Index.cshtml` (with `HomeViewModel` + social‑card meta) but now hosts `<chavah-app>` and loads the Vite bundle. Client routing uses the web platform Navigation API with a server SPA fallback. Existing `/api/*` controllers are consumed unchanged.
+**Architecture:** A new `Chavah/client` Vite app builds Lit web components into `Chavah/wwwroot`. ASP.NET Core keeps rendering `Views/Home/Index.cshtml` (with `HomeViewModel` + social‑card meta) but now hosts `<chavah-app>` and loads the Vite bundle. Client routing uses the web platform Navigation API with a server SPA fallback. Existing `/api/*` controllers are consumed unchanged.
 
 **Tech Stack:** Lit 3, `@awesome.me/webawesome` 3.x, Vite 6, TypeScript 5, VitePWA/Workbox, Navigation API, Intl APIs. Backend: ASP.NET Core (net10.0), Razor, C#.
 
@@ -15,7 +15,7 @@
 The existing frontend has **no test harness**, and adding one is out of scope (see spec Non‑Goals). Therefore "verify" steps in this plan use **build + type‑check + runtime + spiderloop visual checks** instead of unit tests:
 
 - **Type/build gate:** `npm run build` (runs `tsc` then `vite build`) must succeed with zero errors.
-- **Backend gate:** `dotnet build Chavah.NetCore/Chavah.NetCore.csproj` must succeed.
+- **Backend gate:** `dotnet build Chavah/Chavah.csproj` must succeed.
 - **Runtime gate:** app runs; the specified screen renders; interactions work.
 - **Visual gate:** use the `use-spiderloop` skill to compare the migrated screen against `https://messianicradio.com` and iterate to alignment.
 
@@ -26,7 +26,7 @@ Commit after every task.
 ## File structure (Phase 1)
 
 ```
-Chavah.NetCore/
+Chavah/
   client/
     .gitignore
     package.json
@@ -61,7 +61,7 @@ Chavah.NetCore/
   Startup.cs                          ← MODIFIED: DI for ViteAssets, dev CORS, SPA fallback
   Views/Shared/_Layout.cshtml         ← MODIFIED: drop AngularJS/jQuery/Bootstrap; emit Vite tags
   Views/Home/Index.cshtml             ← MODIFIED: host <chavah-app>; keep HomeViewModel JSON
-  Chavah.NetCore.csproj               ← MODIFIED: PreBuild runs client npm build
+  Chavah.csproj               ← MODIFIED: PreBuild runs client npm build
 ```
 
 ---
@@ -69,12 +69,12 @@ Chavah.NetCore/
 ## Task 1: Scaffold the Vite client
 
 **Files:**
-- Create: `Chavah.NetCore/client/.gitignore`
-- Create: `Chavah.NetCore/client/package.json`
-- Create: `Chavah.NetCore/client/tsconfig.json`
-- Create: `Chavah.NetCore/client/vite.config.ts`
-- Create: `Chavah.NetCore/client/index.html`
-- Create: `Chavah.NetCore/client/src/main.ts` (temporary stub, replaced in Task 2)
+- Create: `Chavah/client/.gitignore`
+- Create: `Chavah/client/package.json`
+- Create: `Chavah/client/tsconfig.json`
+- Create: `Chavah/client/vite.config.ts`
+- Create: `Chavah/client/index.html`
+- Create: `Chavah/client/src/main.ts` (temporary stub, replaced in Task 2)
 
 - [ ] **Step 1: Create `.gitignore`**
 
@@ -231,14 +231,14 @@ document.body.textContent = "Chavah client scaffold OK";
 
 Run:
 ```bash
-cd Chavah.NetCore/client && npm install && npm run build
+cd Chavah/client && npm install && npm run build
 ```
-Expected: `npm install` succeeds; `npm run build` succeeds; `Chavah.NetCore/wwwroot/vite-index.html` exists and references `/assets/js/index-*.js`.
+Expected: `npm install` succeeds; `npm run build` succeeds; `Chavah/wwwroot/vite-index.html` exists and references `/assets/js/index-*.js`.
 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add Chavah.NetCore/client Chavah.NetCore/wwwroot/vite-index.html Chavah.NetCore/wwwroot/assets
+git add Chavah/client Chavah/wwwroot/vite-index.html Chavah/wwwroot/assets
 git commit -m "feat(client): scaffold Vite + Lit + Web Awesome frontend"
 ```
 
@@ -247,14 +247,14 @@ git commit -m "feat(client): scaffold Vite + Lit + Web Awesome frontend"
 ## Task 2: App shell, theme tokens, and Web Awesome bootstrap
 
 **Files:**
-- Create: `Chavah.NetCore/client/src/shared/theme.css`
-- Create: `Chavah.NetCore/client/src/shared/global.css`
-- Create: `Chavah.NetCore/client/src/app-root.ts`
-- Modify: `Chavah.NetCore/client/src/main.ts`
+- Create: `Chavah/client/src/shared/theme.css`
+- Create: `Chavah/client/src/shared/global.css`
+- Create: `Chavah/client/src/app-root.ts`
+- Modify: `Chavah/client/src/main.ts`
 
 - [ ] **Step 1: Read Web Awesome component APIs**
 
-Before writing components, read `Chavah.NetCore/client/node_modules/@awesome.me/webawesome/dist/llms.txt` for exact props/slots/events/CSS parts of `wa-button`, `wa-dropdown`, `wa-dialog`, `wa-tooltip`, `wa-slider`, `wa-icon`, `wa-callout`, `wa-details`, `wa-spinner`, `wa-input`. Confirm the correct theme stylesheet path and `setBasePath`/registration mechanism for 3.x. Adjust import paths in the following steps to match what the installed version actually exposes.
+Before writing components, read `Chavah/client/node_modules/@awesome.me/webawesome/dist/llms.txt` for exact props/slots/events/CSS parts of `wa-button`, `wa-dropdown`, `wa-dialog`, `wa-tooltip`, `wa-slider`, `wa-icon`, `wa-callout`, `wa-details`, `wa-spinner`, `wa-input`. Confirm the correct theme stylesheet path and `setBasePath`/registration mechanism for 3.x. Adjust import paths in the following steps to match what the installed version actually exposes.
 
 - [ ] **Step 2: Create `shared/theme.css` (brand tokens)**
 
@@ -364,13 +364,13 @@ startRouter();
 
 - [ ] **Step 7: Build**
 
-Run: `cd Chavah.NetCore/client && npm run build`
+Run: `cd Chavah/client && npm run build`
 Expected: success; `wwwroot/vite-index.html` present.
 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add Chavah.NetCore/client Chavah.NetCore/wwwroot
+git add Chavah/client Chavah/wwwroot
 git commit -m "feat(client): app shell, Web Awesome theme tokens, global styles"
 ```
 
@@ -379,8 +379,8 @@ git commit -m "feat(client): app shell, Web Awesome theme tokens, global styles"
 ## Task 3: Navigation API router with access guards
 
 **Files:**
-- Create: `Chavah.NetCore/client/src/shared/constants.ts`
-- Create: `Chavah.NetCore/client/src/shared/router.ts`
+- Create: `Chavah/client/src/shared/constants.ts`
+- Create: `Chavah/client/src/shared/router.ts`
 
 - [ ] **Step 1: Create `constants.ts`**
 
@@ -492,13 +492,13 @@ function installFallback() {
 
 - [ ] **Step 3: Build**
 
-Run: `cd Chavah.NetCore/client && npm run build`
+Run: `cd Chavah/client && npm run build`
 Expected: success (with Task 6 services present) — if implementing Task 3 before Task 6, temporarily stub `accountService`/`appNav`.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add Chavah.NetCore/client/src/shared
+git add Chavah/client/src/shared
 git commit -m "feat(client): Navigation API router with access guards + legacy hash redirect"
 ```
 
@@ -507,11 +507,11 @@ git commit -m "feat(client): Navigation API router with access guards + legacy h
 ## Task 4: Backend wiring (ViteAssets, CORS, SPA fallback, Razor, csproj)
 
 **Files:**
-- Create: `Chavah.NetCore/Services/ViteAssets.cs`
-- Modify: `Chavah.NetCore/Startup.cs` (DI ~line 113; pipeline ~line 189–215)
-- Modify: `Chavah.NetCore/Views/Shared/_Layout.cshtml`
-- Modify: `Chavah.NetCore/Views/Home/Index.cshtml`
-- Modify: `Chavah.NetCore/Chavah.NetCore.csproj` (PreBuild target ~line 80)
+- Create: `Chavah/Services/ViteAssets.cs`
+- Modify: `Chavah/Startup.cs` (DI ~line 113; pipeline ~line 189–215)
+- Modify: `Chavah/Views/Shared/_Layout.cshtml`
+- Modify: `Chavah/Views/Home/Index.cshtml`
+- Modify: `Chavah/Chavah.csproj` (PreBuild target ~line 80)
 
 - [ ] **Step 1: Create `Services/ViteAssets.cs`**
 
@@ -667,21 +667,21 @@ Replace the existing `PreBuild` target (~line 80) so a production `dotnet build`
 
 - [ ] **Step 7: Verify backend build + runtime**
 
-Run: `dotnet build Chavah.NetCore/Chavah.NetCore.csproj`
+Run: `dotnet build Chavah/Chavah.csproj`
 Expected: build succeeds.
 
 Then run the client dev server and the app together:
 ```bash
-cd Chavah.NetCore/client && npm run dev
+cd Chavah/client && npm run dev
 # separate shell:
-dotnet run --project Chavah.NetCore
+dotnet run --project Chavah
 ```
 Expected: navigating to the app shows the `<chavah-app>` shell (header/footer stubs) served by ASP.NET with modules loaded from the Vite dev server; no AngularJS errors in console.
 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add Chavah.NetCore/Services/ViteAssets.cs Chavah.NetCore/Startup.cs Chavah.NetCore/Views Chavah.NetCore/Chavah.NetCore.csproj
+git add Chavah/Services/ViteAssets.cs Chavah/Startup.cs Chavah/Views Chavah/Chavah.csproj
 git commit -m "feat(server): serve Vite client, dev CORS, SPA fallback; drop AngularJS shell"
 ```
 
@@ -690,8 +690,8 @@ git commit -m "feat(server): serve Vite client, dev CORS, SPA fallback; drop Ang
 ## Task 5: Port core models and HomeViewModel accessor
 
 **Files:**
-- Create: `Chavah.NetCore/client/src/models/*.ts` (Song, User, AudioStatus, Album, Artist, CommunityRankStanding, LikeLevel, SignInStatus, IAlbumSwatch, ServerInterfaces subset)
-- Create: `Chavah.NetCore/client/src/shared/home-view-model.ts`
+- Create: `Chavah/client/src/models/*.ts` (Song, User, AudioStatus, Album, Artist, CommunityRankStanding, LikeLevel, SignInStatus, IAlbumSwatch, ServerInterfaces subset)
+- Create: `Chavah/client/src/shared/home-view-model.ts`
 
 - [ ] **Step 1: Port enums/interfaces**
 
@@ -758,17 +758,17 @@ export function getHomeViewModel(): HomeViewModel {
 }
 ```
 
-> Read `Chavah.NetCore/Models/HomeViewModel.cs` and `UserViewModel` to complete the DTO shapes exactly.
+> Read `Chavah/Models/HomeViewModel.cs` and `UserViewModel` to complete the DTO shapes exactly.
 
 - [ ] **Step 3: Build**
 
-Run: `cd Chavah.NetCore/client && npm run build`
+Run: `cd Chavah/client && npm run build`
 Expected: success.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add Chavah.NetCore/client/src/models Chavah.NetCore/client/src/shared/home-view-model.ts
+git add Chavah/client/src/models Chavah/client/src/shared/home-view-model.ts
 git commit -m "feat(client): port core models + HomeViewModel accessor"
 ```
 
@@ -777,16 +777,16 @@ git commit -m "feat(client): port core models + HomeViewModel accessor"
 ## Task 6: Port core services
 
 **Files (create):**
-- `Chavah.NetCore/client/src/services/http-api-service.ts`
-- `Chavah.NetCore/client/src/services/account-service.ts`
-- `Chavah.NetCore/client/src/services/app-nav-service.ts`
-- `Chavah.NetCore/client/src/services/song-api-service.ts`
-- `Chavah.NetCore/client/src/services/like-api-service.ts`
-- `Chavah.NetCore/client/src/services/song-batch-service.ts`
-- `Chavah.NetCore/client/src/services/audio-player-service.ts`
-- `Chavah.NetCore/client/src/services/sharing-service.ts`
-- `Chavah.NetCore/client/src/services/song-request-service.ts`
-- `Chavah.NetCore/client/src/shared/reactive-store.ts`
+- `Chavah/client/src/services/http-api-service.ts`
+- `Chavah/client/src/services/account-service.ts`
+- `Chavah/client/src/services/app-nav-service.ts`
+- `Chavah/client/src/services/song-api-service.ts`
+- `Chavah/client/src/services/like-api-service.ts`
+- `Chavah/client/src/services/song-batch-service.ts`
+- `Chavah/client/src/services/audio-player-service.ts`
+- `Chavah/client/src/services/sharing-service.ts`
+- `Chavah/client/src/services/song-request-service.ts`
+- `Chavah/client/src/shared/reactive-store.ts`
 
 Port from `wwwroot/js/Services/*` with these rules for every service:
 - Drop the `namespace` wrapper; export a class and a singleton instance (`export const songApi = new SongApiService(httpApi);`) to replace Angular DI.
@@ -886,13 +886,13 @@ Each service ends with a `export const <name> = new <Class>(deps);` singleton.
 
 - [ ] **Step 6: Build**
 
-Run: `cd Chavah.NetCore/client && npm run build`
+Run: `cd Chavah/client && npm run build`
 Expected: success (routers/services resolve).
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add Chavah.NetCore/client/src/services Chavah.NetCore/client/src/shared
+git add Chavah/client/src/services Chavah/client/src/shared
 git commit -m "feat(client): port core services (http, account, audio, song, likes, sharing, nav)"
 ```
 
@@ -901,7 +901,7 @@ git commit -m "feat(client): port core services (http, account, audio, song, lik
 ## Task 7: `chavah-header` component
 
 **Files:**
-- Create: `Chavah.NetCore/client/src/components/chavah-header.ts`
+- Create: `Chavah/client/src/components/chavah-header.ts`
 - Reference: `wwwroot/views/partials/Header.html`, `wwwroot/js/Controllers/HeaderController.ts`, `wwwroot/css/app/header.less`
 
 - [ ] **Step 1: Read the sources**
@@ -945,13 +945,13 @@ export class ChavahHeader extends LitElement {
 
 - [ ] **Step 3: Build + visual check**
 
-Run: `cd Chavah.NetCore/client && npm run build`; run app + `npm run dev`.
+Run: `cd Chavah/client && npm run build`; run app + `npm run dev`.
 Then use the `use-spiderloop` skill to compare the header against `https://messianicradio.com`. Iterate until the title, gold color, layout, and menu match.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add Chavah.NetCore/client/src/components/chavah-header.ts
+git add Chavah/client/src/components/chavah-header.ts
 git commit -m "feat(client): chavah-header with Web Awesome dropdowns"
 ```
 
@@ -960,7 +960,7 @@ git commit -m "feat(client): chavah-header with Web Awesome dropdowns"
 ## Task 8: `chavah-footer` component (audio controls)
 
 **Files:**
-- Create: `Chavah.NetCore/client/src/components/chavah-footer.ts`
+- Create: `Chavah/client/src/components/chavah-footer.ts`
 - Reference: `wwwroot/views/partials/Footer.html`, `wwwroot/js/Controllers/FooterController.ts`, `wwwroot/css/app/footer.less`
 
 - [ ] **Step 1: Read the sources**
@@ -1009,7 +1009,7 @@ Build; run app+dev. Verify play/pause, skip, thumb up/down, volume slider, and b
 - [ ] **Step 4: Commit**
 
 ```bash
-git add Chavah.NetCore/client/src/components/chavah-footer.ts
+git add Chavah/client/src/components/chavah-footer.ts
 git commit -m "feat(client): chavah-footer audio controls with Web Awesome"
 ```
 
@@ -1018,8 +1018,8 @@ git commit -m "feat(client): chavah-footer audio controls with Web Awesome"
 ## Task 9: `song-list` and `song-deck` components
 
 **Files:**
-- Create: `Chavah.NetCore/client/src/components/song-list.ts`
-- Create: `Chavah.NetCore/client/src/components/song-deck.ts`
+- Create: `Chavah/client/src/components/song-list.ts`
+- Create: `Chavah/client/src/components/song-deck.ts`
 - Reference: `wwwroot/views/partials/ArtistList.html`? no — `wwwroot/views/SongDeck.html`, `wwwroot/js/Controllers/SongListController.ts`, `SongDeckController.ts`, `wwwroot/css/app/songList.less`, `SongDeck.less`
 
 - [ ] **Step 1: Implement `song-list`**
@@ -1052,7 +1052,7 @@ Build; run. Use `use-spiderloop` to compare a rendered deck/list against product
 - [ ] **Step 4: Commit**
 
 ```bash
-git add Chavah.NetCore/client/src/components/song-list.ts Chavah.NetCore/client/src/components/song-deck.ts
+git add Chavah/client/src/components/song-list.ts Chavah/client/src/components/song-deck.ts
 git commit -m "feat(client): song-list and song-deck components"
 ```
 
@@ -1061,7 +1061,7 @@ git commit -m "feat(client): song-list and song-deck components"
 ## Task 10: `now-playing-page`
 
 **Files:**
-- Create: `Chavah.NetCore/client/src/pages/now-playing-page.ts`
+- Create: `Chavah/client/src/pages/now-playing-page.ts`
 - Reference: `wwwroot/views/NowPlaying.html`, `wwwroot/js/Controllers/NowPlayingController.ts`, `wwwroot/css/app/nowPlaying.less`
 
 - [ ] **Step 1: Read sources**
@@ -1097,7 +1097,7 @@ Build; run with real backend + audio. Verify the deck advances, current song inf
 - [ ] **Step 4: Commit**
 
 ```bash
-git add Chavah.NetCore/client/src/pages/now-playing-page.ts
+git add Chavah/client/src/pages/now-playing-page.ts
 git commit -m "feat(client): now-playing page"
 ```
 
@@ -1106,9 +1106,9 @@ git commit -m "feat(client): now-playing page"
 ## Task 11: Sign‑in flow
 
 **Files:**
-- Create: `Chavah.NetCore/client/src/pages/prompt-sign-in-page.ts`
-- Create: `Chavah.NetCore/client/src/pages/sign-in-page.ts`
-- Create: `Chavah.NetCore/client/src/pages/password-page.ts`
+- Create: `Chavah/client/src/pages/prompt-sign-in-page.ts`
+- Create: `Chavah/client/src/pages/sign-in-page.ts`
+- Create: `Chavah/client/src/pages/password-page.ts`
 - Reference: `wwwroot/views/PromptSignIn.html`, `SignIn.html`, `Password.html` and their controllers; `wwwroot/css/app/password.less`
 
 - [ ] **Step 1: Implement the three pages**
@@ -1144,7 +1144,7 @@ Build; run. Sign in with the flow end‑to‑end using test credentials; verify 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add Chavah.NetCore/client/src/pages
+git add Chavah/client/src/pages
 git commit -m "feat(client): sign-in flow (prompt, sign-in, password)"
 ```
 
@@ -1153,30 +1153,30 @@ git commit -m "feat(client): sign-in flow (prompt, sign-in, password)"
 ## Task 12: Remove dead AngularJS assets; final Phase‑1 validation
 
 **Files:**
-- Delete: `Chavah.NetCore/wwwroot/js/**` (AngularJS App/Controllers/Services/Directives/Models), `wwwroot/views/**` (AngularJS HTML templates), `wwwroot/css/app/**` and Bootstrap/bootswatch/flatly LESS, `wwwroot/lib/**` (client libs), old `wwwroot/js/dist`, `wwwroot/css/dist`.
-- Modify: `Chavah.NetCore/Chavah.NetCore.csproj` (remove `Microsoft.TypeScript.MSBuild`, `BuildBundlerMinifier`, `BuildWebCompiler`, `Microsoft.Web.LibraryManager.Build`, `TypeScriptCompile`/`Content Remove` items, `tsconfig`/`bundleconfig`/`compilerconfig`/`libman.json`), and remove `Chavah.NetCore/tsconfig.json`, `tslint.json`, `bundleconfig.json`, `compilerconfig.json*`, `libman.json`, and the AngularJS `@types/*` from `Chavah.NetCore/package.json`.
-- Modify: `Chavah.NetCore/Common/AngularCacheBustedViews*.cs` and any `AngularCacheBustedViews` DI registration + `HomeViewModel.CacheBustedAngularViews` usage (remove or no‑op), since the new client doesn't use cache‑busted Angular views.
+- Delete: `Chavah/wwwroot/js/**` (AngularJS App/Controllers/Services/Directives/Models), `wwwroot/views/**` (AngularJS HTML templates), `wwwroot/css/app/**` and Bootstrap/bootswatch/flatly LESS, `wwwroot/lib/**` (client libs), old `wwwroot/js/dist`, `wwwroot/css/dist`.
+- Modify: `Chavah/Chavah.csproj` (remove `Microsoft.TypeScript.MSBuild`, `BuildBundlerMinifier`, `BuildWebCompiler`, `Microsoft.Web.LibraryManager.Build`, `TypeScriptCompile`/`Content Remove` items, `tsconfig`/`bundleconfig`/`compilerconfig`/`libman.json`), and remove `Chavah/tsconfig.json`, `tslint.json`, `bundleconfig.json`, `compilerconfig.json*`, `libman.json`, and the AngularJS `@types/*` from `Chavah/package.json`.
+- Modify: `Chavah/Common/AngularCacheBustedViews*.cs` and any `AngularCacheBustedViews` DI registration + `HomeViewModel.CacheBustedAngularViews` usage (remove or no‑op), since the new client doesn't use cache‑busted Angular views.
 
 > **Caution:** do this only after Tasks 1–11 are verified working, and delete incrementally, building between deletions. Keep `wwwroot/images`, `favicon.ico`, `manifest.json`, `robots.txt`, `Heavenly70.html`, and `wwwroot/emails`.
 
 - [ ] **Step 1: Remove AngularJS view templates and JS**
 
 ```bash
-git rm -r Chavah.NetCore/wwwroot/js Chavah.NetCore/wwwroot/views
+git rm -r Chavah/wwwroot/js Chavah/wwwroot/views
 ```
 
 - [ ] **Step 2: Remove old CSS + libs**
 
 ```bash
-git rm -r Chavah.NetCore/wwwroot/css/app Chavah.NetCore/wwwroot/lib
-git rm Chavah.NetCore/wwwroot/css/bootstrap-flatly.less Chavah.NetCore/wwwroot/css/bootswatch.less Chavah.NetCore/wwwroot/css/bootstrap-flatly-tweaks.less Chavah.NetCore/wwwroot/css/nprogress.less
+git rm -r Chavah/wwwroot/css/app Chavah/wwwroot/lib
+git rm Chavah/wwwroot/css/bootstrap-flatly.less Chavah/wwwroot/css/bootswatch.less Chavah/wwwroot/css/bootstrap-flatly-tweaks.less Chavah/wwwroot/css/nprogress.less
 ```
 
 - [ ] **Step 3: Remove old build tooling from csproj + delete config files**
 
-Edit `Chavah.NetCore.csproj` to drop the TypeScript/Bundler/WebCompiler/LibMan `PackageReference`s and the `TypeScriptCompile`/`Content Remove`/`MediaFileUpload` items. Then:
+Edit `Chavah.csproj` to drop the TypeScript/Bundler/WebCompiler/LibMan `PackageReference`s and the `TypeScriptCompile`/`Content Remove`/`MediaFileUpload` items. Then:
 ```bash
-git rm Chavah.NetCore/tsconfig.json Chavah.NetCore/tslint.json Chavah.NetCore/bundleconfig.json Chavah.NetCore/compilerconfig.json Chavah.NetCore/compilerconfig.json.defaults Chavah.NetCore/libman.json
+git rm Chavah/tsconfig.json Chavah/tslint.json Chavah/bundleconfig.json Chavah/compilerconfig.json Chavah/compilerconfig.json.defaults Chavah/libman.json
 ```
 
 - [ ] **Step 4: Remove `AngularCacheBustedViews` wiring**
@@ -1187,8 +1187,8 @@ Remove the service, its DI registration, and the `CacheBustedAngularViews` prope
 
 Run:
 ```bash
-cd Chavah.NetCore/client && npm run build
-cd ../.. && dotnet build Chavah.NetCore/Chavah.NetCore.csproj
+cd Chavah/client && npm run build
+cd ../.. && dotnet build Chavah/Chavah.csproj
 ```
 Expected: both succeed with no references to removed files.
 

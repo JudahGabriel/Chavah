@@ -7,7 +7,7 @@
 ## Overview
 
 Chavah Messianic Radio's frontend is an AngularJS 1.7 SPA served by ASP.NET Core
-(`Chavah.NetCore`). This effort replaces the AngularJS frontend, in place, with a
+(`Chavah`). This effort replaces the AngularJS frontend, in place, with a
 modern web-components UI based on the [pwa-starter](https://github.com/pwa-builder/pwa-starter)
 stack:
 
@@ -43,7 +43,7 @@ spiderloop skill.
 
 | Decision | Choice |
 | --- | --- |
-| Frontend location | In place inside `Chavah.NetCore/client`, building to `Chavah.NetCore/wwwroot` |
+| Frontend location | In place inside `Chavah/client`, building to `Chavah/wwwroot` |
 | Reference pattern | `C:\dev\store.web\src\Api\client` (Vite + Lit + Web Awesome served by ASP.NET) |
 | Routing | Path-based (`/trending`) via the web platform **Navigation API**, with server SPA fallback; legacy `#/x` links redirected client-side to `/x` |
 | Theming | Web Awesome theme + design tokens; brand color aligned to Chavah `#2f3d58` |
@@ -56,7 +56,7 @@ spiderloop skill.
 ## Architecture
 
 ```
-Chavah.NetCore/
+Chavah/
   client/                     ← NEW Vite + Lit + Web Awesome app
     index.html
     vite.config.ts            ← outDir → ../wwwroot; VitePWA; dev server HMR
@@ -193,7 +193,7 @@ result against production.
 ## Validation & Testing
 
 - `npm run build` (tsc + vite build) succeeds with no type errors.
-- `dotnet build Chavah.NetCore` succeeds.
+- `dotnet build Chavah` succeeds.
 - App runs locally; audio plays; thumb/skip/request/volume work.
 - spiderloop compares each migrated screen to production and iterates to visual
   alignment (layout, spacing, fonts Lato/EB Garamond/Cardo, colors, responsive
