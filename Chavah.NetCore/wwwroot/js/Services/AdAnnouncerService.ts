@@ -35,6 +35,11 @@
             const availableAds = 8;
             let randomAdNumber = randomNumber(1, availableAds);
 
+            // Ad 8 is the sukkot ad. Let's play it more often than the others while Sukkot is approaching.
+            if (randomAdNumber !== 8 && Math.random() > 0.5) {
+                randomAdNumber = 8;
+            }
+
             const adUrl = `${this.homeViewModel.soundEffects}/ad${randomAdNumber}x.mp3`;
             this.audioPlayer.playNewUri(adUrl);
         }
