@@ -145,10 +145,10 @@ export class ChavahHeader extends LitElement {
   private renderNotifications() {
     return html`
       <wa-dropdown class="notifications-btn" placement="bottom-end">
-        <wa-button slot="trigger" appearance="plain" @click=${() => this.markNotificationsAsRead()}>
+        <wa-button slot="trigger" class="notif-trigger" appearance="plain" @click=${() => this.markNotificationsAsRead()}>
           <wa-icon name="bell"></wa-icon>
           ${this.unreadNotificationCount > 0
-            ? html`<wa-badge variant="danger" attention="pulse">${this.unreadNotificationCount}</wa-badge>`
+            ? html`<wa-badge variant="danger" pill class="notif-badge">${this.unreadNotificationCount}</wa-badge>`
             : ""}
         </wa-button>
         <div class="notifications-menu">
@@ -370,6 +370,20 @@ export class ChavahHeader extends LitElement {
         max-width: 360px;
         max-height: 500px;
         overflow: auto;
+      }
+      chavah-header .notif-trigger::part(base) {
+        position: relative;
+        overflow: visible;
+      }
+      chavah-header .notif-badge {
+        position: absolute;
+        top: 0;
+        right: -2px;
+        --wa-color-danger-fill-loud: #ff0000;
+        font-size: 11px;
+        line-height: 1;
+        font-weight: 700;
+        box-shadow: 0 0 0 2px var(--chavah-header-bg, #2f3d58);
       }
       chavah-header .notification {
         display: block;

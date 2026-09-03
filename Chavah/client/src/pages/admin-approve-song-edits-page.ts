@@ -15,12 +15,9 @@ interface PendingSongEdit extends SongEdit {
   id: string;
   submitDate: string;
   oldName: string;
-  oldHebrewName: string | null;
-  oldAlbum: string;
   oldArtist: string;
   oldLyrics: string;
   oldTags: string[];
-  oldContributingArtists: string[];
   isSaving: boolean;
 }
 
@@ -126,10 +123,6 @@ export class AdminApproveSongEditsPage extends LitElement {
     this.pendingEdits = this.pendingEdits.map((edit) => (edit.id === updated.id ? updated : edit));
   }
 
-  private updateCurrentEditText(field: "newName" | "newHebrewName" | "newAlbum" | "newArtist" | "newLyrics", value: string): void {
-    this.updateCurrentEdit({ [field]: value });
-  }
-
   private removeTag(tag: string): void {
     if (this.currentEdit) {
       this.updateCurrentEdit({ newTags: this.currentEdit.newTags.filter((item) => item !== tag) });
@@ -176,27 +169,15 @@ export class AdminApproveSongEditsPage extends LitElement {
     }
   }
 
-  private updateContributingArtists(value: string): void {
-    this.updateCurrentEdit({
-      newContributingArtists: value
-        .split(",")
-        .map((item) => item.trim())
-        .filter((item) => !!item),
-    });
-  }
-
   private createSongEditViewModel(songEdit: SongEdit): PendingSongEdit {
     return {
       ...songEdit,
       id: songEdit.id ?? "",
       submitDate: songEdit.submitDate ?? new Date().toISOString(),
       oldName: songEdit.oldName ?? "",
-      oldHebrewName: songEdit.oldHebrewName ?? null,
-      oldAlbum: songEdit.oldAlbum ?? "",
       oldArtist: songEdit.oldArtist ?? "",
       oldLyrics: songEdit.oldLyrics ?? "",
       oldTags: songEdit.oldTags ?? [],
-      oldContributingArtists: songEdit.oldContributingArtists ?? [],
       isSaving: false,
     };
   }
@@ -211,12 +192,12 @@ export class AdminApproveSongEditsPage extends LitElement {
     );
   }
 
-  private hasFieldChange(oldValue: string | null, newValue: string | null): boolean {
-    return (oldValue ?? "") !== (newValue ?? "");
-  }
-
   private hasTagChanges(edit: PendingSongEdit): boolean {
     return edit.newTags.length !== edit.oldTags.length || edit.newTags.some((tag, index) => edit.oldTags[index] !== tag);
+  }
+
+  private hasLyricChanges(edit: PendingSongEdit): boolean {
+    return (edit.oldLyrics ?? "") !== (edit.newLyrics ?? "");
   }
 
   private getTagClass(edit: PendingSongEdit, tag: string): string {
@@ -235,35 +216,21 @@ export class AdminApproveSongEditsPage extends LitElement {
     return error instanceof Error ? error.message : JSON.stringify(error);
   }
 
-  private renderFieldComparison(label: string, oldValue: string | null, newValue: string | null, field: "newName" | "newHebrewName" | "newAlbum" | "newArtist") {
-    return html`
-      <div class="form-group">
-        <label>${label} ${this.hasFieldChange(oldValue, newValue) ? nothing : html`<span class="text-info">- no changes</span>`}</label>
-        <div class="row">
-          <div class="col-xs-12 col-sm-6">
-            <wa-input .value=${newValue ?? ""} @input=${(e: Event) => this.updateCurrentEditText(field, (e.target as HTMLInputElement).value)}></wa-input>
-          </div>
-          <div class="col-xs-12 col-sm-6">
-            <wa-input .value=${oldValue ?? ""} readonly></wa-input>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
   private renderTags(edit: PendingSongEdit) {
     return html`
-      <div class="form-group">
-        <label><wa-icon name="tags"></wa-icon> Tags ${this.hasTagChanges(edit) ? nothing : html`<span class="text-info">- no changes</span>`}</label>
-        <div class="row">
-          <div class="col-xs-12 col-sm-6">
-            <h5>New</h5>
+      <div class="field-block">
+        <label class="field-label">
+          <wa-icon name="tags"></wa-icon> Tags
+          ${this.hasTagChanges(edit) ? nothing : html`<span class="no-changes">- no changes</span>`}
+        </label>
+        <div class="diff-columns">
+          <div>
             <div class="tags-container">
               ${edit.newTags.map(
                 (tag) => html`
-                  <span class=${`tag ${this.getTagClass(edit, tag)}`}>
+                  <span class=${`tag-chip ${this.getTagClass(edit, tag)}`}>
                     <wa-icon name="tag"></wa-icon> ${tag}
-                    <wa-button size="small" title="Remove tag" @click=${() => this.removeTag(tag)}><wa-icon name="xmark"></wa-icon></wa-button>
+                    <button type="button" class="remove-tag" title="Remove tag" @click=${() => this.removeTag(tag)}>&times;</button>
                   </span>
                 `,
               )}
@@ -278,15 +245,17 @@ export class AdminApproveSongEditsPage extends LitElement {
             ${this.tagSuggestions.length
               ? html`<div class="tag-suggestions">
                   ${this.tagSuggestions.map(
-                    (tag) => html`<wa-button type="button" size="small" appearance="outlined" @click=${() => this.autoCompleteTagSelected(tag)}>${tag}</wa-button>`,
+                    (tag) =>
+                      html`<wa-button type="button" size="small" appearance="outlined" @click=${() => this.autoCompleteTagSelected(tag)}>${tag}</wa-button>`,
                   )}
                 </div>`
               : nothing}
           </div>
-          <div class="col-xs-12 col-sm-6">
-            <h5>Old</h5>
+          <div>
             <div class="tags-container">
-              ${edit.oldTags.map((tag) => html`<span class=${`tag ${this.getTagClass(edit, tag)}`}><wa-icon name="tag"></wa-icon> ${tag}</span>`)}
+              ${edit.oldTags.map(
+                (tag) => html`<span class=${`tag-chip ${this.getTagClass(edit, tag)}`}><wa-icon name="tag"></wa-icon> ${tag}</span>`,
+              )}
             </div>
           </div>
         </div>
@@ -296,51 +265,36 @@ export class AdminApproveSongEditsPage extends LitElement {
 
   private renderCurrentEdit(edit: PendingSongEdit) {
     return html`
-      <h3>${edit.oldArtist} - ${edit.oldName}</h3>
-      <h5>Submitted by ${edit.userId ?? "unknown"}</h5>
-      <form @submit=${(e: SubmitEvent) => e.preventDefault()}>
-        ${this.renderFieldComparison("Name", edit.oldName, edit.newName, "newName")}
-        ${this.renderFieldComparison("Hebrew name", edit.oldHebrewName, edit.newHebrewName, "newHebrewName")}
-        ${this.renderFieldComparison("Album", edit.oldAlbum, edit.newAlbum, "newAlbum")}
-        ${this.renderFieldComparison("Artist", edit.oldArtist, edit.newArtist, "newArtist")}
-        <div class="form-group">
-          <label>
-            Contributing artists
-            ${edit.oldContributingArtists.join(", ") !== edit.newContributingArtists.join(", ")
-              ? nothing
-              : html`<span class="text-info">- no changes</span>`}
-          </label>
-          <div class="row">
-            <div class="col-xs-12 col-sm-6">
-              <wa-input
-                .value=${edit.newContributingArtists.join(", ")}
-                @input=${(e: Event) => this.updateContributingArtists((e.target as HTMLInputElement).value)}
-              ></wa-input>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              <wa-input .value=${edit.oldContributingArtists.join(", ")} readonly></wa-input>
-            </div>
-          </div>
-        </div>
+      <div class="edit-detail">
+        <h3 class="edit-title">${edit.oldArtist} - ${edit.oldName}</h3>
+        <p class="submitted-by">Submitted by ${edit.userId ?? "unknown"}</p>
         ${this.renderTags(edit)}
-        <div class="form-group">
-          <label>Lyrics ${this.hasFieldChange(edit.oldLyrics, edit.newLyrics) ? nothing : html`<span class="text-info">- no changes</span>`}</label>
-          <div class="row">
-            <div class="col-xs-12 col-sm-6">
-              <wa-textarea rows="20" .value=${edit.newLyrics} @input=${(e: Event) => this.updateCurrentEditText("newLyrics", (e.target as HTMLInputElement).value)}></wa-textarea>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              <wa-textarea rows="20" .value=${edit.oldLyrics} readonly></wa-textarea>
-            </div>
+        <div class="field-block">
+          <label class="field-label">
+            Lyrics ${this.hasLyricChanges(edit) ? nothing : html`<span class="no-changes">- no changes</span>`}
+          </label>
+          <div class="diff-columns">
+            <wa-textarea
+              class="lyrics-textarea"
+              rows="20"
+              resize="vertical"
+              .value=${edit.newLyrics}
+              @input=${(e: Event) => this.updateCurrentEdit({ newLyrics: (e.target as HTMLTextAreaElement).value })}
+            ></wa-textarea>
+            <wa-textarea class="lyrics-textarea" rows="20" resize="vertical" readonly .value=${edit.oldLyrics}></wa-textarea>
           </div>
         </div>
-        <wa-button variant="brand" ?disabled=${edit.isSaving} @click=${() => this.approve()}>
-          ${edit.isSaving ? html`<wa-spinner></wa-spinner> Saving...` : html`<wa-icon slot="start" name="floppy-disk"></wa-icon>Approve`}
-        </wa-button>
-        <wa-button variant="danger" ?disabled=${edit.isSaving} @click=${() => this.reject()}>
-          <wa-icon slot="start" name="xmark"></wa-icon>Reject
-        </wa-button>
-      </form>
+        <div class="songedit-actions">
+          <wa-button variant="brand" ?disabled=${edit.isSaving} @click=${() => this.approve()}>
+            ${edit.isSaving
+              ? html`<wa-spinner slot="start"></wa-spinner>Saving...`
+              : html`<wa-icon slot="start" name="floppy-disk"></wa-icon>Approve`}
+          </wa-button>
+          <wa-button variant="danger" ?disabled=${edit.isSaving} @click=${() => this.reject()}>
+            <wa-icon slot="start" name="ban"></wa-icon>Reject
+          </wa-button>
+        </div>
+      </div>
     `;
   }
 
@@ -359,25 +313,25 @@ export class AdminApproveSongEditsPage extends LitElement {
               : nothing}
             ${this.pendingEdits.length
               ? html`
-                  <div class="row" style="margin-top: 20px;">
-                    <div class="col-xs-12 col-sm-3">
-                      <div class="list-group" style="overflow: auto; max-height: 700px;">
-                        ${this.pendingEdits.map(
-                          (edit) => html`
-                            <a
-                              href="javascript:void(0)"
-                              class=${`list-group-item ${this.currentEdit?.id === edit.id ? "active" : ""}`}
-                              @click=${() => this.setCurrentEdit(edit)}
-                            >
-                              ${edit.oldArtist} - ${edit.oldName}<br />
-                              <span class="text-muted">${this.getFriendlyDate(edit)}</span>
-                              ${this.hasNewerEdit(edit) ? html`<span class="text-danger"><br />[warning: newer edit available]</span>` : nothing}
-                            </a>
-                          `,
-                        )}
-                      </div>
+                  <div class="songedit-layout">
+                    <div class="edit-list">
+                      ${this.pendingEdits.map(
+                        (edit) => html`
+                          <a
+                            href="javascript:void(0)"
+                            class=${`edit-list-item ${this.currentEdit?.id === edit.id ? "active" : ""}`}
+                            @click=${() => this.setCurrentEdit(edit)}
+                          >
+                            ${edit.oldArtist} - ${edit.oldName}<br />
+                            <span class="muted-date">${this.getFriendlyDate(edit)}</span>
+                            ${this.hasNewerEdit(edit)
+                              ? html`<br /><span class="warning-newer">[warning: newer edit available]</span>`
+                              : nothing}
+                          </a>
+                        `,
+                      )}
                     </div>
-                    <div class="col-xs-12 col-sm-9">${this.currentEdit ? this.renderCurrentEdit(this.currentEdit) : nothing}</div>
+                    ${this.currentEdit ? this.renderCurrentEdit(this.currentEdit) : nothing}
                   </div>
                 `
               : nothing}
